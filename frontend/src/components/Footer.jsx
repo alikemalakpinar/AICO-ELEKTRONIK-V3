@@ -140,36 +140,36 @@ const Footer = ({ lang = 'tr' }) => {
   ];
 
   return (
-    <footer className=\"bg-[#0A0E27] text-white\">
+    <footer className="bg-[#0A0E27] text-white">
       {/* Trust Bar */}
-      <div className=\"border-b border-white/10\">
-        <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8\">
-          <div className=\"grid grid-cols-1 sm:grid-cols-3 gap-6\">
-            <div className=\"flex items-center gap-4\">
-              <div className=\"w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0\">
+      <div className="border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0">
                 <Zap size={24} />
               </div>
               <div>
-                <div className=\"font-bold\">{t.trust.delivery}</div>
-                <div className=\"text-sm text-gray-400\">{t.trust.deliverySub}</div>
+                <div className="font-bold">{t.trust.delivery}</div>
+                <div className="text-sm text-gray-400">{t.trust.deliverySub}</div>
               </div>
             </div>
-            <div className=\"flex items-center gap-4\">
-              <div className=\"w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0\">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0">
                 <Award size={24} />
               </div>
               <div>
-                <div className=\"font-bold\">{t.trust.quality}</div>
-                <div className=\"text-sm text-gray-400\">{t.trust.qualitySub}</div>
+                <div className="font-bold">{t.trust.quality}</div>
+                <div className="text-sm text-gray-400">{t.trust.qualitySub}</div>
               </div>
             </div>
-            <div className=\"flex items-center gap-4\">
-              <div className=\"w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0\">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0">
                 <Clock size={24} />
               </div>
               <div>
-                <div className=\"font-bold\">{t.trust.ontime}</div>
-                <div className=\"text-sm text-gray-400\">{t.trust.ontimeSub}</div>
+                <div className="font-bold">{t.trust.ontime}</div>
+                <div className="text-sm text-gray-400">{t.trust.ontimeSub}</div>
               </div>
             </div>
           </div>
