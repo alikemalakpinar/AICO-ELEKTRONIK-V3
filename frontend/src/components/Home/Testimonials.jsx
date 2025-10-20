@@ -95,24 +95,24 @@ const Testimonials = ({ lang }) => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white relative overflow-hidden">
+    <section className="py-16 lg:py-20 bg-[#1554F6] text-white relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.title}</h2>
-          <p className="text-xl opacity-90">{t.subtitle}</p>
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 lg:mb-4">{t.title}</h2>
+          <p className="text-lg lg:text-xl opacity-90\">{t.subtitle}</p>
         </div>
 
         {/* Testimonial Slider */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border border-white/20 shadow-2xl">
-            <Quote className="text-white/50 mb-6" size={48} />
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 lg:p-12 border border-white/20 shadow-xl">
+            <Quote className="text-white/30 mb-6" size={48} />
             
             <div className="mb-6">
               <div className="flex items-center gap-1 mb-4">
