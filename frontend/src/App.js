@@ -25,6 +25,10 @@ import QualityPage from './pages/QualityPage';
 import CaseStudiesPage from './pages/CaseStudiesPage';
 import SupportPage from './pages/SupportPage';
 import NotFoundPage from './pages/NotFoundPage';
+import CareersPage from './pages/CareersPage';
+import BlogPage from './pages/BlogPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 
 function App() {
   const [lang, setLang] = useState('tr');
