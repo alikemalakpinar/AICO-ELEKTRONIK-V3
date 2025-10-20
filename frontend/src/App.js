@@ -11,6 +11,9 @@ import CalculatorsPage from './pages/CalculatorsPage';
 import PowerSupplyCalculator from './pages/PowerSupplyCalculator';
 import LEDDriverCalculator from './pages/LEDDriverCalculator';
 import CableCalculator from './pages/CableCalculator';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import ServicesPage from './pages/ServicesPage';
 
 function App() {
   const [lang, setLang] = useState('tr');
