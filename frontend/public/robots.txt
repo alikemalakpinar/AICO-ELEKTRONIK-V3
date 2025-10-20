@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://aico-electronics.preview.emergentagent.com/sitemap.xml
+Sitemap: https://pcbinstant.preview.emergentagent.com/sitemap.xml
 
 # Disallow admin/internal pages
 Disallow: /api/

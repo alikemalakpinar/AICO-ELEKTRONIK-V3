@@ -4,18 +4,18 @@
   
   <!-- Home Pages -->
   <url>
-    <loc>https://aico-electronics.preview.emergentagent.com/tr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aico-electronics.preview.emergentagent.com/en" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://aico-electronics.preview.emergentagent.com/tr" />
+    <loc>https://pcbinstant.preview.emergentagent.com/tr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
-    <loc>https://aico-electronics.preview.emergentagent.com/en</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aico-electronics.preview.emergentagent.com/en" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://aico-electronics.preview.emergentagent.com/tr" />
+    <loc>https://pcbinstant.preview.emergentagent.com/en</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -23,9 +23,9 @@
 
   <!-- About Pages -->
   <url>
-    <loc>https://aico-electronics.preview.emergentagent.com/tr/about</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aico-electronics.preview.emergentagent.com/en/about" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://aico-electronics.preview.emergentagent.com/tr/about" />
+    <loc>https://pcbinstant.preview.emergentagent.com/tr/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/about" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/about" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -33,9 +33,9 @@
 
   <!-- Contact Pages -->
   <url>
-    <loc>https://aico-electronics.preview.emergentagent.com/tr/contact</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aico-electronics.preview.emergentagent.com/en/contact" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://aico-electronics.preview.emergentagent.com/tr/contact" />
+    <loc>https://pcbinstant.preview.emergentagent.com/tr/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/contact" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/contact" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -43,9 +43,9 @@
 
   <!-- Services Pages -->
   <url>
-    <loc>https://aico-electronics.preview.emergentagent.com/tr/services</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aico-electronics.preview.emergentagent.com/en/services" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://aico-electronics.preview.emergentagent.com/tr/services" />
+    <loc>https://pcbinstant.preview.emergentagent.com/tr/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/services" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/services" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -53,9 +53,9 @@
 
   <!-- Products Pages -->
   <url>
-    <loc>https://aico-electronics.preview.emergentagent.com/tr/products</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aico-electronics.preview.emergentagent.com/en/products" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://aico-electronics.preview.emergentagent.com/tr/products" />
+    <loc>https://pcbinstant.preview.emergentagent.com/tr/products</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/products" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/products" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -63,9 +63,9 @@
 
   <!-- Calculators -->
   <url>
-    <loc>https://aico-electronics.preview.emergentagent.com/tr/calculators</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aico-electronics.preview.emergentagent.com/en/calculators" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://aico-electronics.preview.emergentagent.com/tr/calculators" />
+    <loc>https://pcbinstant.preview.emergentagent.com/tr/calculators</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/calculators" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/calculators" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
