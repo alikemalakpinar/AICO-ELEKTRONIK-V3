@@ -3,9 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { mockProducts, productCategories } from '../mock';
 import { getLocalizedValue } from '../utils/i18n';
 import { Filter, SlidersHorizontal } from 'lucide-react';
-import { Button } from './ui/button';
-import { Checkbox } from './ui/checkbox';
-import { Label } from './ui/label';
+import { Button } from '../components/ui/button';
+import { Checkbox } from '../components/ui/checkbox';
+import { Label } from '../components/ui/label';
 
 const ProductListPage = ({ lang }) => {
   const { categoryId } = useParams();
