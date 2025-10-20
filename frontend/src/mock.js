@@ -5,14 +5,16 @@ export const translations = {
     nav: {
       home: 'Ana Sayfa',
       products: 'Ürünler',
+      services: 'Hizmetler',
       solutions: 'Çözümler',
       projects: 'Projeler',
       calculators: 'Hesaplamalar',
+      capabilities: 'Yetenekler',
       support: 'Destek',
       about: 'Hakkımızda',
       blog: 'Blog',
       contact: 'İletişim',
-      getQuote: 'Hızlı Teklif Al'
+      getQuote: 'Anında Teklif Al'
     },
     hero: {
       title: 'Güvenilir güç, akıllı çözümler',
