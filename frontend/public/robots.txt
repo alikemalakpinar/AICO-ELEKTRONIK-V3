@@ -1,25 +1,30 @@
-# Aico Elektronik robots.txt
-# https://www.robotstxt.org/robotstxt.html
+# Aico Elektronik - PCB Manufacturing & Assembly
+# https://pcbinstant.preview.emergentagent.com
 
 User-agent: *
 Allow: /
 
-# Sitemap
+# Sitemap location
 Sitemap: https://pcbinstant.preview.emergentagent.com/sitemap.xml
 
-# Disallow admin/internal pages
-Disallow: /api/
-Disallow: /admin/
+# Crawl-delay for bots
+Crawl-delay: 1
 
-# Allow all product and service pages
+# Block admin and internal paths (if any in future)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /node_modules/
+
+# Allow important pages
 Allow: /tr/
 Allow: /en/
-Allow: /tr/products/
-Allow: /en/products/
-Allow: /tr/services/
-Allow: /en/services/
-Allow: /tr/calculators/
-Allow: /en/calculators/
+Allow: /tr/instant-quote
+Allow: /en/instant-quote
+Allow: /tr/pcb-manufacturing
+Allow: /en/pcb-manufacturing
+Allow: /tr/pcb-assembly
+Allow: /en/pcb-assembly
 
-# Crawl-delay
-Crawl-delay: 1
+# Host (if needed)
+Host: https://pcbinstant.preview.emergentagent.com
