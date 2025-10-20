@@ -105,6 +105,10 @@ function App() {
           <Route path="/en/support" element={<SupportPage lang="en" />} />
           <Route path="/en/about" element={<AboutPage lang="en" />} />
           <Route path="/en/contact" element={<ContactPage lang="en" />} />
+          <Route path="/en/careers" element={<CareersPage lang="en" />} />
+          <Route path="/en/blog" element={<BlogPage lang="en" />} />
+          <Route path="/en/privacy" element={<PrivacyPage lang="en" />} />
+          <Route path="/en/terms" element={<TermsPage lang="en" />} />
           
           {/* Products & Calculators */}
           <Route path="/en/products" element={<ProductListPage lang="en" />} />
