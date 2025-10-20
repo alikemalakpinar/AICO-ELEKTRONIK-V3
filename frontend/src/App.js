@@ -70,6 +70,10 @@ function App() {
           <Route path="/tr/support" element={<SupportPage lang="tr" />} />
           <Route path="/tr/about" element={<AboutPage lang="tr" />} />
           <Route path="/tr/contact" element={<ContactPage lang="tr" />} />
+          <Route path="/tr/careers" element={<CareersPage lang="tr" />} />
+          <Route path="/tr/blog" element={<BlogPage lang="tr" />} />
+          <Route path="/tr/privacy" element={<PrivacyPage lang="tr" />} />
+          <Route path="/tr/terms" element={<TermsPage lang="tr" />} />
           
           {/* Products & Calculators */}
           <Route path="/tr/products" element={<ProductListPage lang="tr" />} />
