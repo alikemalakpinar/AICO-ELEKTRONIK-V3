@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,9 +6,23 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+
+# Import custom models and pricing engine
+from models import (
+    QuoteCalculateRequest,
+    QuoteSaveRequest,
+    QuoteModel,
+    QuotePricing,
+    PricingBreakdown,
+    OrderModel,
+    OrderCreate,
+    ConfigModel
+)
+from pricing_engine import PricingEngine
+from seed_data import seed_config
 
 
 ROOT_DIR = Path(__file__).parent
@@ -26,7 +40,7 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 
-# Define Models
+# Define Models (for backward compatibility)
 class StatusCheck(BaseModel):
     model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
     
