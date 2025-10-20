@@ -1,5 +1,6 @@
 import React from 'react';
-import Hero from '../components/Home/Hero';
+import PremiumHero from '../components/Home/PremiumHero';
+import Services from '../components/Home/Services';
 import Categories from '../components/Home/Categories';
 import Sectors from '../components/Home/Sectors';
 import Calculators from '../components/Home/Calculators';
@@ -9,10 +10,11 @@ import Newsletter from '../components/Home/Newsletter';
 const HomePage = ({ lang }) => {
   return (
     <div>
-      <Hero lang={lang} />
+      <PremiumHero lang={lang} />
+      <Services lang={lang} />
       <Categories lang={lang} />
-      <Sectors lang={lang} />
       <Calculators lang={lang} />
+      <Sectors lang={lang} />
       <References lang={lang} />
       <Newsletter lang={lang} />
     </div>
