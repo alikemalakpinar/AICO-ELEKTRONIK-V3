@@ -129,17 +129,17 @@ const TrustBadges = ({ lang }) => {
         </div>
 
         {/* Certifications */}
-        <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
-          <h3 className="text-center text-lg font-semibold text-gray-900 mb-6">
+        <div className="bg-white rounded-xl p-6 lg:p-8 shadow-sm border border-gray-100">
+          <h3 className="text-center text-base lg:text-lg font-semibold text-gray-900 mb-4 lg:mb-6">
             {lang === 'tr' ? 'Sertifikalar & Standartlar' : 'Certifications & Standards'}
           </h3>
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 lg:gap-4">
             {t.certifications.map((cert, idx) => (
               <div
                 key={idx}
-                className={`px-6 py-3 rounded-xl bg-gradient-to-r ${colorClasses[cert.color]} text-white font-semibold text-sm shadow-lg hover:scale-105 transition-transform`}
+                className="px-4 lg:px-6 py-2 lg:py-3 rounded-lg bg-[#1554F6] text-white font-medium text-sm shadow-sm"
               >
-                {cert.name}
+                {cert}
               </div>
             ))}
           </div>
