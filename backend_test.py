@@ -288,12 +288,13 @@ class BackendTester:
             self.log_test("Quote Calculate - Scenario C", False, "Missing BGA components warning", warnings)
             return
         
-        # Validate fast lead time multiplier applied (should be higher cost)
-        # We can't easily validate the exact multiplier without comparing to standard, 
-        # but we can check that costs are reasonable
+        # Validate total cost calculation includes shipping
         total_cost = data.get("total", 0)
-        if total_cost <= pcb_cost + smt_cost:
-            self.log_test("Quote Calculate - Scenario C", False, f"Total cost calculation error: {total_cost} vs {pcb_cost + smt_cost}")
+        shipping_cost = breakdown.get("shipping", 0)
+        expected_total = pcb_cost + smt_cost + shipping_cost
+        
+        if abs(total_cost - expected_total) > 0.01:
+            self.log_test("Quote Calculate - Scenario C", False, f"Total cost calculation error: {total_cost} vs expected {expected_total}")
             return
         
         self.log_test("Quote Calculate - Scenario C", True, f"PCB: {pcb_cost}, SMT: {smt_cost}, Total: {total_cost} {data.get('currency')}")
