@@ -74,7 +74,7 @@ const Footer = ({ lang = 'tr' }) => {
       ]
     },
     en: {
-      tagline: 'Turkey\\'s trusted PCB manufacturing partner',
+      tagline: 'Turkey trusted PCB manufacturing partner',
       services: {
         title: 'Services',
         items: [
