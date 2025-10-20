@@ -74,9 +74,9 @@ class PCBOptions(BaseModel):
 class SMTOptions(BaseModel):
     assembly_required: bool = False
     sides: Optional[Literal["single", "double"]] = None
-    component_count: Optional[int] = None
-    unique_parts: Optional[int] = None
-    bga_count: Optional[int] = 0
+    component_count: Optional[int] = Field(None, ge=0, description="Component count must be non-negative")
+    unique_parts: Optional[int] = Field(None, ge=0, description="Unique parts must be non-negative")
+    bga_count: Optional[int] = Field(None, ge=0, description="BGA count must be non-negative")
     uses_01005: Optional[bool] = False
     stencil: Optional[Literal["none", "framed", "frameless"]] = None
     inspection: Optional[List[str]] = []  # ["AOI", "Xray"]
