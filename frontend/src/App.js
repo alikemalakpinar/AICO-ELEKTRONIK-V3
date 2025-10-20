@@ -76,7 +76,7 @@ function App() {
 const PlaceholderPage = ({ lang, title }) => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
     <div className="text-center">
-      <h1 className="text-4xl font-bold text-[#0E1A2B] mb-4">{title}</h1>
+      <h1 className="text-4xl font-bold text-[#0A0E27] mb-4">{title}</h1>
       <p className="text-[#374151]">
         {lang === 'tr' ? 'Bu sayfa yakında eklenecek.' : 'This page will be added soon.'}
       </p>
