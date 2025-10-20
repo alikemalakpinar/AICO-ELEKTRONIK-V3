@@ -19,9 +19,19 @@ export const translations = {
     hero: {
       title: 'Güvenilir güç, akıllı çözümler',
       subtitle: 'Endüstriyel güç kaynakları ve LED sürücülerde yüksek verim, tam uyumluluk',
+      description: 'Tasarımdan üretime, PCB üretiminden dizgiye - end-to-end elektronik çözümler',
       cta1: 'Ürünleri Keşfet',
-      cta2: 'Hızlı Teklif Al',
-      proof: '10.000+ kurumsal uygulama | 25+ yıl tecrübe | %98 zamanında teslimat'
+      cta2: 'Anında Teklif Al',
+      stats: {
+        projects: '10.000+',
+        projectsLabel: 'Tamamlanan Proje',
+        experience: '25+',
+        experienceLabel: 'Yıl Deneyim',
+        delivery: '%98',
+        deliveryLabel: 'Zamanında Teslimat',
+        satisfaction: '%99.8',
+        satisfactionLabel: 'Müşteri Memnuniyeti'
+      }
     },
     categories: {
       title: 'Ürün Kategorileri',
