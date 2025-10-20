@@ -44,13 +44,7 @@ const TrustBadges = ({ lang }) => {
           desc: '237 değerlendirme'
         }
       ],
-      certifications: [
-        { name: 'ISO 9001:2015', color: 'blue' },
-        { name: 'CE Belgeli', color: 'green' },
-        { name: 'RoHS Uyumlu', color: 'purple' },
-        { name: 'REACH', color: 'orange' },
-        { name: 'IPC-A-610 Class 2/3', color: 'red' }
-      ]
+      certifications: ['ISO 9001:2015', 'CE', 'RoHS', 'REACH', 'IPC-A-610']
     },
     en: {
       title: 'Why Aico Electronics?',
@@ -93,53 +87,39 @@ const TrustBadges = ({ lang }) => {
           desc: '237 reviews'
         }
       ],
-      certifications: [
-        { name: 'ISO 9001:2015', color: 'blue' },
-        { name: 'CE Certified', color: 'green' },
-        { name: 'RoHS Compliant', color: 'purple' },
-        { name: 'REACH', color: 'orange' },
-        { name: 'IPC-A-610 Class 2/3', color: 'red' }
-      ]
+      certifications: ['ISO 9001:2015', 'CE', 'RoHS', 'REACH', 'IPC-A-610']
     }
   };
 
   const t = content[lang] || content.tr;
 
-  const colorClasses = {
-    blue: 'from-blue-500 to-cyan-500',
-    green: 'from-green-500 to-emerald-500',
-    purple: 'from-purple-500 to-pink-500',
-    orange: 'from-orange-500 to-red-500',
-    red: 'from-red-500 to-rose-500'
-  };
-
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50/30">
+    <section className="py-16 lg:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#0A0E27] mb-4">
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0A0E27] mb-3 lg:mb-4">
             {t.title}
           </h2>
-          <p className="text-xl text-gray-600">{t.subtitle}</p>
+          <p className="text-lg lg:text-xl text-gray-600">{t.subtitle}</p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6 mb-12 lg:mb-16">
           {t.badges.map((badge, idx) => {
             const Icon = badge.icon;
             return (
               <div
                 key={idx}
-                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100 group"
+                className="bg-white rounded-xl p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1554F6] to-[#0EA5E9] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Icon className="text-white" size={24} />
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg bg-[#1554F6] flex items-center justify-center mb-3 lg:mb-4">
+                  <Icon className="text-white" size={20} />
                 </div>
-                <div className="text-3xl font-bold text-[#0A0E27] mb-1">
+                <div className="text-2xl lg:text-3xl font-bold text-[#0A0E27] mb-1">
                   {badge.number}
                 </div>
-                <div className="text-sm font-semibold text-gray-700 mb-1">
+                <div className="text-xs lg:text-sm font-semibold text-gray-700 mb-1">
                   {badge.label}
                 </div>
                 <div className="text-xs text-gray-500">{badge.desc}</div>
