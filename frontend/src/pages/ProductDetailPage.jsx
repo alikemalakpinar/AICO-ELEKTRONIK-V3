@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { mockProducts } from '../mock';
 import { ChevronRight, Download, FileText, CheckCircle2, Package, Truck } from 'lucide-react';
-import { Button } from './ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Button } from '../components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { toast } from 'sonner';
 
 const ProductDetailPage = ({ lang }) => {
