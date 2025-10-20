@@ -19,7 +19,7 @@ const Footer = ({ lang = 'tr' }) => {
 
   const content = {
     tr: {
-      tagline: 'Türkiye\\'nin güvenilir PCB üretim partneri',
+      tagline: 'Türkiyenin güvenilir PCB üretim partneri',
       services: {
         title: 'Hizmetler',
         items: [
