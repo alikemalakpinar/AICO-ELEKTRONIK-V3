@@ -68,21 +68,33 @@ export const translations = {
     nav: {
       home: 'Home',
       products: 'Products',
+      services: 'Services',
       solutions: 'Solutions',
       projects: 'Projects',
       calculators: 'Calculators',
+      capabilities: 'Capabilities',
       support: 'Support',
       about: 'About',
       blog: 'Blog',
       contact: 'Contact',
-      getQuote: 'Get Quick Quote'
+      getQuote: 'Get Instant Quote'
     },
     hero: {
       title: 'Reliable power, smart solutions',
       subtitle: 'High efficiency and full compliance in industrial power supplies and LED drivers',
+      description: 'From design to production, PCB manufacturing to assembly - end-to-end electronics solutions',
       cta1: 'Explore Products',
-      cta2: 'Get Quick Quote',
-      proof: '10,000+ industrial applications | 25+ years experience | 98% on-time delivery'
+      cta2: 'Get Instant Quote',
+      stats: {
+        projects: '10,000+',
+        projectsLabel: 'Completed Projects',
+        experience: '25+',
+        experienceLabel: 'Years Experience',
+        delivery: '98%',
+        deliveryLabel: 'On-Time Delivery',
+        satisfaction: '99.8%',
+        satisfactionLabel: 'Customer Satisfaction'
+      }
     },
     categories: {
       title: 'Product Categories',
