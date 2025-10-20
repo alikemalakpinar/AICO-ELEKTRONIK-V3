@@ -240,6 +240,65 @@ export const calculatorTools = [
   }
 ];
 
+export const services = [
+  {
+    id: 'pcb-manufacturing',
+    icon: 'Cpu',
+    titleTr: 'PCB Üretim',
+    titleEn: 'PCB Manufacturing',
+    descTr: 'Tek katmandan çok katmanlı PCB\'lere kadar profesyonel üretim',
+    descEn: 'Professional manufacturing from single to multi-layer PCBs',
+    features: [
+      { tr: '1-32 katman PCB', en: '1-32 layer PCB' },
+      { tr: 'HDI ve rigid-flex', en: 'HDI and rigid-flex' },
+      { tr: 'Hızlı prototip (24-48 saat)', en: 'Fast prototyping (24-48h)' },
+      { tr: 'IPC sınıf 2 & 3', en: 'IPC class 2 & 3' }
+    ]
+  },
+  {
+    id: 'pcb-assembly',
+    icon: 'Wrench',
+    titleTr: 'PCB Dizgi',
+    titleEn: 'PCB Assembly',
+    descTr: 'SMT ve THT montaj, tam otomatik AOI kontrolü',
+    descEn: 'SMT and THT assembly with fully automated AOI inspection',
+    features: [
+      { tr: 'SMT & THT montaj', en: 'SMT & THT assembly' },
+      { tr: 'BGA, QFN, 0201 komponent', en: 'BGA, QFN, 0201 components' },
+      { tr: 'X-ray ve AOI kontrol', en: 'X-ray and AOI inspection' },
+      { tr: 'Conformal coating', en: 'Conformal coating' }
+    ]
+  },
+  {
+    id: 'engineering',
+    icon: 'Lightbulb',
+    titleTr: 'Mühendislik Danışmanlığı',
+    titleEn: 'Engineering Consulting',
+    descTr: 'DFM/DFT analizi, devre tasarımı ve optimizasyon',
+    descEn: 'DFM/DFT analysis, circuit design and optimization',
+    features: [
+      { tr: 'DFM/DFT analizi', en: 'DFM/DFT analysis' },
+      { tr: 'Termal simülasyon', en: 'Thermal simulation' },
+      { tr: 'EMC/EMI danışmanlığı', en: 'EMC/EMI consulting' },
+      { tr: 'Prototip geliştirme', en: 'Prototype development' }
+    ]
+  },
+  {
+    id: 'project-design',
+    icon: 'PenTool',
+    titleTr: 'Proje Çizimi',
+    titleEn: 'Project Design',
+    descTr: 'Şematik, PCB layout ve mekanik tasarım hizmetleri',
+    descEn: 'Schematic, PCB layout and mechanical design services',
+    features: [
+      { tr: 'Şematik tasarım', en: 'Schematic design' },
+      { tr: 'PCB layout', en: 'PCB layout' },
+      { tr: '3D mekanik entegrasyon', en: '3D mechanical integration' },
+      { tr: 'Gerber ve üretim dosyaları', en: 'Gerber and manufacturing files' }
+    ]
+  }
+];
+
 export const mockProducts = [
   {
     id: 'ps-240w-24v',
