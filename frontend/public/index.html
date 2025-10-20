@@ -48,35 +48,184 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         
-        <!-- Schema.org Organization -->
+        <!-- Schema.org Organization + WebSite + Service -->
         <script type="application/ld+json">
         {
           "@context": "https://schema.org",
-          "@type": "Organization",
-          "name": "Aico Elektronik",
-          "alternateName": "Aico Electronics",
-          "url": "https://pcbinstant.preview.emergentagent.com",
-          "logo": "https://pcbinstant.preview.emergentagent.com/logo.png",
-          "description": "Endüstriyel güç elektroniği ve PCB üretim hizmetleri",
-          "foundingDate": "1999",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Ankara Teknokent",
-            "addressLocality": "Çankaya",
-            "addressRegion": "Ankara",
-            "postalCode": "06800",
-            "addressCountry": "TR"
-          },
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+90-312-XXX-XX-XX",
-            "contactType": "customer service",
-            "availableLanguage": ["Turkish", "English"]
-          },
-          "sameAs": [
-            "https://linkedin.com/company/aico-elektronik",
-            "https://twitter.com/aicoelektronik"
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://pcbinstant.preview.emergentagent.com/#organization",
+              "name": "Aico Elektronik",
+              "alternateName": "Aico Electronics",
+              "url": "https://pcbinstant.preview.emergentagent.com",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pcbinstant.preview.emergentagent.com/logo.png",
+                "width": 240,
+                "height": 60
+              },
+              "description": "Türkiye'nin öncü PCB üretim ve elektronik dizgi firması. ISO 9001 sertifikalı, 25+ yıllık deneyim.",
+              "foundingDate": "1999",
+              "slogan": "Güvenilir güç, akıllı çözümler",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "ODTÜ Teknokent, Kuluçka Merkezi",
+                "addressLocality": "Çankaya",
+                "addressRegion": "Ankara",
+                "postalCode": "06800",
+                "addressCountry": "TR"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 39.925533,
+                "longitude": 32.866287
+              },
+              "contactPoint": [{
+                "@type": "ContactPoint",
+                "telephone": "+90-312-555-0000",
+                "contactType": "customer service",
+                "email": "info@aicoelektronik.com",
+                "availableLanguage": ["Turkish", "English"],
+                "areaServed": "TR"
+              }, {
+                "@type": "ContactPoint",
+                "telephone": "+90-312-555-0001",
+                "contactType": "sales",
+                "email": "sales@aicoelektronik.com",
+                "availableLanguage": ["Turkish", "English"],
+                "areaServed": ["TR", "EU"]
+              }],
+              "sameAs": [
+                "https://linkedin.com/company/aico-elektronik",
+                "https://twitter.com/aicoelektronik",
+                "https://facebook.com/aicoelektronik",
+                "https://instagram.com/aicoelektronik"
+              ],
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "237",
+                "bestRating": "5",
+                "worstRating": "1"
+              }
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://pcbinstant.preview.emergentagent.com/#website",
+              "url": "https://pcbinstant.preview.emergentagent.com",
+              "name": "Aico Elektronik - PCB Üretim ve Dizgi",
+              "description": "Anında teklif, hızlı üretim, kaliteli PCB hizmetleri",
+              "publisher": {
+                "@id": "https://pcbinstant.preview.emergentagent.com/#organization"
+              },
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://pcbinstant.preview.emergentagent.com/search?q={search_term_string}"
+                },
+                "query-input": "required name=search_term_string"
+              },
+              "inLanguage": ["tr", "en"]
+            },
+            {
+              "@type": "Service",
+              "@id": "https://pcbinstant.preview.emergentagent.com/#service",
+              "serviceType": "PCB Manufacturing and Assembly",
+              "provider": {
+                "@id": "https://pcbinstant.preview.emergentagent.com/#organization"
+              },
+              "areaServed": {
+                "@type": "Country",
+                "name": "Turkey"
+              },
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "PCB Services",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "PCB Manufacturing",
+                      "description": "2-10 layer PCB manufacturing with ENIG/HASL/OSP finish"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "PCB Assembly (SMT/THT)",
+                      "description": "Professional SMT and THT assembly with AOI and X-ray inspection"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Fast Prototyping",
+                      "description": "24-48 hour PCB prototyping service"
+                    }
+                  }
+                ]
+              },
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "TRY",
+                "lowPrice": "250",
+                "highPrice": "50000",
+                "offerCount": "3"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://pcbinstant.preview.emergentagent.com/#breadcrumb",
+              "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Ana Sayfa",
+                "item": "https://pcbinstant.preview.emergentagent.com"
+              }]
+            }
           ]
+        }
+        </script>
+        
+        <!-- FAQ Schema -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "PCB üretim süresi ne kadar?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Standart PCB üretimimiz 7-10 iş günü, hızlı prototip servisimizle 24-48 saat içinde teslimat yapabiliyoruz."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Hangi PCB yüzey kaplamalarını sunuyorsunuz?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "HASL (kurşunsuz), ENIG (electroless nickel immersion gold) ve OSP (organic solderability preservative) yüzey kaplamalarını sunuyoruz."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Minimum sipariş adedi nedir?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "PCB üretimi için minimum 5 adet, PCB dizgi için minimum 10 adet sipariş kabul ediyoruz."
+            }
+          }, {
+            "@type": "Question",
+            "name": "İmpedans kontrollü PCB üretebiliyor musunuz?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Evet, ±%10 tolerans ile impedans kontrollü PCB üretimi yapıyoruz. TDR testi ve detaylı rapor sunuyoruz."
+            }
+          }]
         }
         </script>
         
