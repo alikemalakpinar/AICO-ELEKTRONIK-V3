@@ -95,6 +95,124 @@ const PCBManufacturingPage = ({ lang }) => {
           </div>
         </div>
       </section>
+
+      {/* Coating Options */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-[#0A0E27] text-center mb-12">
+            {lang === 'tr' ? 'Yüzey Kaplama Seçenekleri' : 'Surface Finish Options'}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl transition-shadow">
+              <h3 className="font-bold text-xl text-[#0A0E27] mb-3">HASL</h3>
+              <p className="text-gray-600 mb-4">
+                {lang === 'tr' 
+                  ? 'Kurşunsuz hot air solder leveling. Ekonomik ve yaygın kullanım için ideal.'
+                  : 'Lead-free hot air solder leveling. Ideal for economical and general use.'}
+              </p>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-green-500 mr-2" /> {lang === 'tr' ? 'Uygun fiyat' : 'Cost effective'}</li>
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-green-500 mr-2" /> {lang === 'tr' ? 'Genel kullanım' : 'General purpose'}</li>
+              </ul>
+            </div>
+
+            <div className="bg-white border border-blue-200 rounded-2xl p-6 hover:shadow-xl transition-shadow relative">
+              <div className="absolute top-4 right-4 bg-blue-500 text-white text-xs px-2 py-1 rounded">POPULAR</div>
+              <h3 className="font-bold text-xl text-[#0A0E27] mb-3">ENIG</h3>
+              <p className="text-gray-600 mb-4">
+                {lang === 'tr' 
+                  ? 'Electroless nickel immersion gold. Düz yüzey, fine pitch için ideal.'
+                  : 'Electroless nickel immersion gold. Flat surface, ideal for fine pitch.'}
+              </p>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-green-500 mr-2" /> {lang === 'tr' ? 'Düz yüzey' : 'Flat surface'}</li>
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-green-500 mr-2" /> {lang === 'tr' ? 'BGA/QFN için ideal' : 'Ideal for BGA/QFN'}</li>
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-green-500 mr-2" /> {lang === 'tr' ? 'Uzun raf ömrü' : 'Long shelf life'}</li>
+              </ul>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl transition-shadow">
+              <h3 className="font-bold text-xl text-[#0A0E27] mb-3">OSP</h3>
+              <p className="text-gray-600 mb-4">
+                {lang === 'tr' 
+                  ? 'Organic solderability preservative. Çevre dostu, ince yüzey.'
+                  : 'Organic solderability preservative. Eco-friendly, thin surface.'}
+              </p>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-green-500 mr-2" /> {lang === 'tr' ? 'Çevre dostu' : 'Eco-friendly'}</li>
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-green-500 mr-2" /> {lang === 'tr' ? 'Ekonomik' : 'Economical'}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Capabilities Table */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-[#0A0E27] text-center mb-12">
+            {lang === 'tr' ? 'Teknik Özellikler' : 'Technical Specifications'}
+          </h2>
+          <div className="bg-white rounded-2xl overflow-hidden border border-gray-200">
+            <table className="w-full">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-6 py-4 text-left font-bold">{lang === 'tr' ? 'Parametre' : 'Parameter'}</th>
+                  <th className="px-6 py-4 text-left font-bold">{lang === 'tr' ? 'Standart' : 'Standard'}</th>
+                  <th className="px-6 py-4 text-left font-bold">{lang === 'tr' ? 'İleri Seviye' : 'Advanced'}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="px-6 py-4">{lang === 'tr' ? 'Katman' : 'Layers'}</td>
+                  <td className="px-6 py-4">2-6L</td>
+                  <td className="px-6 py-4">8-10L</td>
+                </tr>
+                <tr className="bg-gray-50">
+                  <td className="px-6 py-4">{lang === 'tr' ? 'Min iz/boşluk' : 'Min track/space'}</td>
+                  <td className="px-6 py-4">0.15mm</td>
+                  <td className="px-6 py-4">0.10mm</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4">{lang === 'tr' ? 'Min delik' : 'Min via'}</td>
+                  <td className="px-6 py-4">0.3mm</td>
+                  <td className="px-6 py-4">0.2mm</td>
+                </tr>
+                <tr className="bg-gray-50">
+                  <td className="px-6 py-4">{lang === 'tr' ? 'Bakır ağırlığı' : 'Copper weight'}</td>
+                  <td className="px-6 py-4">1oz</td>
+                  <td className="px-6 py-4">2oz</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4">{lang === 'tr' ? 'Max boyut' : 'Max size'}</td>
+                  <td className="px-6 py-4">500×500mm</td>
+                  <td className="px-6 py-4">{lang === 'tr' ? 'Özel' : 'Custom'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-primary to-blue-700">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <h2 className="text-4xl font-bold mb-4">
+            {lang === 'tr' ? 'Hemen Başlayın' : 'Get Started Now'}
+          </h2>
+          <p className="text-xl opacity-90 mb-8">
+            {lang === 'tr' 
+              ? 'Gerber dosyanızı yükleyin, anında fiyat ve termin alın'
+              : 'Upload your Gerber file, get instant price and lead time'}
+          </p>
+          <Button asChild size="lg" className="bg-white text-primary hover:bg-gray-100 px-8 py-6 text-lg rounded-xl">
+            <Link to={`/${lang}/instant-quote`}>
+              <Zap className="mr-2" />
+              {lang === 'tr' ? 'Anında Teklif Al' : 'Get Instant Quote'}
+            </Link>
+          </Button>
+        </div>
+      </section>
     </div>
   );
 };
