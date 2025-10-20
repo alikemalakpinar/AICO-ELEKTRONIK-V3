@@ -57,14 +57,14 @@ class PanelizationOptions(BaseModel):
 
 
 class PCBOptions(BaseModel):
-    quantity: int
+    quantity: int = Field(gt=0, description="Quantity must be positive")
     layers: Literal[2, 4, 6, 8, 10]
     thickness_mm: float = 1.6
     copper_oz: Literal[1, 2] = 1
     finish: Literal["HASL", "ENIG", "OSP"]
     solder_mask_color: str = "green"
     silkscreen: Literal["top", "bottom", "both", "none"] = "both"
-    min_track_space_mm: float
+    min_track_space_mm: float = Field(gt=0, description="Min track space must be positive")
     impedance_controlled: bool = False
     e_test: bool = True
     board_size_mm: Dict[str, float]  # {"w": 100, "h": 80}
