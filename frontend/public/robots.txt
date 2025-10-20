@@ -1,0 +1,25 @@
+# Aico Elektronik robots.txt
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://aico-electronics.preview.emergentagent.com/sitemap.xml
+
+# Disallow admin/internal pages
+Disallow: /api/
+Disallow: /admin/
+
+# Allow all product and service pages
+Allow: /tr/
+Allow: /en/
+Allow: /tr/products/
+Allow: /en/products/
+Allow: /tr/services/
+Allow: /en/services/
+Allow: /tr/calculators/
+Allow: /en/calculators/
+
+# Crawl-delay
+Crawl-delay: 1
