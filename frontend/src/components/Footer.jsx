@@ -177,34 +177,34 @@ const Footer = ({ lang = 'tr' }) => {
       </div>
 
       {/* Main Footer */}
-      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16\">
-        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12\">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
-          <div className=\"lg:col-span-1\">
-            <div className=\"flex items-center gap-3 mb-4\">
-              <div className=\"w-10 h-10 rounded-lg bg-[#1554F6] flex items-center justify-center text-white font-bold text-lg\">
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#1554F6] flex items-center justify-center text-white font-bold text-lg">
                 A
               </div>
               <div>
-                <div className=\"font-bold text-lg\">Aico Elektronik</div>
+                <div className="font-bold text-lg">Aico Elektronik</div>
               </div>
             </div>
-            <p className=\"text-gray-400 text-sm mb-6 leading-relaxed\">
+            <p className="text-gray-400 text-sm mb-6 leading-relaxed">
               {t.tagline}
             </p>
 
             {/* Social Links */}
-            <div className=\"flex items-center gap-3\">
+            <div className="flex items-center gap-3">
               {socialLinks.map((social, idx) => {
                 const Icon = social.icon;
                 return (
                   <a
                     key={idx}
                     href={social.url}
-                    target=\"_blank\"
-                    rel=\"noopener noreferrer\"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={social.name}
-                    className=\"w-10 h-10 rounded-lg bg-white/10 hover:bg-[#1554F6] flex items-center justify-center transition-colors\"
+                    className="w-10 h-10 rounded-lg bg-white/10 hover:bg-[#1554F6] flex items-center justify-center transition-colors"
                   >
                     <Icon size={18} />
                   </a>
@@ -215,13 +215,13 @@ const Footer = ({ lang = 'tr' }) => {
 
           {/* Services */}
           <div>
-            <h3 className=\"font-bold text-base mb-4\">{t.services.title}</h3>
-            <ul className=\"space-y-2.5\">
+            <h3 className="font-bold text-base mb-4">{t.services.title}</h3>
+            <ul className="space-y-2.5">
               {t.services.items.map((item, idx) => (
                 <li key={idx}>
                   <Link
                     to={`/${lang}${item.link}`}
-                    className=\"text-sm text-gray-400 hover:text-white transition-colors inline-block\"
+                    className="text-sm text-gray-400 hover:text-white transition-colors inline-block"
                   >
                     {item.name}
                   </Link>
@@ -232,13 +232,13 @@ const Footer = ({ lang = 'tr' }) => {
 
           {/* Capabilities & Resources */}
           <div>
-            <h3 className=\"font-bold text-base mb-4\">{t.capabilities.title}</h3>
-            <ul className=\"space-y-2.5 mb-6\">
+            <h3 className="font-bold text-base mb-4">{t.capabilities.title}</h3>
+            <ul className="space-y-2.5 mb-6">
               {t.capabilities.items.map((item, idx) => (
                 <li key={idx}>
                   <Link
                     to={`/${lang}${item.link}`}
-                    className=\"text-sm text-gray-400 hover:text-white transition-colors inline-block\"
+                    className="text-sm text-gray-400 hover:text-white transition-colors inline-block"
                   >
                     {item.name}
                   </Link>
@@ -246,13 +246,13 @@ const Footer = ({ lang = 'tr' }) => {
               ))}
             </ul>
 
-            <h3 className=\"font-bold text-base mb-4\">{t.resources.title}</h3>
-            <ul className=\"space-y-2.5\">
+            <h3 className="font-bold text-base mb-4">{t.resources.title}</h3>
+            <ul className="space-y-2.5">
               {t.resources.items.map((item, idx) => (
                 <li key={idx}>
                   <Link
                     to={`/${lang}${item.link}`}
-                    className=\"text-sm text-gray-400 hover:text-white transition-colors inline-block\"
+                    className="text-sm text-gray-400 hover:text-white transition-colors inline-block"
                   >
                     {item.name}
                   </Link>
@@ -263,44 +263,44 @@ const Footer = ({ lang = 'tr' }) => {
 
           {/* Contact & Newsletter */}
           <div>
-            <h3 className=\"font-bold text-base mb-4\">{t.contact.title}</h3>
-            <div className=\"space-y-3 mb-6\">
-              <a href={`tel:${t.contact.phone.replace(/\\s/g, '')}`} className=\"flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors\">
-                <Phone size={16} className=\"flex-shrink-0\" />
+            <h3 className="font-bold text-base mb-4">{t.contact.title}</h3>
+            <div className="space-y-3 mb-6">
+              <a href={`tel:${t.contact.phone.replace(/\\s/g, '')}`} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
+                <Phone size={16} className="flex-shrink-0" />
                 <span>{t.contact.phone}</span>
               </a>
-              <a href={`mailto:${t.contact.email}`} className=\"flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors\">
-                <Mail size={16} className=\"flex-shrink-0\" />
+              <a href={`mailto:${t.contact.email}`} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
+                <Mail size={16} className="flex-shrink-0" />
                 <span>{t.contact.email}</span>
               </a>
-              <div className=\"flex items-start gap-2 text-sm text-gray-400\">
-                <MapPin size={16} className=\"flex-shrink-0 mt-0.5\" />
+              <div className="flex items-start gap-2 text-sm text-gray-400">
+                <MapPin size={16} className="flex-shrink-0 mt-0.5" />
                 <span>{t.contact.address}</span>
               </div>
             </div>
 
-            <h3 className=\"font-bold text-base mb-3\">{t.newsletter.title}</h3>
-            <p className=\"text-sm text-gray-400 mb-3\">{t.newsletter.subtitle}</p>
+            <h3 className="font-bold text-base mb-3">{t.newsletter.title}</h3>
+            <p className="text-sm text-gray-400 mb-3">{t.newsletter.subtitle}</p>
             
             {!subscribed ? (
-              <form onSubmit={handleSubscribe} className=\"space-y-2\">
+              <form onSubmit={handleSubscribe} className="space-y-2">
                 <Input
-                  type=\"email\"
+                  type="email"
                   placeholder={t.newsletter.placeholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className=\"bg-white/10 border-white/20 text-white placeholder:text-gray-500\"
+                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-500"
                   required
                 />
-                <Button type=\"submit\" className=\"w-full bg-[#1554F6] hover:bg-[#0d3cb8] text-white\">
-                  <Send size={16} className=\"mr-2\" />
+                <Button type="submit" className="w-full bg-[#1554F6] hover:bg-[#0d3cb8] text-white">
+                  <Send size={16} className="mr-2" />
                   {t.newsletter.button}
                 </Button>
               </form>
             ) : (
-              <div className=\"flex items-center gap-2 text-green-400 bg-green-400/10 p-3 rounded-lg\">
+              <div className="flex items-center gap-2 text-green-400 bg-green-400/10 p-3 rounded-lg">
                 <CheckCircle2 size={20} />
-                <span className=\"text-sm\">{t.newsletter.success}</span>
+                <span className="text-sm">{t.newsletter.success}</span>
               </div>
             )}
           </div>
@@ -308,16 +308,16 @@ const Footer = ({ lang = 'tr' }) => {
       </div>
 
       {/* Bottom Bar */}
-      <div className=\"border-t border-white/10\">
-        <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6\">
-          <div className=\"flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400\">
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
             <p>{t.copyright}</p>
-            <div className=\"flex items-center gap-6\">
+            <div className="flex items-center gap-6">
               {t.legal.map((item, idx) => (
                 <Link
                   key={idx}
                   to={`/${lang}${item.link}`}
-                  className=\"hover:text-white transition-colors\"
+                  className="hover:text-white transition-colors"
                 >
                   {item.name}
                 </Link>
