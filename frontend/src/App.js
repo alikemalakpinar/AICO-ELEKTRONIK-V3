@@ -46,9 +46,10 @@ function App() {
           <Route path="/tr/calculators/led-driver" element={<LEDDriverCalculator lang="tr" />} />
           <Route path="/tr/calculators/cable-voltage" element={<CableCalculator lang="tr" />} />
           
-          {/* Placeholder routes */}
-          <Route path="/tr/about" element={<PlaceholderPage lang="tr" title="Hakkımızda" />} />
-          <Route path="/tr/contact" element={<PlaceholderPage lang="tr" title="İletişim" />} />
+          <Route path="/tr/about" element={<AboutPage lang="tr" />} />
+          <Route path="/tr/contact" element={<ContactPage lang="tr" />} />
+          <Route path="/tr/services" element={<ServicesPage lang="tr" />} />
+          <Route path="/tr/services/:serviceId" element={<PlaceholderPage lang="tr" title="Hizmet Detayı" />} />
 
           {/* English Routes */}
           <Route path="/en" element={<HomePage lang="en" />} />
@@ -59,10 +60,10 @@ function App() {
           <Route path="/en/calculators/power-supply" element={<PowerSupplyCalculator lang="en" />} />
           <Route path="/en/calculators/led-driver" element={<LEDDriverCalculator lang="en" />} />
           <Route path="/en/calculators/cable-voltage" element={<CableCalculator lang="en" />} />
-          
-          {/* Placeholder routes */}
-          <Route path="/en/about" element={<PlaceholderPage lang="en" title="About" />} />
-          <Route path="/en/contact" element={<PlaceholderPage lang="en" title="Contact" />} />
+          <Route path="/en/about" element={<AboutPage lang="en" />} />
+          <Route path="/en/contact" element={<ContactPage lang="en" />} />
+          <Route path="/en/services" element={<ServicesPage lang="en" />} />
+          <Route path="/en/services/:serviceId" element={<PlaceholderPage lang="en" title="Service Detail" />} />
         </Routes>
         <Footer lang={lang} />
         <Toaster position="top-right" />
