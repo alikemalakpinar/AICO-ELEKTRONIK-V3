@@ -80,6 +80,157 @@ async def get_status_checks():
     
     return status_checks
 
+
+# ============= Config Routes =============
+@api_router.get("/config/{key}")
+async def get_config(key: str):
+    """Get a specific config by key"""
+    config = await db.config.find_one({"key": key}, {"_id": 0})
+    if not config:
+        raise HTTPException(status_code=404, detail=f"Config '{key}' not found")
+    return config
+
+
+@api_router.get("/config")
+async def get_all_configs():
+    """Get all configs"""
+    configs = await db.config.find({}, {"_id": 0}).to_list(100)
+    return configs
+
+
+# ============= Quote Routes =============
+@api_router.post("/quote/calculate")
+async def calculate_quote(request: QuoteCalculateRequest):
+    """
+    Calculate pricing for a quote without saving it
+    Returns live pricing breakdown
+    """
+    try:
+        # Get pricing config
+        config_doc = await db.config.find_one({"key": "pricing.v0_1", "enabled": True})
+        if not config_doc:
+            raise HTTPException(status_code=500, detail="Pricing configuration not found")
+        
+        # Initialize pricing engine
+        engine = PricingEngine(config_doc["data"])
+        
+        # Convert Pydantic models to dicts
+        pcb_options = request.pcb.model_dump()
+        smt_options = request.smt.model_dump() if request.smt else None
+        
+        # Calculate pricing
+        result = engine.calculate_quote(
+            pcb_options=pcb_options,
+            smt_options=smt_options,
+            lead_time=request.lead_time
+        )
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Quote calculation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Calculation error: {str(e)}")
+
+
+@api_router.post("/quote/save", response_model=QuoteModel)
+async def save_quote(request: QuoteSaveRequest):
+    """
+    Save a quote to database
+    Returns the saved quote with ID
+    """
+    try:
+        quote_obj = QuoteModel(
+            user_id=request.user_id,
+            inputs=request.inputs,
+            pricing=request.pricing,
+            status="DRAFT"
+        )
+        
+        # Convert to dict for MongoDB
+        quote_dict = quote_obj.model_dump()
+        
+        # Insert into database
+        await db.quotes.insert_one(quote_dict)
+        
+        return quote_obj
+        
+    except Exception as e:
+        logging.error(f"Quote save error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Save error: {str(e)}")
+
+
+@api_router.get("/quote/{quote_id}", response_model=QuoteModel)
+async def get_quote(quote_id: str):
+    """Get a quote by ID"""
+    quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Quote not found")
+    return quote
+
+
+@api_router.post("/quote/{quote_id}/accept", response_model=QuoteModel)
+async def accept_quote(quote_id: str):
+    """Accept a quote and change status to ACCEPTED"""
+    quote = await db.quotes.find_one({"id": quote_id})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Quote not found")
+    
+    # Update status
+    await db.quotes.update_one(
+        {"id": quote_id},
+        {
+            "$set": {
+                "status": "ACCEPTED",
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    # Return updated quote
+    updated_quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    return updated_quote
+
+
+# ============= Order Routes =============
+@api_router.post("/order/create", response_model=OrderModel)
+async def create_order(request: OrderCreate):
+    """Create an order from an accepted quote"""
+    # Verify quote exists and is accepted
+    quote = await db.quotes.find_one({"id": request.quote_id})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Quote not found")
+    
+    if quote.get("status") != "ACCEPTED":
+        raise HTTPException(status_code=400, detail="Quote must be accepted first")
+    
+    # Create order
+    order_obj = OrderModel(
+        quote_id=request.quote_id,
+        payment_status="PENDING",
+        tracking=[{
+            "status": "RECEIVED",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "note": "Order created"
+        }]
+    )
+    
+    # Convert to dict for MongoDB
+    order_dict = order_obj.model_dump()
+    
+    # Insert into database
+    await db.orders.insert_one(order_dict)
+    
+    return order_obj
+
+
+@api_router.get("/order/{order_id}", response_model=OrderModel)
+async def get_order(order_id: str):
+    """Get order details and tracking"""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order
+
 # Include the router in the main app
 app.include_router(api_router)
 
