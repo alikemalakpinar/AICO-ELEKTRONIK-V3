@@ -170,6 +170,9 @@ backend:
       - working: true
         agent: "main"
         comment: "Created /api/config and /api/config/:key endpoints"
+      - working: true
+        agent: "testing"
+        comment: "Config API tested successfully. GET /api/config/pricing.v0_1 returns complete pricing configuration with all required PCB and SMT coefficients, currency set to TRY."
   
   - task: "Order API Endpoints"
     implemented: true
