@@ -192,6 +192,18 @@ backend:
         agent: "testing"
         comment: "Order API endpoints tested successfully. POST /api/order/create creates orders from accepted quotes with PENDING payment status and proper tracking history. GET /api/order/:id retrieves order details correctly. All using UUID format as required."
 
+  - task: "Input Validation - Negative Quantities"
+    implemented: false
+    working: false
+    file: "backend/models.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "Minor validation issue found: Backend accepts negative quantities and calculates negative costs instead of rejecting the request. PCBOptions.quantity field needs validation constraint (e.g., Field(gt=0)) to ensure positive values only."
+
 frontend:
   - task: "InstantQuotePage - Full Implementation"
     implemented: true
