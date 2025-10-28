@@ -276,6 +276,21 @@ frontend:
       - working: true
         agent: "main"
         comment: "Implemented 4-step wizard with live pricing calculation, sticky price bar, and all form fields"
+      - working: true
+        agent: "main"
+        comment: "UPGRADED: Added advanced analysis mode with toggle. Integrated DetailedBreakdown, DFMPanel, BOMOptimizerPanel, and PriceComparisonChart components. Now supports both basic and advanced pricing modes."
+  
+  - task: "Advanced UI Components"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created 4 new advanced components: DetailedBreakdown.jsx (material/labor/overhead breakdown), DFMPanel.jsx (manufacturability score display), BOMOptimizerPanel.jsx (optimization suggestions), PriceComparisonChart.jsx (visual price comparison). Integrated into InstantQuotePage."
   
   - task: "Live Pricing Integration"
     implemented: true
@@ -288,6 +303,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "useEffect hook triggers pricing calculation on every form change, displays result in sticky bar"
+      - working: true
+        agent: "main"
+        comment: "ENHANCED: Now supports dual-mode pricing - basic (/api/quote/calculate) and advanced (/api/quote/complete-analysis). Advanced mode fetches pricing, DFM, BOM analysis, and optimization in single API call."
 
   - task: "Content Population - Other Pages"
     implemented: false
