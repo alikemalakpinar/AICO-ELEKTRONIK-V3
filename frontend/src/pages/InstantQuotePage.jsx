@@ -248,8 +248,17 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
         lead_time: formData.lead_time
       };
 
-      const response = await axios.post(`${BACKEND_URL}/api/quote/calculate`, payload);
-      setPricing(response.data);
+      if (useAdvancedMode) {
+        // Use complete analysis endpoint
+        const response = await axios.post(`${BACKEND_URL}/api/quote/complete-analysis`, payload);
+        setAdvancedAnalysis(response.data);
+        setPricing(response.data.pricing);
+      } else {
+        // Use basic pricing endpoint
+        const response = await axios.post(`${BACKEND_URL}/api/quote/calculate`, payload);
+        setPricing(response.data);
+        setAdvancedAnalysis(null);
+      }
       
     } catch (error) {
       console.error('Pricing calculation error:', error);
