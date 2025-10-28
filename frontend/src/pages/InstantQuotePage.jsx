@@ -313,6 +313,20 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
+            {/* Logo */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="mb-6"
+            >
+              <img 
+                src="/assets/logos/logo-beyaz.png" 
+                alt="Aico Elektronik" 
+                className="h-12 md:h-16 w-auto mx-auto"
+              />
+            </motion.div>
+
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
