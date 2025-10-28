@@ -400,7 +400,7 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
               );
             })}
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* Form Steps with Animation */}
