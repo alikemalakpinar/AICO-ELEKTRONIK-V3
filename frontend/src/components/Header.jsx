@@ -105,14 +105,12 @@ const Header = ({ lang = 'tr' }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <Link to={`/${lang}`} className="flex items-center gap-3 flex-shrink-0">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg bg-[#1554F6] flex items-center justify-center text-white font-bold text-lg lg:text-xl">
-                A
-              </div>
-              <div className="hidden sm:block">
-                <div className="font-bold text-lg lg:text-xl text-[#0A0E27]">Aico</div>
-                <div className="text-xs text-gray-500 -mt-1">Elektronik</div>
-              </div>
+            <Link to={`/${lang}`} className="flex items-center gap-3 flex-shrink-0 hover:opacity-80 transition-opacity">
+              <img 
+                src="/assets/logos/logo-mavi.png" 
+                alt="Aico Elektronik" 
+                className="h-8 lg:h-10 w-auto"
+              />
             </Link>
 
             {/* Desktop Navigation */}
