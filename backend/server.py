@@ -235,6 +235,182 @@ async def get_order(order_id: str):
         raise HTTPException(status_code=404, detail="Order not found")
     return order
 
+
+# ============= Advanced Pricing Routes =============
+@api_router.post("/quote/calculate-advanced")
+async def calculate_quote_advanced(request: QuoteCalculateRequest):
+    """
+    Calculate pricing with ADVANCED engine
+    Returns detailed cost breakdown with material, labor, overhead analysis
+    """
+    try:
+        # Get pricing config
+        config_doc = await db.config.find_one({"key": "pricing.v0_1", "enabled": True})
+        if not config_doc:
+            raise HTTPException(status_code=500, detail="Pricing configuration not found")
+        
+        # Initialize advanced pricing engine
+        engine = AdvancedPricingEngine(config_doc["data"])
+        
+        # Convert Pydantic models to dicts
+        pcb_options = request.pcb.model_dump()
+        smt_options = request.smt.model_dump() if request.smt else None
+        
+        # Calculate pricing with advanced engine
+        result = engine.calculate_quote(
+            pcb_options=pcb_options,
+            smt_options=smt_options,
+            lead_time=request.lead_time
+        )
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Advanced quote calculation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Calculation error: {str(e)}")
+
+
+# ============= DFM (Design for Manufacturing) Routes =============
+@api_router.post("/dfm/check")
+async def check_dfm(request: QuoteCalculateRequest):
+    """
+    Run DFM checks on PCB design
+    Returns manufacturability score and recommendations
+    """
+    try:
+        # Initialize DFM checker
+        dfm_checker = DFMChecker()
+        
+        # Prepare design data
+        design_data = {
+            "pcb": request.pcb.model_dump(),
+            "smt": request.smt.model_dump() if request.smt else {}
+        }
+        
+        # Run DFM checks
+        dfm_result = dfm_checker.check_design(design_data)
+        
+        return dfm_result
+        
+    except Exception as e:
+        logging.error(f"DFM check error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"DFM check error: {str(e)}")
+
+
+# ============= BOM Analysis Routes =============
+@api_router.post("/bom/analyze")
+async def analyze_bom(request: QuoteCalculateRequest):
+    """
+    Analyze BOM for cost, availability, and risks
+    """
+    try:
+        # Initialize BOM analyzer
+        bom_analyzer = BOMAnalyzer()
+        
+        # Prepare BOM data
+        bom_data = request.smt.model_dump() if request.smt else {}
+        
+        # Analyze BOM
+        analysis_result = bom_analyzer.analyze_bom(bom_data)
+        
+        return analysis_result
+        
+    except Exception as e:
+        logging.error(f"BOM analysis error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"BOM analysis error: {str(e)}")
+
+
+@api_router.post("/bom/optimize")
+async def optimize_bom(request: QuoteCalculateRequest):
+    """
+    Get BOM optimization suggestions
+    Returns recommendations for cost and manufacturability improvements
+    """
+    try:
+        # Initialize BOM optimizer
+        bom_optimizer = BOMOptimizer()
+        
+        # Prepare data
+        bom_data = request.smt.model_dump() if request.smt else {}
+        pcb_data = request.pcb.model_dump()
+        
+        # Get optimization suggestions
+        optimization_result = bom_optimizer.optimize(bom_data, pcb_data)
+        
+        return optimization_result
+        
+    except Exception as e:
+        logging.error(f"BOM optimization error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"BOM optimization error: {str(e)}")
+
+
+# ============= Complete Analysis Route (All-in-One) =============
+@api_router.post("/quote/complete-analysis")
+async def complete_analysis(request: QuoteCalculateRequest):
+    """
+    Complete quote analysis including:
+    - Advanced pricing with detailed breakdown
+    - DFM manufacturability check
+    - BOM analysis
+    - Optimization suggestions
+    """
+    try:
+        # Get pricing config
+        config_doc = await db.config.find_one({"key": "pricing.v0_1", "enabled": True})
+        if not config_doc:
+            raise HTTPException(status_code=500, detail="Pricing configuration not found")
+        
+        # Prepare data
+        pcb_options = request.pcb.model_dump()
+        smt_options = request.smt.model_dump() if request.smt else None
+        design_data = {
+            "pcb": pcb_options,
+            "smt": smt_options or {}
+        }
+        
+        # 1. Advanced Pricing
+        pricing_engine = AdvancedPricingEngine(config_doc["data"])
+        pricing_result = pricing_engine.calculate_quote(
+            pcb_options=pcb_options,
+            smt_options=smt_options,
+            lead_time=request.lead_time
+        )
+        
+        # 2. DFM Check
+        dfm_checker = DFMChecker()
+        dfm_result = dfm_checker.check_design(design_data)
+        
+        # 3. BOM Analysis (if assembly required)
+        bom_result = None
+        optimization_result = None
+        if smt_options and smt_options.get("assembly_required"):
+            bom_analyzer = BOMAnalyzer()
+            bom_result = bom_analyzer.analyze_bom(smt_options)
+            
+            # 4. BOM Optimization
+            bom_optimizer = BOMOptimizer()
+            optimization_result = bom_optimizer.optimize(smt_options, pcb_options)
+        
+        # Combine all results
+        return {
+            "pricing": pricing_result,
+            "dfm": dfm_result,
+            "bom_analysis": bom_result,
+            "optimization": optimization_result,
+            "summary": {
+                "total_cost": pricing_result["summary"]["total"],
+                "dfm_score": dfm_result["dfm_score"],
+                "dfm_grade": dfm_result["grade"],
+                "manufacturability": dfm_result["manufacturability"],
+                "potential_savings": optimization_result["total_potential_savings_percent"] if optimization_result else 0
+            }
+        }
+        
+    except Exception as e:
+        logging.error(f"Complete analysis error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
