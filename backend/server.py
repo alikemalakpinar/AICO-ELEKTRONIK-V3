@@ -22,6 +22,10 @@ from models import (
     ConfigModel
 )
 from pricing_engine import PricingEngine
+from pricing.advanced_engine import AdvancedPricingEngine
+from dfm.dfm_checker import DFMChecker
+from bom.analyzer import BOMAnalyzer
+from bom.optimizer import BOMOptimizer
 from seed_data import seed_config
 
 
