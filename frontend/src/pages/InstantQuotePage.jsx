@@ -4,6 +4,7 @@ import {
   CreditCard, Package, Layers, Cpu, DollarSign, Clock, 
   AlertCircle, CheckCircle2, Zap, Sparkles
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -13,6 +14,8 @@ import DetailedBreakdown from '../components/DetailedBreakdown';
 import DFMPanel from '../components/DFMPanel';
 import BOMOptimizerPanel from '../components/BOMOptimizerPanel';
 import PriceComparisonChart from '../components/PriceComparisonChart';
+import AnimatedSection from '../components/AnimatedSection';
+import GlassCard from '../components/GlassCard';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
