@@ -2,20 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { 
   Upload, ArrowRight, ArrowLeft, Check, FileText, Settings, 
   CreditCard, Package, Layers, Cpu, DollarSign, Clock, 
-  AlertCircle, CheckCircle2, Zap
+  AlertCircle, CheckCircle2, Zap, Sparkles
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import axios from 'axios';
+import DetailedBreakdown from '../components/DetailedBreakdown';
+import DFMPanel from '../components/DFMPanel';
+import BOMOptimizerPanel from '../components/BOMOptimizerPanel';
+import PriceComparisonChart from '../components/PriceComparisonChart';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 const InstantQuotePage = ({ lang = 'tr' }) => {
   const [step, setStep] = useState(1);
   const [pricing, setPricing] = useState(null);
+  const [advancedAnalysis, setAdvancedAnalysis] = useState(null);
   const [calculating, setCalculating] = useState(false);
+  const [useAdvancedMode, setUseAdvancedMode] = useState(true);
   const [formData, setFormData] = useState({
     // Step 1: Files
     projectName: '',
