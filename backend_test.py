@@ -649,13 +649,403 @@ class BackendTester:
         
         self.log_test("01005 Premium Test", True, f"01005 premium applied, SMT cost: {smt_cost} {data.get('currency')}")
     
+    def test_advanced_pricing(self):
+        """Test POST /api/quote/calculate-advanced"""
+        print("🔍 Testing Advanced Pricing API")
+        
+        payload = {
+            "pcb": {
+                "quantity": 50,
+                "layers": 4,
+                "thickness_mm": 1.6,
+                "copper_oz": 1,
+                "finish": "HASL",
+                "solder_mask_color": "green",
+                "silkscreen": "both",
+                "min_track_space_mm": 0.15,
+                "impedance_controlled": False,
+                "e_test": True,
+                "board_size_mm": {"w": 100, "h": 80}
+            },
+            "smt": {
+                "assembly_required": True,
+                "sides": "single",
+                "component_count": 50,
+                "unique_parts": 20,
+                "bga_count": 2,
+                "uses_01005": False,
+                "stencil": "frameless",
+                "inspection": ["AOI"],
+                "sourcing": "turnkey"
+            },
+            "lead_time": "standard"
+        }
+        
+        success, data, status_code = self.make_request("POST", "/api/quote/calculate-advanced", payload)
+        
+        if not success:
+            self.log_test("Advanced Pricing API", False, f"Request failed: {data}")
+            return
+        
+        if status_code != 200:
+            self.log_test("Advanced Pricing API", False, f"Expected 200, got {status_code}", data)
+            return
+        
+        # Validate detailed_costs structure
+        if "detailed_costs" not in data:
+            self.log_test("Advanced Pricing API", False, "Missing detailed_costs field", data)
+            return
+        
+        detailed_costs = data.get("detailed_costs", {})
+        
+        # Check PCB detailed costs
+        if "pcb" not in detailed_costs:
+            self.log_test("Advanced Pricing API", False, "Missing detailed_costs.pcb", detailed_costs)
+            return
+        
+        pcb_details = detailed_costs["pcb"]
+        required_pcb_fields = ["material", "labor", "overhead", "complexity_score"]
+        missing_pcb = [f for f in required_pcb_fields if f not in pcb_details]
+        
+        if missing_pcb:
+            self.log_test("Advanced Pricing API", False, f"Missing PCB detail fields: {missing_pcb}", pcb_details)
+            return
+        
+        # Check SMT detailed costs
+        if "smt" not in detailed_costs:
+            self.log_test("Advanced Pricing API", False, "Missing detailed_costs.smt", detailed_costs)
+            return
+        
+        smt_details = detailed_costs["smt"]
+        required_smt_fields = ["material", "labor", "overhead"]
+        missing_smt = [f for f in required_smt_fields if f not in smt_details]
+        
+        if missing_smt:
+            self.log_test("Advanced Pricing API", False, f"Missing SMT detail fields: {missing_smt}", smt_details)
+            return
+        
+        # Check pricing strategy
+        if "pricing_strategy" not in data:
+            self.log_test("Advanced Pricing API", False, "Missing pricing_strategy field", data)
+            return
+        
+        # Check volume discount
+        if "volume_discount" not in data:
+            self.log_test("Advanced Pricing API", False, "Missing volume_discount field", data)
+            return
+        
+        self.log_test("Advanced Pricing API", True, 
+                     f"Detailed breakdown present: material, labor, overhead. Complexity: {pcb_details.get('complexity_score')}")
+    
+    def test_dfm_check(self):
+        """Test POST /api/dfm/check"""
+        print("🔍 Testing DFM Check API")
+        
+        # Test with problematic design
+        payload = {
+            "pcb": {
+                "quantity": 50,
+                "layers": 10,  # High layer count
+                "thickness_mm": 1.6,
+                "copper_oz": 2,
+                "finish": "ENIG",
+                "solder_mask_color": "green",
+                "silkscreen": "both",
+                "min_track_space_mm": 0.08,  # Tight tolerance
+                "impedance_controlled": True,
+                "e_test": True,
+                "board_size_mm": {"w": 150, "h": 120}
+            },
+            "smt": {
+                "assembly_required": True,
+                "sides": "double",
+                "component_count": 300,
+                "unique_parts": 80,
+                "bga_count": 5,
+                "uses_01005": True,  # Problematic
+                "stencil": "frameless",
+                "inspection": ["AOI", "Xray"],
+                "sourcing": "turnkey"
+            },
+            "lead_time": "standard"
+        }
+        
+        success, data, status_code = self.make_request("POST", "/api/dfm/check", payload)
+        
+        if not success:
+            self.log_test("DFM Check API", False, f"Request failed: {data}")
+            return
+        
+        if status_code != 200:
+            self.log_test("DFM Check API", False, f"Expected 200, got {status_code}", data)
+            return
+        
+        # Validate required fields
+        required_fields = ["dfm_score", "grade", "errors", "warnings", "manufacturability"]
+        missing_fields = [f for f in required_fields if f not in data]
+        
+        if missing_fields:
+            self.log_test("DFM Check API", False, f"Missing fields: {missing_fields}", data)
+            return
+        
+        # Validate dfm_score is a number
+        dfm_score = data.get("dfm_score")
+        if not isinstance(dfm_score, (int, float)) or dfm_score < 0 or dfm_score > 100:
+            self.log_test("DFM Check API", False, f"Invalid dfm_score: {dfm_score}")
+            return
+        
+        # Check for errors/warnings (should have some for problematic design)
+        errors = data.get("errors", [])
+        warnings = data.get("warnings", [])
+        
+        if len(errors) == 0 and len(warnings) == 0:
+            self.log_test("DFM Check API", False, "Expected errors/warnings for problematic design (01005, 10L, tight tolerance)")
+            return
+        
+        self.log_test("DFM Check API", True, 
+                     f"DFM Score: {dfm_score}, Grade: {data.get('grade')}, Errors: {len(errors)}, Warnings: {len(warnings)}")
+    
+    def test_bom_analyze(self):
+        """Test POST /api/bom/analyze"""
+        print("🔍 Testing BOM Analysis API")
+        
+        payload = {
+            "pcb": {
+                "quantity": 50,
+                "layers": 4,
+                "thickness_mm": 1.6,
+                "copper_oz": 1,
+                "finish": "HASL",
+                "solder_mask_color": "green",
+                "silkscreen": "both",
+                "min_track_space_mm": 0.15,
+                "impedance_controlled": False,
+                "e_test": True,
+                "board_size_mm": {"w": 100, "h": 80}
+            },
+            "smt": {
+                "assembly_required": True,
+                "sides": "single",
+                "component_count": 50,
+                "unique_parts": 20,
+                "bga_count": 2,
+                "uses_01005": False,
+                "stencil": "frameless",
+                "inspection": ["AOI"],
+                "sourcing": "turnkey"
+            },
+            "lead_time": "standard"
+        }
+        
+        success, data, status_code = self.make_request("POST", "/api/bom/analyze", payload)
+        
+        if not success:
+            self.log_test("BOM Analysis API", False, f"Request failed: {data}")
+            return
+        
+        if status_code != 200:
+            self.log_test("BOM Analysis API", False, f"Expected 200, got {status_code}", data)
+            return
+        
+        # Validate required fields
+        required_fields = ["component_breakdown", "cost_analysis", "availability", "risk_assessment"]
+        missing_fields = [f for f in required_fields if f not in data]
+        
+        if missing_fields:
+            self.log_test("BOM Analysis API", False, f"Missing fields: {missing_fields}", data)
+            return
+        
+        # Check component_breakdown
+        component_breakdown = data.get("component_breakdown", {})
+        if "resistors" not in component_breakdown or "capacitors" not in component_breakdown:
+            self.log_test("BOM Analysis API", False, "Missing component breakdown details", component_breakdown)
+            return
+        
+        # Check cost_analysis
+        cost_analysis = data.get("cost_analysis", {})
+        if "total_estimated_cost" not in cost_analysis:
+            self.log_test("BOM Analysis API", False, "Missing total_estimated_cost", cost_analysis)
+            return
+        
+        # Check availability
+        availability = data.get("availability", {})
+        if "overall_status" not in availability:
+            self.log_test("BOM Analysis API", False, "Missing overall_status in availability", availability)
+            return
+        
+        # Check risk_assessment
+        risk_assessment = data.get("risk_assessment", {})
+        if "risk_level" not in risk_assessment:
+            self.log_test("BOM Analysis API", False, "Missing risk_level", risk_assessment)
+            return
+        
+        self.log_test("BOM Analysis API", True, 
+                     f"BOM Cost: {cost_analysis.get('total_estimated_cost')}, Risk: {risk_assessment.get('risk_level')}")
+    
+    def test_bom_optimize(self):
+        """Test POST /api/bom/optimize"""
+        print("🔍 Testing BOM Optimization API")
+        
+        payload = {
+            "pcb": {
+                "quantity": 50,
+                "layers": 8,  # High layer count for optimization
+                "thickness_mm": 1.6,
+                "copper_oz": 1,
+                "finish": "ImAg",  # Exotic finish
+                "solder_mask_color": "green",
+                "silkscreen": "both",
+                "min_track_space_mm": 0.15,
+                "impedance_controlled": False,
+                "e_test": True,
+                "board_size_mm": {"w": 100, "h": 80}
+            },
+            "smt": {
+                "assembly_required": True,
+                "sides": "single",
+                "component_count": 200,
+                "unique_parts": 60,  # High unique parts
+                "bga_count": 4,
+                "uses_01005": True,  # Should suggest optimization
+                "stencil": "frameless",
+                "inspection": ["AOI"],
+                "sourcing": "turnkey"
+            },
+            "lead_time": "standard"
+        }
+        
+        success, data, status_code = self.make_request("POST", "/api/bom/optimize", payload)
+        
+        if not success:
+            self.log_test("BOM Optimization API", False, f"Request failed: {data}")
+            return
+        
+        if status_code != 200:
+            self.log_test("BOM Optimization API", False, f"Expected 200, got {status_code}", data)
+            return
+        
+        # Validate required fields
+        required_fields = ["optimization_suggestions", "total_potential_savings_percent", "priority_actions"]
+        missing_fields = [f for f in required_fields if f not in data]
+        
+        if missing_fields:
+            self.log_test("BOM Optimization API", False, f"Missing fields: {missing_fields}", data)
+            return
+        
+        # Check optimization_suggestions
+        suggestions = data.get("optimization_suggestions", [])
+        if len(suggestions) == 0:
+            self.log_test("BOM Optimization API", False, "Expected optimization suggestions for 01005, high layers, exotic finish")
+            return
+        
+        # Check potential_savings_percent
+        savings = data.get("total_potential_savings_percent", 0)
+        if not isinstance(savings, (int, float)):
+            self.log_test("BOM Optimization API", False, f"Invalid savings format: {savings}")
+            return
+        
+        # Check priority_actions
+        priority_actions = data.get("priority_actions", [])
+        if not isinstance(priority_actions, list):
+            self.log_test("BOM Optimization API", False, "priority_actions should be a list")
+            return
+        
+        self.log_test("BOM Optimization API", True, 
+                     f"Suggestions: {len(suggestions)}, Potential Savings: {savings}%")
+    
+    def test_complete_analysis(self):
+        """Test POST /api/quote/complete-analysis"""
+        print("🔍 Testing Complete Analysis API")
+        
+        payload = {
+            "pcb": {
+                "quantity": 50,
+                "layers": 4,
+                "thickness_mm": 1.6,
+                "copper_oz": 1,
+                "finish": "HASL",
+                "solder_mask_color": "green",
+                "silkscreen": "both",
+                "min_track_space_mm": 0.15,
+                "impedance_controlled": False,
+                "e_test": True,
+                "board_size_mm": {"w": 100, "h": 80}
+            },
+            "smt": {
+                "assembly_required": True,
+                "sides": "single",
+                "component_count": 50,
+                "unique_parts": 20,
+                "bga_count": 2,
+                "uses_01005": False,
+                "stencil": "frameless",
+                "inspection": ["AOI"],
+                "sourcing": "turnkey"
+            },
+            "lead_time": "standard"
+        }
+        
+        success, data, status_code = self.make_request("POST", "/api/quote/complete-analysis", payload)
+        
+        if not success:
+            self.log_test("Complete Analysis API", False, f"Request failed: {data}")
+            return
+        
+        if status_code != 200:
+            self.log_test("Complete Analysis API", False, f"Expected 200, got {status_code}", data)
+            return
+        
+        # Validate all sections are present
+        required_sections = ["pricing", "dfm", "bom_analysis", "optimization", "summary"]
+        missing_sections = [s for s in required_sections if s not in data]
+        
+        if missing_sections:
+            self.log_test("Complete Analysis API", False, f"Missing sections: {missing_sections}", data)
+            return
+        
+        # Validate summary
+        summary = data.get("summary", {})
+        required_summary_fields = ["total_cost", "dfm_score", "dfm_grade", "potential_savings"]
+        missing_summary = [f for f in required_summary_fields if f not in summary]
+        
+        if missing_summary:
+            self.log_test("Complete Analysis API", False, f"Missing summary fields: {missing_summary}", summary)
+            return
+        
+        # Validate pricing section
+        pricing = data.get("pricing", {})
+        if "detailed_costs" not in pricing:
+            self.log_test("Complete Analysis API", False, "Missing detailed_costs in pricing", pricing)
+            return
+        
+        # Validate DFM section
+        dfm = data.get("dfm", {})
+        if "dfm_score" not in dfm:
+            self.log_test("Complete Analysis API", False, "Missing dfm_score in dfm", dfm)
+            return
+        
+        # Validate BOM analysis section
+        bom_analysis = data.get("bom_analysis", {})
+        if bom_analysis is None:
+            self.log_test("Complete Analysis API", False, "bom_analysis should not be None when assembly is required")
+            return
+        
+        # Validate optimization section
+        optimization = data.get("optimization", {})
+        if optimization is None:
+            self.log_test("Complete Analysis API", False, "optimization should not be None when assembly is required")
+            return
+        
+        self.log_test("Complete Analysis API", True, 
+                     f"Complete analysis: Cost={summary.get('total_cost')}, DFM={summary.get('dfm_score')}, Grade={summary.get('dfm_grade')}")
+    
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
         print("🚀 Starting Backend API Tests")
         print("=" * 60)
         
-        # Test sequence
+        # Test sequence - Original tests
         self.test_config_pricing()
         self.test_quote_calculate_scenario_a()
         self.test_quote_calculate_scenario_b()
@@ -667,6 +1057,16 @@ class BackendTester:
         self.test_order_retrieve()
         self.test_edge_cases()
         self.test_01005_premium()
+        
+        # New advanced API tests
+        print("\n" + "=" * 60)
+        print("🔬 Testing Advanced APIs")
+        print("=" * 60)
+        self.test_advanced_pricing()
+        self.test_dfm_check()
+        self.test_bom_analyze()
+        self.test_bom_optimize()
+        self.test_complete_analysis()
         
         # Summary
         print("=" * 60)
