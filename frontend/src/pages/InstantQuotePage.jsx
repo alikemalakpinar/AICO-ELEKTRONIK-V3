@@ -834,12 +834,32 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
               )}
               <div className="border-l pl-6">
                 <p className="text-sm text-gray-600">TOPLAM</p>
-                <p className="text-2xl font-bold text-primary">₺{pricing.total.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-primary">₺{(pricing.summary?.total || pricing.total).toFixed(2)}</p>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Clock className="w-4 h-4" />
                 <span>{getLeadTimeDays()} iş günü</span>
               </div>
+              {useAdvancedMode && advancedAnalysis && advancedAnalysis.summary && (
+                <div className="flex items-center gap-4 border-l pl-6">
+                  {advancedAnalysis.summary.dfm_score !== undefined && (
+                    <div className="text-center">
+                      <p className="text-xs text-gray-600">DFM</p>
+                      <p className="text-lg font-bold text-blue-600">
+                        {advancedAnalysis.summary.dfm_score}
+                      </p>
+                    </div>
+                  )}
+                  {advancedAnalysis.summary.potential_savings > 0 && (
+                    <div className="text-center">
+                      <p className="text-xs text-gray-600">Tasarruf</p>
+                      <p className="text-lg font-bold text-green-600">
+                        {advancedAnalysis.summary.potential_savings.toFixed(1)}%
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             {calculating && (
               <div className="flex items-center gap-2 text-sm text-blue-600">
