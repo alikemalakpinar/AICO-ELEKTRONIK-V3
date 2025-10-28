@@ -63,7 +63,36 @@ PRICING_CONFIG_V0_1 = {
             "flat": 0,
             "perKg": 0
         },
-        "currency": "TRY"
+        "currency": "TRY",
+        
+        # Advanced pricing configurations
+        "material_prices": {
+            "fr4_per_cm2": 0.12,
+            "copper_per_layer_cm2": 0.03,
+            "solder_mask_per_cm2": 0.02,
+            "silkscreen_per_cm2": 0.01,
+            "solder_per_component": 0.02,
+            "flux_per_component": 0.01
+        },
+        "labor_rates": {
+            "pcb_technician": 150,
+            "smt_operator": 180
+        },
+        "overhead_rates": {
+            "energy_per_hour": 45,
+            "facility_rate": 0.25,
+            "depreciation_rate": 0.15,
+            "qc_base": 50
+        },
+        "volume_discounts": {
+            "50": 0.0,
+            "100": 0.05,
+            "250": 0.10,
+            "500": 0.15,
+            "1000": 0.20,
+            "2500": 0.25
+        },
+        "standard_margin": 0.30
     }
 }
 
