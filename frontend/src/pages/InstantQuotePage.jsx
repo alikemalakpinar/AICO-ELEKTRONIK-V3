@@ -780,19 +780,30 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
               )}
 
               <div className="flex justify-between gap-4 pt-6">
-                <Button onClick={prevStep} variant="outline" size="lg">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> {t.buttons.back}
-                </Button>
-                <Button onClick={nextStep} size="lg">
-                  {t.buttons.next} <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button onClick={prevStep} variant="outline" size="lg">
+                    <ArrowLeft className="mr-2 h-4 w-4" /> {t.buttons.back}
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button onClick={nextStep} size="lg" className="hover-lift">
+                    {t.buttons.next} <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Step 4: Summary & Price */}
           {step === 4 && (
-            <div className="space-y-6">
+            <motion.div
+              key="step4"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-6"
+            >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-3xl font-bold text-gray-900">4. {t.summary.title}</h2>
                 
