@@ -439,25 +439,38 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                   </Button>
                 </motion.div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5" />
-                <p className="text-sm text-blue-800">
-                  <strong>NDA Güvencesi:</strong> Dosyalarınız tamamen güvende, üçüncü taraflarla paylaşılmaz.
-                </p>
-              </div>
+                <AnimatedSection animation="fadeInUp" delay={0.2}>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <p className="text-sm text-blue-800">
+                      <strong>NDA Güvencesi:</strong> Dosyalarınız tamamen güvende, üçüncü taraflarla paylaşılmaz.
+                    </p>
+                  </div>
+                </AnimatedSection>
 
-              <div className="flex justify-end gap-4 pt-6">
-                <Button onClick={nextStep} size="lg">
-                  {t.buttons.next} <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          )}
+                <div className="flex justify-end gap-4 pt-6">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button onClick={nextStep} size="lg" className="hover-lift">
+                      {t.buttons.next} <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
 
-          {/* Step 2: PCB Options */}
-          {step === 2 && (
-            <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">2. {t.pcb.title}</h2>
+            {/* Step 2: PCB Options */}
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-6"
+              >
+                <AnimatedSection animation="fadeInDown">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-6">2. {t.pcb.title}</h2>
+                </AnimatedSection>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Quantity */}
