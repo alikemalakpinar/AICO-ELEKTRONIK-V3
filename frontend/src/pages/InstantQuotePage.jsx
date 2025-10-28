@@ -929,13 +929,16 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
               )}
 
               <div className="flex justify-between gap-4 pt-6">
-                <Button onClick={prevStep} variant="outline" size="lg">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> {t.buttons.back}
-                </Button>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button onClick={prevStep} variant="outline" size="lg">
+                    <ArrowLeft className="mr-2 h-4 w-4" /> {t.buttons.back}
+                  </Button>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           )}
-        </div>
+          </AnimatePresence>
+        </GlassCard>
       </div>
 
       {/* Sticky Price Bar (visible on steps 2-4) */}
