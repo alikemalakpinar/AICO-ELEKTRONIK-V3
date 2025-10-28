@@ -387,9 +387,14 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                       {s.title}
                     </p>
                     <p className="text-xs text-gray-400">{s.desc}</p>
-                  </div>
+                  </motion.div>
                   {idx < t.steps.length - 1 && (
-                    <div className={`flex-1 h-1 mx-4 rounded ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`} />
+                    <motion.div 
+                      className={`flex-1 h-1 mx-4 rounded ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: isCompleted ? 1 : 0 }}
+                      transition={{ duration: 0.5 }}
+                    />
                   )}
                 </React.Fragment>
               );
