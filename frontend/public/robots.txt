@@ -1,11 +1,11 @@
 # Aico Elektronik - PCB Manufacturing & Assembly
-# https://pcbinstant.preview.emergentagent.com
+# https://bu-web-enhanced.preview.emergentagent.com
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://pcbinstant.preview.emergentagent.com/sitemap.xml
+Sitemap: https://bu-web-enhanced.preview.emergentagent.com/sitemap.xml
 
 # Crawl-delay for bots
 Crawl-delay: 1
@@ -27,4 +27,4 @@ Allow: /tr/pcb-assembly
 Allow: /en/pcb-assembly
 
 # Host (if needed)
-Host: https://pcbinstant.preview.emergentagent.com
+Host: https://bu-web-enhanced.preview.emergentagent.com

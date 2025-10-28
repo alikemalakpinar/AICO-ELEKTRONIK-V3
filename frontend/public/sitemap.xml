@@ -4,9 +4,9 @@
   
   <!-- Homepage -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -14,9 +14,9 @@
   
   <!-- Instant Quote -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/instant-quote</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/instant-quote" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/instant-quote" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/instant-quote</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/instant-quote" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/instant-quote" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -24,9 +24,9 @@
   
   <!-- PCB Manufacturing -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/pcb-manufacturing</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/pcb-manufacturing" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/pcb-manufacturing" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/pcb-manufacturing</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/pcb-manufacturing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/pcb-manufacturing" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -34,9 +34,9 @@
   
   <!-- PCB Assembly -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/pcb-assembly</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/pcb-assembly" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/pcb-assembly" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/pcb-assembly</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/pcb-assembly" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/pcb-assembly" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -44,9 +44,9 @@
   
   <!-- Fast Prototyping -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/fast-prototyping</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/fast-prototyping" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/fast-prototyping" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/fast-prototyping</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/fast-prototyping" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/fast-prototyping" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -54,9 +54,9 @@
   
   <!-- PCB Capabilities -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/pcb-capabilities</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/pcb-capabilities" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/pcb-capabilities" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/pcb-capabilities</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/pcb-capabilities" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/pcb-capabilities" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -64,9 +64,9 @@
   
   <!-- Assembly Capabilities -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/assembly-capabilities</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/assembly-capabilities" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/assembly-capabilities" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/assembly-capabilities</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/assembly-capabilities" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/assembly-capabilities" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -74,9 +74,9 @@
   
   <!-- Quality & Certifications -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/quality</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/quality" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/quality" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/quality</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/quality" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/quality" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -84,9 +84,9 @@
   
   <!-- Support & FAQ -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/support</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/support" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/support" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/support</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/support" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/support" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -94,9 +94,9 @@
   
   <!-- Case Studies -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/case-studies</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/case-studies" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/case-studies" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/case-studies</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/case-studies" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/case-studies" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -104,9 +104,9 @@
   
   <!-- About -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/about</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/about" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/about" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/about</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/about" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -114,9 +114,9 @@
   
   <!-- Contact -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/contact</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/contact" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/contact" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/contact</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/contact" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -124,9 +124,9 @@
   
   <!-- Calculators -->
   <url>
-    <loc>https://pcbinstant.preview.emergentagent.com/tr/calculators</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://pcbinstant.preview.emergentagent.com/tr/calculators" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://pcbinstant.preview.emergentagent.com/en/calculators" />
+    <loc>https://bu-web-enhanced.preview.emergentagent.com/tr/calculators</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://bu-web-enhanced.preview.emergentagent.com/tr/calculators" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bu-web-enhanced.preview.emergentagent.com/en/calculators" />
     <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
