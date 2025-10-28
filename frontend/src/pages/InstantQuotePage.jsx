@@ -398,17 +398,35 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
         </div>
       </div>
 
-      {/* Form Steps */}
+      {/* Form Steps with Animation */}
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          
-          {/* Step 1: File Upload */}
-          {step === 1 && (
-            <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">1. Dosya Yükleme</h2>
-              
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-primary transition-colors">
-                <Upload className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+        <GlassCard className="p-8 shadow-2xl">
+          <AnimatePresence mode="wait">
+            {/* Step 1: File Upload */}
+            {step === 1 && (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-6"
+              >
+                <AnimatedSection animation="fadeInDown">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-6">1. Dosya Yükleme</h2>
+                </AnimatedSection>
+                
+                <motion.div 
+                  className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-primary transition-all cursor-pointer group"
+                  whileHover={{ scale: 1.02, borderColor: '#3b82f6' }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <Upload className="w-16 h-16 mx-auto text-gray-400 mb-4 group-hover:text-primary transition-colors" />
+                  </motion.div>
                 <p className="text-lg font-medium text-gray-700 mb-2">
                   Gerber, BOM veya PnP dosyalarınızı yükleyin
                 </p>
