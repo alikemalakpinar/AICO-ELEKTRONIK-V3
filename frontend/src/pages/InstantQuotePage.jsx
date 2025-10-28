@@ -293,20 +293,48 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/90 via-blue-700 to-primary pt-24 pb-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center text-white">
-            <h1 className="text-5xl font-bold mb-4">{t.title}</h1>
-            <p className="text-xl opacity-90">{t.subtitle}</p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute top-20 right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-20 left-20 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      
+      {/* Hero Section with Parallax */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="relative z-10 bg-gradient-to-r from-primary/90 via-blue-700 to-primary pt-24 pb-16 overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-10" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div 
+            className="text-center text-white"
+            initial={{ y: -30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="inline-block mb-4"
+            >
+              <div className="glass px-6 py-2 rounded-full border border-white/30 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse" />
+                  <span>AI-Powered Analysis</span>
+                </div>
+              </div>
+            </motion.div>
+            <h1 className="text-5xl md:text-6xl font-bold mb-4">{t.title}</h1>
+            <p className="text-xl opacity-90 max-w-2xl mx-auto">{t.subtitle}</p>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Progress Steps */}
-      <div className="max-w-5xl mx-auto px-6 -mt-8">
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+      {/* Progress Steps with Animation */}
+      <div className="max-w-5xl mx-auto px-6 -mt-8 relative z-20">
+        <GlassCard className="p-6 shadow-2xl" gradient="blue">
           <div className="flex items-center justify-between">
             {t.steps.map((s, idx) => {
               const Icon = s.icon;
@@ -316,16 +344,46 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
               
               return (
                 <React.Fragment key={idx}>
-                  <div className="flex flex-col items-center">
-                    <div className={`
-                      w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all
-                      ${isActive ? 'bg-primary text-white scale-110' : ''}
-                      ${isCompleted ? 'bg-green-500 text-white' : ''}
-                      ${!isActive && !isCompleted ? 'bg-gray-200 text-gray-500' : ''}
-                    `}>
-                      {isCompleted ? <Check className="w-8 h-8" /> : <Icon className="w-8 h-8" />}
-                    </div>
-                    <p className={`text-sm font-semibold ${isActive ? 'text-primary' : 'text-gray-600'}`}>
+                  <motion.div 
+                    className="flex flex-col items-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  >
+                    <motion.div 
+                      className={`
+                        w-16 h-16 rounded-full flex items-center justify-center mb-2
+                        ${isActive ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50' : ''}
+                        ${isCompleted ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white' : ''}
+                        ${!isActive && !isCompleted ? 'bg-gray-200 text-gray-500' : ''}
+                      `}
+                      animate={isActive ? {
+                        scale: [1, 1.1, 1],
+                        transition: { duration: 2, repeat: Infinity }
+                      } : {}}
+                    >
+                      <AnimatePresence mode="wait">
+                        {isCompleted ? (
+                          <motion.div
+                            key="check"
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0, rotate: 180 }}
+                          >
+                            <Check className="w-8 h-8" />
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="icon"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                          >
+                            <Icon className="w-8 h-8" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                    <p className={`text-sm font-semibold transition-colors ${isActive ? 'text-primary' : 'text-gray-600'}`}>
                       {s.title}
                     </p>
                     <p className="text-xs text-gray-400">{s.desc}</p>
