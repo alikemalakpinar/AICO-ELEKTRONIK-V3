@@ -892,7 +892,7 @@ class BackendTester:
                 "layers": 8,  # High layer count for optimization
                 "thickness_mm": 1.6,
                 "copper_oz": 1,
-                "finish": "ImAg",  # Exotic finish
+                "finish": "ENIG",  # Valid finish
                 "solder_mask_color": "green",
                 "silkscreen": "both",
                 "min_track_space_mm": 0.15,
