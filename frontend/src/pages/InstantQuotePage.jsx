@@ -925,14 +925,20 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
 
                   {/* Action Buttons */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                    <Button variant="outline" size="lg" className="w-full">
-                      <FileText className="mr-2 h-5 w-5" />
-                      {t.summary.saveQuote}
-                    </Button>
-                    <Button size="lg" className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
-                      <Package className="mr-2 h-5 w-5" />
-                      {t.summary.createOrder}
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button variant="outline" size="lg" className="w-full hover-lift">
+                        <FileText className="mr-2 h-5 w-5" />
+                        {t.summary.saveQuote}
+                      </Button>
+                    </motion.div>
+                    <Link to="/checkout" className="w-full">
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button size="lg" className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-xl hover-lift">
+                          <Package className="mr-2 h-5 w-5" />
+                          {t.summary.createOrder}
+                        </Button>
+                      </motion.div>
+                    </Link>
                   </div>
                 </div>
               ) : (
