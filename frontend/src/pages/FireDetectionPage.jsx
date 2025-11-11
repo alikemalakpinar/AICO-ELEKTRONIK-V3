@@ -107,21 +107,21 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
   const t = content[lang] || content.tr;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-red-50/30 to-slate-50">
-      {/* Hero Section with neon effect */}
-      <section className="relative pt-24 pb-20 overflow-hidden">
-        {/* Neon background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-20 right-20 w-96 h-96 bg-red-500/20 rounded-full blur-3xl animate-glow" />
-          <div className="absolute bottom-20 left-20 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl animate-glow" style={{ animationDelay: '1.5s' }} />
+    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+      {/* Hero Section - Corporate Red/Blue */}
+      <section className="relative pt-24 pb-20 overflow-hidden bg-gradient-to-br from-slate-700 via-slate-800 to-blue-900">
+        {/* Subtle glow */}
+        <div className="absolute inset-0 z-0 opacity-20">
+          <div className="absolute top-20 right-20 w-96 h-96 bg-blue-400/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <AnimatedSection animation="fadeInDown">
             <div className="inline-block mb-6">
-              <div className="glass px-6 py-3 rounded-full border border-red-200 shadow-lg shadow-red-500/20">
-                <div className="flex items-center gap-2 text-sm font-medium text-red-600">
-                  <Flame className="w-4 h-4 animate-pulse" />
+              <div className="glass px-6 py-3 rounded-full border border-white/30 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-sm font-medium text-white">
+                  <Flame className="w-4 h-4" />
                   <span>AI Fire Detection</span>
                 </div>
               </div>
@@ -129,17 +129,17 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
           </AnimatedSection>
 
           <AnimatedSection animation="fadeInUp" delay={0.2}>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="text-gray-900">{t.hero.title}</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+              {t.hero.title}
               <br />
-              <span className="text-gradient bg-gradient-to-r from-red-600 via-orange-600 to-red-600">
+              <span className="text-blue-200">
                 {t.hero.titleHighlight}
               </span>
             </h1>
           </AnimatedSection>
 
           <AnimatedSection animation="fadeInUp" delay={0.4}>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl">
+            <p className="text-xl text-blue-100 mb-8 max-w-3xl">
               {t.hero.subtitle}
             </p>
           </AnimatedSection>
@@ -148,7 +148,7 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
             <Link to="/checkout">
               <Button 
                 size="lg"
-                className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-12 py-8 text-xl rounded-2xl shadow-2xl shadow-red-500/30 hover-lift"
+                className="bg-white text-slate-700 hover:bg-blue-50 px-12 py-8 text-xl rounded-2xl shadow-2xl hover-lift"
               >
                 {t.hero.cta}
               </Button>
@@ -159,9 +159,9 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
           <AnimatedSection animation="scaleIn" delay={0.8}>
             <div className="grid grid-cols-4 gap-6 mt-16">
               {t.stats.map((stat, idx) => (
-                <GlassCard key={idx} className="p-6 text-center" gradient="orange">
-                  <div className="text-4xl font-bold text-red-600 mb-2">{stat.value}</div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
+                <GlassCard key={idx} className="p-6 text-center bg-white/10 backdrop-blur-xl border-white/20">
+                  <div className="text-4xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-sm text-blue-200">{stat.label}</div>
                 </GlassCard>
               ))}
             </div>
@@ -169,7 +169,7 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Features Grid */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -177,12 +177,12 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
               const Icon = feature.icon;
               return (
                 <AnimatedSection key={idx} animation="fadeInUp" delay={idx * 0.1}>
-                  <GlassCard className="p-6 h-full group" gradient="orange" glow>
-                    <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <GlassCard className="p-6 h-full group bg-white/80" glow>
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-slate-700 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Icon className="w-7 h-7 text-white" />
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-gray-900">{feature.title}</h3>
-                    <p className="text-gray-600 text-sm">{feature.description}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
                   </GlassCard>
                 </AnimatedSection>
               );
@@ -192,7 +192,7 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
       </section>
 
       {/* System Features */}
-      <section className="py-20 bg-gradient-to-r from-red-50 to-orange-50">
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-6">
           <AnimatedSection animation="fadeInUp">
             <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center text-gray-900">
@@ -203,8 +203,8 @@ const FireDetectionPage = ({ lang = 'tr' }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {t.systems.items.map((item, idx) => (
               <AnimatedSection key={idx} animation="fadeInUp" delay={idx * 0.1}>
-                <div className="flex items-start gap-3 bg-white/60 backdrop-blur-sm p-4 rounded-xl border border-red-100">
-                  <CheckCircle2 className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
+                <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-200 hover:border-blue-300 transition-colors">
+                  <CheckCircle2 className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <span className="text-gray-700">{item}</span>
                 </div>
               </AnimatedSection>

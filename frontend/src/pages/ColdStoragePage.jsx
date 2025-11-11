@@ -117,20 +117,20 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
   const t = content[lang] || content.tr;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-cyan-50/30 to-slate-50">
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-20 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-20 right-20 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-20 left-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+      {/* Hero Section - Corporate Blue */}
+      <section className="relative pt-24 pb-20 overflow-hidden bg-gradient-to-br from-blue-600 via-slate-700 to-slate-800">
+        {/* Subtle background */}
+        <div className="absolute inset-0 z-0 opacity-20">
+          <div className="absolute top-20 right-20 w-96 h-96 bg-blue-400/30 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-20 left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <AnimatedSection animation="fadeInDown">
             <div className="inline-block mb-6">
-              <div className="glass px-6 py-3 rounded-full border border-cyan-200">
-                <div className="flex items-center gap-2 text-sm font-medium text-cyan-600">
+              <div className="glass px-6 py-3 rounded-full border border-white/30 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-sm font-medium text-white">
                   <Snowflake className="w-4 h-4" />
                   <span>Smart Cold Storage</span>
                 </div>
@@ -139,17 +139,17 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
           </AnimatedSection>
 
           <AnimatedSection animation="fadeInUp" delay={0.2}>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="text-gray-900">{t.hero.title}</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+              {t.hero.title}
               <br />
-              <span className="text-gradient bg-gradient-to-r from-cyan-600 via-blue-600 to-cyan-600">
+              <span className="text-blue-200">
                 {t.hero.titleHighlight}
               </span>
             </h1>
           </AnimatedSection>
 
           <AnimatedSection animation="fadeInUp" delay={0.4}>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl">
+            <p className="text-xl text-blue-100 mb-8 max-w-3xl">
               {t.hero.subtitle}
             </p>
           </AnimatedSection>
@@ -158,7 +158,7 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
             <Link to="/checkout">
               <Button 
                 size="lg"
-                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-12 py-8 text-xl rounded-2xl shadow-2xl hover-lift"
+                className="bg-white text-blue-700 hover:bg-blue-50 px-12 py-8 text-xl rounded-2xl shadow-2xl hover-lift"
               >
                 {t.hero.cta}
               </Button>
@@ -175,12 +175,12 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
               const Icon = feature.icon;
               return (
                 <AnimatedSection key={idx} animation="fadeInUp" delay={idx * 0.1}>
-                  <GlassCard className="p-6 h-full" gradient="blue" glow>
-                    <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-4">
+                  <GlassCard className="p-6 h-full group bg-white/80" glow>
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Icon className="w-7 h-7 text-white" />
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-gray-900">{feature.title}</h3>
-                    <p className="text-gray-600 text-sm">{feature.description}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
                   </GlassCard>
                 </AnimatedSection>
               );
@@ -190,7 +190,7 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
       </section>
 
       {/* System Components */}
-      <section className="py-20 bg-gradient-to-r from-cyan-50 to-blue-50">
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-6">
           <AnimatedSection animation="fadeInUp">
             <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center text-gray-900">
@@ -201,8 +201,8 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {t.systems.items.map((item, idx) => (
               <AnimatedSection key={idx} animation="scaleIn" delay={idx * 0.05}>
-                <GlassCard className="p-4 text-center" gradient="blue">
-                  <CheckCircle2 className="w-6 h-6 text-cyan-600 mx-auto mb-2" />
+                <GlassCard className="p-4 text-center bg-white/80">
+                  <CheckCircle2 className="w-6 h-6 text-blue-600 mx-auto mb-2" />
                   <p className="text-sm text-gray-700 font-medium">{item}</p>
                 </GlassCard>
               </AnimatedSection>
@@ -225,10 +225,10 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
               const Icon = benefit.icon;
               return (
                 <AnimatedSection key={idx} animation="fadeInUp" delay={idx * 0.1}>
-                  <GlassCard className="p-6 text-center" gradient="blue">
-                    <Icon className="w-12 h-12 text-cyan-600 mx-auto mb-4" />
+                  <GlassCard className="p-6 text-center bg-white/80">
+                    <Icon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
                     <h3 className="text-lg font-bold text-gray-900 mb-2">{benefit.title}</h3>
-                    <p className="text-2xl font-bold text-cyan-600">{benefit.desc}</p>
+                    <p className="text-2xl font-bold text-blue-600">{benefit.desc}</p>
                   </GlassCard>
                 </AnimatedSection>
               );
