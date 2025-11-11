@@ -52,8 +52,8 @@ const IoTProducts = ({ lang = 'tr' }) => {
           description: 'Counter cards, sound and vibration analysis for machine health monitoring',
           features: ['Counter Card', 'Vibration Analysis', 'Sound Analysis', 'Preventive Maintenance'],
           link: '/en/coffee-machine-systems',
-          gradient: 'from-orange-500 to-amber-600',
-          bgGradient: 'from-orange-50 to-amber-50'
+          gradient: 'from-blue-600 to-slate-700',
+          bgGradient: 'from-blue-50 to-slate-50'
         },
         {
           icon: Flame,
@@ -61,8 +61,8 @@ const IoTProducts = ({ lang = 'tr' }) => {
           description: 'AI camera for early fire detection and automatic alert system',
           features: ['AI Camera', 'Early Warning', '24/7 Monitoring', 'Fast Response'],
           link: '/en/fire-detection',
-          gradient: 'from-red-500 to-orange-600',
-          bgGradient: 'from-red-50 to-orange-50'
+          gradient: 'from-slate-700 to-blue-800',
+          bgGradient: 'from-slate-50 to-blue-50'
         },
         {
           icon: Snowflake,
@@ -70,8 +70,8 @@ const IoTProducts = ({ lang = 'tr' }) => {
           description: 'Smart control systems for temperature, humidity and energy management',
           features: ['Temperature Control', 'Humidity Monitor', 'IoT Connection', 'Energy Savings'],
           link: '/en/cold-storage',
-          gradient: 'from-cyan-500 to-blue-600',
-          bgGradient: 'from-cyan-50 to-blue-50'
+          gradient: 'from-blue-500 to-blue-700',
+          bgGradient: 'from-blue-50 to-slate-50'
         }
       ]
     }
