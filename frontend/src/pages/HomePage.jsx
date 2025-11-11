@@ -2,6 +2,7 @@ import React from 'react';
 import PremiumHero from '../components/Home/PremiumHero';
 import TrustBadges from '../components/Home/TrustBadges';
 import Services from '../components/Home/Services';
+import IoTProducts from '../components/Home/IoTProducts';
 import Categories from '../components/Home/Categories';
 import ProcessTimeline from '../components/Home/ProcessTimeline';
 import Calculators from '../components/Home/Calculators';
@@ -15,6 +16,7 @@ const HomePage = ({ lang }) => {
       <PremiumHero lang={lang} />
       <TrustBadges lang={lang} />
       <Services lang={lang} />
+      <IoTProducts lang={lang} />
       <ProcessTimeline lang={lang} />
       <Categories lang={lang} />
       <Calculators lang={lang} />
