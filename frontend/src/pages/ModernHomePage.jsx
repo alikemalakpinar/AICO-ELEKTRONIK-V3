@@ -157,7 +157,7 @@ const ModernHomePage = ({ lang = 'tr' }) => {
             <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
               <span className="text-gray-900">{t.hero.title}</span>
               <br />
-              <span className="text-gradient bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="text-gradient bg-gradient-to-r from-blue-600 via-blue-700 to-slate-700 bg-clip-text text-transparent">
                 {t.hero.titleHighlight}
               </span>
             </h1>
