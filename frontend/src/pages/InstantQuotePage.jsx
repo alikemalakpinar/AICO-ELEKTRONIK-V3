@@ -294,10 +294,10 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-blue-50 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute top-20 right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-20 left-20 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute bottom-20 left-20 w-96 h-96 bg-slate-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       
       {/* Hero Section with Parallax */}
       <motion.div 
