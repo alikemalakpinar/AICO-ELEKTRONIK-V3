@@ -88,7 +88,7 @@ const ColdStoragePage = ({ lang = 'tr' }) => {
           title: 'Energy Savings',
           description: 'Smart energy optimization'
         }
-      },
+      ],
       systems: {
         title: 'System Components',
         items: [
