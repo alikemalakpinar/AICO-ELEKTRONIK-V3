@@ -100,6 +100,11 @@ function App() {
           <Route path="/en" element={<HomePage lang="en" />} />
           <Route path="/en/instant-quote" element={<InstantQuotePage lang="en" />} />
           
+          {/* IoT Products */}
+          <Route path="/en/coffee-machine-systems" element={<CoffeeMachineSystemsPage lang="en" />} />
+          <Route path="/en/fire-detection" element={<FireDetectionPage lang="en" />} />
+          <Route path="/en/cold-storage" element={<ColdStoragePage lang="en" />} />
+          
           {/* Services */}
           <Route path="/en/pcb-manufacturing" element={<PCBManufacturingPage lang="en" />} />
           <Route path="/en/pcb-assembly" element={<PCBAssemblyPage lang="en" />} />
