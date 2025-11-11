@@ -58,6 +58,12 @@ function App() {
           {/* Turkish Routes */}
           <Route path="/tr" element={<HomePage lang="tr" />} />
           <Route path="/tr/instant-quote" element={<InstantQuotePage lang="tr" />} />
+          <Route path="/checkout" element={<CheckoutPage lang="tr" />} />
+          
+          {/* IoT Products */}
+          <Route path="/tr/coffee-machine-systems" element={<CoffeeMachineSystemsPage lang="tr" />} />
+          <Route path="/tr/fire-detection" element={<FireDetectionPage lang="tr" />} />
+          <Route path="/tr/cold-storage" element={<ColdStoragePage lang="tr" />} />
           
           {/* Services */}
           <Route path="/tr/pcb-manufacturing" element={<PCBManufacturingPage lang="tr" />} />
