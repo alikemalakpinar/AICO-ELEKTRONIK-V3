@@ -218,8 +218,21 @@ const Header = ({ lang = 'tr' }) => {
 
             {/* CTA Button */}
             <div className="hidden lg:flex items-center gap-3">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {isDark ? (
+                  <Sun className="w-5 h-5 text-yellow-500" />
+                ) : (
+                  <Moon className="w-5 h-5 text-gray-700" />
+                )}
+              </button>
+
               <Link to={`/${lang}/instant-quote`}>
-                <Button className="bg-[#1554F6] hover:bg-[#0d3cb8] text-white px-6 py-2.5 rounded-lg font-medium">
+                <Button className="bg-[#1554F6] hover:bg-[#0d3cb8] text-white px-6 py-2.5 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all">
                   <Zap className="mr-2" size={18} />
                   {t.getQuote}
                 </Button>
