@@ -9,10 +9,10 @@ const GlassCard = ({
   gradient = 'blue'
 }) => {
   const gradients = {
-    blue: 'from-blue-500/10 to-purple-500/10',
-    purple: 'from-purple-500/10 to-pink-500/10',
+    blue: 'from-blue-500/10 to-slate-500/10',
+    purple: 'from-blue-500/10 to-slate-600/10',
     green: 'from-green-500/10 to-emerald-500/10',
-    orange: 'from-orange-500/10 to-red-500/10'
+    orange: 'from-blue-500/10 to-slate-500/10'
   };
 
   return (
