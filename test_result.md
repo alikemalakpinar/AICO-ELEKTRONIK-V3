@@ -291,6 +291,45 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Created 4 new advanced components: DetailedBreakdown.jsx (material/labor/overhead breakdown), DFMPanel.jsx (manufacturability score display), BOMOptimizerPanel.jsx (optimization suggestions), PriceComparisonChart.jsx (visual price comparison). Integrated into InstantQuotePage."
+      - working: "NA"
+        agent: "main"
+        comment: "ENHANCED: Added Apple-style components - ParallaxSection, AnimatedSection, GlassCard. Added Framer Motion for smooth animations. Created animations.css library."
+
+  - task: "IoT Product Pages"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created 3 new product pages: CoffeeMachineSystemsPage (counter cards, vibration/sound analysis), FireDetectionPage (AI camera, early warning), ColdStoragePage (temperature, humidity control). All with modern animations and glassmorphism design."
+
+  - task: "Checkout & Payment System"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/CheckoutPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created animated 3D credit card checkout page. Real-time card update as user types. Flip animation for CVV. Form validation and success animation. Integrated with all 'Sipariş Ver' buttons."
+
+  - task: "Dark Mode"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Header.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added dark/light mode toggle in Header. Uses localStorage persistence. Moon/Sun icon toggle. Tailwind dark mode class-based system active."
   
   - task: "Live Pricing Integration"
     implemented: true
