@@ -18,8 +18,8 @@ const IoTProducts = ({ lang = 'tr' }) => {
           description: 'Sayaç kartları, ses ve titreşim analizi ile makina sağlığı izleme',
           features: ['Sayaç Kartı', 'Titreşim Analizi', 'Ses Analizi', 'Önleyici Bakım'],
           link: '/tr/coffee-machine-systems',
-          gradient: 'from-orange-500 to-amber-600',
-          bgGradient: 'from-orange-50 to-amber-50'
+          gradient: 'from-blue-600 to-slate-700',
+          bgGradient: 'from-blue-50 to-slate-50'
         },
         {
           icon: Flame,
@@ -27,8 +27,8 @@ const IoTProducts = ({ lang = 'tr' }) => {
           description: 'AI kamera ile yangın erken tespit ve otomatik uyarı sistemi',
           features: ['AI Kamera', 'Erken Uyarı', '7/24 İzleme', 'Hızlı Müdahale'],
           link: '/tr/fire-detection',
-          gradient: 'from-red-500 to-orange-600',
-          bgGradient: 'from-red-50 to-orange-50'
+          gradient: 'from-slate-700 to-blue-800',
+          bgGradient: 'from-slate-50 to-blue-50'
         },
         {
           icon: Snowflake,
@@ -36,8 +36,8 @@ const IoTProducts = ({ lang = 'tr' }) => {
           description: 'Sıcaklık, nem ve enerji yönetimi için akıllı kontrol sistemleri',
           features: ['Sıcaklık Kontrol', 'Nem İzleme', 'IoT Bağlantı', 'Enerji Tasarrufu'],
           link: '/tr/cold-storage',
-          gradient: 'from-cyan-500 to-blue-600',
-          bgGradient: 'from-cyan-50 to-blue-50'
+          gradient: 'from-blue-500 to-blue-700',
+          bgGradient: 'from-blue-50 to-slate-50'
         }
       ]
     },
