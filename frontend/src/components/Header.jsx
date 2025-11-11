@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Menu, X, ChevronDown, Zap, Globe, Phone, Mail,
-  Cpu, Settings, Award, Layers, Package
+  Cpu, Settings, Award, Layers, Package, Moon, Sun
 } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -11,6 +11,9 @@ const Header = ({ lang = 'tr' }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [capabilitiesOpen, setCapabilitiesOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem('theme') === 'dark';
+  });
   const location = useLocation();
 
   useEffect(() => {
@@ -20,6 +23,17 @@ const Header = ({ lang = 'tr' }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Dark mode effect
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
   // Close mobile menu when route changes
   useEffect(() => {
