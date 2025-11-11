@@ -140,36 +140,42 @@ const Footer = ({ lang = 'tr' }) => {
   ];
 
   return (
-    <footer className="bg-[#0A0E27] text-white">
-      {/* Trust Bar */}
-      <div className="border-b border-white/10">
+    <footer className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-slate-500 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }} />
+      </div>
+
+      {/* Trust Bar with glassmorphism */}
+      <div className="border-b border-white/10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center gap-4 group">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
                 <Zap size={24} />
               </div>
               <div>
-                <div className="font-bold">{t.trust.delivery}</div>
-                <div className="text-sm text-gray-400">{t.trust.deliverySub}</div>
+                <div className="font-bold text-lg">{t.trust.delivery}</div>
+                <div className="text-sm text-blue-200">{t.trust.deliverySub}</div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center gap-4 group">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
                 <Award size={24} />
               </div>
               <div>
-                <div className="font-bold">{t.trust.quality}</div>
-                <div className="text-sm text-gray-400">{t.trust.qualitySub}</div>
+                <div className="font-bold text-lg">{t.trust.quality}</div>
+                <div className="text-sm text-blue-200">{t.trust.qualitySub}</div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[#1554F6] flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center gap-4 group">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg">
                 <Clock size={24} />
               </div>
               <div>
-                <div className="font-bold">{t.trust.ontime}</div>
-                <div className="text-sm text-gray-400">{t.trust.ontimeSub}</div>
+                <div className="font-bold text-lg">{t.trust.ontime}</div>
+                <div className="text-sm text-blue-200">{t.trust.ontimeSub}</div>
               </div>
             </div>
           </div>
@@ -177,7 +183,7 @@ const Footer = ({ lang = 'tr' }) => {
       </div>
 
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
           <div className="lg:col-span-1">
