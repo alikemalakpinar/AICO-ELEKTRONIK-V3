@@ -28,6 +28,12 @@ import NotFoundPage from './pages/NotFoundPage';
 import CareersPage from './pages/CareersPage';
 import BlogPage from './pages/BlogPage';
 import PrivacyPage from './pages/PrivacyPage';
+
+// New IoT Product Pages
+import CoffeeMachineSystemsPage from './pages/CoffeeMachineSystemsPage';
+import FireDetectionPage from './pages/FireDetectionPage';
+import ColdStoragePage from './pages/ColdStoragePage';
+import CheckoutPage from './pages/CheckoutPage';
 import TermsPage from './pages/TermsPage';
 
 function App() {
