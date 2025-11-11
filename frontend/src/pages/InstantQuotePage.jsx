@@ -368,12 +368,12 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                     <motion.div 
                       className={`
                         w-16 h-16 rounded-full flex items-center justify-center mb-2
-                        ${isActive ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50' : ''}
+                        ${isActive ? 'bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-lg shadow-blue-500/50' : ''}
                         ${isCompleted ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white' : ''}
                         ${!isActive && !isCompleted ? 'bg-gray-200 text-gray-500' : ''}
                       `}
                       animate={isActive ? {
-                        scale: [1, 1.1, 1],
+                        scale: [1, 1.05, 1],
                         transition: { duration: 2, repeat: Infinity }
                       } : {}}
                     >
