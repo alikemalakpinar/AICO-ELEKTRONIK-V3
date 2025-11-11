@@ -91,7 +91,7 @@ const IoTProducts = ({ lang = 'tr' }) => {
         {/* Section Header */}
         <AnimatedSection animation="fadeInDown">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 border border-purple-200 text-purple-700 text-sm font-semibold mb-4">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-slate-100 border border-blue-200 text-blue-700 text-sm font-semibold mb-4">
               <Activity className="w-4 h-4 mr-2" />
               {t.badge}
             </div>
