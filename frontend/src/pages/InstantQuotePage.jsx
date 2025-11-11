@@ -823,7 +823,7 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                 <h2 className="text-3xl font-bold text-gray-900">4. {t.summary.title}</h2>
                 
                 {/* Advanced Mode Toggle */}
-                <label className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-primary to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all">
+                <label className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-blue-600 to-slate-700 text-white px-4 py-2 rounded-2xl hover:shadow-lg transition-all">
                   <Sparkles className="w-5 h-5" />
                   <span className="font-medium">Detaylı Analiz</span>
                   <input 
