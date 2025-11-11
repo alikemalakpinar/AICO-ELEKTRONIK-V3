@@ -113,20 +113,20 @@ const CoffeeMachineSystemsPage = ({ lang = 'tr' }) => {
   const t = content[lang] || content.tr;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-orange-50/30 to-slate-50">
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-20 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-20 right-20 w-96 h-96 bg-orange-400/20 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+      {/* Hero Section - Corporate */}
+      <section className="relative pt-24 pb-20 overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-slate-700">
+        {/* Subtle animated background */}
+        <div className="absolute inset-0 z-0 opacity-20">
+          <div className="absolute top-20 right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-20 left-20 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <AnimatedSection animation="fadeInDown">
             <div className="inline-block mb-6">
-              <div className="glass px-6 py-3 rounded-full border border-orange-200">
-                <div className="flex items-center gap-2 text-sm font-medium text-orange-600">
+              <div className="glass px-6 py-3 rounded-full border border-white/30 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-sm font-medium text-white">
                   <Coffee className="w-4 h-4" />
                   <span>IoT Smart Solutions</span>
                 </div>
@@ -135,17 +135,17 @@ const CoffeeMachineSystemsPage = ({ lang = 'tr' }) => {
           </AnimatedSection>
 
           <AnimatedSection animation="fadeInUp" delay={0.2}>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="text-gray-900">{t.hero.title}</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+              {t.hero.title}
               <br />
-              <span className="text-gradient bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600">
+              <span className="text-blue-200">
                 {t.hero.titleHighlight}
               </span>
             </h1>
           </AnimatedSection>
 
           <AnimatedSection animation="fadeInUp" delay={0.4}>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl">
+            <p className="text-xl text-blue-100 mb-8 max-w-3xl">
               {t.hero.subtitle}
             </p>
           </AnimatedSection>
@@ -154,7 +154,7 @@ const CoffeeMachineSystemsPage = ({ lang = 'tr' }) => {
             <Link to="/checkout">
               <Button 
                 size="lg"
-                className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white px-12 py-8 text-xl rounded-2xl shadow-2xl hover-lift"
+                className="bg-white text-blue-700 hover:bg-blue-50 px-12 py-8 text-xl rounded-2xl shadow-2xl hover-lift"
               >
                 {t.hero.cta}
               </Button>
@@ -171,12 +171,12 @@ const CoffeeMachineSystemsPage = ({ lang = 'tr' }) => {
               const Icon = feature.icon;
               return (
                 <AnimatedSection key={idx} animation="fadeInUp" delay={idx * 0.1}>
-                  <GlassCard className="p-6 h-full" gradient="orange" glow>
-                    <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center mb-4">
+                  <GlassCard className="p-6 h-full group bg-white/80" glow>
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Icon className="w-7 h-7 text-white" />
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-gray-900">{feature.title}</h3>
-                    <p className="text-gray-600 text-sm">{feature.description}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
                   </GlassCard>
                 </AnimatedSection>
               );
@@ -186,7 +186,7 @@ const CoffeeMachineSystemsPage = ({ lang = 'tr' }) => {
       </section>
 
       {/* Technical Specs */}
-      <section className="py-20 bg-gradient-to-r from-orange-50 to-amber-50">
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <AnimatedSection animation="fadeInLeft">
@@ -201,7 +201,7 @@ const CoffeeMachineSystemsPage = ({ lang = 'tr' }) => {
                     viewport={{ once: true }}
                     className="flex items-center gap-3"
                   >
-                    <CheckCircle2 className="w-6 h-6 text-orange-600" />
+                    <CheckCircle2 className="w-6 h-6 text-blue-600" />
                     <span className="text-gray-700">{item}</span>
                   </motion.div>
                 ))}
@@ -212,8 +212,8 @@ const CoffeeMachineSystemsPage = ({ lang = 'tr' }) => {
               <h2 className="text-4xl font-bold mb-6 text-gray-900">{t.benefits.title}</h2>
               <div className="grid grid-cols-2 gap-4">
                 {t.benefits.items.map((benefit, idx) => (
-                  <GlassCard key={idx} className="p-4" gradient="orange">
-                    <h4 className="font-bold text-orange-600 mb-1">{benefit.title}</h4>
+                  <GlassCard key={idx} className="p-4 bg-white/80">
+                    <h4 className="font-bold text-blue-600 mb-1">{benefit.title}</h4>
                     <p className="text-2xl font-bold text-gray-900">{benefit.desc}</p>
                   </GlassCard>
                 ))}
