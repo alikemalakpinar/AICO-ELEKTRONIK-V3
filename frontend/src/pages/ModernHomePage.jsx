@@ -346,7 +346,7 @@ const ModernHomePage = ({ lang = 'tr' }) => {
               <Link to="/instant-quote">
                 <Button 
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-12 py-8 text-xl rounded-2xl shadow-2xl shadow-blue-500/25 hover-lift group"
+                  className="bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white px-12 py-8 text-xl rounded-2xl shadow-2xl shadow-blue-500/25 hover-lift group"
                 >
                   {t.cta.button}
                   <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-2 transition-transform" />
