@@ -43,7 +43,7 @@ const GlassCard = ({
       
       {/* Glow effect */}
       {glow && (
-        <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-slate-500/20 to-blue-600/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
       )}
     </motion.div>
   );
