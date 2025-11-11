@@ -166,7 +166,7 @@ const CheckoutPage = ({ lang = 'tr' }) => {
                     className="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden"
                     style={{ backfaceVisibility: 'hidden' }}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-purple-800">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-slate-700 to-blue-800">
                       <div className="absolute inset-0 opacity-20">
                         <div className="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl" />
                         <div className="absolute bottom-10 left-10 w-40 h-40 bg-blue-300 rounded-full blur-3xl" />
