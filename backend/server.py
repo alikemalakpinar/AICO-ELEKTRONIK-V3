@@ -1,11 +1,14 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
@@ -37,11 +40,39 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Rate limiter setup
+limiter = Limiter(key_func=get_remote_address)
+
 # Create the main app without a prefix
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+
+
+# ============= Contact/Info Request Model =============
+class InfoRequest(BaseModel):
+    """Model for IoT solution information requests"""
+    model_config = ConfigDict(extra="ignore")
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str = Field(..., min_length=2, max_length=100)
+    email: str = Field(..., min_length=5, max_length=100)
+    phone: Optional[str] = Field(None, max_length=20)
+    company: Optional[str] = Field(None, max_length=100)
+    solution_type: str = Field(..., description="Type of IoT solution: agriculture, mining, machine-analysis, fire-detection, cold-storage")
+    message: Optional[str] = Field(None, max_length=1000)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class InfoRequestCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    email: str = Field(..., min_length=5, max_length=100)
+    phone: Optional[str] = None
+    company: Optional[str] = None
+    solution_type: str
+    message: Optional[str] = None
 
 
 # Define Models (for backward compatibility)
@@ -104,60 +135,64 @@ async def get_all_configs():
 
 # ============= Quote Routes =============
 @api_router.post("/quote/calculate")
-async def calculate_quote(request: QuoteCalculateRequest):
+@limiter.limit("30/minute")
+async def calculate_quote(request: Request, quote_request: QuoteCalculateRequest):
     """
     Calculate pricing for a quote without saving it
     Returns live pricing breakdown
+    Rate limited: 30 requests per minute
     """
     try:
         # Get pricing config
         config_doc = await db.config.find_one({"key": "pricing.v0_1", "enabled": True})
         if not config_doc:
             raise HTTPException(status_code=500, detail="Pricing configuration not found")
-        
+
         # Initialize pricing engine
         engine = PricingEngine(config_doc["data"])
-        
+
         # Convert Pydantic models to dicts
-        pcb_options = request.pcb.model_dump()
-        smt_options = request.smt.model_dump() if request.smt else None
-        
+        pcb_options = quote_request.pcb.model_dump()
+        smt_options = quote_request.smt.model_dump() if quote_request.smt else None
+
         # Calculate pricing
         result = engine.calculate_quote(
             pcb_options=pcb_options,
             smt_options=smt_options,
-            lead_time=request.lead_time
+            lead_time=quote_request.lead_time
         )
-        
+
         return result
-        
+
     except Exception as e:
         logging.error(f"Quote calculation error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Calculation error: {str(e)}")
 
 
 @api_router.post("/quote/save", response_model=QuoteModel)
-async def save_quote(request: QuoteSaveRequest):
+@limiter.limit("10/minute")
+async def save_quote(request: Request, save_request: QuoteSaveRequest):
     """
     Save a quote to database
     Returns the saved quote with ID
+    Rate limited: 10 requests per minute
     """
     try:
         quote_obj = QuoteModel(
-            user_id=request.user_id,
-            inputs=request.inputs,
-            pricing=request.pricing,
+            user_id=save_request.user_id,
+            inputs=save_request.inputs,
+            pricing=save_request.pricing,
             status="DRAFT"
         )
-        
+
         # Convert to dict for MongoDB
         quote_dict = quote_obj.model_dump()
-        
+
         # Insert into database
         await db.quotes.insert_one(quote_dict)
-        
+
         return quote_obj
-        
+
     except Exception as e:
         logging.error(f"Quote save error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Save error: {str(e)}")
@@ -238,33 +273,35 @@ async def get_order(order_id: str):
 
 # ============= Advanced Pricing Routes =============
 @api_router.post("/quote/calculate-advanced")
-async def calculate_quote_advanced(request: QuoteCalculateRequest):
+@limiter.limit("20/minute")
+async def calculate_quote_advanced(request: Request, quote_request: QuoteCalculateRequest):
     """
     Calculate pricing with ADVANCED engine
     Returns detailed cost breakdown with material, labor, overhead analysis
+    Rate limited: 20 requests per minute
     """
     try:
         # Get pricing config
         config_doc = await db.config.find_one({"key": "pricing.v0_1", "enabled": True})
         if not config_doc:
             raise HTTPException(status_code=500, detail="Pricing configuration not found")
-        
+
         # Initialize advanced pricing engine
         engine = AdvancedPricingEngine(config_doc["data"])
-        
+
         # Convert Pydantic models to dicts
-        pcb_options = request.pcb.model_dump()
-        smt_options = request.smt.model_dump() if request.smt else None
-        
+        pcb_options = quote_request.pcb.model_dump()
+        smt_options = quote_request.smt.model_dump() if quote_request.smt else None
+
         # Calculate pricing with advanced engine
         result = engine.calculate_quote(
             pcb_options=pcb_options,
             smt_options=smt_options,
-            lead_time=request.lead_time
+            lead_time=quote_request.lead_time
         )
-        
+
         return result
-        
+
     except Exception as e:
         logging.error(f"Advanced quote calculation error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Calculation error: {str(e)}")
@@ -409,6 +446,63 @@ async def complete_analysis(request: QuoteCalculateRequest):
     except Exception as e:
         logging.error(f"Complete analysis error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
+
+
+# ============= Contact/Info Request Routes =============
+@api_router.post("/contact/request-info", response_model=InfoRequest)
+@limiter.limit("5/minute")
+async def create_info_request(request: Request, info_request: InfoRequestCreate):
+    """
+    Submit an information request for IoT solutions
+    Rate limited: 5 requests per minute
+    """
+    try:
+        # Validate solution type
+        valid_solutions = ["agriculture", "mining", "machine-analysis", "fire-detection", "cold-storage"]
+        if info_request.solution_type not in valid_solutions:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid solution type. Must be one of: {', '.join(valid_solutions)}"
+            )
+
+        info_obj = InfoRequest(
+            name=info_request.name,
+            email=info_request.email,
+            phone=info_request.phone,
+            company=info_request.company,
+            solution_type=info_request.solution_type,
+            message=info_request.message
+        )
+
+        # Convert to dict for MongoDB
+        info_dict = info_obj.model_dump()
+        info_dict['created_at'] = info_dict['created_at'].isoformat()
+
+        # Insert into database
+        await db.info_requests.insert_one(info_dict)
+
+        logging.info(f"New info request for {info_request.solution_type} from {info_request.email}")
+        return info_obj
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Info request error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error submitting request: {str(e)}")
+
+
+@api_router.get("/contact/info-requests")
+async def get_info_requests(solution_type: Optional[str] = None):
+    """
+    Get all info requests (admin only - add auth later)
+    Optionally filter by solution type
+    """
+    query = {}
+    if solution_type:
+        query["solution_type"] = solution_type
+
+    requests = await db.info_requests.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return requests
 
 
 # Include the router in the main app
