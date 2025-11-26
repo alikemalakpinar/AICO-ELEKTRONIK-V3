@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Upload, ArrowRight, ArrowLeft, Check, FileText, Settings, 
-  CreditCard, Package, Layers, Cpu, DollarSign, Clock, 
+import {
+  Upload, ArrowRight, ArrowLeft, Check, FileText, Settings,
+  CreditCard, Package, Layers, Cpu, DollarSign, Clock,
   AlertCircle, CheckCircle2, Zap, Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -17,10 +18,20 @@ import BOMOptimizerPanel from '../components/BOMOptimizerPanel';
 import PriceComparisonChart from '../components/PriceComparisonChart';
 import AnimatedSection from '../components/AnimatedSection';
 import GlassCard from '../components/GlassCard';
+import {
+  ColorSelector,
+  FinishSelector,
+  QuantitySelector,
+  LayerSelector,
+  LeadTimeSelector,
+  PriceSkeleton,
+  StickyPriceSkeleton
+} from '../components/VisualSelectors';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 const InstantQuotePage = ({ lang = 'tr' }) => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [pricing, setPricing] = useState(null);
   const [advancedAnalysis, setAdvancedAnalysis] = useState(null);
@@ -293,7 +304,32 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
     return days[formData.lead_time] || '7-10';
   };
 
+  // Navigate to checkout with order data
+  const handleCreateOrder = () => {
+    const orderData = {
+      pcb: {
+        quantity: formData.quantity,
+        layers: formData.layers,
+        finish: formData.finish,
+        color: formData.solder_mask_color
+      },
+      leadTime: getLeadTimeDays(),
+      pricing: {
+        pcb: pricing?.breakdown?.pcb || 0,
+        smt: pricing?.breakdown?.smt || 0,
+        shipping: pricing?.breakdown?.shipping || 0,
+        total: pricing?.summary?.total || pricing?.total || 0
+      }
+    };
+    navigate('/checkout', { state: { orderData } });
+  };
+
   return (
+    <>
+      <Helmet>
+        <title>{t.title} | Aico Elektronik</title>
+        <meta name="description" content="Profesyonel PCB üretim teklifi alın. Anında fiyat hesaplama, DFM analizi ve online sipariş." />
+      </Helmet>
     <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-blue-50 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute top-20 right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-float" />
@@ -486,171 +522,166 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.4 }}
-                className="space-y-6"
+                className="space-y-8"
               >
                 <AnimatedSection animation="fadeInDown">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6">2. {t.pcb.title}</h2>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">2. {t.pcb.title}</h2>
+                  <p className="text-gray-500">PCB özelliklerini görsel seçicilerle belirleyin</p>
                 </AnimatedSection>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Quantity */}
-                <div>
-                  <Label>{t.pcb.quantity}</Label>
-                  <select 
-                    className="w-full mt-2 p-3 border rounded-lg"
-                    value={formData.quantity}
-                    onChange={(e) => handleInputChange('quantity', e.target.value)}
-                  >
-                    {[5, 10, 20, 50, 100, 250, 500, 1000].map(q => (
-                      <option key={q} value={q}>{q}</option>
-                    ))}
-                  </select>
-                </div>
 
-                {/* Layers */}
-                <div>
-                  <Label>{t.pcb.layers}</Label>
-                  <select 
-                    className="w-full mt-2 p-3 border rounded-lg"
-                    value={formData.layers}
-                    onChange={(e) => handleInputChange('layers', e.target.value)}
-                  >
-                    {[2, 4, 6, 8, 10].map(l => (
-                      <option key={l} value={l}>{l}L</option>
-                    ))}
-                  </select>
-                </div>
+                {/* Visual Quantity Selector */}
+                <AnimatedSection animation="fadeInUp" delay={0.1}>
+                  <QuantitySelector
+                    label={t.pcb.quantity}
+                    value={parseInt(formData.quantity)}
+                    onChange={(val) => handleInputChange('quantity', val)}
+                  />
+                </AnimatedSection>
 
-                {/* Thickness */}
-                <div>
-                  <Label>{t.pcb.thickness}</Label>
-                  <select 
-                    className="w-full mt-2 p-3 border rounded-lg"
-                    value={formData.thickness_mm}
-                    onChange={(e) => handleInputChange('thickness_mm', e.target.value)}
-                  >
-                    <option value="1.0">1.0mm</option>
-                    <option value="1.6">1.6mm (Standart)</option>
-                    <option value="2.0">2.0mm</option>
-                  </select>
-                </div>
+                {/* Visual Layer Selector */}
+                <AnimatedSection animation="fadeInUp" delay={0.15}>
+                  <LayerSelector
+                    label={t.pcb.layers}
+                    value={parseInt(formData.layers)}
+                    onChange={(val) => handleInputChange('layers', val)}
+                  />
+                </AnimatedSection>
 
-                {/* Copper Weight */}
-                <div>
-                  <Label>{t.pcb.copper}</Label>
-                  <select 
-                    className="w-full mt-2 p-3 border rounded-lg"
-                    value={formData.copper_oz}
-                    onChange={(e) => handleInputChange('copper_oz', e.target.value)}
-                  >
-                    <option value="1">1 oz</option>
-                    <option value="2">2 oz</option>
-                  </select>
-                </div>
+                {/* Visual Color Selector */}
+                <AnimatedSection animation="fadeInUp" delay={0.2}>
+                  <ColorSelector
+                    label={t.pcb.maskColor}
+                    value={formData.solder_mask_color}
+                    onChange={(val) => handleInputChange('solder_mask_color', val)}
+                  />
+                </AnimatedSection>
 
-                {/* Surface Finish */}
-                <div>
-                  <Label>{t.pcb.finish}</Label>
-                  <select 
-                    className="w-full mt-2 p-3 border rounded-lg"
+                {/* Visual Finish Selector */}
+                <AnimatedSection animation="fadeInUp" delay={0.25}>
+                  <FinishSelector
+                    label={t.pcb.finish}
                     value={formData.finish}
-                    onChange={(e) => handleInputChange('finish', e.target.value)}
-                  >
-                    <option value="HASL">HASL</option>
-                    <option value="ENIG">ENIG</option>
-                    <option value="OSP">OSP</option>
-                  </select>
-                </div>
-
-                {/* Min Track/Space */}
-                <div>
-                  <Label>{t.pcb.minTrack}</Label>
-                  <Input 
-                    type="number" 
-                    step="0.01"
-                    className="mt-2"
-                    value={formData.min_track_space_mm}
-                    onChange={(e) => handleInputChange('min_track_space_mm', e.target.value)}
+                    onChange={(val) => handleInputChange('finish', val)}
                   />
-                </div>
+                </AnimatedSection>
 
-                {/* Board Width */}
-                <div>
-                  <Label>{t.pcb.width}</Label>
-                  <Input 
-                    type="number"
-                    className="mt-2"
-                    value={formData.board_width_mm}
-                    onChange={(e) => handleInputChange('board_width_mm', e.target.value)}
-                  />
-                </div>
+                {/* Board Dimensions */}
+                <AnimatedSection animation="fadeInUp" delay={0.3}>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <Label>{t.pcb.thickness}</Label>
+                      <select
+                        className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        value={formData.thickness_mm}
+                        onChange={(e) => handleInputChange('thickness_mm', e.target.value)}
+                      >
+                        <option value="1.0">1.0mm</option>
+                        <option value="1.6">1.6mm (Standart)</option>
+                        <option value="2.0">2.0mm</option>
+                      </select>
+                    </div>
 
-                {/* Board Height */}
-                <div>
-                  <Label>{t.pcb.height}</Label>
-                  <Input 
-                    type="number"
-                    className="mt-2"
-                    value={formData.board_height_mm}
-                    onChange={(e) => handleInputChange('board_height_mm', e.target.value)}
-                  />
-                </div>
+                    <div>
+                      <Label>{t.pcb.width}</Label>
+                      <Input
+                        type="number"
+                        className="mt-2"
+                        value={formData.board_width_mm}
+                        onChange={(e) => handleInputChange('board_width_mm', e.target.value)}
+                      />
+                    </div>
 
-                {/* Lead Time */}
-                <div>
-                  <Label>{t.leadtime.title}</Label>
-                  <select 
-                    className="w-full mt-2 p-3 border rounded-lg"
+                    <div>
+                      <Label>{t.pcb.height}</Label>
+                      <Input
+                        type="number"
+                        className="mt-2"
+                        value={formData.board_height_mm}
+                        onChange={(e) => handleInputChange('board_height_mm', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </AnimatedSection>
+
+                {/* Lead Time Visual Selector */}
+                <AnimatedSection animation="fadeInUp" delay={0.35}>
+                  <LeadTimeSelector
+                    label={t.leadtime.title}
                     value={formData.lead_time}
-                    onChange={(e) => handleInputChange('lead_time', e.target.value)}
-                  >
-                    <option value="economy">{t.leadtime.economy}</option>
-                    <option value="standard">{t.leadtime.standard}</option>
-                    <option value="fast">{t.leadtime.fast}</option>
-                  </select>
+                    onChange={(val) => handleInputChange('lead_time', val)}
+                    content={{
+                      economy: lang === 'tr' ? 'Ekonomik' : 'Economy',
+                      standard: lang === 'tr' ? 'Standart' : 'Standard',
+                      fast: lang === 'tr' ? 'Hızlı' : 'Fast'
+                    }}
+                  />
+                </AnimatedSection>
+
+                {/* Advanced Options */}
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold text-lg mb-4">Gelişmiş Seçenekler</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label>{t.pcb.copper}</Label>
+                      <select
+                        className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                        value={formData.copper_oz}
+                        onChange={(e) => handleInputChange('copper_oz', e.target.value)}
+                      >
+                        <option value="1">1 oz</option>
+                        <option value="2">2 oz</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <Label>{t.pcb.minTrack}</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        className="mt-2"
+                        value={formData.min_track_space_mm}
+                        onChange={(e) => handleInputChange('min_track_space_mm', e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex items-end gap-6">
+                      <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={formData.impedance_controlled}
+                          onChange={(e) => handleInputChange('impedance_controlled', e.target.checked)}
+                          className="w-5 h-5 text-blue-600 rounded"
+                        />
+                        <span className="text-sm">{t.pcb.impedance}</span>
+                      </label>
+
+                      <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={formData.e_test}
+                          onChange={(e) => handleInputChange('e_test', e.target.checked)}
+                          className="w-5 h-5 text-blue-600 rounded"
+                        />
+                        <span className="text-sm">{t.pcb.etest}</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Advanced Options */}
-              <div className="border-t pt-6 mt-6">
-                <h3 className="font-semibold text-lg mb-4">Gelişmiş Seçenekler</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input 
-                      type="checkbox"
-                      checked={formData.impedance_controlled}
-                      onChange={(e) => handleInputChange('impedance_controlled', e.target.checked)}
-                      className="w-5 h-5"
-                    />
-                    <span>{t.pcb.impedance}</span>
-                  </label>
-
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input 
-                      type="checkbox"
-                      checked={formData.e_test}
-                      onChange={(e) => handleInputChange('e_test', e.target.checked)}
-                      className="w-5 h-5"
-                    />
-                    <span>{t.pcb.etest}</span>
-                  </label>
+                <div className="flex justify-between gap-4 pt-6">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button onClick={prevStep} variant="outline" size="lg">
+                      <ArrowLeft className="mr-2 h-4 w-4" /> {t.buttons.back}
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button onClick={nextStep} size="lg" className="hover-lift bg-gradient-to-r from-blue-600 to-slate-700">
+                      {t.buttons.next} <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </motion.div>
                 </div>
-              </div>
-
-              <div className="flex justify-between gap-4 pt-6">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button onClick={prevStep} variant="outline" size="lg">
-                    <ArrowLeft className="mr-2 h-4 w-4" /> {t.buttons.back}
-                  </Button>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button onClick={nextStep} size="lg" className="hover-lift">
-                    {t.buttons.next} <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
 
           {/* Step 3: SMT Options */}
           {step === 3 && (
@@ -932,14 +963,16 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                         {t.summary.saveQuote}
                       </Button>
                     </motion.div>
-                    <Link to="/checkout" className="w-full">
-                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button size="lg" className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-xl hover-lift">
-                          <Package className="mr-2 h-5 w-5" />
-                          {t.summary.createOrder}
-                        </Button>
-                      </motion.div>
-                    </Link>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button
+                        size="lg"
+                        onClick={handleCreateOrder}
+                        className="w-full bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 shadow-xl hover-lift"
+                      >
+                        <Package className="mr-2 h-5 w-5" />
+                        {t.summary.createOrder}
+                      </Button>
+                    </motion.div>
                   </div>
                 </div>
               ) : (
@@ -963,59 +996,67 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
       </div>
 
       {/* Sticky Price Bar (visible on steps 2-4) */}
-      {step >= 2 && pricing && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-primary shadow-2xl p-4 z-50">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <div>
-                <p className="text-sm text-gray-600">PCB</p>
-                <p className="text-lg font-bold">₺{pricing.breakdown.pcb.toFixed(2)}</p>
-              </div>
-              {pricing.breakdown.smt > 0 && (
+      {step >= 2 && (
+        calculating ? (
+          <StickyPriceSkeleton />
+        ) : pricing ? (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-2xl p-4 z-50">
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-8">
                 <div>
-                  <p className="text-sm text-gray-600">SMT</p>
-                  <p className="text-lg font-bold">₺{pricing.breakdown.smt.toFixed(2)}</p>
+                  <p className="text-sm text-gray-600">PCB</p>
+                  <p className="text-lg font-bold">₺{pricing.breakdown.pcb.toFixed(2)}</p>
                 </div>
-              )}
-              <div className="border-l pl-6">
-                <p className="text-sm text-gray-600">TOPLAM</p>
-                <p className="text-2xl font-bold text-primary">₺{(pricing.summary?.total || pricing.total).toFixed(2)}</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Clock className="w-4 h-4" />
-                <span>{getLeadTimeDays()} iş günü</span>
-              </div>
-              {useAdvancedMode && advancedAnalysis && advancedAnalysis.summary && (
-                <div className="flex items-center gap-4 border-l pl-6">
-                  {advancedAnalysis.summary.dfm_score !== undefined && (
-                    <div className="text-center">
-                      <p className="text-xs text-gray-600">DFM</p>
-                      <p className="text-lg font-bold text-blue-600">
-                        {advancedAnalysis.summary.dfm_score}
-                      </p>
-                    </div>
-                  )}
-                  {advancedAnalysis.summary.potential_savings > 0 && (
-                    <div className="text-center">
-                      <p className="text-xs text-gray-600">Tasarruf</p>
-                      <p className="text-lg font-bold text-green-600">
-                        {advancedAnalysis.summary.potential_savings.toFixed(1)}%
-                      </p>
-                    </div>
-                  )}
+                {pricing.breakdown.smt > 0 && (
+                  <div>
+                    <p className="text-sm text-gray-600">SMT</p>
+                    <p className="text-lg font-bold">₺{pricing.breakdown.smt.toFixed(2)}</p>
+                  </div>
+                )}
+                <div className="border-l pl-6">
+                  <p className="text-sm text-gray-600">TOPLAM</p>
+                  <p className="text-2xl font-bold text-blue-600">₺{(pricing.summary?.total || pricing.total).toFixed(2)}</p>
                 </div>
-              )}
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Clock className="w-4 h-4" />
+                  <span>{getLeadTimeDays()} iş günü</span>
+                </div>
+                {useAdvancedMode && advancedAnalysis && advancedAnalysis.summary && (
+                  <div className="flex items-center gap-4 border-l pl-6">
+                    {advancedAnalysis.summary.dfm_score !== undefined && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-600">DFM</p>
+                        <p className="text-lg font-bold text-blue-600">
+                          {advancedAnalysis.summary.dfm_score}
+                        </p>
+                      </div>
+                    )}
+                    {advancedAnalysis.summary.potential_savings > 0 && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-600">Tasarruf</p>
+                        <p className="text-lg font-bold text-blue-600">
+                          {advancedAnalysis.summary.potential_savings.toFixed(1)}%
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  onClick={handleCreateOrder}
+                  className="bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 shadow-lg"
+                >
+                  <Package className="mr-2 h-4 w-4" />
+                  Sipariş Ver
+                </Button>
+              </motion.div>
             </div>
-            {calculating && (
-              <div className="flex items-center gap-2 text-sm text-blue-600">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span>Güncelleniyor...</span>
-              </div>
-            )}
           </div>
-        </div>
+        ) : null
       )}
     </div>
+    </>
   );
 };
 
