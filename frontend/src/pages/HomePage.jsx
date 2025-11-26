@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import PremiumHero from '../components/Home/PremiumHero';
+import PartnersMarquee from '../components/Home/PartnersMarquee';
 import TrustBadges from '../components/Home/TrustBadges';
 import Services from '../components/Home/Services';
 import IoTProducts from '../components/Home/IoTProducts';
@@ -39,6 +40,7 @@ const HomePage = ({ lang }) => {
 
       <div>
         <PremiumHero lang={lang} />
+        <PartnersMarquee lang={lang} />
         <TrustBadges lang={lang} />
         <Services lang={lang} />
         <IoTProducts lang={lang} />
