@@ -1,44 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from './components/ui/sonner';
 import Header from './components/Header';
 import Footer from './components/Footer';
+
+// Critical pages - loaded immediately
 import HomePage from './pages/HomePage';
-import ProductListPage from './pages/ProductListPage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import CalculatorsPage from './pages/CalculatorsPage';
-import PowerSupplyCalculator from './pages/PowerSupplyCalculator';
-import LEDDriverCalculator from './pages/LEDDriverCalculator';
-import CableCalculator from './pages/CableCalculator';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import ServicesPage from './pages/ServicesPage';
-import InstantQuotePage from './pages/InstantQuotePage';
-import PCBManufacturingPage from './pages/PCBManufacturingPage';
-import PCBAssemblyPage from './pages/PCBAssemblyPage';
-import FastPrototypingPage from './pages/FastPrototypingPage';
-import PCBCapabilitiesPage from './pages/PCBCapabilitiesPage';
-import AssemblyCapabilitiesPage from './pages/AssemblyCapabilitiesPage';
-import StackupPage from './pages/StackupPage';
-import QualityPage from './pages/QualityPage';
-import CaseStudiesPage from './pages/CaseStudiesPage';
-import SupportPage from './pages/SupportPage';
 import NotFoundPage from './pages/NotFoundPage';
-import CareersPage from './pages/CareersPage';
-import BlogPage from './pages/BlogPage';
-import PrivacyPage from './pages/PrivacyPage';
 
-// IoT Product Pages
-import CoffeeMachineSystemsPage from './pages/CoffeeMachineSystemsPage';
-import FireDetectionPage from './pages/FireDetectionPage';
-import ColdStoragePage from './pages/ColdStoragePage';
-import MiningTrackingPage from './pages/MiningTrackingPage';
-import MachineAnalysisPage from './pages/MachineAnalysisPage';
+// Lazy loaded pages for better performance
+const ProductListPage = lazy(() => import('./pages/ProductListPage'));
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'));
+const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
+const PowerSupplyCalculator = lazy(() => import('./pages/PowerSupplyCalculator'));
+const LEDDriverCalculator = lazy(() => import('./pages/LEDDriverCalculator'));
+const CableCalculator = lazy(() => import('./pages/CableCalculator'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const InstantQuotePage = lazy(() => import('./pages/InstantQuotePage'));
+const PCBManufacturingPage = lazy(() => import('./pages/PCBManufacturingPage'));
+const PCBAssemblyPage = lazy(() => import('./pages/PCBAssemblyPage'));
+const FastPrototypingPage = lazy(() => import('./pages/FastPrototypingPage'));
+const PCBCapabilitiesPage = lazy(() => import('./pages/PCBCapabilitiesPage'));
+const AssemblyCapabilitiesPage = lazy(() => import('./pages/AssemblyCapabilitiesPage'));
+const StackupPage = lazy(() => import('./pages/StackupPage'));
+const QualityPage = lazy(() => import('./pages/QualityPage'));
+const CaseStudiesPage = lazy(() => import('./pages/CaseStudiesPage'));
+const SupportPage = lazy(() => import('./pages/SupportPage'));
+const CareersPage = lazy(() => import('./pages/CareersPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
 
-import CheckoutPage from './pages/CheckoutPage';
-import TermsPage from './pages/TermsPage';
+// IoT Product Pages - Lazy loaded
+const CoffeeMachineSystemsPage = lazy(() => import('./pages/CoffeeMachineSystemsPage'));
+const FireDetectionPage = lazy(() => import('./pages/FireDetectionPage'));
+const ColdStoragePage = lazy(() => import('./pages/ColdStoragePage'));
+const MiningTrackingPage = lazy(() => import('./pages/MiningTrackingPage'));
+const MachineAnalysisPage = lazy(() => import('./pages/MachineAnalysisPage'));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="text-center">
+      <div className="relative w-16 h-16 mx-auto mb-4">
+        <div className="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
+        <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+      </div>
+      <p className="text-slate-600 font-medium">Yükleniyor...</p>
+    </div>
+  </div>
+);
 
 function App() {
   const [lang, setLang] = useState('tr');
@@ -57,6 +73,7 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <Header lang={lang} setLang={setLang} />
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Navigate to="/tr" replace />} />
 
@@ -148,6 +165,7 @@ function App() {
             {/* 404 */}
             <Route path="*" element={<NotFoundPage lang={lang} />} />
           </Routes>
+          </Suspense>
           <Footer lang={lang} />
           <Toaster position="top-right" />
         </BrowserRouter>

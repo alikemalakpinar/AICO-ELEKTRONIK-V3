@@ -18,6 +18,7 @@ import BOMOptimizerPanel from '../components/BOMOptimizerPanel';
 import PriceComparisonChart from '../components/PriceComparisonChart';
 import AnimatedSection from '../components/AnimatedSection';
 import GlassCard from '../components/GlassCard';
+import GerberPreview from '../components/GerberPreview';
 import {
   ColorSelector,
   FinishSelector,
@@ -469,44 +470,74 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                 className="space-y-6"
               >
                 <AnimatedSection animation="fadeInDown">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6">1. Dosya Yükleme</h2>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">1. {lang === 'tr' ? 'Dosya Yükleme' : 'File Upload'}</h2>
+                  <p className="text-gray-500">{lang === 'tr' ? 'Gerber dosyalarınızı yükleyin ve anında önizleme görün' : 'Upload your Gerber files and see instant preview'}</p>
                 </AnimatedSection>
-                
-                <motion.div 
-                  className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-primary transition-all cursor-pointer group"
-                  whileHover={{ scale: 1.02, borderColor: '#3b82f6' }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <Upload className="w-16 h-16 mx-auto text-gray-400 mb-4 group-hover:text-primary transition-colors" />
-                  </motion.div>
-                  <p className="text-lg font-medium text-gray-700 mb-2">
-                    Gerber, BOM veya PnP dosyalarınızı yükleyin
-                  </p>
-                  <p className="text-sm text-gray-500 mb-4">
-                    ZIP, RAR formatları desteklenir (maks 50MB)
-                  </p>
-                  <Button className="mt-4 hover-lift">
-                    <Upload className="mr-2 h-4 w-4" />
-                    Dosya Seç
-                  </Button>
-                </motion.div>
 
-                <AnimatedSection animation="fadeInUp" delay={0.2}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* File Upload Area */}
+                  <div className="space-y-4">
+                    <motion.div
+                      className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition-all cursor-pointer group bg-gradient-to-br from-white to-gray-50"
+                      whileHover={{ scale: 1.02, borderColor: '#3b82f6' }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <motion.div
+                        animate={{ y: [0, -10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        <Upload className="w-14 h-14 mx-auto text-gray-400 mb-4 group-hover:text-primary transition-colors" />
+                      </motion.div>
+                      <p className="text-lg font-medium text-gray-700 mb-2">
+                        {lang === 'tr' ? 'Gerber, BOM veya PnP dosyalarınızı yükleyin' : 'Upload your Gerber, BOM or PnP files'}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-4">
+                        {lang === 'tr' ? 'ZIP, RAR formatları desteklenir (maks 50MB)' : 'ZIP, RAR formats supported (max 50MB)'}
+                      </p>
+                      <Button className="mt-2 hover-lift">
+                        <Upload className="mr-2 h-4 w-4" />
+                        {lang === 'tr' ? 'Dosya Seç' : 'Select File'}
+                      </Button>
+                    </motion.div>
+
+                    {/* Supported Formats */}
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                      <h4 className="text-sm font-semibold text-gray-700 mb-3">{lang === 'tr' ? 'Desteklenen Formatlar' : 'Supported Formats'}</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { name: 'Gerber', ext: '.gbr, .gtl, .gbl', icon: '📋' },
+                          { name: 'Drill', ext: '.drl, .xln', icon: '🔩' },
+                          { name: 'BOM', ext: '.csv, .xlsx', icon: '📊' },
+                          { name: 'Pick & Place', ext: '.csv, .txt', icon: '📍' },
+                        ].map((format, i) => (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <span>{format.icon}</span>
+                            <span className="font-medium text-gray-700">{format.name}</span>
+                            <span className="text-gray-400 text-xs">{format.ext}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Gerber Preview */}
+                  <AnimatedSection animation="fadeInRight" delay={0.2}>
+                    <GerberPreview lang={lang} showControls={true} interactive={true} />
+                  </AnimatedSection>
+                </div>
+
+                <AnimatedSection animation="fadeInUp" delay={0.3}>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5" />
                     <p className="text-sm text-blue-800">
-                      <strong>NDA Güvencesi:</strong> Dosyalarınız tamamen güvende, üçüncü taraflarla paylaşılmaz.
+                      <strong>{lang === 'tr' ? 'NDA Güvencesi:' : 'NDA Guarantee:'}</strong> {lang === 'tr' ? 'Dosyalarınız tamamen güvende, üçüncü taraflarla paylaşılmaz.' : 'Your files are completely secure and not shared with third parties.'}
                     </p>
                   </div>
                 </AnimatedSection>
 
                 <div className="flex justify-end gap-4 pt-6">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button onClick={nextStep} size="lg" className="hover-lift">
+                    <Button onClick={nextStep} size="lg" className="hover-lift bg-gradient-to-r from-blue-600 to-slate-700">
                       {t.buttons.next} <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </motion.div>

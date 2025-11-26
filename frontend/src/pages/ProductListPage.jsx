@@ -1,14 +1,16 @@
 import React, { useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { mockProducts, productCategories } from '../mock';
 import { getLocalizedValue } from '../utils/i18n';
-import { Filter, SlidersHorizontal } from 'lucide-react';
+import { Filter, SlidersHorizontal, ChevronRight, Home } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Checkbox } from '../components/ui/checkbox';
 import { Label } from '../components/ui/label';
 
 const ProductListPage = ({ lang }) => {
   const { categoryId } = useParams();
+  const location = useLocation();
   const [filters, setFilters] = useState({
     voltage: [],
     power: [],
@@ -54,8 +56,98 @@ const ProductListPage = ({ lang }) => {
     setFilters({ voltage: [], power: [], ip: [], certifications: [] });
   };
 
+  // Schema markup for breadcrumb and product list
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": lang === 'tr' ? "Ana Sayfa" : "Home",
+        "item": `https://www.aicoelektronik.com/${lang}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": lang === 'tr' ? "Ürünler" : "Products",
+        "item": `https://www.aicoelektronik.com/${lang}/products`
+      },
+      ...(categoryId ? [{
+        "@type": "ListItem",
+        "position": 3,
+        "name": getLocalizedValue(category, 'title', lang),
+        "item": `https://www.aicoelektronik.com/${lang}/products/${categoryId}`
+      }] : [])
+    ]
+  };
+
+  const productListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": getLocalizedValue(category, 'title', lang),
+    "numberOfItems": filteredProducts.length,
+    "itemListElement": filteredProducts.slice(0, 10).map((product, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "Product",
+        "name": lang === 'tr' ? product.nameTr : product.nameEn,
+        "sku": product.code,
+        "image": `https://www.aicoelektronik.com${product.image}`,
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "TRY",
+          "availability": product.stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+        }
+      }
+    }))
+  };
+
   return (
+    <>
+      <Helmet>
+        <title>
+          {categoryId
+            ? `${getLocalizedValue(category, 'title', lang)} | Aico Elektronik`
+            : lang === 'tr' ? 'Tüm Ürünler | Aico Elektronik' : 'All Products | Aico Electronics'}
+        </title>
+        <meta
+          name="description"
+          content={lang === 'tr'
+            ? `${getLocalizedValue(category, 'desc', lang)} - Profesyonel endüstriyel elektronik çözümleri.`
+            : `${getLocalizedValue(category, 'desc', lang)} - Professional industrial electronics solutions.`
+          }
+        />
+        <link rel="canonical" href={`https://www.aicoelektronik.com${location.pathname}`} />
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(productListSchema)}</script>
+      </Helmet>
+
     <div className="min-h-screen bg-gray-50">
+      {/* Breadcrumb */}
+      <div className="bg-slate-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <nav className="flex items-center gap-2 text-sm">
+            <Link to={`/${lang}`} className="text-gray-500 hover:text-blue-600 transition-colors flex items-center gap-1">
+              <Home size={14} />
+              {lang === 'tr' ? 'Ana Sayfa' : 'Home'}
+            </Link>
+            <ChevronRight size={14} className="text-gray-400" />
+            <Link to={`/${lang}/products`} className={`transition-colors ${!categoryId ? 'text-blue-600 font-medium' : 'text-gray-500 hover:text-blue-600'}`}>
+              {lang === 'tr' ? 'Ürünler' : 'Products'}
+            </Link>
+            {categoryId && (
+              <>
+                <ChevronRight size={14} className="text-gray-400" />
+                <span className="text-blue-600 font-medium">{getLocalizedValue(category, 'title', lang)}</span>
+              </>
+            )}
+          </nav>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -206,6 +298,7 @@ const ProductListPage = ({ lang }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
