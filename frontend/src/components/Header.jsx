@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Menu, X, ChevronDown, Zap, Globe, Phone, Mail,
-  Cpu, Settings, Award, Layers, Package, Moon, Sun, ArrowRight
+  Cpu, Settings, Award, Layers, Package, ArrowRight
 } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -11,9 +11,7 @@ const Header = ({ lang = 'tr' }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [capabilitiesOpen, setCapabilitiesOpen] = useState(false);
-  const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem('theme') === 'dark';
-  });
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -25,16 +23,6 @@ const Header = ({ lang = 'tr' }) => {
   }, []);
 
   useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
-  useEffect(() => {
     setMobileMenuOpen(false);
   }, [location]);
 
@@ -42,30 +30,39 @@ const Header = ({ lang = 'tr' }) => {
     tr: {
       services: 'Hizmetler',
       capabilities: 'Yetenekler',
+      solutions: 'Cozumler',
       caseStudies: 'Referanslar',
-      docs: 'Destek',
-      about: 'Hakkımızda',
-      contact: 'İletişim',
-      getQuote: 'Anında Teklif',
+      support: 'Destek',
+      about: 'Hakkimizda',
+      contact: 'Iletisim',
+      getQuote: 'Teklif Al',
       serviceItems: [
-        { icon: Layers, title: 'PCB Üretim', desc: '2-10 katman profesyonel üretim', link: '/pcb-manufacturing' },
+        { icon: Layers, title: 'PCB Uretim', desc: '2-10 katman profesyonel uretim', link: '/pcb-manufacturing' },
         { icon: Cpu, title: 'PCB Dizgi', desc: 'SMT/THT hassas montaj', link: '/pcb-assembly' },
-        { icon: Zap, title: 'Hızlı Prototip', desc: '24-48 saat ekspres teslimat', link: '/fast-prototyping' }
+        { icon: Zap, title: 'Hizli Prototip', desc: '24-48 saat ekspres teslimat', link: '/fast-prototyping' }
       ],
       capabilityItems: [
-        { icon: Settings, title: 'PCB Kapasiteleri', desc: 'Teknik özellikler', link: '/pcb-capabilities' },
+        { icon: Settings, title: 'PCB Kapasiteleri', desc: 'Teknik ozellikler', link: '/pcb-capabilities' },
         { icon: Package, title: 'Dizgi Kapasiteleri', desc: 'Montaj yetenekleri', link: '/assembly-capabilities' },
-        { icon: Award, title: 'Kalite', desc: 'ISO 9001 sertifikalı', link: '/quality' }
+        { icon: Award, title: 'Kalite', desc: 'ISO 9001 sertifikali', link: '/quality' }
+      ],
+      solutionItems: [
+        { title: 'Akilli Tarim', link: '/coffee-machine-systems' },
+        { title: 'Madenci Takibi', link: '/mining-tracking' },
+        { title: 'Makine Analizi', link: '/machine-analysis' },
+        { title: 'Yangin Tespit', link: '/fire-detection' },
+        { title: 'Soguk Depo', link: '/cold-storage' }
       ]
     },
     en: {
       services: 'Services',
       capabilities: 'Capabilities',
+      solutions: 'Solutions',
       caseStudies: 'References',
-      docs: 'Support',
+      support: 'Support',
       about: 'About',
       contact: 'Contact',
-      getQuote: 'Instant Quote',
+      getQuote: 'Get Quote',
       serviceItems: [
         { icon: Layers, title: 'PCB Manufacturing', desc: '2-10 layer professional production', link: '/pcb-manufacturing' },
         { icon: Cpu, title: 'PCB Assembly', desc: 'SMT/THT precision assembly', link: '/pcb-assembly' },
@@ -75,6 +72,13 @@ const Header = ({ lang = 'tr' }) => {
         { icon: Settings, title: 'PCB Capabilities', desc: 'Technical specifications', link: '/pcb-capabilities' },
         { icon: Package, title: 'Assembly Capabilities', desc: 'Assembly capabilities', link: '/assembly-capabilities' },
         { icon: Award, title: 'Quality', desc: 'ISO 9001 certified', link: '/quality' }
+      ],
+      solutionItems: [
+        { title: 'Smart Agriculture', link: '/coffee-machine-systems' },
+        { title: 'Mining Tracking', link: '/mining-tracking' },
+        { title: 'Machine Analysis', link: '/machine-analysis' },
+        { title: 'Fire Detection', link: '/fire-detection' },
+        { title: 'Cold Storage', link: '/cold-storage' }
       ]
     }
   };
@@ -85,49 +89,43 @@ const Header = ({ lang = 'tr' }) => {
 
   return (
     <>
-      {/* Elegant Top Bar */}
-      <div className="hidden md:block bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-2.5 text-sm border-b border-white/5">
+      {/* Corporate Top Bar */}
+      <div className="hidden md:block bg-slate-900 text-white py-2.5 text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <a href="tel:+903125550000" className="flex items-center gap-2 text-slate-300 hover:text-white transition-all duration-300 group">
-              <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
-                <Phone size={12} />
-              </div>
-              <span className="font-medium">+90 312 555 0000</span>
+            <a href="tel:+903125550000" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+              <Phone size={14} />
+              <span>+90 312 555 0000</span>
             </a>
-            <a href="mailto:info@aicoelektronik.com" className="flex items-center gap-2 text-slate-300 hover:text-white transition-all duration-300 group">
-              <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
-                <Mail size={12} />
-              </div>
-              <span className="font-medium">info@aicoelektronik.com</span>
+            <a href="mailto:info@aicoelektronik.com" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+              <Mail size={14} />
+              <span>info@aicoelektronik.com</span>
             </a>
           </div>
           <Link
             to={`/${otherLang}${currentPath}`}
-            className="flex items-center gap-2 text-slate-300 hover:text-white transition-all duration-300 group"
+            className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors"
           >
-            <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
-              <Globe size={12} />
-            </div>
-            <span className="font-semibold">{otherLang.toUpperCase()}</span>
+            <Globe size={14} />
+            <span className="font-medium">{otherLang.toUpperCase()}</span>
           </Link>
         </div>
       </div>
 
-      {/* Main Header with elegant glass effect */}
-      <header className={`sticky top-0 z-50 transition-all duration-500 ${
+      {/* Main Header */}
+      <header className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/90 backdrop-blur-2xl shadow-xl shadow-slate-900/5 border-b border-slate-200/50'
-          : 'bg-white/70 backdrop-blur-xl border-b border-slate-100/50'
+          ? 'bg-white shadow-lg border-b border-slate-200'
+          : 'bg-white border-b border-slate-100'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-18 lg:h-20">
-            {/* Logo with subtle hover effect */}
-            <Link to={`/${lang}`} className="flex items-center gap-3 flex-shrink-0 group">
+          <div className="flex items-center justify-between h-16 lg:h-18">
+            {/* Logo */}
+            <Link to={`/${lang}`} className="flex items-center gap-3 flex-shrink-0">
               <img
                 src="/assets/logos/logo-mavi.png"
                 alt="Aico Elektronik"
-                className="h-9 lg:h-11 w-auto transition-transform duration-300 group-hover:scale-105"
+                className="h-8 lg:h-10 w-auto"
               />
             </Link>
 
@@ -135,34 +133,33 @@ const Header = ({ lang = 'tr' }) => {
             <nav className="hidden lg:flex items-center gap-1">
               {/* Services Dropdown */}
               <div
-                className="relative group"
+                className="relative"
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
-                <button className="flex items-center gap-1.5 px-4 py-2.5 text-slate-600 hover:text-slate-900 transition-colors font-medium text-[15px]">
+                <button className="flex items-center gap-1 px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
                   {t.services}
-                  <ChevronDown size={15} className={`transition-transform duration-300 ${servicesOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown size={14} className={`transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {servicesOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl shadow-slate-900/10 border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="p-3">
+                  <div className="absolute top-full left-0 mt-1 w-72 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
+                    <div className="p-2">
                       {t.serviceItems.map((item, idx) => {
                         const Icon = item.icon;
                         return (
                           <Link
                             key={idx}
                             to={`/${lang}${item.link}`}
-                            className="flex items-start gap-4 p-3.5 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-slate-50 transition-all duration-300 group"
+                            className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group"
                           >
-                            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 group-hover:scale-105 transition-all duration-300">
-                              <Icon size={20} />
+                            <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center text-white flex-shrink-0 group-hover:scale-105 transition-transform">
+                              <Icon size={18} />
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-slate-800 text-[15px] group-hover:text-blue-600 transition-colors">{item.title}</div>
-                              <div className="text-sm text-slate-500 mt-0.5">{item.desc}</div>
+                            <div>
+                              <div className="font-semibold text-slate-900 text-sm">{item.title}</div>
+                              <div className="text-xs text-slate-500">{item.desc}</div>
                             </div>
-                            <ArrowRight size={16} className="text-slate-300 group-hover:text-blue-500 mt-1 transition-all duration-300 group-hover:translate-x-1" />
                           </Link>
                         );
                       })}
@@ -173,34 +170,33 @@ const Header = ({ lang = 'tr' }) => {
 
               {/* Capabilities Dropdown */}
               <div
-                className="relative group"
+                className="relative"
                 onMouseEnter={() => setCapabilitiesOpen(true)}
                 onMouseLeave={() => setCapabilitiesOpen(false)}
               >
-                <button className="flex items-center gap-1.5 px-4 py-2.5 text-slate-600 hover:text-slate-900 transition-colors font-medium text-[15px]">
+                <button className="flex items-center gap-1 px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
                   {t.capabilities}
-                  <ChevronDown size={15} className={`transition-transform duration-300 ${capabilitiesOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown size={14} className={`transition-transform ${capabilitiesOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {capabilitiesOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl shadow-slate-900/10 border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="p-3">
+                  <div className="absolute top-full left-0 mt-1 w-72 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
+                    <div className="p-2">
                       {t.capabilityItems.map((item, idx) => {
                         const Icon = item.icon;
                         return (
                           <Link
                             key={idx}
                             to={`/${lang}${item.link}`}
-                            className="flex items-start gap-4 p-3.5 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-slate-50 transition-all duration-300 group"
+                            className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group"
                           >
-                            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-slate-500/25 group-hover:shadow-slate-500/40 group-hover:scale-105 transition-all duration-300">
-                              <Icon size={20} />
+                            <div className="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center text-white flex-shrink-0 group-hover:scale-105 transition-transform">
+                              <Icon size={18} />
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-slate-800 text-[15px] group-hover:text-blue-600 transition-colors">{item.title}</div>
-                              <div className="text-sm text-slate-500 mt-0.5">{item.desc}</div>
+                            <div>
+                              <div className="font-semibold text-slate-900 text-sm">{item.title}</div>
+                              <div className="text-xs text-slate-500">{item.desc}</div>
                             </div>
-                            <ArrowRight size={16} className="text-slate-300 group-hover:text-blue-500 mt-1 transition-all duration-300 group-hover:translate-x-1" />
                           </Link>
                         );
                       })}
@@ -209,38 +205,54 @@ const Header = ({ lang = 'tr' }) => {
                 )}
               </div>
 
-              <Link to={`/${lang}/case-studies`} className="px-4 py-2.5 text-slate-600 hover:text-slate-900 transition-colors font-medium text-[15px]">
+              {/* Solutions Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setSolutionsOpen(true)}
+                onMouseLeave={() => setSolutionsOpen(false)}
+              >
+                <button className="flex items-center gap-1 px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
+                  {t.solutions}
+                  <ChevronDown size={14} className={`transition-transform ${solutionsOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {solutionsOpen && (
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
+                    <div className="p-2">
+                      {t.solutionItems.map((item, idx) => (
+                        <Link
+                          key={idx}
+                          to={`/${lang}${item.link}`}
+                          className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors text-sm text-slate-700 hover:text-slate-900"
+                        >
+                          <span>{item.title}</span>
+                          <ArrowRight size={14} className="opacity-0 group-hover:opacity-100" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <Link to={`/${lang}/case-studies`} className="px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
                 {t.caseStudies}
               </Link>
-              <Link to={`/${lang}/support`} className="px-4 py-2.5 text-slate-600 hover:text-slate-900 transition-colors font-medium text-[15px]">
-                {t.docs}
+              <Link to={`/${lang}/support`} className="px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
+                {t.support}
               </Link>
-              <Link to={`/${lang}/about`} className="px-4 py-2.5 text-slate-600 hover:text-slate-900 transition-colors font-medium text-[15px]">
+              <Link to={`/${lang}/about`} className="px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
                 {t.about}
               </Link>
-              <Link to={`/${lang}/contact`} className="px-4 py-2.5 text-slate-600 hover:text-slate-900 transition-colors font-medium text-[15px]">
+              <Link to={`/${lang}/contact`} className="px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
                 {t.contact}
               </Link>
             </nav>
 
             {/* CTA Button */}
-            <div className="hidden lg:flex items-center gap-4">
-              {/* Dark Mode Toggle */}
-              <button
-                onClick={() => setIsDark(!isDark)}
-                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300"
-                aria-label="Toggle theme"
-              >
-                {isDark ? (
-                  <Sun className="w-5 h-5 text-amber-500" />
-                ) : (
-                  <Moon className="w-5 h-5 text-slate-500" />
-                )}
-              </button>
-
+            <div className="hidden lg:flex items-center gap-3">
               <Link to={`/${lang}/instant-quote`}>
-                <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105">
-                  <Zap className="mr-2" size={18} />
+                <Button className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all text-sm">
+                  <Zap className="mr-2" size={16} />
                   {t.getQuote}
                 </Button>
               </Link>
@@ -248,9 +260,8 @@ const Header = ({ lang = 'tr' }) => {
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2.5 rounded-xl hover:bg-slate-100 transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X size={24} className="text-slate-700" /> : <Menu size={24} className="text-slate-700" />}
             </button>
@@ -258,103 +269,100 @@ const Header = ({ lang = 'tr' }) => {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <>
           <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-200"
+            className="fixed inset-0 bg-slate-900/50 z-40 lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
 
-          <div className="fixed top-[72px] left-0 right-0 bottom-0 bg-white z-40 lg:hidden overflow-y-auto animate-in slide-in-from-top-4 duration-300">
-            <div className="p-5 space-y-2">
+          <div className="fixed top-[64px] left-0 right-0 bottom-0 bg-white z-40 lg:hidden overflow-y-auto">
+            <div className="p-5 space-y-4">
               {/* Language Switcher */}
               <Link
                 to={`/${otherLang}${currentPath}`}
-                className="flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-slate-50 text-slate-700 font-medium transition-colors"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-700 font-medium"
               >
-                <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <Globe size={18} className="text-slate-600" />
-                </div>
-                <span>{otherLang === 'en' ? 'English' : 'Türkçe'}</span>
+                <Globe size={18} />
+                <span>{otherLang === 'en' ? 'English' : 'Turkce'}</span>
               </Link>
-
-              <div className="border-t border-slate-100 my-3" />
 
               {/* CTA Button */}
               <Link to={`/${lang}/instant-quote`} className="block">
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 rounded-xl font-semibold shadow-lg mb-4">
+                <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-lg font-medium">
                   <Zap className="mr-2" size={18} />
                   {t.getQuote}
                 </Button>
               </Link>
 
+              <div className="border-t border-slate-200 pt-4" />
+
               {/* Services */}
               <div className="space-y-1">
-                <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">{t.services}</div>
+                <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase">{t.services}</div>
                 {t.serviceItems.map((item, idx) => (
                   <Link
                     key={idx}
                     to={`/${lang}${item.link}`}
-                    className="flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-slate-50 transition-colors"
+                    className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shadow-md">
-                      <item.icon size={18} />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-800">{item.title}</div>
-                      <div className="text-xs text-slate-500">{item.desc}</div>
-                    </div>
+                    {item.title}
                   </Link>
                 ))}
               </div>
 
-              <div className="border-t border-slate-100 my-3" />
-
               {/* Capabilities */}
               <div className="space-y-1">
-                <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">{t.capabilities}</div>
+                <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase">{t.capabilities}</div>
                 {t.capabilityItems.map((item, idx) => (
                   <Link
                     key={idx}
                     to={`/${lang}${item.link}`}
-                    className="flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-slate-50 transition-colors"
+                    className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white shadow-md">
-                      <item.icon size={18} />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-800">{item.title}</div>
-                      <div className="text-xs text-slate-500">{item.desc}</div>
-                    </div>
+                    {item.title}
                   </Link>
                 ))}
               </div>
 
-              <div className="border-t border-slate-100 my-3" />
+              {/* Solutions */}
+              <div className="space-y-1">
+                <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase">{t.solutions}</div>
+                {t.solutionItems.map((item, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/${lang}${item.link}`}
+                    className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700"
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="border-t border-slate-200 pt-4" />
 
               {/* Other Links */}
-              <Link to={`/${lang}/case-studies`} className="block px-4 py-3.5 rounded-xl hover:bg-slate-50 font-semibold text-slate-700 transition-colors">
+              <Link to={`/${lang}/case-studies`} className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700">
                 {t.caseStudies}
               </Link>
-              <Link to={`/${lang}/support`} className="block px-4 py-3.5 rounded-xl hover:bg-slate-50 font-semibold text-slate-700 transition-colors">
-                {t.docs}
+              <Link to={`/${lang}/support`} className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700">
+                {t.support}
               </Link>
-              <Link to={`/${lang}/about`} className="block px-4 py-3.5 rounded-xl hover:bg-slate-50 font-semibold text-slate-700 transition-colors">
+              <Link to={`/${lang}/about`} className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700">
                 {t.about}
               </Link>
-              <Link to={`/${lang}/contact`} className="block px-4 py-3.5 rounded-xl hover:bg-slate-50 font-semibold text-slate-700 transition-colors">
+              <Link to={`/${lang}/contact`} className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700">
                 {t.contact}
               </Link>
 
               {/* Contact Info */}
-              <div className="border-t border-slate-100 my-3" />
-              <div className="px-4 py-3 space-y-3 bg-slate-50 rounded-xl">
-                <a href="tel:+903125550000" className="flex items-center gap-3 text-sm text-slate-600 hover:text-blue-600 transition-colors">
+              <div className="border-t border-slate-200 pt-4 space-y-3 px-4">
+                <a href="tel:+903125550000" className="flex items-center gap-3 text-sm text-slate-600">
                   <Phone size={16} />
                   <span>+90 312 555 0000</span>
                 </a>
-                <a href="mailto:info@aicoelektronik.com" className="flex items-center gap-3 text-sm text-slate-600 hover:text-blue-600 transition-colors">
+                <a href="mailto:info@aicoelektronik.com" className="flex items-center gap-3 text-sm text-slate-600">
                   <Mail size={16} />
                   <span>info@aicoelektronik.com</span>
                 </a>

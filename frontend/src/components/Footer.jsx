@@ -169,7 +169,7 @@ const Footer = ({ lang = 'tr' }) => {
               </div>
             </div>
             <div className="flex items-center gap-5 p-5 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/5 hover:bg-white/10 transition-all duration-300 group">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 group-hover:scale-105 transition-all duration-300">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-slate-500/20 group-hover:shadow-slate-500/40 group-hover:scale-105 transition-all duration-300">
                 <Award size={24} />
               </div>
               <div>
@@ -321,7 +321,7 @@ const Footer = ({ lang = 'tr' }) => {
                   </Button>
                 </form>
               ) : (
-                <div className="flex items-center gap-3 text-emerald-400 bg-emerald-400/10 p-4 rounded-xl border border-emerald-400/20">
+                <div className="flex items-center gap-3 text-blue-400 bg-blue-400/10 p-4 rounded-xl border border-blue-400/20">
                   <CheckCircle2 size={20} />
                   <span className="text-sm font-medium">{t.newsletter.success}</span>
                 </div>
