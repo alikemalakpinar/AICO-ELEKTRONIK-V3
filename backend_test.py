@@ -10,8 +10,8 @@ import sys
 from typing import Dict, Any, Optional
 import uuid
 
-# Backend URL from environment
-BACKEND_URL = "https://bu-web-enhanced.preview.emergentagent.com"
+# Backend URL - Use localhost for local development, or configure as needed
+BACKEND_URL = "http://localhost:8000"
 
 class BackendTester:
     def __init__(self, base_url: str):
