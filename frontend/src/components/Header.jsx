@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu, X, ChevronDown, Zap, Globe, Phone, Mail,
-  Cpu, Settings, Award, Layers, Package, ArrowRight
+  Cpu, Settings, Award, Layers, Package, ArrowRight,
+  Calculator, BookOpen, FileText, Headphones, Factory,
+  Truck, Shield, Clock, Sparkles, Leaf, HardHat, Flame, Snowflake
 } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -12,6 +15,7 @@ const Header = ({ lang = 'tr' }) => {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [capabilitiesOpen, setCapabilitiesOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -47,11 +51,18 @@ const Header = ({ lang = 'tr' }) => {
         { icon: Award, title: 'Kalite', desc: 'ISO 9001 sertifikali', link: '/quality' }
       ],
       solutionItems: [
-        { title: 'Akilli Tarim', link: '/coffee-machine-systems' },
-        { title: 'Madenci Takibi', link: '/mining-tracking' },
-        { title: 'Makine Analizi', link: '/machine-analysis' },
-        { title: 'Yangin Tespit', link: '/fire-detection' },
-        { title: 'Soguk Depo', link: '/cold-storage' }
+        { icon: Leaf, title: 'Akilli Tarim', desc: 'IoT tabanli cozumler', link: '/coffee-machine-systems' },
+        { icon: HardHat, title: 'Madenci Takibi', desc: 'Guvenllik sistemleri', link: '/mining-tracking' },
+        { icon: Factory, title: 'Makine Analizi', desc: 'Endustriyel izleme', link: '/machine-analysis' },
+        { icon: Flame, title: 'Yangin Tespit', desc: 'Erken uyari sistemleri', link: '/fire-detection' },
+        { icon: Snowflake, title: 'Soguk Depo', desc: 'Sicaklik kontrolu', link: '/cold-storage' }
+      ],
+      resources: 'Kaynaklar',
+      resourceItems: [
+        { icon: Calculator, title: 'Hesaplama Araclari', desc: 'Kablo, guc hesaplama', link: '/calculators' },
+        { icon: BookOpen, title: 'Blog', desc: 'Teknik makaleler', link: '/blog' },
+        { icon: FileText, title: 'Dokumanlar', desc: 'Teknik kaynaklar', link: '/support' },
+        { icon: Headphones, title: 'Destek', desc: 'Yardim ve SSS', link: '/support' }
       ]
     },
     en: {
@@ -74,11 +85,18 @@ const Header = ({ lang = 'tr' }) => {
         { icon: Award, title: 'Quality', desc: 'ISO 9001 certified', link: '/quality' }
       ],
       solutionItems: [
-        { title: 'Smart Agriculture', link: '/coffee-machine-systems' },
-        { title: 'Mining Tracking', link: '/mining-tracking' },
-        { title: 'Machine Analysis', link: '/machine-analysis' },
-        { title: 'Fire Detection', link: '/fire-detection' },
-        { title: 'Cold Storage', link: '/cold-storage' }
+        { icon: Leaf, title: 'Smart Agriculture', desc: 'IoT-based solutions', link: '/coffee-machine-systems' },
+        { icon: HardHat, title: 'Mining Tracking', desc: 'Safety systems', link: '/mining-tracking' },
+        { icon: Factory, title: 'Machine Analysis', desc: 'Industrial monitoring', link: '/machine-analysis' },
+        { icon: Flame, title: 'Fire Detection', desc: 'Early warning systems', link: '/fire-detection' },
+        { icon: Snowflake, title: 'Cold Storage', desc: 'Temperature control', link: '/cold-storage' }
+      ],
+      resources: 'Resources',
+      resourceItems: [
+        { icon: Calculator, title: 'Calculators', desc: 'Cable, power tools', link: '/calculators' },
+        { icon: BookOpen, title: 'Blog', desc: 'Technical articles', link: '/blog' },
+        { icon: FileText, title: 'Documents', desc: 'Technical resources', link: '/support' },
+        { icon: Headphones, title: 'Support', desc: 'Help & FAQ', link: '/support' }
       ]
     }
   };
@@ -205,7 +223,7 @@ const Header = ({ lang = 'tr' }) => {
                 )}
               </div>
 
-              {/* Solutions Dropdown */}
+              {/* Solutions Mega Menu */}
               <div
                 className="relative"
                 onMouseEnter={() => setSolutionsOpen(true)}
@@ -216,29 +234,97 @@ const Header = ({ lang = 'tr' }) => {
                   <ChevronDown size={14} className={`transition-transform ${solutionsOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {solutionsOpen && (
-                  <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
-                    <div className="p-2">
-                      {t.solutionItems.map((item, idx) => (
+                <AnimatePresence>
+                  {solutionsOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-0 mt-1 w-80 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden"
+                    >
+                      <div className="p-2">
+                        {t.solutionItems.map((item, idx) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={idx}
+                              to={`/${lang}${item.link}`}
+                              className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                            >
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white flex-shrink-0 group-hover:scale-105 transition-transform">
+                                <Icon size={18} />
+                              </div>
+                              <div>
+                                <div className="font-semibold text-slate-900 text-sm">{item.title}</div>
+                                <div className="text-xs text-slate-500">{item.desc}</div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                      {/* CTA in dropdown */}
+                      <div className="bg-slate-50 p-3 border-t border-slate-200">
                         <Link
-                          key={idx}
-                          to={`/${lang}${item.link}`}
-                          className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors text-sm text-slate-700 hover:text-slate-900"
+                          to={`/${lang}/case-studies`}
+                          className="flex items-center justify-between text-sm text-blue-600 hover:text-blue-700 font-medium"
                         >
-                          <span>{item.title}</span>
-                          <ArrowRight size={14} className="opacity-0 group-hover:opacity-100" />
+                          <span>{lang === 'tr' ? 'Tüm referansları görüntüle' : 'View all references'}</span>
+                          <ArrowRight size={14} />
                         </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Resources Mega Menu */}
+              <div
+                className="relative"
+                onMouseEnter={() => setResourcesOpen(true)}
+                onMouseLeave={() => setResourcesOpen(false)}
+              >
+                <button className="flex items-center gap-1 px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
+                  {t.resources}
+                  <ChevronDown size={14} className={`transition-transform ${resourcesOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                <AnimatePresence>
+                  {resourcesOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-0 mt-1 w-72 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden"
+                    >
+                      <div className="p-2">
+                        {t.resourceItems.map((item, idx) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={idx}
+                              to={`/${lang}${item.link}`}
+                              className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                            >
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white flex-shrink-0 group-hover:scale-105 transition-transform">
+                                <Icon size={18} />
+                              </div>
+                              <div>
+                                <div className="font-semibold text-slate-900 text-sm">{item.title}</div>
+                                <div className="text-xs text-slate-500">{item.desc}</div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <Link to={`/${lang}/case-studies`} className="px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
                 {t.caseStudies}
-              </Link>
-              <Link to={`/${lang}/support`} className="px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
-                {t.support}
               </Link>
               <Link to={`/${lang}/about`} className="px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors font-medium text-sm">
                 {t.about}
@@ -329,15 +415,37 @@ const Header = ({ lang = 'tr' }) => {
               {/* Solutions */}
               <div className="space-y-1">
                 <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase">{t.solutions}</div>
-                {t.solutionItems.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    to={`/${lang}${item.link}`}
-                    className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700"
-                  >
-                    {item.title}
-                  </Link>
-                ))}
+                {t.solutionItems.map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={idx}
+                      to={`/${lang}${item.link}`}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700"
+                    >
+                      <Icon size={18} className="text-blue-500" />
+                      {item.title}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Resources */}
+              <div className="space-y-1">
+                <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase">{t.resources}</div>
+                {t.resourceItems.map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={idx}
+                      to={`/${lang}${item.link}`}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700"
+                    >
+                      <Icon size={18} className="text-amber-500" />
+                      {item.title}
+                    </Link>
+                  );
+                })}
               </div>
 
               <div className="border-t border-slate-200 pt-4" />
@@ -345,9 +453,6 @@ const Header = ({ lang = 'tr' }) => {
               {/* Other Links */}
               <Link to={`/${lang}/case-studies`} className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700">
                 {t.caseStudies}
-              </Link>
-              <Link to={`/${lang}/support`} className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700">
-                {t.support}
               </Link>
               <Link to={`/${lang}/about`} className="block px-4 py-3 rounded-lg hover:bg-slate-50 font-medium text-slate-700">
                 {t.about}
