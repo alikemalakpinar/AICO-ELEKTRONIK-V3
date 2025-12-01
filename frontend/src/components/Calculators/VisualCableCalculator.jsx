@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   Zap,
   Ruler,
@@ -10,6 +11,9 @@ import {
   Download,
   Share2,
   RotateCcw,
+  ArrowRight,
+  Package,
+  Sparkles,
 } from 'lucide-react';
 import GlassCard from '../GlassCard';
 import { Button } from '../ui/button';
@@ -265,6 +269,82 @@ const ResultsPanel = ({ results, lang }) => {
         </div>
       )}
     </GlassCard>
+  );
+};
+
+// Quote CTA Component
+const QuoteCTA = ({ lang, results, specifications }) => {
+  const navigate = useNavigate();
+
+  const handleGetQuote = () => {
+    // Navigate to quote page with pre-filled cable specs
+    navigate(`/${lang}/instant-quote`, {
+      state: {
+        fromCalculator: 'cable',
+        specifications: {
+          cableSize: results.recommendedSize,
+          ...specifications
+        }
+      }
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+    >
+      <GlassCard gradient="amber" className="p-6 mt-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+              <Sparkles className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white">
+                {lang === 'tr'
+                  ? 'Bu özelliklerde üretim yaptırmak ister misiniz?'
+                  : 'Want to manufacture with these specifications?'}
+              </h3>
+              <p className="text-gray-300 text-sm">
+                {lang === 'tr'
+                  ? `Önerilen kesit: ${results.recommendedSize} mm² - Profesyonel kablo çözümleri için teklif alın`
+                  : `Recommended size: ${results.recommendedSize} mm² - Get a quote for professional cable solutions`}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              onClick={handleGetQuote}
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 shadow-lg"
+            >
+              <Package className="mr-2 h-4 w-4" />
+              {lang === 'tr' ? 'Teklif Al' : 'Get Quote'}
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-white/20">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-white">{results.recommendedSize}</p>
+            <p className="text-xs text-gray-400">{lang === 'tr' ? 'mm² Kesit' : 'mm² Size'}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-white">{results.voltageDropPercent.toFixed(1)}%</p>
+            <p className="text-xs text-gray-400">{lang === 'tr' ? 'V. Düşümü' : 'V. Drop'}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-green-400">
+              {results.status === 'safe' ? '✓' : results.status === 'warning' ? '!' : '✗'}
+            </p>
+            <p className="text-xs text-gray-400">{lang === 'tr' ? 'Durum' : 'Status'}</p>
+          </div>
+        </div>
+      </GlassCard>
+    </motion.div>
   );
 };
 
@@ -537,6 +617,19 @@ const VisualCableCalculator = ({ lang = 'tr' }) => {
 
             {/* Results */}
             <ResultsPanel results={results} lang={lang} />
+
+            {/* Quote CTA */}
+            <QuoteCTA
+              lang={lang}
+              results={results}
+              specifications={{
+                current,
+                distance,
+                voltage,
+                material,
+                selectedSize
+              }}
+            />
 
             {/* Quick Reference */}
             <GlassCard gradient="cyan" className="p-6">

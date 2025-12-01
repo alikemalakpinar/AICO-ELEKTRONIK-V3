@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageCircle,
@@ -57,6 +58,57 @@ const AI_RESPONSES = {
     layers: 'Great! For a {layers}-layer PCB, could you tell me the dimensions and quantity?',
     calculating: "Calculating... Here's your estimated quote:\n\n📦 {quantity} pcs, {layers} layers, {size}\n💰 Estimate: ${price}\n⏱️ Lead time: {leadTime}\n\nVisit our 'Instant Quote' page for a detailed quote.",
   },
+};
+
+// Page-specific context-aware greetings
+const PAGE_GREETINGS = {
+  tr: {
+    '/': 'Merhaba! AICO Elektronik\'e hoş geldiniz. Size PCB üretimi, dizgi veya prototip konusunda nasıl yardımcı olabilirim?',
+    '/instant-quote': 'Teklif sayfamıza hoş geldiniz! PCB özelliklerinizi seçerken size yardımcı olabilirim. Hangi katman sayısı, boyut veya kaplama için önerime ihtiyacınız var?',
+    '/pcb-manufacturing': 'PCB üretim sayfamızdasınız. Katman sayısı, malzeme seçimi veya üretim süreleri hakkında sorularınızı yanıtlayabilirim.',
+    '/pcb-assembly': 'PCB dizgi sayfamıza hoş geldiniz! SMT veya THT montaj, BOM optimizasyonu veya stencil seçimi konusunda yardımcı olabilirim.',
+    '/calculators': 'Hesaplama araçlarımızı kullanıyorsunuz. Kablo kesiti, güç hesaplama veya impedans hesaplamaları konusunda sorularınız varsa yanıtlayayım.',
+    '/about': 'Hakkımızda sayfasındasınız. AICO\'nun 25+ yıllık tecrübesi, sertifikaları veya tesisleri hakkında bilgi verebilirim.',
+    '/contact': 'İletişim sayfamızdasınız. Teklif, teknik destek veya iş ortaklığı konularında size nasıl yardımcı olabilirim?',
+    '/services': 'Hizmetlerimizi inceliyorsunuz. PCB üretimi, dizgi, box build veya mühendislik hizmetleri hakkında detaylı bilgi verebilirim.',
+    '/case-studies': 'Referanslarımızı görüntülüyorsunuz. Hangi sektör veya proje tipi hakkında bilgi almak istersiniz?',
+    '/support': 'Destek sayfamızdasınız. Teknik dokümanlar, DFM kuralları veya sık sorulan sorular konusunda yardımcı olabilirim.',
+    '/careers': 'Kariyer sayfamıza hoş geldiniz! Açık pozisyonlar veya çalışma ortamımız hakkında bilgi verebilirim.',
+    '/blog': 'Blog sayfamızdasınız. PCB tasarım ipuçları, endüstri trendleri veya teknik makaleler hakkında sorularınızı yanıtlayabilirim.',
+    default: 'Merhaba! Ben AICO, yapay zeka destekli PCB asistanınız. Size nasıl yardımcı olabilirim?'
+  },
+  en: {
+    '/': 'Hello! Welcome to AICO Electronics. How can I help you with PCB manufacturing, assembly, or prototyping?',
+    '/instant-quote': 'Welcome to our quote page! I can help you while selecting your PCB specifications. Need recommendations for layer count, dimensions, or finish?',
+    '/pcb-manufacturing': 'You\'re on our PCB manufacturing page. I can answer your questions about layer counts, material selection, or lead times.',
+    '/pcb-assembly': 'Welcome to our PCB assembly page! I can help with SMT or THT assembly, BOM optimization, or stencil selection.',
+    '/calculators': 'You\'re using our calculation tools. Let me know if you have questions about cable sizing, power calculations, or impedance.',
+    '/about': 'You\'re on our About page. I can share information about AICO\'s 25+ years of experience, certifications, or facilities.',
+    '/contact': 'You\'re on our contact page. How can I help you with quotes, technical support, or partnership inquiries?',
+    '/services': 'You\'re exploring our services. I can provide details about PCB manufacturing, assembly, box build, or engineering services.',
+    '/case-studies': 'You\'re viewing our references. Which industry or project type would you like to learn about?',
+    '/support': 'You\'re on our support page. I can help with technical documents, DFM guidelines, or frequently asked questions.',
+    '/careers': 'Welcome to our careers page! I can share information about open positions or our work environment.',
+    '/blog': 'You\'re on our blog. I can answer your questions about PCB design tips, industry trends, or technical articles.',
+    default: "Hello! I'm AICO, your AI-powered PCB assistant. How can I help you today?"
+  }
+};
+
+// Get page-specific greeting based on current path
+const getPageGreeting = (pathname, lang) => {
+  const greetings = PAGE_GREETINGS[lang] || PAGE_GREETINGS.tr;
+
+  // Remove language prefix from path
+  const cleanPath = pathname.replace(/^\/(tr|en)/, '') || '/';
+
+  // Find matching greeting
+  for (const [path, greeting] of Object.entries(greetings)) {
+    if (path !== 'default' && cleanPath.startsWith(path)) {
+      return greeting;
+    }
+  }
+
+  return greetings.default;
 };
 
 // Message Component
@@ -118,18 +170,29 @@ const AICOBot = ({ lang = 'tr' }) => {
   const [isMuted, setIsMuted] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const location = useLocation();
 
   const responses = AI_RESPONSES[lang] || AI_RESPONSES.tr;
   const quickActions = QUICK_ACTIONS[lang] || QUICK_ACTIONS.tr;
 
-  // Initialize with greeting
+  // Get page-specific greeting
+  const pageGreeting = getPageGreeting(location.pathname, lang);
+
+  // Initialize with page-specific greeting
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
-        addBotMessage(responses.greeting);
+        addBotMessage(pageGreeting);
       }, 500);
     }
   }, [isOpen]);
+
+  // Reset messages when page changes (to show new page-specific greeting)
+  useEffect(() => {
+    if (messages.length > 0) {
+      setMessages([]);
+    }
+  }, [location.pathname]);
 
   // Scroll to bottom on new messages
   useEffect(() => {

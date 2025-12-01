@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   Upload, ArrowRight, ArrowLeft, Check, FileText, Settings,
   CreditCard, Package, Layers, Cpu, DollarSign, Clock,
-  AlertCircle, CheckCircle2, Zap, Sparkles
+  AlertCircle, CheckCircle2, Zap, Sparkles, Shield, Award,
+  Star, Users, Truck, Lock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -30,6 +31,97 @@ import {
 } from '../components/VisualSelectors';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+
+// Trust Badges Component
+const TrustBadges = ({ lang, compact = false }) => {
+  const badges = [
+    {
+      icon: Shield,
+      label: lang === 'tr' ? 'ISO 9001' : 'ISO 9001',
+      desc: lang === 'tr' ? 'Sertifikalı' : 'Certified'
+    },
+    {
+      icon: Lock,
+      label: lang === 'tr' ? 'SSL Güvenli' : 'SSL Secure',
+      desc: lang === 'tr' ? '256-bit şifreleme' : '256-bit encryption'
+    },
+    {
+      icon: Users,
+      label: '500+',
+      desc: lang === 'tr' ? 'Mutlu Müşteri' : 'Happy Clients'
+    },
+    {
+      icon: Truck,
+      label: lang === 'tr' ? 'Ücretsiz Kargo' : 'Free Shipping',
+      desc: lang === 'tr' ? '₺5.000 üzeri' : 'Over ₺5,000'
+    }
+  ];
+
+  if (compact) {
+    return (
+      <div className="flex items-center gap-4">
+        {badges.slice(0, 3).map((badge, idx) => {
+          const Icon = badge.icon;
+          return (
+            <div key={idx} className="flex items-center gap-1.5 text-xs text-gray-500">
+              <Icon className="w-3.5 h-3.5 text-green-600" />
+              <span>{badge.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {badges.map((badge, idx) => {
+        const Icon = badge.icon;
+        return (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2"
+          >
+            <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
+              <Icon className="w-4 h-4 text-green-600" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-gray-900">{badge.label}</div>
+              <div className="text-xs text-gray-500">{badge.desc}</div>
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
+// Progress Percentage Component
+const ProgressPercentage = ({ currentStep, totalSteps }) => {
+  const percentage = Math.round((currentStep / totalSteps) * 100);
+
+  return (
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium text-gray-700">
+          Adım {currentStep} / {totalSteps}
+        </span>
+        <span className="text-sm font-bold text-blue-600">{percentage}%</span>
+      </div>
+      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <motion.div
+          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        />
+      </div>
+    </div>
+  );
+};
 
 const InstantQuotePage = ({ lang = 'tr' }) => {
   const navigate = useNavigate();
@@ -452,7 +544,17 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
               );
             })}
           </div>
+
+          {/* Percentage Progress Bar */}
+          <div className="mt-6 pt-4 border-t border-gray-200/50">
+            <ProgressPercentage currentStep={step} totalSteps={4} />
+          </div>
         </GlassCard>
+      </div>
+
+      {/* Trust Badges */}
+      <div className="max-w-5xl mx-auto px-6 mt-6">
+        <TrustBadges lang={lang} />
       </div>
 
       {/* Form Steps with Animation */}
@@ -1031,57 +1133,66 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
         calculating ? (
           <StickyPriceSkeleton />
         ) : pricing ? (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-2xl p-4 z-50">
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
-              <div className="flex items-center gap-8">
-                <div>
-                  <p className="text-sm text-gray-600">PCB</p>
-                  <p className="text-lg font-bold">₺{pricing.breakdown.pcb.toFixed(2)}</p>
-                </div>
-                {pricing.breakdown.smt > 0 && (
-                  <div>
-                    <p className="text-sm text-gray-600">SMT</p>
-                    <p className="text-lg font-bold">₺{pricing.breakdown.smt.toFixed(2)}</p>
-                  </div>
-                )}
-                <div className="border-l pl-6">
-                  <p className="text-sm text-gray-600">TOPLAM</p>
-                  <p className="text-2xl font-bold text-blue-600">₺{(pricing.summary?.total || pricing.total).toFixed(2)}</p>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Clock className="w-4 h-4" />
-                  <span>{getLeadTimeDays()} iş günü</span>
-                </div>
-                {useAdvancedMode && advancedAnalysis && advancedAnalysis.summary && (
-                  <div className="flex items-center gap-4 border-l pl-6">
-                    {advancedAnalysis.summary.dfm_score !== undefined && (
-                      <div className="text-center">
-                        <p className="text-xs text-gray-600">DFM</p>
-                        <p className="text-lg font-bold text-blue-600">
-                          {advancedAnalysis.summary.dfm_score}
-                        </p>
-                      </div>
-                    )}
-                    {advancedAnalysis.summary.potential_savings > 0 && (
-                      <div className="text-center">
-                        <p className="text-xs text-gray-600">Tasarruf</p>
-                        <p className="text-lg font-bold text-blue-600">
-                          {advancedAnalysis.summary.potential_savings.toFixed(1)}%
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-2xl z-50">
+            {/* Trust badges row */}
+            <div className="bg-gray-50 border-b border-gray-200 py-2 px-4">
+              <div className="max-w-7xl mx-auto flex items-center justify-center">
+                <TrustBadges lang={lang} compact />
               </div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  onClick={handleCreateOrder}
-                  className="bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 shadow-lg"
-                >
-                  <Package className="mr-2 h-4 w-4" />
-                  Sipariş Ver
-                </Button>
-              </motion.div>
+            </div>
+            {/* Price row */}
+            <div className="p-4">
+              <div className="max-w-7xl mx-auto flex items-center justify-between">
+                <div className="flex items-center gap-8">
+                  <div>
+                    <p className="text-sm text-gray-600">PCB</p>
+                    <p className="text-lg font-bold">₺{pricing.breakdown.pcb.toFixed(2)}</p>
+                  </div>
+                  {pricing.breakdown.smt > 0 && (
+                    <div>
+                      <p className="text-sm text-gray-600">SMT</p>
+                      <p className="text-lg font-bold">₺{pricing.breakdown.smt.toFixed(2)}</p>
+                    </div>
+                  )}
+                  <div className="border-l pl-6">
+                    <p className="text-sm text-gray-600">TOPLAM</p>
+                    <p className="text-2xl font-bold text-blue-600">₺{(pricing.summary?.total || pricing.total).toFixed(2)}</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Clock className="w-4 h-4" />
+                    <span>{getLeadTimeDays()} iş günü</span>
+                  </div>
+                  {useAdvancedMode && advancedAnalysis && advancedAnalysis.summary && (
+                    <div className="flex items-center gap-4 border-l pl-6">
+                      {advancedAnalysis.summary.dfm_score !== undefined && (
+                        <div className="text-center">
+                          <p className="text-xs text-gray-600">DFM</p>
+                          <p className="text-lg font-bold text-blue-600">
+                            {advancedAnalysis.summary.dfm_score}
+                          </p>
+                        </div>
+                      )}
+                      {advancedAnalysis.summary.potential_savings > 0 && (
+                        <div className="text-center">
+                          <p className="text-xs text-gray-600">Tasarruf</p>
+                          <p className="text-lg font-bold text-blue-600">
+                            {advancedAnalysis.summary.potential_savings.toFixed(1)}%
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    onClick={handleCreateOrder}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg text-white font-semibold"
+                  >
+                    <Package className="mr-2 h-4 w-4" />
+                    {lang === 'tr' ? 'Sipariş Ver' : 'Place Order'}
+                  </Button>
+                </motion.div>
+              </div>
             </div>
           </div>
         ) : null
