@@ -141,9 +141,9 @@ const Header = ({ lang = 'tr' }) => {
             {/* Logo */}
             <Link to={`/${lang}`} className="flex items-center gap-3 flex-shrink-0">
               <img
-                src="/assets/logos/logo-mavi.png"
+                src="/assets/logos/aicoelektroniklogo.png"
                 alt="Aico Elektronik"
-                className="h-8 lg:h-10 w-auto"
+                className="h-28 lg:h-35 w-auto"
               />
             </Link>
 

@@ -197,9 +197,9 @@ const Footer = ({ lang = 'tr' }) => {
           <div className="lg:col-span-4">
             <div className="mb-8">
               <img
-                src="/assets/logos/logo-beyaz.png"
+                src="/assets/logos/aicoelektroniklogoturuncu.png"
                 alt="Aico Elektronik"
-                className="h-12 w-auto"
+                className="h-68 lg:h-75 w-auto"
               />
             </div>
             <p className="text-slate-400 text-[15px] leading-relaxed mb-8">
