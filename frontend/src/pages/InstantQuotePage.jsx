@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Upload, ArrowRight, ArrowLeft, Check, FileText, Settings,
   CreditCard, Package, Layers, Cpu, DollarSign, Clock,
-  AlertCircle, CheckCircle2, Zap, Sparkles, Shield, Award,
+  AlertCircle, CheckCircle2, Zap, Shield, Award,
   Star, Users, Truck, Lock, Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,7 +21,7 @@ import DFMPanel from '../components/DFMPanel';
 import BOMOptimizerPanel from '../components/BOMOptimizerPanel';
 import PriceComparisonChart from '../components/PriceComparisonChart';
 import AnimatedSection from '../components/AnimatedSection';
-import GlassCard from '../components/GlassCard';
+import CleanCard from '../components/CleanCard';
 import GerberPreview from '../components/GerberPreview';
 import {
   ColorSelector,
@@ -580,10 +580,10 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="inline-block mb-4"
             >
-              <div className="glass px-6 py-2 rounded-full border border-white/30 backdrop-blur-xl">
+              <div className="bg-white/10 px-4 py-1.5 rounded border border-white/20">
                 <div className="flex items-center gap-2 text-sm font-medium">
-                  <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse" />
-                  <span>AI-Powered Analysis</span>
+                  <Zap className="w-4 h-4 text-brand-500" />
+                  <span>Akıllı Analiz</span>
                 </div>
               </div>
             </motion.div>
@@ -595,7 +595,7 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
 
       {/* Progress Steps with Animation */}
       <div className="max-w-5xl mx-auto px-6 -mt-8 relative z-20">
-        <GlassCard className="p-6 shadow-2xl" gradient="blue">
+        <CleanCard className="p-6 shadow-2xl" gradient="blue">
           <div className="flex items-center justify-between">
             {t.steps.map((s, idx) => {
               const Icon = s.icon;
@@ -666,7 +666,7 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
           <div className="mt-6 pt-4 border-t border-gray-200/50">
             <ProgressPercentage currentStep={step} totalSteps={4} />
           </div>
-        </GlassCard>
+        </CleanCard>
       </div>
 
       {/* Trust Badges */}
@@ -676,7 +676,7 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
 
       {/* Form Steps with Animation */}
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <GlassCard className="p-8 shadow-2xl">
+        <CleanCard className="p-8 shadow-2xl">
           <AnimatePresence mode="wait">
             {/* Step 1: File Upload */}
             {step === 1 && (
@@ -1081,17 +1081,17 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                 <h2 className="text-3xl font-bold text-gray-900">4. {t.summary.title}</h2>
                 
                 {/* Advanced Mode Toggle */}
-                <label className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-blue-600 to-slate-700 text-white px-4 py-2 rounded-2xl hover:shadow-lg transition-all">
-                  <Sparkles className="w-5 h-5" />
-                  <span className="font-medium">Detaylı Analiz</span>
-                  <input 
+                <label className="flex items-center gap-3 cursor-pointer bg-navy-900 text-white px-4 py-2 rounded hover:bg-navy-800 hover:shadow-button-hover transition-all">
+                  <Zap className="w-4 h-4 text-brand-500" />
+                  <span className="font-medium text-sm">Detaylı Analiz</span>
+                  <input
                     type="checkbox"
                     checked={useAdvancedMode}
                     onChange={(e) => {
                       setUseAdvancedMode(e.target.checked);
                       calculatePricing();
                     }}
-                    className="w-5 h-5 rounded"
+                    className="w-4 h-4 rounded accent-brand-500"
                   />
                 </label>
               </div>
@@ -1219,57 +1219,68 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
             </motion.div>
           )}
           </AnimatePresence>
-        </GlassCard>
+        </CleanCard>
       </div>
 
-      {/* Sticky Price Bar (visible on steps 2-4) */}
+      {/* Sticky Price Bar - Clean Industrial Design */}
       {step >= 2 && (
         calculating ? (
           <StickyPriceSkeleton />
         ) : pricing ? (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-2xl z-50">
+          <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border shadow-industrial-lg z-50">
             {/* Trust badges row */}
-            <div className="bg-gray-50 border-b border-gray-200 py-2 px-4">
+            <div className="bg-secondary/50 border-b border-border py-1.5 px-4">
               <div className="max-w-7xl mx-auto flex items-center justify-center">
                 <TrustBadges lang={lang} compact />
               </div>
             </div>
             {/* Price row */}
-            <div className="p-4">
+            <div className="py-3 px-4">
               <div className="max-w-7xl mx-auto flex items-center justify-between">
-                <div className="flex items-center gap-8">
+                <div className="flex items-center gap-6">
+                  {/* PCB Price */}
                   <div>
-                    <p className="text-sm text-gray-600">PCB</p>
-                    <p className="text-lg font-bold">₺{pricing.breakdown.pcb.toFixed(2)}</p>
+                    <p className="text-xs text-muted-foreground font-medium">PCB</p>
+                    <p className="text-base font-mono font-bold tabular-nums text-foreground">
+                      ₺{pricing.breakdown.pcb.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                    </p>
                   </div>
+                  {/* SMT Price */}
                   {pricing.breakdown.smt > 0 && (
                     <div>
-                      <p className="text-sm text-gray-600">SMT</p>
-                      <p className="text-lg font-bold">₺{pricing.breakdown.smt.toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground font-medium">SMT</p>
+                      <p className="text-base font-mono font-bold tabular-nums text-foreground">
+                        ₺{pricing.breakdown.smt.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                      </p>
                     </div>
                   )}
-                  <div className="border-l pl-6">
-                    <p className="text-sm text-gray-600">TOPLAM</p>
-                    <p className="text-2xl font-bold text-blue-600">₺{(pricing.summary?.total || pricing.total).toFixed(2)}</p>
+                  {/* Total Price */}
+                  <div className="border-l border-border pl-6">
+                    <p className="text-xs text-muted-foreground font-medium">TOPLAM</p>
+                    <p className="text-xl font-mono font-bold tabular-nums text-brand-500">
+                      ₺{(pricing.summary?.total || pricing.total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  {/* Lead Time */}
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>{getLeadTimeDays()} iş günü</span>
+                    <span className="font-mono">{getLeadTimeDays()} gün</span>
                   </div>
+                  {/* DFM Score */}
                   {useAdvancedMode && advancedAnalysis && advancedAnalysis.summary && (
-                    <div className="flex items-center gap-4 border-l pl-6">
+                    <div className="flex items-center gap-4 border-l border-border pl-6">
                       {advancedAnalysis.summary.dfm_score !== undefined && (
                         <div className="text-center">
-                          <p className="text-xs text-gray-600">DFM</p>
-                          <p className="text-lg font-bold text-blue-600">
+                          <p className="text-xs text-muted-foreground">DFM</p>
+                          <p className="text-lg font-mono font-bold tabular-nums text-navy-600">
                             {advancedAnalysis.summary.dfm_score}
                           </p>
                         </div>
                       )}
                       {advancedAnalysis.summary.potential_savings > 0 && (
                         <div className="text-center">
-                          <p className="text-xs text-gray-600">Tasarruf</p>
-                          <p className="text-lg font-bold text-blue-600">
+                          <p className="text-xs text-muted-foreground">Tasarruf</p>
+                          <p className="text-lg font-mono font-bold tabular-nums text-success-500">
                             {advancedAnalysis.summary.potential_savings.toFixed(1)}%
                           </p>
                         </div>
@@ -1277,15 +1288,16 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                     </div>
                   )}
                 </div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    onClick={handleCreateOrder}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg text-white font-semibold"
-                  >
-                    <Package className="mr-2 h-4 w-4" />
-                    {lang === 'tr' ? 'Sipariş Ver' : 'Place Order'}
-                  </Button>
-                </motion.div>
+                {/* CTA Button */}
+                <Button
+                  onClick={handleCreateOrder}
+                  variant="brand"
+                  size="lg"
+                  className="shadow-button-hover"
+                >
+                  <Package className="mr-2 h-4 w-4" />
+                  {lang === 'tr' ? 'Sipariş Ver' : 'Place Order'}
+                </Button>
               </div>
             </div>
           </div>
