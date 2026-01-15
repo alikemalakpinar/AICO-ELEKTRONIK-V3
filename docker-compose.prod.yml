@@ -1,0 +1,76 @@
+# Docker Compose Override for Production
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+version: '3.8'
+
+services:
+  mongodb:
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+  redis:
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+
+  backend:
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=WARNING
+      - CORS_ORIGINS=${ALLOWED_ORIGINS}
+      - SECRET_KEY=${SECRET_KEY}
+      - MONGO_URL=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+    volumes:
+      # Remove source mount in production
+      - backend_uploads:/app/uploads
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  frontend:
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_BACKEND_URL=${BACKEND_URL}
+        - REACT_APP_ENVIRONMENT=production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # ============================================
+  # Nginx Reverse Proxy (Optional for SSL)
+  # ============================================
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: aico-nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - aico-network

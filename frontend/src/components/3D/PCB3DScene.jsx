@@ -662,33 +662,139 @@ const PerformanceInfo = () => {
   );
 };
 
-// Main Export Component
-const PCB3DScene = ({ className = '', exploded = false, showPerf = false }) => {
+// CAD-style Control Buttons Component
+const ViewControls = ({ onReset, onTopView, onFrontView, onIsoView }) => {
   return (
-    <div className={`w-full h-full ${className}`}>
+    <Html fullscreen style={{ pointerEvents: 'none' }}>
+      <div className="absolute top-3 right-3 flex flex-col gap-1 bg-card/95 backdrop-blur-sm border border-border rounded-lg p-1.5 shadow-card" style={{ pointerEvents: 'auto' }}>
+        <button
+          onClick={onTopView}
+          className="w-8 h-8 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-xs font-mono"
+          title="Üst Görünüm"
+        >
+          T
+        </button>
+        <button
+          onClick={onFrontView}
+          className="w-8 h-8 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-xs font-mono"
+          title="Ön Görünüm"
+        >
+          F
+        </button>
+        <button
+          onClick={onIsoView}
+          className="w-8 h-8 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-xs font-mono"
+          title="İzometrik"
+        >
+          3D
+        </button>
+        <div className="border-t border-border my-1" />
+        <button
+          onClick={onReset}
+          className="w-8 h-8 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+          title="Sıfırla"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+        </button>
+      </div>
+    </Html>
+  );
+};
+
+// Camera Controller Component with preset views
+const CameraController = React.forwardRef((props, ref) => {
+  const { camera } = useThree();
+  const controlsRef = useRef();
+
+  const setView = (position, target = [0, 0, 0]) => {
+    if (controlsRef.current) {
+      camera.position.set(...position);
+      controlsRef.current.target.set(...target);
+      controlsRef.current.update();
+    }
+  };
+
+  // Expose methods via ref
+  React.useImperativeHandle(ref, () => ({
+    setTopView: () => setView([0, 3, 0]),
+    setFrontView: () => setView([0, 0.5, 3]),
+    setIsoView: () => setView([2, 1.5, 2]),
+    resetView: () => setView([2, 1.5, 2]),
+  }));
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      enablePan={true}
+      enableZoom={true}
+      minDistance={1}
+      maxDistance={6}
+      minPolarAngle={0}
+      maxPolarAngle={Math.PI}
+      autoRotate={props.autoRotate}
+      autoRotateSpeed={0.3}
+      enableDamping={true}
+      dampingFactor={0.1}
+      mouseButtons={{
+        LEFT: THREE.MOUSE.ROTATE,
+        MIDDLE: THREE.MOUSE.DOLLY,
+        RIGHT: THREE.MOUSE.PAN
+      }}
+    />
+  );
+});
+
+CameraController.displayName = 'CameraController';
+
+// Main Export Component - Professional CAD-style 3D Viewer
+const PCB3DScene = ({
+  className = '',
+  exploded = false,
+  showPerf = false,
+  autoRotate = false, // Disabled by default for professional CAD experience
+  showViewControls = true,
+}) => {
+  const cameraControllerRef = useRef();
+
+  const handleTopView = () => cameraControllerRef.current?.setTopView?.();
+  const handleFrontView = () => cameraControllerRef.current?.setFrontView?.();
+  const handleIsoView = () => cameraControllerRef.current?.setIsoView?.();
+  const handleReset = () => cameraControllerRef.current?.resetView?.();
+
+  return (
+    <div className={`w-full h-full relative ${className}`}>
       <Canvas
         camera={{ position: [2, 1.5, 2], fov: 45 }}
         shadows
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
-        // Performance optimizations
         performance={{ min: 0.5 }}
       >
         <Suspense fallback={<Loader />}>
           <Scene exploded={exploded} />
           {showPerf && <PerformanceInfo />}
-          <OrbitControls
-            enablePan={false}
-            enableZoom={true}
-            minDistance={1.5}
-            maxDistance={5}
-            minPolarAngle={Math.PI / 6}
-            maxPolarAngle={Math.PI / 2.2}
-            autoRotate
-            autoRotateSpeed={0.5}
-          />
+          <CameraController ref={cameraControllerRef} autoRotate={autoRotate} />
+          {showViewControls && (
+            <ViewControls
+              onReset={handleReset}
+              onTopView={handleTopView}
+              onFrontView={handleFrontView}
+              onIsoView={handleIsoView}
+            />
+          )}
         </Suspense>
       </Canvas>
+
+      {/* Bottom Navigation Help */}
+      <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-xs text-muted-foreground bg-card/90 backdrop-blur-sm border border-border rounded px-3 py-1.5">
+        <span className="font-mono">
+          Sol tık: Döndür | Sağ tık: Kaydır | Scroll: Yakınlaştır
+        </span>
+        <span className="font-mono text-brand-500 font-medium">AICO PCB</span>
+      </div>
     </div>
   );
 };
