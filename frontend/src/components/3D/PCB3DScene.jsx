@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useState, useMemo } from 'react';
+import React, { Suspense, useRef, useState, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
   OrbitControls,
@@ -6,7 +6,8 @@ import {
   Float,
   Html,
   ContactShadows,
-  useTexture,
+  Instances,
+  Instance,
   MeshTransmissionMaterial
 } from '@react-three/drei';
 import * as THREE from 'three';
@@ -28,7 +29,186 @@ const ComponentLabel = ({ position, label, description, isVisible }) => {
   );
 };
 
-// Microchip/IC Component
+// =====================================================
+// INSTANCED COMPONENTS - High Performance GPU Batching
+// =====================================================
+
+// Instanced SMD Resistors - All rendered in single draw call
+const InstancedResistors = ({ resistors, exploded = false }) => {
+  const meshRef = useRef();
+  const [hovered, setHovered] = useState(null);
+
+  return (
+    <group>
+      {/* Main resistor bodies - single draw call for all */}
+      <Instances
+        ref={meshRef}
+        limit={100}
+        range={resistors.length}
+      >
+        <boxGeometry args={[0.08, 0.02, 0.04]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.4} roughness={0.6} />
+        {resistors.map((r, idx) => {
+          const explodedY = exploded ? 0.35 : 0;
+          return (
+            <Instance
+              key={idx}
+              position={[r.position[0], r.position[1] + explodedY, r.position[2]]}
+              onPointerOver={() => setHovered(idx)}
+              onPointerOut={() => setHovered(null)}
+            />
+          );
+        })}
+      </Instances>
+
+      {/* Left terminals */}
+      <Instances limit={100} range={resistors.length}>
+        <boxGeometry args={[0.015, 0.025, 0.045]} />
+        <meshStandardMaterial color="#c0c0c0" metalness={0.9} roughness={0.2} />
+        {resistors.map((r, idx) => {
+          const explodedY = exploded ? 0.35 : 0;
+          return (
+            <Instance
+              key={idx}
+              position={[r.position[0] - 0.035, r.position[1] + explodedY, r.position[2]]}
+            />
+          );
+        })}
+      </Instances>
+
+      {/* Right terminals */}
+      <Instances limit={100} range={resistors.length}>
+        <boxGeometry args={[0.015, 0.025, 0.045]} />
+        <meshStandardMaterial color="#c0c0c0" metalness={0.9} roughness={0.2} />
+        {resistors.map((r, idx) => {
+          const explodedY = exploded ? 0.35 : 0;
+          return (
+            <Instance
+              key={idx}
+              position={[r.position[0] + 0.035, r.position[1] + explodedY, r.position[2]]}
+            />
+          );
+        })}
+      </Instances>
+
+      {/* Labels for hovered resistor */}
+      {resistors.map((r, idx) => (
+        <ComponentLabel
+          key={`label-${idx}`}
+          position={[r.position[0], r.position[1] + (exploded ? 0.47 : 0.12), r.position[2]]}
+          label={r.label}
+          description={r.description}
+          isVisible={hovered === idx}
+        />
+      ))}
+    </group>
+  );
+};
+
+// Instanced Via Holes - Massive performance gain for boards with many vias
+const InstancedVias = ({ vias }) => {
+  return (
+    <group>
+      {/* Via pads (gold rings) */}
+      <Instances limit={200} range={vias.length}>
+        <ringGeometry args={[0.015, 0.03, 16]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+        {vias.map((pos, idx) => (
+          <Instance
+            key={idx}
+            position={[pos[0], 0.026, pos[2]]}
+            rotation={[-Math.PI / 2, 0, 0]}
+          />
+        ))}
+      </Instances>
+
+      {/* Via holes (dark centers) */}
+      <Instances limit={200} range={vias.length}>
+        <circleGeometry args={[0.015, 16]} />
+        <meshBasicMaterial color="#1a1a1a" />
+        {vias.map((pos, idx) => (
+          <Instance
+            key={idx}
+            position={[pos[0], 0.027, pos[2]]}
+            rotation={[-Math.PI / 2, 0, 0]}
+          />
+        ))}
+      </Instances>
+    </group>
+  );
+};
+
+// Instanced LEDs with pulsing effect
+const InstancedLEDs = ({ leds, exploded = false }) => {
+  const [intensities, setIntensities] = useState(leds.map(() => 1));
+  const [hovered, setHovered] = useState(null);
+
+  useFrame((state) => {
+    const newIntensities = leds.map((_, idx) =>
+      Math.sin(state.clock.elapsedTime * 3 + idx * 2) * 0.5 + 0.5
+    );
+    setIntensities(newIntensities);
+  });
+
+  return (
+    <group>
+      {leds.map((led, idx) => {
+        const explodedY = exploded ? 0.6 : 0;
+        const finalPosition = [
+          led.position[0],
+          led.position[1] + explodedY,
+          led.position[2]
+        ];
+
+        return (
+          <group key={idx}>
+            <mesh
+              position={finalPosition}
+              onPointerOver={() => setHovered(idx)}
+              onPointerOut={() => setHovered(null)}
+            >
+              <cylinderGeometry args={[0.03, 0.03, 0.04, 16]} />
+              <meshStandardMaterial
+                color={led.color}
+                emissive={led.color}
+                emissiveIntensity={intensities[idx]}
+                transparent
+                opacity={0.9}
+              />
+            </mesh>
+            <pointLight
+              position={finalPosition}
+              color={led.color}
+              intensity={intensities[idx] * 0.3}
+              distance={0.5}
+            />
+            <ComponentLabel
+              position={[finalPosition[0], finalPosition[1] + 0.15, finalPosition[2]]}
+              label={led.label}
+              description={led.description}
+              isVisible={hovered === idx}
+            />
+          </group>
+        );
+      })}
+    </group>
+  );
+};
+
+// Instanced IC Pins - Major performance improvement for chip packages
+const InstancedICPins = ({ positions }) => {
+  return (
+    <Instances limit={200} range={positions.length}>
+      <boxGeometry args={[0.015, 0.04, 0.02]} />
+      <meshStandardMaterial color="#b8b8b8" metalness={0.9} roughness={0.2} />
+      {positions.map((pos, idx) => (
+        <Instance key={idx} position={pos} />
+      ))}
+    </Instances>
+  );
+};
+
+// Microchip/IC Component with instanced pins
 const Microchip = ({ position, size = [0.4, 0.08, 0.4], label, description, exploded = false }) => {
   const meshRef = useRef();
   const [hovered, setHovered] = useState(false);
@@ -46,6 +226,7 @@ const Microchip = ({ position, size = [0.4, 0.08, 0.4], label, description, expl
     }
   });
 
+  // Generate pin positions
   const pins = useMemo(() => {
     const pinsArray = [];
     const pinsPerSide = 8;
@@ -55,18 +236,18 @@ const Microchip = ({ position, size = [0.4, 0.08, 0.4], label, description, expl
       // Bottom pins
       pinsArray.push([
         position[0] - size[0]/2 + pinWidth * (i + 1),
-        position[1] - 0.02,
+        position[1] - 0.02 + explodedOffset[1],
         position[2] + size[2]/2 + 0.03
       ]);
       // Top pins
       pinsArray.push([
         position[0] - size[0]/2 + pinWidth * (i + 1),
-        position[1] - 0.02,
+        position[1] - 0.02 + explodedOffset[1],
         position[2] - size[2]/2 - 0.03
       ]);
     }
     return pinsArray;
-  }, [position, size]);
+  }, [position, size, explodedOffset]);
 
   return (
     <group>
@@ -92,67 +273,11 @@ const Microchip = ({ position, size = [0.4, 0.08, 0.4], label, description, expl
         <meshBasicMaterial color="#4ade80" />
       </mesh>
 
-      {/* Pins */}
-      {pins.map((pinPos, idx) => (
-        <mesh key={idx} position={pinPos}>
-          <boxGeometry args={[0.015, 0.04, 0.02]} />
-          <meshStandardMaterial color="#b8b8b8" metalness={0.9} roughness={0.2} />
-        </mesh>
-      ))}
+      {/* Instanced Pins - single draw call */}
+      <InstancedICPins positions={pins} />
 
       <ComponentLabel
         position={[finalPosition[0], finalPosition[1] + 0.2, finalPosition[2]]}
-        label={label}
-        description={description}
-        isVisible={hovered}
-      />
-    </group>
-  );
-};
-
-// LED Component
-const LED = ({ position, color = '#4ade80', label, description, exploded = false }) => {
-  const meshRef = useRef();
-  const [hovered, setHovered] = useState(false);
-  const [intensity, setIntensity] = useState(1);
-
-  const explodedOffset = exploded ? [0, 0.6, 0] : [0, 0, 0];
-  const finalPosition = [
-    position[0] + explodedOffset[0],
-    position[1] + explodedOffset[1],
-    position[2] + explodedOffset[2]
-  ];
-
-  useFrame((state) => {
-    const pulse = Math.sin(state.clock.elapsedTime * 3 + position[0] * 5) * 0.5 + 0.5;
-    setIntensity(pulse);
-  });
-
-  return (
-    <group>
-      <mesh
-        ref={meshRef}
-        position={finalPosition}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-      >
-        <cylinderGeometry args={[0.03, 0.03, 0.04, 16]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={intensity}
-          transparent
-          opacity={0.9}
-        />
-      </mesh>
-      <pointLight
-        position={finalPosition}
-        color={color}
-        intensity={intensity * 0.3}
-        distance={0.5}
-      />
-      <ComponentLabel
-        position={[finalPosition[0], finalPosition[1] + 0.15, finalPosition[2]]}
         label={label}
         description={description}
         isVisible={hovered}
@@ -202,48 +327,7 @@ const Capacitor = ({ position, label, description, exploded = false }) => {
   );
 };
 
-// SMD Resistor
-const Resistor = ({ position, label, description, exploded = false }) => {
-  const [hovered, setHovered] = useState(false);
-
-  const explodedOffset = exploded ? [0, 0.35, 0] : [0, 0, 0];
-  const finalPosition = [
-    position[0] + explodedOffset[0],
-    position[1] + explodedOffset[1],
-    position[2] + explodedOffset[2]
-  ];
-
-  return (
-    <group>
-      <mesh
-        position={finalPosition}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        castShadow
-      >
-        <boxGeometry args={[0.08, 0.02, 0.04]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.4} roughness={0.6} />
-      </mesh>
-      {/* Terminals */}
-      <mesh position={[finalPosition[0] - 0.035, finalPosition[1], finalPosition[2]]}>
-        <boxGeometry args={[0.015, 0.025, 0.045]} />
-        <meshStandardMaterial color="#c0c0c0" metalness={0.9} roughness={0.2} />
-      </mesh>
-      <mesh position={[finalPosition[0] + 0.035, finalPosition[1], finalPosition[2]]}>
-        <boxGeometry args={[0.015, 0.025, 0.045]} />
-        <meshStandardMaterial color="#c0c0c0" metalness={0.9} roughness={0.2} />
-      </mesh>
-      <ComponentLabel
-        position={[finalPosition[0], finalPosition[1] + 0.12, finalPosition[2]]}
-        label={label}
-        description={description}
-        isVisible={hovered}
-      />
-    </group>
-  );
-};
-
-// Connector Component
+// Connector Component with instanced pins
 const Connector = ({ position, pins = 6, label, description, exploded = false }) => {
   const [hovered, setHovered] = useState(false);
 
@@ -255,6 +339,15 @@ const Connector = ({ position, pins = 6, label, description, exploded = false })
   ];
 
   const width = pins * 0.05;
+
+  // Generate pin positions
+  const pinPositions = useMemo(() => {
+    return Array.from({ length: pins }).map((_, i) => [
+      finalPosition[0] - width/2 + 0.025 + i * 0.05,
+      finalPosition[1] - 0.06,
+      finalPosition[2]
+    ]);
+  }, [finalPosition, width, pins]);
 
   return (
     <group>
@@ -268,44 +361,22 @@ const Connector = ({ position, pins = 6, label, description, exploded = false })
         <boxGeometry args={[width, 0.08, 0.1]} />
         <meshStandardMaterial color="#f5f5f5" metalness={0.1} roughness={0.8} />
       </mesh>
-      {/* Pins */}
-      {Array.from({ length: pins }).map((_, i) => (
-        <mesh
-          key={i}
-          position={[
-            finalPosition[0] - width/2 + 0.025 + i * 0.05,
-            finalPosition[1] - 0.06,
-            finalPosition[2]
-          ]}
-        >
-          <boxGeometry args={[0.02, 0.08, 0.02]} />
-          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.1} />
-        </mesh>
-      ))}
+
+      {/* Instanced Pins */}
+      <Instances limit={20} range={pins}>
+        <boxGeometry args={[0.02, 0.08, 0.02]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.1} />
+        {pinPositions.map((pos, idx) => (
+          <Instance key={idx} position={pos} />
+        ))}
+      </Instances>
+
       <ComponentLabel
         position={[finalPosition[0], finalPosition[1] + 0.18, finalPosition[2]]}
         label={label}
         description={description}
         isVisible={hovered}
       />
-    </group>
-  );
-};
-
-// Via Hole
-const Via = ({ position }) => {
-  return (
-    <group position={position}>
-      {/* Pad */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.026, 0]}>
-        <ringGeometry args={[0.015, 0.03, 16]} />
-        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
-      </mesh>
-      {/* Hole */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.027, 0]}>
-        <circleGeometry args={[0.015, 16]} />
-        <meshBasicMaterial color="#1a1a1a" />
-      </mesh>
     </group>
   );
 };
@@ -333,7 +404,10 @@ const Trace = ({ points, width = 0.02 }) => {
   );
 };
 
-// Main PCB Board
+// =====================================================
+// MAIN PCB BOARD - Optimized with Instanced Components
+// =====================================================
+
 const PCBBoard = ({ exploded = false }) => {
   const boardRef = useRef();
   const [boardHovered, setBoardHovered] = useState(false);
@@ -344,20 +418,48 @@ const PCBBoard = ({ exploded = false }) => {
     }
   });
 
-  const traces = [
-    // Horizontal traces
+  // Trace paths
+  const traces = useMemo(() => [
     [[-0.6, 0.027, -0.3], [-0.2, 0.027, -0.3], [0, 0.027, -0.25], [0.4, 0.027, -0.25]],
     [[-0.5, 0.027, 0], [-0.1, 0.027, 0], [0.1, 0.027, 0.1], [0.5, 0.027, 0.1]],
     [[-0.4, 0.027, 0.3], [0, 0.027, 0.3], [0.2, 0.027, 0.25], [0.6, 0.027, 0.25]],
-    // Vertical traces
     [[-0.3, 0.027, -0.4], [-0.3, 0.027, -0.1], [-0.25, 0.027, 0.1], [-0.25, 0.027, 0.4]],
     [[0.3, 0.027, -0.35], [0.3, 0.027, 0], [0.35, 0.027, 0.2], [0.35, 0.027, 0.35]],
-  ];
+  ], []);
 
-  const vias = [
+  // Via positions - now using instanced rendering
+  const vias = useMemo(() => [
     [-0.2, 0, -0.3], [0.4, 0, -0.25], [-0.1, 0, 0], [0.5, 0, 0.1],
-    [0, 0, 0.3], [-0.3, 0, -0.1], [0.3, 0, 0]
-  ];
+    [0, 0, 0.3], [-0.3, 0, -0.1], [0.3, 0, 0],
+    // Additional vias for demonstration
+    [-0.4, 0, 0.1], [0.2, 0, -0.15], [-0.15, 0, 0.2],
+    [0.45, 0, -0.1], [-0.35, 0, -0.25], [0.1, 0, 0.35]
+  ], []);
+
+  // Resistor data - using instanced rendering
+  const resistors = useMemo(() => [
+    { position: [-0.15, 0.035, -0.35], label: "R1", description: "10kΩ Pull-up" },
+    { position: [-0.05, 0.035, -0.35], label: "R2", description: "4.7kΩ" },
+    { position: [0.05, 0.035, -0.35], label: "R3", description: "1kΩ LED" },
+    { position: [0.15, 0.035, -0.35], label: "R4", description: "100Ω" },
+    { position: [-0.35, 0.035, 0.2], label: "R5", description: "22kΩ" },
+    { position: [-0.25, 0.035, 0.2], label: "R6", description: "10kΩ" },
+  ], []);
+
+  // LED data
+  const leds = useMemo(() => [
+    { position: [0.65, 0.045, -0.35], color: "#4ade80", label: "PWR LED", description: "Power Indicator" },
+    { position: [0.55, 0.045, -0.35], color: "#60a5fa", label: "STS LED", description: "Status Indicator" },
+    { position: [0.45, 0.045, -0.35], color: "#f59e0b", label: "ERR LED", description: "Error Indicator" },
+  ], []);
+
+  // Mounting hole positions
+  const mountingHoles = useMemo(() => [
+    [-0.72, 0.026, -0.42],
+    [0.72, 0.026, -0.42],
+    [-0.72, 0.026, 0.42],
+    [0.72, 0.026, 0.42]
+  ], []);
 
   return (
     <group ref={boardRef}>
@@ -394,12 +496,16 @@ const PCBBoard = ({ exploded = false }) => {
         <Trace key={idx} points={pts} />
       ))}
 
-      {/* Via Holes */}
-      {vias.map((pos, idx) => (
-        <Via key={idx} position={pos} />
-      ))}
+      {/* INSTANCED Via Holes - Single draw call for all vias */}
+      <InstancedVias vias={vias} />
 
-      {/* Components */}
+      {/* INSTANCED Resistors - Single draw call for all resistors */}
+      <InstancedResistors resistors={resistors} exploded={exploded} />
+
+      {/* INSTANCED LEDs */}
+      <InstancedLEDs leds={leds} exploded={exploded} />
+
+      {/* Microchips (fewer instances, individual rendering OK) */}
       <Microchip
         position={[0, 0.065, 0]}
         size={[0.35, 0.06, 0.35]}
@@ -416,6 +522,7 @@ const PCBBoard = ({ exploded = false }) => {
         exploded={exploded}
       />
 
+      {/* Capacitors */}
       <Capacitor
         position={[0.55, 0.1, 0]}
         label="Cap 100µF"
@@ -429,34 +536,6 @@ const PCBBoard = ({ exploded = false }) => {
         description="Decoupling"
         exploded={exploded}
       />
-
-      {/* LEDs */}
-      <LED
-        position={[0.65, 0.045, -0.35]}
-        color="#4ade80"
-        label="PWR LED"
-        description="Power Indicator"
-        exploded={exploded}
-      />
-      <LED
-        position={[0.55, 0.045, -0.35]}
-        color="#60a5fa"
-        label="STS LED"
-        description="Status Indicator"
-        exploded={exploded}
-      />
-      <LED
-        position={[0.45, 0.045, -0.35]}
-        color="#f59e0b"
-        label="ERR LED"
-        description="Error Indicator"
-        exploded={exploded}
-      />
-
-      {/* Resistors */}
-      <Resistor position={[-0.15, 0.035, -0.35]} label="R1" description="10kΩ Pull-up" exploded={exploded} />
-      <Resistor position={[-0.05, 0.035, -0.35]} label="R2" description="4.7kΩ" exploded={exploded} />
-      <Resistor position={[0.05, 0.035, -0.35]} label="R3" description="1kΩ LED" exploded={exploded} />
 
       {/* Connectors */}
       <Connector
@@ -492,19 +571,22 @@ const PCBBoard = ({ exploded = false }) => {
         </div>
       </Html>
 
-      {/* Corner Mounting Holes */}
-      {[[-0.72, 0.026, -0.42], [0.72, 0.026, -0.42], [-0.72, 0.026, 0.42], [0.72, 0.026, 0.42]].map((pos, idx) => (
-        <group key={idx} position={pos}>
-          <mesh rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.025, 0.045, 24]} />
-            <meshStandardMaterial color="#c9a227" metalness={0.9} roughness={0.2} />
-          </mesh>
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]}>
-            <circleGeometry args={[0.025, 24]} />
-            <meshBasicMaterial color="#1a1a1a" />
-          </mesh>
-        </group>
-      ))}
+      {/* INSTANCED Corner Mounting Holes */}
+      <Instances limit={10} range={mountingHoles.length}>
+        <ringGeometry args={[0.025, 0.045, 24]} />
+        <meshStandardMaterial color="#c9a227" metalness={0.9} roughness={0.2} />
+        {mountingHoles.map((pos, idx) => (
+          <Instance key={idx} position={pos} rotation={[-Math.PI / 2, 0, 0]} />
+        ))}
+      </Instances>
+
+      <Instances limit={10} range={mountingHoles.length}>
+        <circleGeometry args={[0.025, 24]} />
+        <meshBasicMaterial color="#1a1a1a" />
+        {mountingHoles.map((pos, idx) => (
+          <Instance key={idx} position={[pos[0], pos[1] + 0.001, pos[2]]} rotation={[-Math.PI / 2, 0, 0]} />
+        ))}
+      </Instances>
     </group>
   );
 };
@@ -556,8 +638,32 @@ const Loader = () => (
   </Html>
 );
 
+// Performance Monitor (development only)
+const PerformanceInfo = () => {
+  const { gl } = useThree();
+  const [info, setInfo] = useState({ calls: 0, triangles: 0 });
+
+  useFrame(() => {
+    setInfo({
+      calls: gl.info.render.calls,
+      triangles: gl.info.render.triangles
+    });
+  });
+
+  if (process.env.NODE_ENV !== 'development') return null;
+
+  return (
+    <Html position={[-0.8, 0.8, 0]}>
+      <div className="bg-black/80 text-green-400 text-xs font-mono p-2 rounded">
+        <div>Draw calls: {info.calls}</div>
+        <div>Triangles: {info.triangles}</div>
+      </div>
+    </Html>
+  );
+};
+
 // Main Export Component
-const PCB3DScene = ({ className = '', exploded = false }) => {
+const PCB3DScene = ({ className = '', exploded = false, showPerf = false }) => {
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
@@ -565,9 +671,12 @@ const PCB3DScene = ({ className = '', exploded = false }) => {
         shadows
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
+        // Performance optimizations
+        performance={{ min: 0.5 }}
       >
         <Suspense fallback={<Loader />}>
           <Scene exploded={exploded} />
+          {showPerf && <PerformanceInfo />}
           <OrbitControls
             enablePan={false}
             enableZoom={true}
