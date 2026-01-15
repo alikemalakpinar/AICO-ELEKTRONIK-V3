@@ -35,111 +35,166 @@ class UserCreate(BaseModel):
     locale: Literal["tr", "en"] = "tr"
 
 
-# ============= File Collection =============
-class FileModel(MongoBaseModel):
+# ============= Project/Case Study Models =============
+class ProjectPhase(BaseModel):
+    """A phase in the project development process"""
+    title: str
+    title_en: Optional[str] = None
+    description: str
+    description_en: Optional[str] = None
+    image_url: Optional[str] = None
+    icon: Optional[str] = None
+
+
+class TechSpec(BaseModel):
+    """Technical specification for a project"""
+    category: str  # e.g., "PCB", "Components", "Software"
+    items: List[Dict[str, str]]  # e.g., [{"label": "Layers", "value": "6"}]
+
+
+class ProjectMetrics(BaseModel):
+    """Measurable results from a project"""
+    size_reduction: Optional[str] = None
+    cost_savings: Optional[str] = None
+    performance_improvement: Optional[str] = None
+    time_to_market: Optional[str] = None
+    custom: Optional[Dict[str, str]] = None
+
+
+class ProjectDetail(MongoBaseModel):
+    """Detailed project/case study model for portfolio"""
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    type: Literal["GERBER", "BOM", "PNP"]
-    path: str
-    size: int  # bytes
-    rev: Optional[str] = None
-    order_id: Optional[str] = None
-    hash: Optional[str] = None
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    meta: Dict[str, Any] = {}
+    slug: str = Field(..., description="URL-friendly identifier")
 
+    # Basic info
+    title: str
+    title_en: Optional[str] = None
+    subtitle: str
+    subtitle_en: Optional[str] = None
 
-# ============= Quote Collection =============
-class PanelizationOptions(BaseModel):
-    mode: Literal["none", "inline", "array"] = "none"
-    nxm: Optional[Dict[str, int]] = None  # {"n": 3, "m": 2}
-    break_method: Optional[Literal["vcut", "tabRoute"]] = None
-    rails_mm: Optional[Dict[str, int]] = None  # {"left": 5, "right": 5, "top": 5, "bottom": 5}
+    # Media
+    hero_image: str
+    hero_video: Optional[str] = None
+    thumbnail: Optional[str] = None
 
+    # Classification
+    client_industry: str
+    client_industry_en: Optional[str] = None
+    project_type: str  # "pcb-design", "iot-solution", "embedded-system", etc.
 
-class PCBOptions(BaseModel):
-    quantity: int = Field(gt=0, description="Quantity must be positive")
-    layers: Literal[2, 4, 6, 8, 10]
-    thickness_mm: float = 1.6
-    copper_oz: Literal[1, 2] = 1
-    finish: Literal["HASL", "ENIG", "OSP"]
-    solder_mask_color: str = "green"
-    silkscreen: Literal["top", "bottom", "both", "none"] = "both"
-    min_track_space_mm: float = Field(gt=0, description="Min track space must be positive")
-    impedance_controlled: bool = False
-    e_test: bool = True
-    board_size_mm: Dict[str, float]  # {"w": 100, "h": 80}
-    panelization: Optional[PanelizationOptions] = None
+    # Story content (Turkish)
+    challenge_text: str
+    solution_text: str
+    approach_text: Optional[str] = None
+    results_text: str
 
+    # Story content (English)
+    challenge_text_en: Optional[str] = None
+    solution_text_en: Optional[str] = None
+    approach_text_en: Optional[str] = None
+    results_text_en: Optional[str] = None
 
-class SMTOptions(BaseModel):
-    assembly_required: bool = False
-    sides: Optional[Literal["single", "double"]] = None
-    component_count: Optional[int] = Field(None, ge=0, description="Component count must be non-negative")
-    unique_parts: Optional[int] = Field(None, ge=0, description="Unique parts must be non-negative")
-    bga_count: Optional[int] = Field(None, ge=0, description="BGA count must be non-negative")
-    uses_01005: Optional[bool] = False
-    stencil: Optional[Literal["none", "framed", "frameless"]] = None
-    inspection: Optional[List[str]] = []  # ["AOI", "Xray"]
-    sourcing: Optional[Literal["turnkey", "consigned", "partial"]] = None
+    # Technical details
+    technologies: List[str] = []
+    tech_specs: Optional[List[TechSpec]] = None
 
+    # Development process
+    phases: List[ProjectPhase] = []
 
-class QuoteInputs(BaseModel):
-    pcb: PCBOptions
-    smt: Optional[SMTOptions] = None
-    lead_time: Literal["fast", "standard", "economy"] = "standard"
+    # Results and metrics
+    metrics: Optional[ProjectMetrics] = None
+    testimonial: Optional[str] = None
+    testimonial_author: Optional[str] = None
 
+    # Gallery
+    gallery_images: List[str] = []
+    pcb_layers: Optional[List[str]] = None  # For interactive layer viewer
+    schematic_images: Optional[List[str]] = None
 
-class PricingBreakdown(BaseModel):
-    pcb: float
-    smt: float
-    shipping: float
+    # Display settings
+    featured: bool = False
+    order: int = 0
+    visible: bool = True
 
-
-class QuotePricing(BaseModel):
-    breakdown: PricingBreakdown
-    total: float
-    currency: str = "TRY"
-    warnings: List[str] = []
-
-
-class QuoteModel(MongoBaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: Optional[str] = None
-    inputs: QuoteInputs
-    pricing: QuotePricing
-    status: Literal["DRAFT", "SENT", "ACCEPTED", "EXPIRED"] = "DRAFT"
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-
-class QuoteCalculateRequest(BaseModel):
-    pcb: PCBOptions
-    smt: Optional[SMTOptions] = None
-    lead_time: Literal["fast", "standard", "economy"] = "standard"
-
-
-class QuoteSaveRequest(BaseModel):
-    user_id: Optional[str] = None
-    inputs: QuoteInputs
-    pricing: QuotePricing
-
-
-# ============= Order Collection =============
-class TrackingEntry(BaseModel):
-    status: str
-    timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    note: Optional[str] = None
-
-
-class OrderModel(MongoBaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    quote_id: str
-    payment_status: Literal["PENDING", "PAID", "FAILED", "REFUNDED"] = "PENDING"
-    tracking: List[TrackingEntry] = []
-    invoice_no: Optional[str] = None
+    # Metadata
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
-class OrderCreate(BaseModel):
-    quote_id: str
+class ProjectCreate(BaseModel):
+    """Model for creating a new project"""
+    slug: str
+    title: str
+    title_en: Optional[str] = None
+    subtitle: str
+    subtitle_en: Optional[str] = None
+    hero_image: str
+    client_industry: str
+    project_type: str
+    challenge_text: str
+    solution_text: str
+    results_text: str
+    technologies: List[str] = []
+
+
+class ProjectListItem(BaseModel):
+    """Lightweight project item for list views"""
+    id: str
+    slug: str
+    title: str
+    title_en: Optional[str] = None
+    subtitle: str
+    subtitle_en: Optional[str] = None
+    thumbnail: Optional[str] = None
+    hero_image: str
+    client_industry: str
+    client_industry_en: Optional[str] = None
+    technologies: List[str] = []
+    featured: bool = False
+    order: int = 0
+
+
+# ============= Consultation Request Collection =============
+class ConsultationRequest(MongoBaseModel):
+    """Model for project consultation requests"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: Optional[str] = None
+    company: Optional[str] = None
+    project_type: str
+    budget_range: Optional[str] = None
+    timeline: Optional[str] = None
+    message: Optional[str] = None
+    status: Literal["new", "contacted", "in_progress", "completed", "archived"] = "new"
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+
+class ConsultationRequestCreate(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    company: Optional[str] = None
+    project_type: str
+    budget_range: Optional[str] = None
+    timeline: Optional[str] = None
+    message: Optional[str] = None
+
+
+# ============= Industry/Technology Categories =============
+class Industry(BaseModel):
+    """Industry category for filtering"""
+    slug: str
+    name: str
+    name_en: str
+    icon: Optional[str] = None
+    description: Optional[str] = None
+
+
+class Technology(BaseModel):
+    """Technology tag for projects"""
+    slug: str
+    name: str
+    category: str  # "software", "hardware", "component", "tool"
+    logo_url: Optional[str] = None

@@ -39,7 +39,7 @@ const Header = ({ lang = 'tr' }) => {
       support: 'Destek',
       about: 'Hakkimizda',
       contact: 'Iletisim',
-      getQuote: 'Teklif Al',
+      projectDiscuss: 'Proje Gorusun',
       serviceItems: [
         { icon: Layers, title: 'PCB Uretim', desc: '2-10 katman profesyonel uretim', link: '/pcb-manufacturing' },
         { icon: Cpu, title: 'PCB Dizgi', desc: 'SMT/THT hassas montaj', link: '/pcb-assembly' },
@@ -73,7 +73,7 @@ const Header = ({ lang = 'tr' }) => {
       support: 'Support',
       about: 'About',
       contact: 'Contact',
-      getQuote: 'Get Quote',
+      projectDiscuss: 'Discuss Project',
       serviceItems: [
         { icon: Layers, title: 'PCB Manufacturing', desc: '2-10 layer professional production', link: '/pcb-manufacturing' },
         { icon: Cpu, title: 'PCB Assembly', desc: 'SMT/THT precision assembly', link: '/pcb-assembly' },
@@ -336,10 +336,10 @@ const Header = ({ lang = 'tr' }) => {
 
             {/* CTA Button */}
             <div className="hidden lg:flex items-center gap-3">
-              <Link to={`/${lang}/instant-quote`}>
+              <Link to={`/${lang}/contact`}>
                 <Button className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all text-sm">
-                  <Zap className="mr-2" size={16} />
-                  {t.getQuote}
+                  <Phone className="mr-2" size={16} />
+                  {t.projectDiscuss}
                 </Button>
               </Link>
             </div>
@@ -375,10 +375,10 @@ const Header = ({ lang = 'tr' }) => {
               </Link>
 
               {/* CTA Button */}
-              <Link to={`/${lang}/instant-quote`} className="block">
+              <Link to={`/${lang}/contact`} className="block">
                 <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-lg font-medium">
-                  <Zap className="mr-2" size={18} />
-                  {t.getQuote}
+                  <Phone className="mr-2" size={18} />
+                  {t.projectDiscuss}
                 </Button>
               </Link>
 

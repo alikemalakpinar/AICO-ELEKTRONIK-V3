@@ -20,7 +20,6 @@ const CableCalculator = lazy(() => import('./pages/CableCalculator'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
-const InstantQuotePage = lazy(() => import('./pages/InstantQuotePage'));
 const PCBManufacturingPage = lazy(() => import('./pages/PCBManufacturingPage'));
 const PCBAssemblyPage = lazy(() => import('./pages/PCBAssemblyPage'));
 const FastPrototypingPage = lazy(() => import('./pages/FastPrototypingPage'));
@@ -33,8 +32,11 @@ const SupportPage = lazy(() => import('./pages/SupportPage'));
 const CareersPage = lazy(() => import('./pages/CareersPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
-const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
+
+// Solutions/Portfolio Pages - for the new engineering portfolio design
+const SolutionsPage = lazy(() => import('./pages/SolutionsPage'));
+const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'));
 
 // IoT Product Pages - Lazy loaded
 const CoffeeMachineSystemsPage = lazy(() => import('./pages/CoffeeMachineSystemsPage'));
@@ -79,8 +81,10 @@ function App() {
 
             {/* Turkish Routes */}
             <Route path="/tr" element={<HomePage lang="tr" />} />
-            <Route path="/tr/instant-quote" element={<InstantQuotePage lang="tr" />} />
-            <Route path="/checkout" element={<CheckoutPage lang="tr" />} />
+
+            {/* Solutions/Portfolio - Engineering Case Studies */}
+            <Route path="/tr/solutions" element={<SolutionsPage lang="tr" />} />
+            <Route path="/tr/solutions/:slug" element={<ProjectDetailPage lang="tr" />} />
 
             {/* IoT Products */}
             <Route path="/tr/coffee-machine-systems" element={<CoffeeMachineSystemsPage lang="tr" />} />
@@ -122,7 +126,10 @@ function App() {
 
             {/* English Routes */}
             <Route path="/en" element={<HomePage lang="en" />} />
-            <Route path="/en/instant-quote" element={<InstantQuotePage lang="en" />} />
+
+            {/* Solutions/Portfolio - Engineering Case Studies */}
+            <Route path="/en/solutions" element={<SolutionsPage lang="en" />} />
+            <Route path="/en/solutions/:slug" element={<ProjectDetailPage lang="en" />} />
 
             {/* IoT Products */}
             <Route path="/en/coffee-machine-systems" element={<CoffeeMachineSystemsPage lang="en" />} />
