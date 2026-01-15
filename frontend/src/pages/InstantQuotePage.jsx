@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Upload, ArrowRight, ArrowLeft, Check, FileText, Settings,
   CreditCard, Package, Layers, Cpu, DollarSign, Clock,
   AlertCircle, CheckCircle2, Zap, Sparkles, Shield, Award,
-  Star, Users, Truck, Lock
+  Star, Users, Truck, Lock, Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -13,6 +13,9 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useDebounce, useDebouncedCallback } from '../hooks/useDebounce';
+import { validateField, coerceFormData, PCB_LIMITS, SMT_LIMITS } from '../lib/validations/quoteSchema';
+import FileUploader from '../components/FileUploader';
 import DetailedBreakdown from '../components/DetailedBreakdown';
 import DFMPanel from '../components/DFMPanel';
 import BOMOptimizerPanel from '../components/BOMOptimizerPanel';
@@ -123,6 +126,69 @@ const ProgressPercentage = ({ currentStep, totalSteps }) => {
   );
 };
 
+// Validated Input Component with real-time validation
+const ValidatedInput = ({
+  value,
+  onChange,
+  fieldName,
+  type = 'number',
+  min,
+  max,
+  step: inputStep,
+  className = '',
+  disabled = false,
+  ...props
+}) => {
+  const [error, setError] = useState(null);
+  const [touched, setTouched] = useState(false);
+
+  const handleChange = (e) => {
+    const newValue = type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
+    onChange(newValue);
+
+    if (touched) {
+      const validation = validateField(fieldName, newValue);
+      setError(validation.valid ? null : validation.error);
+    }
+  };
+
+  const handleBlur = () => {
+    setTouched(true);
+    const validation = validateField(fieldName, type === 'number' ? parseFloat(value) || 0 : value);
+    setError(validation.valid ? null : validation.error);
+  };
+
+  return (
+    <div className="relative">
+      <Input
+        type={type}
+        value={value}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        min={min}
+        max={max}
+        step={inputStep}
+        disabled={disabled}
+        className={`${className} ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
+        {...props}
+      />
+      <AnimatePresence>
+        {error && touched && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            className="text-xs text-red-500 mt-1 flex items-center gap-1"
+          >
+            <AlertCircle className="w-3 h-3" />
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const InstantQuotePage = ({ lang = 'tr' }) => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -130,11 +196,14 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
   const [advancedAnalysis, setAdvancedAnalysis] = useState(null);
   const [calculating, setCalculating] = useState(false);
   const [useAdvancedMode, setUseAdvancedMode] = useState(true);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
+
   const [formData, setFormData] = useState({
     // Step 1: Files
     projectName: '',
     ndaAccepted: false,
-    
+
     // Step 2: PCB Options
     quantity: 50,
     layers: 4,
@@ -151,7 +220,7 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
     panelization_mode: 'none',
     panel_n: 2,
     panel_m: 2,
-    
+
     // Step 3: SMT Options
     assembly_required: false,
     sides: 'single',
@@ -163,10 +232,13 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
     inspection_aoi: true,
     inspection_xray: false,
     sourcing: 'turnkey',
-    
+
     // Step 4: Lead Time
     lead_time: 'standard'
   });
+
+  // Debounced form data for API calls (500ms delay)
+  const debouncedFormData = useDebounce(formData, 500);
 
   const content = {
     tr: {
@@ -299,19 +371,64 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
 
   const t = content[lang] || content.tr;
 
-  // Calculate pricing when PCB or SMT options change
+  // Calculate pricing when debounced form data changes (prevents excessive API calls)
   useEffect(() => {
     if (step >= 2) {
       calculatePricing();
     }
   }, [
-    formData.quantity, formData.layers, formData.copper_oz, formData.finish,
-    formData.min_track_space_mm, formData.impedance_controlled, formData.e_test,
-    formData.board_width_mm, formData.board_height_mm, formData.lead_time,
-    formData.assembly_required, formData.sides, formData.component_count,
-    formData.unique_parts, formData.bga_count, formData.uses_01005,
-    formData.stencil, formData.inspection_aoi, formData.inspection_xray
+    // Using debounced values to prevent API spam on every keystroke
+    debouncedFormData.quantity,
+    debouncedFormData.layers,
+    debouncedFormData.copper_oz,
+    debouncedFormData.finish,
+    debouncedFormData.min_track_space_mm,
+    debouncedFormData.impedance_controlled,
+    debouncedFormData.e_test,
+    debouncedFormData.board_width_mm,
+    debouncedFormData.board_height_mm,
+    debouncedFormData.lead_time,
+    debouncedFormData.assembly_required,
+    debouncedFormData.sides,
+    debouncedFormData.component_count,
+    debouncedFormData.unique_parts,
+    debouncedFormData.bga_count,
+    debouncedFormData.uses_01005,
+    debouncedFormData.stencil,
+    debouncedFormData.inspection_aoi,
+    debouncedFormData.inspection_xray,
+    step
   ]);
+
+  // Handle file upload completion
+  const handleFileUploadComplete = useCallback((fileInfo) => {
+    setUploadedFile(fileInfo);
+    toast.success(lang === 'tr' ? 'Dosya başarıyla yüklendi' : 'File uploaded successfully');
+  }, [lang]);
+
+  // Handle file analysis completion - auto-fill form data
+  const handleFileAnalysisComplete = useCallback((analysis) => {
+    if (analysis) {
+      const updates = {};
+      if (analysis.layers) updates.layers = analysis.layers;
+      if (analysis.board_size?.width) updates.board_width_mm = analysis.board_size.width;
+      if (analysis.board_size?.height) updates.board_height_mm = analysis.board_size.height;
+      if (analysis.component_count) {
+        updates.assembly_required = true;
+        updates.component_count = analysis.component_count;
+      }
+      if (analysis.unique_parts) updates.unique_parts = analysis.unique_parts;
+
+      if (Object.keys(updates).length > 0) {
+        setFormData(prev => ({ ...prev, ...updates }));
+        toast.success(
+          lang === 'tr'
+            ? 'Dosya analizi tamamlandı, form otomatik dolduruldu'
+            : 'File analyzed, form auto-filled'
+        );
+      }
+    }
+  }, [lang]);
 
   const calculatePricing = async () => {
     setCalculating(true);
@@ -577,49 +694,14 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
                 </AnimatedSection>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* File Upload Area */}
+                  {/* File Upload Area with react-dropzone */}
                   <div className="space-y-4">
-                    <motion.div
-                      className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition-all cursor-pointer group bg-gradient-to-br from-white to-gray-50"
-                      whileHover={{ scale: 1.02, borderColor: '#3b82f6' }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <motion.div
-                        animate={{ y: [0, -10, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <Upload className="w-14 h-14 mx-auto text-gray-400 mb-4 group-hover:text-primary transition-colors" />
-                      </motion.div>
-                      <p className="text-lg font-medium text-gray-700 mb-2">
-                        {lang === 'tr' ? 'Gerber, BOM veya PnP dosyalarınızı yükleyin' : 'Upload your Gerber, BOM or PnP files'}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-4">
-                        {lang === 'tr' ? 'ZIP, RAR formatları desteklenir (maks 50MB)' : 'ZIP, RAR formats supported (max 50MB)'}
-                      </p>
-                      <Button className="mt-2 hover-lift">
-                        <Upload className="mr-2 h-4 w-4" />
-                        {lang === 'tr' ? 'Dosya Seç' : 'Select File'}
-                      </Button>
-                    </motion.div>
-
-                    {/* Supported Formats */}
-                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                      <h4 className="text-sm font-semibold text-gray-700 mb-3">{lang === 'tr' ? 'Desteklenen Formatlar' : 'Supported Formats'}</h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { name: 'Gerber', ext: '.gbr, .gtl, .gbl', icon: '📋' },
-                          { name: 'Drill', ext: '.drl, .xln', icon: '🔩' },
-                          { name: 'BOM', ext: '.csv, .xlsx', icon: '📊' },
-                          { name: 'Pick & Place', ext: '.csv, .txt', icon: '📍' },
-                        ].map((format, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm">
-                            <span>{format.icon}</span>
-                            <span className="font-medium text-gray-700">{format.name}</span>
-                            <span className="text-gray-400 text-xs">{format.ext}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <FileUploader
+                      onUploadComplete={handleFileUploadComplete}
+                      onAnalysisComplete={handleFileAnalysisComplete}
+                      lang={lang}
+                      maxSize={50 * 1024 * 1024}
+                    />
                   </div>
 
                   {/* Gerber Preview */}
@@ -716,22 +798,34 @@ const InstantQuotePage = ({ lang = 'tr' }) => {
 
                     <div>
                       <Label>{t.pcb.width}</Label>
-                      <Input
+                      <ValidatedInput
                         type="number"
+                        fieldName="board_width_mm"
                         className="mt-2"
                         value={formData.board_width_mm}
-                        onChange={(e) => handleInputChange('board_width_mm', e.target.value)}
+                        onChange={(val) => handleInputChange('board_width_mm', val)}
+                        min={PCB_LIMITS.boardSize.min}
+                        max={PCB_LIMITS.boardSize.max}
                       />
+                      <p className="text-xs text-gray-400 mt-1">
+                        {PCB_LIMITS.boardSize.min}-{PCB_LIMITS.boardSize.max} mm
+                      </p>
                     </div>
 
                     <div>
                       <Label>{t.pcb.height}</Label>
-                      <Input
+                      <ValidatedInput
                         type="number"
+                        fieldName="board_height_mm"
                         className="mt-2"
                         value={formData.board_height_mm}
-                        onChange={(e) => handleInputChange('board_height_mm', e.target.value)}
+                        onChange={(val) => handleInputChange('board_height_mm', val)}
+                        min={PCB_LIMITS.boardSize.min}
+                        max={PCB_LIMITS.boardSize.max}
                       />
+                      <p className="text-xs text-gray-400 mt-1">
+                        {PCB_LIMITS.boardSize.min}-{PCB_LIMITS.boardSize.max} mm
+                      </p>
                     </div>
                   </div>
                 </AnimatedSection>
