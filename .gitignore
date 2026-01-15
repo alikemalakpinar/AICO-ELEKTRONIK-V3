@@ -95,19 +95,25 @@ frontend/node_modules/.cache/default-development/9.pack
 frontend/node_modules/.cache/default-development/0.pack
 frontend/node_modules/.cache/default-development/3.pack
 frontend/node_modules/.cache/default-development/5.pack_
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
+# Environment files (keep .env.example)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Docker volumes
+mongodb_data/
+redis_data/
+
+# Backend specific
+backend/uploads/
+backend/logs/
+*.sqlite3
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
