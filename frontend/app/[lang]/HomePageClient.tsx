@@ -1,10 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Zap, Shield, Cpu } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
+import ServicesSection from '@/components/premium/ServicesSection';
+
+// Dynamically import NeuralCore to avoid SSR issues with Three.js
+const NeuralCore = dynamic(
+  () => import('@/components/premium/NeuralCore'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-20 h-20 border-2 border-engineer-500/30 border-t-engineer-500 rounded-full animate-spin" />
+      </div>
+    )
+  }
+);
 
 interface HomePageClientProps {
   lang: Locale;
@@ -46,7 +61,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
   return (
     <div className="min-h-screen bg-onyx-900">
-      {/* Hero Section */}
+      {/* Hero Section with 3D Neural Core */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         {/* Background */}
         <div className="absolute inset-0">
@@ -63,6 +78,13 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
           />
         </div>
 
+        {/* 3D Neural Core - positioned behind content */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-full h-full max-w-4xl max-h-[80vh] opacity-60">
+            <NeuralCore className="w-full h-full" />
+          </div>
+        </div>
+
         {/* Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
           {/* Badge */}
@@ -72,7 +94,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-onyx-900/80 backdrop-blur-sm rounded-full border border-white/10">
               <Zap size={14} className="text-engineer-500" />
               <span className="text-offwhite-600 text-sm font-medium">
                 {lang === 'tr' ? 'Muhendislik Showroom' : 'Engineering Showroom'}
@@ -120,7 +142,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             </Link>
             <Link
               href={`/${lang}/solutions/smart-villa`}
-              className="group flex items-center gap-2 px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-lg transition-all duration-300"
+              className="group flex items-center gap-2 px-8 py-4 bg-onyx-900/80 backdrop-blur-sm border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-lg transition-all duration-300"
             >
               <span>{t.home.discoverSolutions}</span>
               <ArrowUpRight
@@ -146,6 +168,9 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
           </div>
         </motion.div>
       </section>
+
+      {/* Services Section - PCB Design & Embedded Consulting */}
+      <ServicesSection lang={lang} />
 
       {/* Solutions Section */}
       <section className="py-32 relative">
