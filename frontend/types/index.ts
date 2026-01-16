@@ -13,6 +13,11 @@ export interface ProjectImage {
   caption?: string;
 }
 
+export interface ProjectSpec {
+  label: string;
+  value: string;
+}
+
 export interface Project {
   id: string;
   slug: string;
@@ -21,11 +26,13 @@ export interface Project {
   category: ProjectCategory;
   year: string;
   description: string;
+  seoDescription: string;
   fullDetailText: string;
   challenge: string;
   solution: string;
   techStack: TechStackItem[];
   stats: ProjectStat[];
+  specs: ProjectSpec[];
   tags: string[];
   images: ProjectImage[];
   featured: boolean;

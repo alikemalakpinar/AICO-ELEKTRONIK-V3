@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   ArrowLeft,
@@ -12,10 +13,20 @@ import {
   Radio,
   Cloud,
   CheckCircle2,
-  ExternalLink,
-  ChevronRight,
+  FileText,
 } from 'lucide-react';
 import type { Project, Locale } from '@/types';
+
+// Lazy load 3D component for performance
+const HolographicGrid = dynamic(
+  () => import('@/components/premium/3d/HolographicGrid'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-to-br from-onyx-800 via-onyx-900 to-black" />
+    ),
+  }
+);
 
 interface ProjectDetailClientProps {
   project: Project;
@@ -45,6 +56,7 @@ const techIcons: Record<string, React.ElementType> = {
   'share-2': Radio,
   'bar-chart': Code,
   'message-square': Radio,
+  thermometer: Cpu,
 };
 
 // Navigation sections
@@ -52,12 +64,14 @@ const sections = {
   tr: [
     { id: 'overview', label: 'Genel Bakis' },
     { id: 'challenge', label: 'Problem & Cozum' },
+    { id: 'specs', label: 'Teknik Ozellikler' },
     { id: 'techstack', label: 'Teknolojiler' },
     { id: 'results', label: 'Sonuclar' },
   ],
   en: [
     { id: 'overview', label: 'Overview' },
     { id: 'challenge', label: 'Challenge & Solution' },
+    { id: 'specs', label: 'Technical Specs' },
     { id: 'techstack', label: 'Tech Stack' },
     { id: 'results', label: 'Results' },
   ],
@@ -70,7 +84,6 @@ export default function ProjectDetailClient({
   const [activeSection, setActiveSection] = useState('overview');
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.1]);
 
   // Track active section on scroll
   useEffect(() => {
@@ -99,6 +112,7 @@ export default function ProjectDetailClient({
       challenge: 'Problem',
       solution: 'Cozum',
       techStack: 'Kullanilan Teknolojiler',
+      specs: 'Teknik Ozellikler',
       results: 'Sonuclar & Metrikler',
       cta: 'Bu projeye benzer bir ihtiyaciniz mi var?',
       ctaButton: 'Gorusme Planla',
@@ -112,6 +126,7 @@ export default function ProjectDetailClient({
       challenge: 'Challenge',
       solution: 'Solution',
       techStack: 'Technologies Used',
+      specs: 'Technical Specifications',
       results: 'Results & Metrics',
       cta: 'Have a similar project in mind?',
       ctaButton: 'Schedule a Meeting',
@@ -136,27 +151,18 @@ export default function ProjectDetailClient({
 
   return (
     <div className="min-h-screen bg-onyx-900">
-      {/* Hero Section */}
+      {/* Hero Section with 3D Background */}
       <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        {/* Background */}
+        {/* 3D Holographic Grid Background */}
         <motion.div
-          style={{ opacity: heroOpacity, scale: heroScale }}
-          className="absolute inset-0 bg-gradient-to-br from-onyx-800 via-onyx-900 to-black"
+          style={{ opacity: heroOpacity }}
+          className="absolute inset-0"
         >
-          {/* Grid pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: '60px 60px',
-            }}
-          />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-onyx-900 via-onyx-900/50 to-transparent" />
+          <HolographicGrid className="opacity-40" />
         </motion.div>
+
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-onyx-900 via-onyx-900/70 to-transparent pointer-events-none" />
 
         {/* Content */}
         <div className="relative z-10 h-full flex flex-col justify-end max-w-7xl mx-auto px-6 pb-16">
@@ -224,7 +230,7 @@ export default function ProjectDetailClient({
             {project.tags.slice(0, 6).map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 bg-white/5 rounded-lg text-offwhite-700 text-sm"
+                className="px-3 py-1 bg-white/5 backdrop-blur-sm rounded-lg text-offwhite-700 text-sm"
               >
                 {tag}
               </span>
@@ -236,7 +242,7 @@ export default function ProjectDetailClient({
       {/* Sticky Navigation */}
       <nav className="sticky top-0 z-40 bg-onyx-900/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center gap-8 overflow-x-auto py-4">
+          <div className="flex items-center gap-8 overflow-x-auto py-4 scrollbar-hide">
             {sections[lang].map((section) => (
               <button
                 key={section.id}
@@ -341,6 +347,48 @@ export default function ProjectDetailClient({
               <p className="text-offwhite-600 leading-relaxed">
                 {project.solution}
               </p>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Technical Specifications Section */}
+        <section id="specs" className="mb-32">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-12">
+              <FileText size={24} className="text-engineer-500" />
+              <h2 className="text-2xl md:text-3xl font-bold text-offwhite-400">
+                {text.specs}
+              </h2>
+            </div>
+
+            <div className="bg-onyx-800/30 border border-white/5 rounded-2xl overflow-hidden">
+              <table className="w-full">
+                <tbody>
+                  {project.specs.map((spec, idx) => (
+                    <motion.tr
+                      key={spec.label}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.05 }}
+                      className={`${
+                        idx % 2 === 0 ? 'bg-white/[0.02]' : ''
+                      } border-b border-white/5 last:border-0`}
+                    >
+                      <td className="px-6 py-4 text-offwhite-600 font-medium w-1/3">
+                        {spec.label}
+                      </td>
+                      <td className="px-6 py-4 text-offwhite-400 font-mono">
+                        {spec.value}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </motion.div>
         </section>
