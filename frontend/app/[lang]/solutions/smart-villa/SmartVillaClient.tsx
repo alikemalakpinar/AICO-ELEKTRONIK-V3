@@ -2,12 +2,24 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sun, Shield, Thermometer, Eye, Wifi, Zap } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
 import ScrollyTellingContainer, {
   type ScrollyScene,
 } from '@/components/premium/ScrollyTellingContainer';
+
+// Lazy load 3D component for performance
+const InteractiveWireframeHouse = dynamic(
+  () => import('@/components/premium/3d/InteractiveWireframeHouse'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+    ),
+  }
+);
 
 interface SmartVillaClientProps {
   lang: Locale;
@@ -113,6 +125,56 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
     <div className="min-h-screen bg-onyx-900">
       {/* Scrollytelling Section */}
       <ScrollyTellingContainer scenes={scenes} />
+
+      {/* 3D Interactive House Showcase */}
+      <section className="py-20 bg-onyx-900 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+                <span className="w-8 h-px bg-engineer-500" />
+                {lang === 'tr' ? 'INTERAKTIF MODEL' : 'INTERACTIVE MODEL'}
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
+                {lang === 'tr' ? 'Evinizin Dijital Ikizi' : 'Digital Twin of Your Home'}
+              </h2>
+              <p className="text-lg text-offwhite-700 mb-6">
+                {lang === 'tr'
+                  ? 'Her oda, her sistem, her sensor. Tum evinizi tek bir ekrandan izleyin ve kontrol edin. Odalar sirasi ile parlayarak aktif sistemleri gosteriyor.'
+                  : 'Every room, every system, every sensor. Monitor and control your entire home from a single screen. Rooms light up sequentially showing active systems.'}
+              </p>
+              <ul className="space-y-3 text-offwhite-600">
+                {[
+                  lang === 'tr' ? 'Gercek zamanli oda izleme' : 'Real-time room monitoring',
+                  lang === 'tr' ? 'Akilli aydinlatma kontrolu' : 'Smart lighting control',
+                  lang === 'tr' ? 'Enerji tuketim haritasi' : 'Energy consumption mapping',
+                  lang === 'tr' ? 'Guvenlik sensor durumu' : 'Security sensor status',
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-engineer-500" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* 3D House */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative aspect-square max-w-lg mx-auto w-full"
+            >
+              <InteractiveWireframeHouse />
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Grid */}
       <section className="py-32 bg-onyx-950">

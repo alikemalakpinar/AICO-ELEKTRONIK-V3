@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import {
   Mail,
@@ -15,6 +16,17 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
+
+// Lazy load 3D component for performance
+const NetworkGlobe = dynamic(
+  () => import('@/components/premium/3d/NetworkGlobe'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+    ),
+  }
+);
 
 interface ContactPageProps {
   params: { lang: Locale };
@@ -134,8 +146,12 @@ export default function ContactPage({ params }: ContactPageProps) {
     <div className="min-h-screen bg-onyx-900">
       {/* Hero Section */}
       <section className="relative pt-32 pb-12 overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+        {/* 3D Network Globe Background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute right-0 top-0 w-[600px] h-[600px] -translate-y-20 translate-x-40 opacity-40">
+            <NetworkGlobe />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-onyx-900 via-onyx-900/95 to-onyx-900/50" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6">
