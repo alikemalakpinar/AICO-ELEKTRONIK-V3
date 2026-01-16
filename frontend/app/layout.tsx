@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { fontVariables } from '@/lib/fonts';
 import NoiseOverlay from '@/components/premium/NoiseOverlay';
 import CustomCursor from '@/components/premium/CustomCursor';
+import { AudioProvider } from '@/components/premium/AudioProvider';
 import './globals.css';
 
 // Default metadata
@@ -103,12 +104,15 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="font-sans antialiased bg-onyx-900 text-offwhite-400 min-h-screen overflow-x-hidden">
-        {/* Premium Cinematic Effects */}
-        <NoiseOverlay />
-        <CustomCursor />
+        {/* Audio Provider for site-wide sounds */}
+        <AudioProvider>
+          {/* Premium Cinematic Effects */}
+          <NoiseOverlay />
+          <CustomCursor />
 
-        {/* Page Content */}
-        {children}
+          {/* Page Content */}
+          {children}
+        </AudioProvider>
       </body>
     </html>
   );

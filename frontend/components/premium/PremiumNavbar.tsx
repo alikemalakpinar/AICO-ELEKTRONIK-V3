@@ -4,9 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, ArrowRight, ChevronDown } from 'lucide-react';
+import { Menu, X, Globe, ArrowRight, ChevronDown, User, LogIn } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
 import Image from 'next/image';
+import SoundToggle from './SoundToggle';
+import LoginModal from './LoginModal';
+import { useAudio } from './AudioProvider';
 
 interface PremiumNavbarProps {
   lang: Locale;
@@ -16,9 +19,18 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const t = getTranslations(lang);
+  const { playClick } = useAudio();
+
+  // Check for existing session
+  useEffect(() => {
+    const session = localStorage.getItem('aico-demo-session');
+    setIsLoggedIn(!!session);
+  }, [pathname]);
 
   // Handle scroll effect
   useEffect(() => {
@@ -37,9 +49,20 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
 
   // Language switch handler
   const handleLanguageSwitch = () => {
+    playClick();
     const newLang = lang === 'tr' ? 'en' : 'tr';
     const currentPath = pathname.replace(`/${lang}`, '');
     router.push(`/${newLang}${currentPath || ''}`);
+  };
+
+  // Handle login/dashboard click
+  const handleAuthClick = () => {
+    playClick();
+    if (isLoggedIn) {
+      router.push(`/${lang}/dashboard`);
+    } else {
+      setLoginModalOpen(true);
+    }
   };
 
   // Solution items
@@ -181,7 +204,10 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
             </nav>
 
             {/* Right Side Actions */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-3">
+              {/* Sound Toggle */}
+              <SoundToggle />
+
               {/* Language Switcher */}
               <button
                 onClick={handleLanguageSwitch}
@@ -189,6 +215,26 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               >
                 <Globe size={14} />
                 <span className="uppercase">{t.nav.languageSwitch}</span>
+              </button>
+
+              {/* Customer Portal / Dashboard Button */}
+              <button
+                onClick={handleAuthClick}
+                className="flex items-center gap-2 px-4 py-2 text-offwhite-600 hover:text-offwhite-400
+                         bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20
+                         rounded-lg transition-all text-sm font-medium"
+              >
+                {isLoggedIn ? (
+                  <>
+                    <User size={16} />
+                    <span>{lang === 'tr' ? 'Panel' : 'Dashboard'}</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn size={16} />
+                    <span>{lang === 'tr' ? 'Giris' : 'Login'}</span>
+                  </>
+                )}
               </button>
 
               {/* CTA Button */}
@@ -294,6 +340,19 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   </span>
                 </button>
 
+                {/* Customer Portal Button */}
+                <button
+                  onClick={handleAuthClick}
+                  className="flex items-center gap-3 px-4 py-3 text-offwhite-600 hover:text-offwhite-400 transition-colors w-full"
+                >
+                  {isLoggedIn ? <User size={18} /> : <LogIn size={18} />}
+                  <span>
+                    {isLoggedIn
+                      ? (lang === 'tr' ? 'Kontrol Paneli' : 'Dashboard')
+                      : (lang === 'tr' ? 'Musteri Girisi' : 'Customer Login')}
+                  </span>
+                </button>
+
                 {/* CTA Button */}
                 <Link
                   href={`/${lang}/contact`}
@@ -306,6 +365,13 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
           </>
         )}
       </AnimatePresence>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        lang={lang}
+      />
     </>
   );
 }
