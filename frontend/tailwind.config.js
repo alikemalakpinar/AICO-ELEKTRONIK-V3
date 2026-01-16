@@ -2,8 +2,10 @@
 module.exports = {
     darkMode: ["class"],
     content: [
+        "./app/**/*.{js,jsx,ts,tsx}",
+        "./components/**/*.{js,jsx,ts,tsx}",
+        "./lib/**/*.{js,jsx,ts,tsx}",
         "./src/**/*.{js,jsx,ts,tsx}",
-        "./public/index.html"
     ],
     theme: {
         extend: {
@@ -175,16 +177,16 @@ module.exports = {
             },
 
             // ==========================================
-            // TYPOGRAPHY - Premium Engineering
+            // TYPOGRAPHY - Premium Engineering (Satoshi)
             // ==========================================
             fontFamily: {
-                // Ana Font - Başlıklar ve Gövde
-                sans: ['Inter', 'SF Pro Display', 'system-ui', '-apple-system', 'sans-serif'],
+                // Ana Font - Başlıklar ve Gövde (Satoshi - Fontshare)
+                sans: ['Satoshi', 'General Sans', 'Inter', 'SF Pro Display', 'system-ui', '-apple-system', 'sans-serif'],
                 // Teknik Veri Fontu - Mühendislik Hissi
                 mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', 'monospace'],
-                // Display Fontları
-                heading: ['Inter', 'SF Pro Display', 'sans-serif'],
-                display: ['Inter', 'SF Pro Display', 'sans-serif'],
+                // Display Fontları - Premium Headings
+                heading: ['Satoshi', 'General Sans', 'Inter', 'SF Pro Display', 'sans-serif'],
+                display: ['Satoshi', 'General Sans', 'Inter', 'SF Pro Display', 'sans-serif'],
             },
 
             // Premium Font Sizes
