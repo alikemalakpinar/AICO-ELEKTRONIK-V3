@@ -98,28 +98,28 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link href={`/${lang}`} className="flex items-center gap-3 group">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo - COMPACT */}
+            <Link href={`/${lang}`} className="flex items-center gap-2 group">
               <Image
                 src="/assets/logos/aicoelektroniklogo.png"
                 alt="AICO"
-                width={96}
-                height={40}
-                className="h-10 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
+                width={82}
+                height={34}
+                className="h-8 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
                 priority
               />
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
+            {/* Desktop Navigation - COMPACT */}
+            <nav className="hidden lg:flex items-center gap-0.5">
               {/* Solutions Dropdown */}
               <div
                 className="relative"
                 onMouseEnter={() => setSolutionsOpen(true)}
                 onMouseLeave={() => setSolutionsOpen(false)}
               >
-                <button className="flex items-center gap-1.5 px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium tracking-wide">
+                <button className="flex items-center gap-1 px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide">
                   {t.nav.solutions}
                   <ChevronDown
                     size={14}
@@ -181,7 +181,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               {/* Projects */}
               <Link
                 href={`/${lang}/projects`}
-                className="px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium tracking-wide"
+                className="px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide"
               >
                 {t.nav.projects}
               </Link>
@@ -189,7 +189,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               {/* About */}
               <Link
                 href={`/${lang}/about`}
-                className="px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium tracking-wide"
+                className="px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide"
               >
                 {t.nav.about}
               </Link>
@@ -197,41 +197,41 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               {/* Contact */}
               <Link
                 href={`/${lang}/contact`}
-                className="px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium tracking-wide"
+                className="px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide"
               >
                 {t.nav.contact}
               </Link>
             </nav>
 
-            {/* Right Side Actions */}
-            <div className="hidden lg:flex items-center gap-3">
+            {/* Right Side Actions - COMPACT */}
+            <div className="hidden lg:flex items-center gap-2">
               {/* Sound Toggle */}
               <SoundToggle />
 
               {/* Language Switcher */}
               <button
                 onClick={handleLanguageSwitch}
-                className="flex items-center gap-2 px-3 py-1.5 text-offwhite-700 hover:text-offwhite-400 transition-colors text-sm font-mono"
+                className="flex items-center gap-1.5 px-2 py-1 text-offwhite-700 hover:text-offwhite-400 transition-colors text-xs font-mono"
               >
-                <Globe size={14} />
+                <Globe size={12} />
                 <span className="uppercase">{t.nav.languageSwitch}</span>
               </button>
 
               {/* Customer Portal / Dashboard Button */}
               <button
                 onClick={handleAuthClick}
-                className="flex items-center gap-2 px-4 py-2 text-offwhite-600 hover:text-offwhite-400
+                className="flex items-center gap-1.5 px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400
                          bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20
-                         rounded-lg transition-all text-sm font-medium"
+                         rounded-md transition-all text-xs font-medium"
               >
                 {isLoggedIn ? (
                   <>
-                    <User size={16} />
+                    <User size={14} />
                     <span>{lang === 'tr' ? 'Panel' : 'Dashboard'}</span>
                   </>
                 ) : (
                   <>
-                    <LogIn size={16} />
+                    <LogIn size={14} />
                     <span>{lang === 'tr' ? 'Giris' : 'Login'}</span>
                   </>
                 )}
@@ -240,19 +240,19 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               {/* CTA Button */}
               <Link
                 href={`/${lang}/contact`}
-                className="group relative px-5 py-2.5 bg-transparent border border-engineer-500/30 hover:border-engineer-500 text-offwhite-400 text-sm font-medium rounded-lg overflow-hidden transition-all duration-300"
+                className="group relative px-4 py-2 bg-transparent border border-engineer-500/30 hover:border-engineer-500 text-offwhite-400 text-xs font-medium rounded-md overflow-hidden transition-all duration-300"
               >
                 <span className="relative z-10">{t.nav.engineeringRequest}</span>
                 <div className="absolute inset-0 bg-engineer-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - COMPACT */}
             <button
-              className="lg:hidden p-2 text-offwhite-400 hover:text-offwhite-200 transition-colors"
+              className="lg:hidden p-1.5 text-offwhite-400 hover:text-offwhite-200 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: '100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed top-20 right-0 bottom-0 w-full max-w-sm bg-onyx-900 border-l border-white/5 z-40 lg:hidden overflow-y-auto"
+              className="fixed top-16 right-0 bottom-0 w-full max-w-sm bg-onyx-900 border-l border-white/5 z-40 lg:hidden overflow-y-auto"
             >
               <div className="p-6 space-y-6">
                 {/* Solutions */}

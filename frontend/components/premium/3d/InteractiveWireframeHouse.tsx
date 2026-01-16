@@ -1,9 +1,14 @@
 'use client';
 
 import React, { useRef, useState, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Edges, Float } from '@react-three/drei';
 import * as THREE from 'three';
+
+// ===========================================
+// InteractiveWireframeHouse - Compact & Elegant
+// Scaled down for better visual balance
+// ===========================================
 
 // Room component with highlight capability
 function Room({
@@ -35,7 +40,7 @@ function Room({
   return (
     <mesh ref={meshRef} position={position}>
       <boxGeometry args={size} />
-      <meshBasicMaterial color={color} transparent opacity={isHighlighted ? 0.15 : 0.02} />
+      <meshBasicMaterial color={color} transparent opacity={isHighlighted ? 0.12 : 0.015} />
       <Edges
         scale={1}
         threshold={15}
@@ -45,19 +50,19 @@ function Room({
   );
 }
 
-// Main house structure
-function WireframeHouse() {
+// Main house structure - SCALED DOWN
+function WireframeHouse({ scale = 0.7 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const [highlightedRoom, setHighlightedRoom] = useState(0);
   const timeRef = useRef(0);
 
-  // Room definitions
+  // Room definitions - smaller sizes
   const rooms = useMemo(() => [
-    { name: 'Living Room', position: [-0.6, 0, 0] as [number, number, number], size: [1.8, 1, 1.5] as [number, number, number] },
-    { name: 'Kitchen', position: [0.8, 0, 0.5] as [number, number, number], size: [1, 1, 0.8] as [number, number, number] },
-    { name: 'Bedroom 1', position: [-0.6, 1.1, 0] as [number, number, number], size: [1.2, 1, 1.2] as [number, number, number] },
-    { name: 'Bedroom 2', position: [0.6, 1.1, 0] as [number, number, number], size: [1, 1, 1.2] as [number, number, number] },
-    { name: 'Bathroom', position: [0.8, 0, -0.5] as [number, number, number], size: [1, 1, 0.6] as [number, number, number] },
+    { name: 'Living Room', position: [-0.5, 0, 0] as [number, number, number], size: [1.4, 0.8, 1.2] as [number, number, number] },
+    { name: 'Kitchen', position: [0.6, 0, 0.4] as [number, number, number], size: [0.8, 0.8, 0.6] as [number, number, number] },
+    { name: 'Bedroom 1', position: [-0.5, 0.9, 0] as [number, number, number], size: [1, 0.8, 1] as [number, number, number] },
+    { name: 'Bedroom 2', position: [0.5, 0.9, 0] as [number, number, number], size: [0.8, 0.8, 1] as [number, number, number] },
+    { name: 'Bathroom', position: [0.6, 0, -0.4] as [number, number, number], size: [0.8, 0.8, 0.5] as [number, number, number] },
   ], []);
 
   useFrame((state, delta) => {
@@ -65,11 +70,11 @@ function WireframeHouse() {
 
     // Rotate house slowly
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.15;
+      groupRef.current.rotation.y += delta * 0.12;
     }
 
     // Cycle through rooms
-    if (timeRef.current > 2) {
+    if (timeRef.current > 2.5) {
       timeRef.current = 0;
       setHighlightedRoom((prev) => (prev + 1) % rooms.length);
     }
@@ -77,11 +82,11 @@ function WireframeHouse() {
 
   return (
     <Float
-      speed={1}
-      rotationIntensity={0.1}
-      floatIntensity={0.3}
+      speed={0.8}
+      rotationIntensity={0.08}
+      floatIntensity={0.2}
     >
-      <group ref={groupRef}>
+      <group ref={groupRef} scale={scale}>
         {/* Rooms */}
         {rooms.map((room, index) => (
           <Room
@@ -95,122 +100,75 @@ function WireframeHouse() {
           />
         ))}
 
-        {/* Roof */}
-        <group position={[0, 2, 0]}>
+        {/* Roof - smaller */}
+        <group position={[0, 1.6, 0]}>
           {/* Roof left */}
-          <mesh position={[-0.5, 0.3, 0]} rotation={[0, 0, Math.PI / 6]}>
-            <boxGeometry args={[1.5, 0.05, 2]} />
-            <meshBasicMaterial color="#F97316" transparent opacity={0.02} />
+          <mesh position={[-0.4, 0.25, 0]} rotation={[0, 0, Math.PI / 6]}>
+            <boxGeometry args={[1.2, 0.04, 1.6]} />
+            <meshBasicMaterial color="#F97316" transparent opacity={0.015} />
             <Edges scale={1} threshold={15} color="#F97316" />
           </mesh>
           {/* Roof right */}
-          <mesh position={[0.5, 0.3, 0]} rotation={[0, 0, -Math.PI / 6]}>
-            <boxGeometry args={[1.5, 0.05, 2]} />
-            <meshBasicMaterial color="#F97316" transparent opacity={0.02} />
+          <mesh position={[0.4, 0.25, 0]} rotation={[0, 0, -Math.PI / 6]}>
+            <boxGeometry args={[1.2, 0.04, 1.6]} />
+            <meshBasicMaterial color="#F97316" transparent opacity={0.015} />
             <Edges scale={1} threshold={15} color="#F97316" />
           </mesh>
         </group>
 
-        {/* Foundation */}
-        <mesh position={[0, -0.55, 0]}>
-          <boxGeometry args={[3, 0.1, 2]} />
-          <meshBasicMaterial color="#F97316" transparent opacity={0.02} />
+        {/* Foundation - smaller */}
+        <mesh position={[0, -0.45, 0]}>
+          <boxGeometry args={[2.4, 0.08, 1.6]} />
+          <meshBasicMaterial color="#F97316" transparent opacity={0.015} />
           <Edges scale={1} threshold={15} color="#F97316" />
         </mesh>
 
-        {/* Smart home indicators - glowing points */}
-        <SmartIndicator position={[-0.6, 0.6, 0.8]} />
-        <SmartIndicator position={[0.8, 0.6, 0.5]} />
-        <SmartIndicator position={[-0.6, 1.7, 0.7]} />
-        <SmartIndicator position={[0.6, 1.7, 0.7]} />
+        {/* Smart home indicators - smaller & fewer */}
+        <SmartIndicator position={[-0.5, 0.5, 0.6]} />
+        <SmartIndicator position={[0.6, 0.5, 0.3]} />
+        <SmartIndicator position={[-0.5, 1.4, 0.5]} />
       </group>
     </Float>
   );
 }
 
-// Smart home indicator (glowing point)
+// Smart home indicator (glowing point) - smaller
 function SmartIndicator({ position }: { position: [number, number, number] }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
-      const scale = 0.8 + Math.sin(state.clock.elapsedTime * 3 + position[0]) * 0.2;
+      const scale = 0.7 + Math.sin(state.clock.elapsedTime * 2.5 + position[0]) * 0.2;
       meshRef.current.scale.setScalar(scale);
     }
   });
 
   return (
     <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[0.05, 8, 8]} />
+      <sphereGeometry args={[0.035, 8, 8]} />
       <meshBasicMaterial color="#F97316" />
     </mesh>
   );
 }
 
-// Connection lines between smart points
-function SmartConnections() {
-  const linesRef = useRef<THREE.LineSegments>(null);
-
-  const positions = useMemo(() => {
-    const points = [
-      [-0.6, 0.6, 0.8],
-      [0.8, 0.6, 0.5],
-      [-0.6, 1.7, 0.7],
-      [0.6, 1.7, 0.7],
-    ];
-
-    const linePositions: number[] = [];
-
-    // Connect all points
-    for (let i = 0; i < points.length; i++) {
-      for (let j = i + 1; j < points.length; j++) {
-        linePositions.push(...points[i], ...points[j]);
-      }
-    }
-
-    return new Float32Array(linePositions);
-  }, []);
-
-  useFrame((state) => {
-    if (linesRef.current) {
-      (linesRef.current.material as THREE.LineBasicMaterial).opacity =
-        0.2 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-    }
-  });
-
-  return (
-    <lineSegments ref={linesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <lineBasicMaterial color="#F97316" transparent opacity={0.3} />
-    </lineSegments>
-  );
-}
-
-// Ambient particles
+// Ambient particles - fewer and smaller spread
 function Particles() {
   const particlesRef = useRef<THREE.Points>(null);
-  const count = 80;
+  const count = 50; // Reduced from 80
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 8;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 6;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      pos[i * 3] = (Math.random() - 0.5) * 5; // Reduced spread
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 4;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 5;
     }
     return pos;
   }, []);
 
   useFrame((state) => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02;
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.015;
     }
   });
 
@@ -226,13 +184,30 @@ function Particles() {
       </bufferGeometry>
       <pointsMaterial
         color="#F97316"
-        size={0.02}
+        size={0.015}
         transparent
-        opacity={0.3}
+        opacity={0.25}
         sizeAttenuation
       />
     </points>
   );
+}
+
+// Responsive camera hook
+function ResponsiveCamera() {
+  const { camera, size } = useThree();
+
+  useFrame(() => {
+    // Adjust FOV based on screen width for better mobile experience
+    const isMobile = size.width < 768;
+    const targetFov = isMobile ? 55 : 50;
+    if (camera instanceof THREE.PerspectiveCamera) {
+      camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.05);
+      camera.updateProjectionMatrix();
+    }
+  });
+
+  return null;
 }
 
 // Scene
@@ -241,11 +216,12 @@ function Scene() {
     <>
       <color attach="background" args={['transparent']} />
 
-      <ambientLight intensity={0.3} />
-      <pointLight position={[5, 5, 5]} color="#F97316" intensity={0.5} />
-      <pointLight position={[-5, 3, -5]} color="#0F172A" intensity={0.3} />
+      <ambientLight intensity={0.25} />
+      <pointLight position={[4, 4, 4]} color="#F97316" intensity={0.4} />
+      <pointLight position={[-4, 2, -4]} color="#0F172A" intensity={0.2} />
 
-      <WireframeHouse />
+      <ResponsiveCamera />
+      <WireframeHouse scale={0.75} />
       <Particles />
     </>
   );
@@ -260,7 +236,7 @@ export default function InteractiveWireframeHouse({ className = '' }: Interactiv
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
-        camera={{ position: [4, 3, 4], fov: 45 }}
+        camera={{ position: [3.5, 2.5, 3.5], fov: 50 }} // Pulled back camera
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
       >
