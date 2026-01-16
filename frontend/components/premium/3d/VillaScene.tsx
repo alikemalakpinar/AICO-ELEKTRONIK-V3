@@ -16,9 +16,42 @@ import {
 // Showcases smart home features with smooth transitions
 // ===========================================
 
+// ===========================================
+// ResponsiveCamera - Viewport-based camera distance adjustment
+// Moves camera back on smaller screens for better framing
+// ===========================================
+function ResponsiveCamera() {
+  const { camera, viewport } = useThree();
+  const currentMultiplier = useRef(1);
+
+  useFrame(() => {
+    // Calculate responsive multiplier based on viewport width
+    // Desktop (width >= 10): multiplier = 1.0
+    // Mobile (width ~3-4): multiplier increases to push camera back
+    const viewportFactor = Math.min(viewport.width / 10, 1);
+    const targetMultiplier = 1 + (0.6 * (1 - viewportFactor)); // Max 1.6x on mobile
+
+    // Smooth interpolation
+    currentMultiplier.current = THREE.MathUtils.lerp(
+      currentMultiplier.current,
+      targetMultiplier,
+      0.03
+    );
+
+    // Also adjust FOV for mobile - wider FOV shows more
+    if (camera instanceof THREE.PerspectiveCamera) {
+      const targetFov = viewport.width < 5 ? 55 : 45;
+      camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.03);
+      camera.updateProjectionMatrix();
+    }
+  });
+
+  return null;
+}
+
 // Animated Camera that follows scene changes
 function AnimatedCamera() {
-  const { camera } = useThree();
+  const { camera, viewport } = useThree();
   const villaScene = useSceneStore((state) => state.villaScene);
   const targetPosition = useRef(new THREE.Vector3(...VILLA_CAMERA_POSITIONS.intro));
   const currentPosition = useRef(new THREE.Vector3(...VILLA_CAMERA_POSITIONS.intro));
@@ -29,7 +62,15 @@ function AnimatedCamera() {
   }, [villaScene]);
 
   useFrame(() => {
-    currentPosition.current.lerp(targetPosition.current, 0.02);
+    // Calculate responsive offset based on viewport
+    // Smaller screens = push camera back further
+    const viewportFactor = Math.min(viewport.width / 10, 1);
+    const distanceMultiplier = 1 + (0.5 * (1 - viewportFactor)); // 1.0 to 1.5x
+
+    // Apply multiplier to target position
+    const adjustedTarget = targetPosition.current.clone().multiplyScalar(distanceMultiplier);
+
+    currentPosition.current.lerp(adjustedTarget, 0.02);
     camera.position.copy(currentPosition.current);
     camera.lookAt(0, 0.5, 0);
   });
@@ -396,6 +437,9 @@ function Scene() {
   return (
     <>
       <color attach="background" args={['transparent']} />
+
+      {/* Responsive Camera - adjusts based on viewport */}
+      <ResponsiveCamera />
 
       <ambientLight intensity={0.3} />
       <pointLight position={[5, 5, 5]} color={sceneColor} intensity={0.6} />
