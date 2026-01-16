@@ -76,13 +76,12 @@ api.interceptors.response.use(
           // Unauthorized - clear token and redirect
           localStorage.removeItem('authToken');
           if (!window.location.pathname.includes('/login')) {
-            // Could redirect to login here
             console.warn('[API] Unauthorized - token cleared');
           }
           break;
         case 403:
           console.error('[API] Forbidden:', data);
-          toast.error('Bu işlem için yetkiniz yok');
+          toast.error('Bu islem icin yetkiniz yok');
           break;
         case 404:
           console.error('[API] Not Found:', error.config?.url);
@@ -90,13 +89,13 @@ api.interceptors.response.use(
         case 429:
           // Rate limited
           const retryAfter = error.response.headers['retry-after'] || 60;
-          toast.error(`Çok fazla istek. ${retryAfter} saniye bekleyin.`);
+          toast.error(`Cok fazla istek. ${retryAfter} saniye bekleyin.`);
           break;
         case 500:
         case 502:
         case 503:
           console.error('[API] Server Error:', data);
-          toast.error('Sunucu hatası. Lütfen daha sonra tekrar deneyin.');
+          toast.error('Sunucu hatasi. Lutfen daha sonra tekrar deneyin.');
           break;
         default:
           console.error(`[API] Error ${status}:`, data);
@@ -104,7 +103,7 @@ api.interceptors.response.use(
     } else if (error.request) {
       // Request made but no response received
       console.error('[API] No response received:', error.request);
-      toast.error('Sunucuya ulaşılamıyor. İnternet bağlantınızı kontrol edin.');
+      toast.error('Sunucuya ulasilamiyor. Internet baglantinizi kontrol edin.');
     } else {
       // Error in request setup
       console.error('[API] Request setup error:', error.message);
@@ -119,43 +118,54 @@ api.interceptors.response.use(
 // ============================================
 
 /**
- * Quote API endpoints
+ * Projects/Portfolio API endpoints
  */
-export const quoteApi = {
+export const projectsApi = {
   /**
-   * Calculate pricing for PCB/SMT order
-   * @param {Object} options - PCB and SMT options
-   * @returns {Promise<Object>} Pricing breakdown
+   * Get all projects
+   * @param {Object} params - Filter params (featured, industry)
+   * @returns {Promise<Array>} Projects list
    */
-  calculate: (options) => api.post('/quote/calculate', options),
+  getAll: (params = {}) => api.get('/projects', { params }),
 
   /**
-   * Get complete analysis with DFM score
-   * @param {Object} options - PCB and SMT options
-   * @returns {Promise<Object>} Analysis with suggestions
+   * Get featured projects
+   * @returns {Promise<Array>} Featured projects
    */
-  completeAnalysis: (options) => api.post('/quote/complete-analysis', options),
+  getFeatured: () => api.get('/projects', { params: { featured: true } }),
 
   /**
-   * Save a quote for later
-   * @param {Object} quoteData - Quote to save
-   * @returns {Promise<Object>} Saved quote with ID
+   * Get single project by slug
+   * @param {string} slug - Project slug
+   * @returns {Promise<Object>} Project data
    */
-  save: (quoteData) => api.post('/quote/save', quoteData),
+  getBySlug: (slug) => api.get(`/projects/${slug}`),
 
   /**
-   * Get saved quote by ID
-   * @param {string} quoteId - Quote ID
-   * @returns {Promise<Object>} Quote data
+   * Get projects by industry
+   * @param {string} industry - Industry name
+   * @returns {Promise<Array>} Projects in industry
    */
-  get: (quoteId) => api.get(`/quote/${quoteId}`),
+  getByIndustry: (industry) => api.get(`/projects/industry/${industry}`),
+};
+
+/**
+ * Contact/Consultation API endpoints
+ */
+export const contactApi = {
+  /**
+   * Submit a consultation request
+   * @param {Object} data - Consultation form data
+   * @returns {Promise<Object>} Created request
+   */
+  submitConsultation: (data) => api.post('/contact/consultation', data),
 
   /**
-   * List saved quotes
-   * @param {Object} params - Pagination params
-   * @returns {Promise<Object>} Quotes list
+   * Submit info request (legacy endpoint)
+   * @param {Object} data - Request data
+   * @returns {Promise<Object>} Created request
    */
-  list: (params = {}) => api.get('/quote', { params }),
+  submitInfoRequest: (data) => api.post('/contact/request-info', data),
 };
 
 /**
@@ -163,77 +173,22 @@ export const quoteApi = {
  */
 export const configApi = {
   /**
-   * Get all form options
-   * @returns {Promise<Object>} Form configuration
+   * Get site configuration
+   * @returns {Promise<Object>} Site config
    */
-  getFormOptions: () => api.get('/config/form-options'),
+  getSiteConfig: () => api.get('/config/site.config'),
 
   /**
-   * Get surface finish options
-   * @returns {Promise<Array>} Finish options
+   * Get all available technologies
+   * @returns {Promise<Array>} Technologies list
    */
-  getFinishes: () => api.get('/config/finishes'),
+  getTechnologies: () => api.get('/technologies'),
 
   /**
-   * Get color options
-   * @returns {Promise<Array>} Color options
+   * Get all industries served
+   * @returns {Promise<Array>} Industries list
    */
-  getColors: () => api.get('/config/colors'),
-
-  /**
-   * Get pricing factors
-   * @returns {Promise<Object>} Pricing multipliers
-   */
-  getPricingFactors: () => api.get('/config/pricing-factors'),
-};
-
-/**
- * Upload API endpoints
- */
-export const uploadApi = {
-  /**
-   * Get presigned URL for S3 upload
-   * @param {string} fileName - File name
-   * @param {string} contentType - MIME type
-   * @returns {Promise<Object>} Presigned URL data
-   */
-  getPresignedUrl: (fileName, contentType) =>
-    api.post('/upload/presigned-url', { file_name: fileName, content_type: contentType }),
-
-  /**
-   * Direct file upload (fallback)
-   * @param {File} file - File to upload
-   * @param {Function} onProgress - Progress callback
-   * @returns {Promise<Object>} Upload result
-   */
-  directUpload: (file, onProgress) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    return api.post('/upload/direct', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-      onUploadProgress: (progressEvent) => {
-        if (onProgress && progressEvent.total) {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          onProgress(progress);
-        }
-      },
-    });
-  },
-
-  /**
-   * Analyze uploaded file
-   * @param {string} fileKey - File key from upload
-   * @returns {Promise<Object>} Analysis result
-   */
-  analyze: (fileKey) => api.post('/upload/analyze', { file_key: fileKey }),
-
-  /**
-   * Check upload status
-   * @param {string} fileKey - File key
-   * @returns {Promise<Object>} Status info
-   */
-  getStatus: (fileKey) => api.get(`/upload/status/${fileKey}`),
+  getIndustries: () => api.get('/industries'),
 };
 
 /**
@@ -247,50 +202,3 @@ export const healthApi = {
 
 // Export default instance for custom requests
 export default api;
-
-// ============================================
-// Utility Functions
-// ============================================
-
-/**
- * Upload file with automatic S3/direct fallback
- * @param {File} file - File to upload
- * @param {Function} onProgress - Progress callback
- * @returns {Promise<Object>} Upload result
- */
-export async function uploadFile(file, onProgress) {
-  try {
-    // Try S3 presigned URL first
-    const { data: presignedData } = await uploadApi.getPresignedUrl(
-      file.name,
-      file.type || 'application/octet-stream'
-    );
-
-    // Upload directly to S3
-    await axios.put(presignedData.upload_url, file, {
-      headers: { 'Content-Type': file.type },
-      onUploadProgress: (progressEvent) => {
-        if (onProgress && progressEvent.total) {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          onProgress(progress);
-        }
-      },
-    });
-
-    return {
-      success: true,
-      fileKey: presignedData.file_key,
-      method: 's3',
-    };
-  } catch (error) {
-    // Fallback to direct upload
-    console.log('[Upload] S3 failed, falling back to direct upload');
-    const { data } = await uploadApi.directUpload(file, onProgress);
-    return {
-      success: true,
-      fileKey: data.file_key,
-      method: 'direct',
-      analysis: data.analysis,
-    };
-  }
-}
