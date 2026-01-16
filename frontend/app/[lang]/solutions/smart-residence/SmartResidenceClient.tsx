@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -11,11 +12,29 @@ import {
   BarChart3,
   Lock,
   Leaf,
+  Smartphone,
+  QrCode,
+  CreditCard,
+  Settings,
+  Bell,
+  Shield,
+  Zap,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
 import ScrollyTellingContainer, {
   type ScrollyScene,
 } from '@/components/premium/ScrollyTellingContainer';
+
+// Lazy load 3D component for performance
+const NetworkGlobe = dynamic(
+  () => import('@/components/premium/3d/NetworkGlobe'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+    ),
+  }
+);
 
 interface SmartResidenceClientProps {
   lang: Locale;
@@ -44,6 +63,19 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
       ],
     },
     {
+      id: 'mobile',
+      badge: lang === 'tr' ? 'MOBIL UYGULAMA' : 'MOBILE APP',
+      title: lang === 'tr' ? 'Avucunuzdaki Site Yonetimi' : 'Site Management in Your Palm',
+      content:
+        lang === 'tr'
+          ? 'iOS ve Android uygulamasi ile tum site islemlerinizi mobil cihazinizdan yonetin. Ariza bildirimi, aidat odeme, duyurulari takip - hepsi tek uygulamada.'
+          : 'Manage all your site operations from your mobile device with iOS and Android app. Fault reporting, dues payment, announcements - all in one app.',
+      stats: [
+        { label: lang === 'tr' ? 'Gunluk Aktif' : 'Daily Active', value: '85%' },
+        { label: lang === 'tr' ? 'Islem Suresi' : 'Process Time', value: '<2s' },
+      ],
+    },
+    {
       id: 'access',
       badge: lang === 'tr' ? 'ERISIM' : 'ACCESS',
       title: t.smartResidence.scene2Title,
@@ -65,24 +97,64 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
     },
   ];
 
-  // Feature cards
-  const features = [
+  // Core platform modules
+  const platformModules = [
     {
       icon: Building2,
-      title: lang === 'tr' ? 'Bina Yonetim Sistemi' : 'Building Management',
+      title: lang === 'tr' ? 'Site Yonetim Paneli' : 'Site Management Panel',
       description:
         lang === 'tr'
-          ? 'HVAC, aydinlatma, asansor - tek platformda entegre yonetim.'
-          : 'HVAC, lighting, elevators - integrated management in one platform.',
+          ? 'Web tabanli yonetim paneli ile tum site operasyonlarini tek ekrandan yonetin. Dashboard, raporlar, sakin veritabani.'
+          : 'Manage all site operations from a single screen with web-based management panel. Dashboard, reports, resident database.',
+      features: [
+        lang === 'tr' ? 'Canli dashboard' : 'Live dashboard',
+        lang === 'tr' ? 'Detayli raporlama' : 'Detailed reporting',
+        lang === 'tr' ? 'Sakin yonetimi' : 'Resident management',
+      ],
     },
     {
-      icon: Users,
-      title: lang === 'tr' ? 'Sakin Portali' : 'Resident Portal',
+      icon: Smartphone,
+      title: lang === 'tr' ? 'Mobil Uygulama' : 'Mobile Application',
       description:
         lang === 'tr'
-          ? 'Mobil uygulama ile ariza bildirimi, aidat takibi, duyurular.'
-          : 'Mobile app for fault reporting, dues tracking, announcements.',
+          ? 'Sakinler icin iOS ve Android uygulamasi. Bildirimler, odemeler, arizalar - her sey parmaklarinin ucunda.'
+          : 'iOS and Android app for residents. Notifications, payments, faults - everything at your fingertips.',
+      features: [
+        lang === 'tr' ? 'Push bildirimler' : 'Push notifications',
+        lang === 'tr' ? 'Anlık mesajlaşma' : 'Instant messaging',
+        lang === 'tr' ? 'Kolay odeme' : 'Easy payment',
+      ],
     },
+    {
+      icon: CreditCard,
+      title: lang === 'tr' ? 'Aidat Takip Sistemi' : 'Dues Tracking System',
+      description:
+        lang === 'tr'
+          ? 'Otomatik aidat hesaplama, hatirlatma ve tahsilat. Banka entegrasyonu ile anlık odeme takibi.'
+          : 'Automatic dues calculation, reminders and collection. Instant payment tracking with bank integration.',
+      features: [
+        lang === 'tr' ? 'Otomatik faturalama' : 'Auto billing',
+        lang === 'tr' ? 'Banka entegrasyonu' : 'Bank integration',
+        lang === 'tr' ? 'Gecikme takibi' : 'Late payment tracking',
+      ],
+    },
+    {
+      icon: QrCode,
+      title: lang === 'tr' ? 'QR Misafir Girisi' : 'QR Guest Entry',
+      description:
+        lang === 'tr'
+          ? 'Misafirleriniz icin tek kullanimlik QR kod olusturun. Guvenli, hizli ve kayitli giris sistemi.'
+          : 'Create one-time QR codes for your guests. Secure, fast and registered entry system.',
+      features: [
+        lang === 'tr' ? 'Tek kullanimlik kod' : 'One-time code',
+        lang === 'tr' ? 'Zaman sinirli erisim' : 'Time-limited access',
+        lang === 'tr' ? 'Giris kaydi' : 'Entry logging',
+      ],
+    },
+  ];
+
+  // Additional feature cards
+  const features = [
     {
       icon: Lock,
       title: lang === 'tr' ? 'Erisim Kontrolu' : 'Access Control',
@@ -108,6 +180,22 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
           : 'Unit-based consumption tracking, comparative reports.',
     },
     {
+      icon: Bell,
+      title: lang === 'tr' ? 'Akilli Bildirimler' : 'Smart Notifications',
+      description:
+        lang === 'tr'
+          ? 'Onemli duyurular, odeme hatirlatalari, ariza guncelemeleri.'
+          : 'Important announcements, payment reminders, fault updates.',
+    },
+    {
+      icon: Shield,
+      title: lang === 'tr' ? 'Guvenlik Izleme' : 'Security Monitoring',
+      description:
+        lang === 'tr'
+          ? '7/24 kamera izleme, hareket algilama, acil durum protokolleri.'
+          : '24/7 camera monitoring, motion detection, emergency protocols.',
+    },
+    {
       icon: Leaf,
       title: lang === 'tr' ? 'Surdurulebilirlik' : 'Sustainability',
       description:
@@ -122,7 +210,36 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
       {/* Scrollytelling Section */}
       <ScrollyTellingContainer scenes={scenes} />
 
-      {/* Features Grid */}
+      {/* 3D Network Globe Showcase */}
+      <section className="py-20 bg-onyx-900 overflow-hidden relative">
+        <div className="absolute inset-0 pointer-events-none opacity-30">
+          <NetworkGlobe />
+        </div>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'BAGLI EKOSISTEM' : 'CONNECTED ECOSYSTEM'}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-offwhite-400 mb-6">
+              {lang === 'tr' ? 'Tum Sistemler Tek Platformda' : 'All Systems in One Platform'}
+            </h2>
+            <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Site yonetimi, sakin portali, aidat takibi, misafir girisi - hepsi birbiriyle entegre.'
+                : 'Site management, resident portal, dues tracking, guest entry - all integrated with each other.'}
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Platform Modules - Main Features */}
       <section className="py-32 bg-onyx-950">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {/* Section Header */}
@@ -134,20 +251,71 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
           >
             <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
               <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'MODULLER' : 'MODULES'}
+              {lang === 'tr' ? 'PLATFORM MODULLERI' : 'PLATFORM MODULES'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-offwhite-400 mb-6">
-              {lang === 'tr' ? 'Platform Modulleri' : 'Platform Modules'}
+              {lang === 'tr' ? 'Ana Moduller' : 'Core Modules'}
             </h2>
             <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'Ihtiyaciniza gore olceklenen, birbirine entegre moduller.'
-                : 'Modules that scale to your needs and integrate with each other.'}
+                ? 'Site yonetiminin tum ihtiyaclarini karsilayan entegre moduller.'
+                : 'Integrated modules meeting all site management needs.'}
             </p>
           </motion.div>
 
-          {/* Features Grid */}
+          {/* Platform Modules Grid */}
+          <div className="grid md:grid-cols-2 gap-8 mb-20">
+            {platformModules.map((module, index) => {
+              const Icon = module.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group p-8 bg-gradient-to-br from-onyx-800/80 to-onyx-800/40 border border-white/5 rounded-2xl hover:border-engineer-500/30 transition-all duration-300"
+                >
+                  <div className="flex items-start gap-6">
+                    <div className="w-16 h-16 rounded-xl bg-engineer-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-engineer-500/20 transition-colors">
+                      <Icon size={32} className="text-engineer-500" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-offwhite-400 mb-3">
+                        {module.title}
+                      </h3>
+                      <p className="text-offwhite-700 mb-4">{module.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {module.features.map((feature, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-engineer-500/10 text-engineer-500 text-xs font-medium rounded-full"
+                          >
+                            <span className="w-1 h-1 rounded-full bg-engineer-500" />
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Additional Features Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h3 className="text-2xl font-bold text-offwhite-400">
+              {lang === 'tr' ? 'Ek Ozellikler' : 'Additional Features'}
+            </h3>
+          </motion.div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => {
               const Icon = feature.icon;
@@ -222,6 +390,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
+            <Zap size={48} className="text-engineer-500 mx-auto mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
               {t.smartResidence.cta}
             </h2>
@@ -232,7 +401,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
             </p>
             <Link
               href={`/${lang}/contact`}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-lg transition-all duration-300"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all duration-300"
             >
               <span>{t.nav.engineeringRequest}</span>
               <ArrowRight

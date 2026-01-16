@@ -1,16 +1,30 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sun, Shield, Thermometer, Eye, Wifi, Zap } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
-import ScrollyTellingContainer, {
-  type ScrollyScene,
-} from '@/components/premium/ScrollyTellingContainer';
+import { useInView } from 'react-intersection-observer';
+import {
+  useSceneStore,
+  getVillaSceneFromProgress,
+  VILLA_SCENE_COLORS,
+  type VillaSceneType,
+} from '@/stores/sceneStore';
 
-// Lazy load 3D component for performance
+// Lazy load 3D components for performance
+const VillaScene = dynamic(
+  () => import('@/components/premium/3d/VillaScene'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+    ),
+  }
+);
+
 const InteractiveWireframeHouse = dynamic(
   () => import('@/components/premium/3d/InteractiveWireframeHouse'),
   {
@@ -25,46 +39,246 @@ interface SmartVillaClientProps {
   lang: Locale;
 }
 
+// Scene Section Component with Observer
+function SceneSection({
+  id,
+  scene,
+  badge,
+  title,
+  subtitle,
+  description,
+  stats,
+  index,
+}: {
+  id: string;
+  scene: VillaSceneType;
+  badge: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  stats?: Array<{ label: string; value: string }>;
+  index: number;
+}) {
+  const setVillaScene = useSceneStore((state) => state.setVillaScene);
+  const activeScene = useSceneStore((state) => state.villaScene);
+
+  const { ref, inView } = useInView({
+    threshold: 0.5,
+    triggerOnce: false,
+  });
+
+  useEffect(() => {
+    if (inView) {
+      setVillaScene(scene);
+    }
+  }, [inView, scene, setVillaScene]);
+
+  const sceneColor = VILLA_SCENE_COLORS[scene];
+  const isActive = activeScene === scene;
+
+  return (
+    <section
+      ref={ref}
+      id={id}
+      className="min-h-screen flex items-center justify-center relative py-32"
+    >
+      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+          transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+          className="text-center"
+        >
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-8"
+          >
+            <span
+              className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase"
+              style={{ color: sceneColor }}
+            >
+              <span className="w-8 h-px" style={{ backgroundColor: sceneColor }} />
+              {badge}
+              <span className="w-8 h-px" style={{ backgroundColor: sceneColor }} />
+            </span>
+          </motion.div>
+
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 40 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6 tracking-tight"
+          >
+            {title}
+          </motion.h2>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-xl md:text-2xl mb-8"
+              style={{ color: sceneColor }}
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-lg md:text-xl text-offwhite-700 max-w-2xl mx-auto leading-relaxed"
+          >
+            {description}
+          </motion.p>
+
+          {/* Stats */}
+          {stats && stats.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex justify-center gap-12 mt-12"
+            >
+              {stats.map((stat, idx) => (
+                <div key={idx} className="text-center">
+                  <div
+                    className="font-mono text-3xl md:text-4xl font-bold mb-2"
+                    style={{ color: sceneColor }}
+                  >
+                    {stat.value}
+                  </div>
+                  <div className="text-xs text-offwhite-800 uppercase tracking-wide">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// Progress Indicator
+function ProgressIndicator({ scenes, lang }: { scenes: { id: string; scene: VillaSceneType }[]; lang: Locale }) {
+  const activeScene = useSceneStore((state) => state.villaScene);
+
+  return (
+    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-3">
+      {scenes.map(({ id, scene }) => {
+        const isActive = activeScene === scene;
+        const color = VILLA_SCENE_COLORS[scene];
+        return (
+          <a
+            key={id}
+            href={`#${id}`}
+            className="w-3 h-3 rounded-full transition-all duration-300 hover:scale-125"
+            style={{
+              backgroundColor: isActive ? color : 'rgba(255,255,255,0.2)',
+              transform: isActive ? 'scale(1.25)' : 'scale(1)',
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
   const t = getTranslations(lang);
+  const setActivePage = useSceneStore((state) => state.setActivePage);
 
-  // Scrollytelling scenes
-  const scenes: ScrollyScene[] = [
+  // Set active page on mount
+  useEffect(() => {
+    setActivePage('villa');
+    return () => setActivePage(null);
+  }, [setActivePage]);
+
+  // Scene definitions with scroll-reactive 3D
+  const scenes: {
+    id: string;
+    scene: VillaSceneType;
+    badge: string;
+    title: string;
+    subtitle?: string;
+    description: string;
+    stats?: Array<{ label: string; value: string }>;
+  }[] = [
     {
       id: 'hero',
+      scene: 'intro',
       badge: t.smartVilla.badge,
       title: t.smartVilla.heroTitle,
       subtitle: t.smartVilla.heroHighlight,
-      content: t.smartVilla.heroSubtitle,
+      description: t.smartVilla.heroSubtitle,
     },
     {
-      id: 'morning',
-      badge: lang === 'tr' ? 'SENARYO 01' : 'SCENARIO 01',
-      title: t.smartVilla.scene1Title,
-      content: t.smartVilla.scene1Text,
+      id: 'lighting',
+      scene: 'lighting',
+      badge: lang === 'tr' ? 'AYDINLATMA' : 'LIGHTING',
+      title: lang === 'tr' ? 'Akilli Isik Kontrolu' : 'Smart Light Control',
+      subtitle: lang === 'tr' ? 'Dogal ritme uyum' : 'In harmony with natural rhythm',
+      description:
+        lang === 'tr'
+          ? 'Gun isigini takip eden, sahne modlari ve sirkadyen ritim destegi ile gozlerinizi koruyun. Her oda, her an ideal aydinlatmada.'
+          : 'Track daylight, protect your eyes with scene modes and circadian rhythm support. Every room, every moment in ideal lighting.',
+      stats: [
+        { label: lang === 'tr' ? 'Isik Noktasi' : 'Light Points', value: '48+' },
+        { label: lang === 'tr' ? 'Tasarruf' : 'Savings', value: '%35' },
+      ],
+    },
+    {
+      id: 'climate',
+      scene: 'climate',
+      badge: lang === 'tr' ? 'IKLIM' : 'CLIMATE',
+      title: lang === 'tr' ? 'Konfor Muhendisligi' : 'Comfort Engineering',
+      subtitle: lang === 'tr' ? 'Sezgiler otesinde' : 'Beyond intuition',
+      description:
+        lang === 'tr'
+          ? 'Bolge bazli sicaklik kontrolu, nem yonetimi ve hava kalitesi izleme. Eviniz siz gelmeden hazir.'
+          : 'Zone-based temperature control, humidity management and air quality monitoring. Your home is ready before you arrive.',
       stats: [
         { label: lang === 'tr' ? 'Sensor' : 'Sensors', value: '24' },
-        { label: lang === 'tr' ? 'Otomasyon' : 'Automations', value: '12' },
+        { label: lang === 'tr' ? 'Tepki Suresi' : 'Response', value: '<30s' },
       ],
     },
     {
       id: 'security',
-      badge: lang === 'tr' ? 'SENARYO 02' : 'SCENARIO 02',
-      title: t.smartVilla.scene2Title,
-      content: t.smartVilla.scene2Text,
+      scene: 'security',
+      badge: lang === 'tr' ? 'GUVENLIK' : 'SECURITY',
+      title: lang === 'tr' ? 'Gorunmez Kalkan' : 'Invisible Shield',
+      subtitle: lang === 'tr' ? '7/24 koruma' : '24/7 protection',
+      description:
+        lang === 'tr'
+          ? 'Gorunmez algilama, yuz tanima, anlasilan uyarilar. Guvenlik sistemi sizi rahatsiz etmeden calisir.'
+          : 'Invisible detection, face recognition, intuitive alerts. Security system works without disturbing you.',
       stats: [
-        { label: lang === 'tr' ? 'Aktif Sensor' : 'Active Sensors', value: '47' },
-        { label: lang === 'tr' ? 'Tepki Suresi' : 'Response Time', value: '<1s' },
+        { label: lang === 'tr' ? 'Kamera' : 'Cameras', value: '12' },
+        { label: lang === 'tr' ? 'Tepki' : 'Response', value: '<1s' },
       ],
     },
     {
-      id: 'comfort',
-      badge: lang === 'tr' ? 'SENARYO 03' : 'SCENARIO 03',
-      title: t.smartVilla.scene3Title,
-      content: t.smartVilla.scene3Text,
+      id: 'integrated',
+      scene: 'integrated',
+      badge: lang === 'tr' ? 'ENTEGRE SISTEM' : 'INTEGRATED SYSTEM',
+      title: lang === 'tr' ? 'Tam Senkronizasyon' : 'Full Synchronization',
+      subtitle: lang === 'tr' ? 'Tum sistemler bir arada' : 'All systems together',
+      description:
+        lang === 'tr'
+          ? 'Aydinlatma, iklim, guvenlik - tum sistemler birbiriyle konusur. Tek bir ekosistem, sinirsiz olasilik.'
+          : 'Lighting, climate, security - all systems talk to each other. One ecosystem, unlimited possibilities.',
       stats: [
-        { label: lang === 'tr' ? 'Ongoru' : 'Prediction', value: '15dk' },
-        { label: lang === 'tr' ? 'Tasarruf' : 'Savings', value: '%42' },
+        { label: lang === 'tr' ? 'Entegrasyon' : 'Integrations', value: '47+' },
+        { label: lang === 'tr' ? 'Otomasyon' : 'Automations', value: '120+' },
       ],
     },
   ];
@@ -123,11 +337,35 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
 
   return (
     <div className="min-h-screen bg-onyx-900">
-      {/* Scrollytelling Section */}
-      <ScrollyTellingContainer scenes={scenes} />
+      {/* Fixed 3D Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <VillaScene className="opacity-60" />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-onyx-900/60 via-transparent to-onyx-900/80" />
+      </div>
+
+      {/* Progress Indicator */}
+      <ProgressIndicator scenes={scenes} lang={lang} />
+
+      {/* Scroll Sections */}
+      <div className="relative z-10">
+        {scenes.map((scene, index) => (
+          <SceneSection
+            key={scene.id}
+            id={scene.id}
+            scene={scene.scene}
+            badge={scene.badge}
+            title={scene.title}
+            subtitle={scene.subtitle}
+            description={scene.description}
+            stats={scene.stats}
+            index={index}
+          />
+        ))}
+      </div>
 
       {/* 3D Interactive House Showcase */}
-      <section className="py-20 bg-onyx-900 overflow-hidden">
+      <section className="relative z-10 py-20 bg-onyx-900 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Text Content */}
@@ -177,7 +415,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
       </section>
 
       {/* Features Grid */}
-      <section className="py-32 bg-onyx-950">
+      <section className="relative z-10 py-32 bg-onyx-950">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {/* Section Header */}
           <motion.div
@@ -229,13 +467,14 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 border-t border-white/5">
+      <section className="relative z-10 py-32 border-t border-white/5">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
+            <Zap size={48} className="text-engineer-500 mx-auto mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
               {t.smartVilla.cta}
             </h2>
@@ -246,7 +485,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
             </p>
             <Link
               href={`/${lang}/contact`}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-lg transition-all duration-300"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all duration-300"
             >
               <span>{t.nav.engineeringRequest}</span>
               <ArrowRight

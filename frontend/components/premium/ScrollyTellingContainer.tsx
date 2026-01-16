@@ -138,22 +138,25 @@ function BackgroundLayer({
 
   return (
     <div className="fixed inset-0 z-0">
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-onyx-900 via-onyx-900/95 to-onyx-900 z-10" />
+      {/* Softer Gradient Overlay with Glassmorphism Support */}
+      <div className="absolute inset-0 bg-gradient-to-b from-onyx-900/80 via-onyx-900/60 to-onyx-900/80 z-10 backdrop-blur-[2px]" />
 
-      {/* Grid Pattern */}
+      {/* Subtle Vignette Effect */}
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-onyx-900/40 z-10 pointer-events-none" />
+
+      {/* Grid Pattern - Enhanced visibility */}
       <div
-        className="absolute inset-0 opacity-[0.02] z-20"
+        className="absolute inset-0 opacity-[0.04] z-20"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+            linear-gradient(rgba(249,115,22,0.15) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(249,115,22,0.15) 1px, transparent 1px)
           `,
-          backgroundSize: '100px 100px',
+          backgroundSize: '80px 80px',
         }}
       />
 
-      {/* Radial Glow */}
+      {/* Radial Glow - More prominent */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeSceneIndex}
@@ -163,7 +166,7 @@ function BackgroundLayer({
           transition={{ duration: 1 }}
           className="absolute inset-0 z-5"
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full bg-gradient-radial from-engineer-500/10 via-engineer-500/3 to-transparent" />
         </motion.div>
       </AnimatePresence>
 
