@@ -1,0 +1,13 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/[lang]/blog/page": "app/[lang]/blog/page.js",
+  "/[lang]/about/page": "app/[lang]/about/page.js",
+  "/[lang]/careers/page": "app/[lang]/careers/page.js",
+  "/[lang]/contact/page": "app/[lang]/contact/page.js",
+  "/[lang]/privacy/page": "app/[lang]/privacy/page.js",
+  "/[lang]/page": "app/[lang]/page.js",
+  "/[lang]/projects/page": "app/[lang]/projects/page.js",
+  "/[lang]/solutions/smart-villa/page": "app/[lang]/solutions/smart-villa/page.js",
+  "/[lang]/terms/page": "app/[lang]/terms/page.js",
+  "/[lang]/solutions/smart-residence/page": "app/[lang]/solutions/smart-residence/page.js"
+}
