@@ -1,3 +1,9 @@
+/* ===========================================
+   SATOSHI FONT - Fontshare CDN
+   Premium Engineering Typography
+=========================================== */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&f[]=general-sans@400,500,600,700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,6 +11,7 @@
 /* ===========================================
    AICO Elektronik - Premium Design System
    Next.js 14 Global Styles
+   Cinematic / High-End Experience
 =========================================== */
 
 @layer base {
@@ -249,4 +256,86 @@
   .no-print {
     display: none !important;
   }
+}
+
+/* ===========================================
+   PREMIUM TYPOGRAPHY - Satoshi Headings
+=========================================== */
+h1, h2, h3, h4, h5, h6, .heading {
+  font-family: 'Satoshi', 'General Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+h1 {
+  letter-spacing: -0.03em;
+  font-weight: 900;
+}
+
+h2 {
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+/* Premium heading utilities */
+.heading-display {
+  font-family: 'Satoshi', 'General Sans', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+.heading-tight {
+  letter-spacing: -0.03em;
+}
+
+.heading-tighter {
+  letter-spacing: -0.04em;
+}
+
+/* ===========================================
+   CURSOR STYLES - Data Attributes
+=========================================== */
+[data-cursor="image"],
+.cursor-image {
+  /* Marker for custom cursor to detect images */
+}
+
+[data-cursor="link"],
+.cursor-link {
+  /* Marker for custom cursor to detect links */
+}
+
+/* ===========================================
+   PAGE TRANSITION STYLES
+=========================================== */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+}
+
+/* Curtain transition */
+.curtain-transition {
+  position: fixed;
+  inset: 0;
+  background: #050505;
+  z-index: 9990;
+  pointer-events: none;
 }

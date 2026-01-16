@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { fontVariables } from '@/lib/fonts';
+import NoiseOverlay from '@/components/premium/NoiseOverlay';
+import CustomCursor from '@/components/premium/CustomCursor';
 import './globals.css';
 
 // Default metadata
@@ -95,14 +97,17 @@ export default function RootLayout({
     <html lang="tr" className={`${fontVariables} dark`} suppressHydrationWarning>
       <head>
         {/* Preconnect to external resources */}
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="font-sans antialiased bg-onyx-900 text-offwhite-400 min-h-screen">
+      <body className="font-sans antialiased bg-onyx-900 text-offwhite-400 min-h-screen overflow-x-hidden">
+        {/* Premium Cinematic Effects */}
+        <NoiseOverlay />
+        <CustomCursor />
+
+        {/* Page Content */}
         {children}
       </body>
     </html>
