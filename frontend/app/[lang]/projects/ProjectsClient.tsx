@@ -10,9 +10,12 @@ interface ProjectsClientProps {
   lang: Locale;
 }
 
-// Project data
+// Project data - Premium Engineering Portfolio
 const projectsData = {
   tr: [
+    // ============================================
+    // FEATURED - ANA PROJELER
+    // ============================================
     {
       id: 'smart-villa-beykoz',
       title: 'Beykoz Villa Projesi',
@@ -29,8 +32,151 @@ const projectsData = {
         { label: 'Sistem', value: '47' },
         { label: 'Tasarruf', value: '%42' },
       ],
+      tags: ['KNX', 'Matter', 'IoT', 'Retrofitting'],
       featured: true,
     },
+    {
+      id: 'fire-analysis-module',
+      title: 'Endustriyel IoT Yangin Analiz Modulu',
+      category: 'embedded',
+      year: '2023',
+      challenge:
+        'Geleneksel yangin dedektorlerinin yuksek yanlis alarm orani ve gec tepki suresi sorunlarinin cozumu.',
+      approach:
+        'Yapay sinir aglari ile duman ve isi verilerini nanosaniyeler icinde isleyen, ucta (edge) karar verebilen donanim tasarimi.',
+      impact:
+        'Yanlis alarm orani %0.01e dustu, tepki suresi 50ms altina indi, ATEX sertifikasyonuna uygun uretim.',
+      stats: [
+        { label: 'Algilama', value: '<50ms' },
+        { label: 'Yanlis Alarm', value: '%0.01' },
+        { label: 'Protokol', value: 'LoRaWAN' },
+      ],
+      tags: ['Altium', 'STM32', 'Edge AI', 'C++'],
+      featured: true,
+    },
+    {
+      id: 'underground-mining-safety',
+      title: 'Yeralti Personel Konumlandirma Agi',
+      category: 'industrial',
+      year: '2022',
+      challenge:
+        'GPS sinyalinin olmadigi maden tunellerinde personel takibi ve acil durum haberlesme sisteminin kurulmasi.',
+      approach:
+        'RF Mesh teknolojisi ile metrelerce kaya altinda bile calisan, Man-Down (hareketsizlik) algilama ozellikli sistem.',
+      impact:
+        'ATEX uyumlu tasarim, 2km+ kapsama alani, 2 yil batarya omru ile kesintisiz guvenlik.',
+      stats: [
+        { label: 'Kapsama', value: '2km+' },
+        { label: 'Batarya', value: '2 Yil' },
+        { label: 'Sertifika', value: 'ATEX' },
+      ],
+      tags: ['RF Mesh', 'Zigbee', 'Embedded C', 'Safety'],
+      featured: true,
+    },
+    // ============================================
+    // GOMULU SISTEMLER & DONANIM
+    // ============================================
+    {
+      id: 'smart-coffee-automation',
+      title: 'PID Kontrollu Barista Otomasyonu',
+      category: 'embedded',
+      year: '2023',
+      challenge:
+        'Profesyonel kahve makinelerinde tutarli tat profili icin hassas sicaklik ve basinc kontrolu.',
+      approach:
+        'PID algoritmalari ile 0.1°C hassasiyetinde isi yonetimi, akis olcer entegrasyonu ve dokunmatik HMI tasarimi.',
+      impact:
+        'Kahve tutarliligi %98e yukseldi, enerji tuketimi %25 azaldi, kullanici deneyimi puani 4.9/5.',
+      stats: [
+        { label: 'Hassasiyet', value: '±0.1°C' },
+        { label: 'Kontrol', value: 'PID' },
+        { label: 'Enerji', value: '-%25' },
+      ],
+      tags: ['PID Control', 'HMI Design', 'Embedded C++', 'Power Electronics'],
+      featured: false,
+    },
+    {
+      id: 'high-efficiency-pmu',
+      title: 'Yuksek Verimli Guc Yonetim Unitesi (PMU)',
+      category: 'embedded',
+      year: '2022',
+      challenge:
+        'LED aydinlatma sistemleri icin kompakt, yuksek verimli ve EMC uyumlu guc kaynagi tasarimi.',
+      approach:
+        'Buck/Boost donusturuculer, aktif PFC ve termal yonetim ile %96 verimlilik hedefi.',
+      impact:
+        '%96 enerji verimliligi, kisa devre/asiri yuk korumalari, CE ve EMC sertifikalari.',
+      stats: [
+        { label: 'Verimlilik', value: '%96' },
+        { label: 'Koruma', value: '4 Katman' },
+        { label: 'Sertifika', value: 'CE/EMC' },
+      ],
+      tags: ['Power Electronics', 'Buck Converter', 'EMC', 'Altium'],
+      featured: false,
+    },
+    // ============================================
+    // ENDUSTRIYEL COZUMLER
+    // ============================================
+    {
+      id: 'cold-chain-monitoring',
+      title: 'Kritik Soguk Zincir Izleme Sistemi',
+      category: 'industrial',
+      year: '2023',
+      challenge:
+        'Ilac ve gida depolarinda -40°C kosullarda kesintisiz sicaklik izleme ve alarm sistemi.',
+      approach:
+        'GSM tabanli veri aktarimi, bulut dashboard, elektrik kesintisinde 48 saat otonom calisma.',
+      impact:
+        '%99.99 uptime, FDA ve ISO 22000 uyumluluk, urun kayiplarinda %85 azalma.',
+      stats: [
+        { label: 'Calisma', value: '-40°C / +85°C' },
+        { label: 'Uptime', value: '%99.99' },
+        { label: 'Otonom', value: '48 Saat' },
+      ],
+      tags: ['GSM/GPRS', 'Cloud IoT', 'PCB Design', 'MQTT'],
+      featured: false,
+    },
+    {
+      id: 'predictive-maintenance',
+      title: 'Kestirimci Bakim & Titresim Analizoru',
+      category: 'industrial',
+      year: '2024',
+      challenge:
+        'Sanayi motorlarinda beklenmedik arizalarin once tespiti ve planli bakim optimizasyonu.',
+      approach:
+        'FFT (Fast Fourier Transform) algoritmalari ile titresim analizi, makine ogrenimi tabanli ariza tahmini.',
+      impact:
+        'Rulman arizalarini 2 hafta onceden tespit, planlanmamis duruslarda %78 azalma, 6 ay ROI.',
+      stats: [
+        { label: 'Ornekleme', value: '10kHz' },
+        { label: 'Tahmin', value: '2 Hafta' },
+        { label: 'ROI', value: '6 Ay' },
+      ],
+      tags: ['DSP', 'Python', 'FFT', 'Machine Learning'],
+      featured: false,
+    },
+    {
+      id: 'factory-gebze',
+      title: 'Gebze Uretim Tesisi OEE Sistemi',
+      category: 'industrial',
+      year: '2023',
+      challenge:
+        '24/7 calisan uretim hattinda kesintisiz enerji izleme ve ekipman saglik takibi.',
+      approach:
+        'Edge computing tabanli veri toplama, makine ogrenimi ile anomali tespiti ve OEE optimizasyonu.',
+      impact:
+        "Planlanmamis duruslarda %78 azalma, toplam ekipman verimliligi (OEE) %89'a yukseldi.",
+      stats: [
+        { label: 'Hat', value: '12' },
+        { label: 'Durus', value: '-%78' },
+        { label: 'OEE', value: '%89' },
+      ],
+      tags: ['SCADA', 'PLC', 'Edge Computing', 'OPC-UA'],
+      featured: false,
+    },
+    // ============================================
+    // AKILLI BINA & REZIDANS
+    // ============================================
     {
       id: 'residence-maslak',
       title: 'Maslak Towers Rezidans',
@@ -47,25 +193,8 @@ const projectsData = {
         { label: 'Tasarruf', value: '2.1M TL' },
         { label: 'Bakim', value: '-%60' },
       ],
-      featured: true,
-    },
-    {
-      id: 'factory-gebze',
-      title: 'Gebze Uretim Tesisi',
-      category: 'industrial',
-      year: '2023',
-      challenge:
-        '24/7 calisan uretim hattinda kesintisiz enerji izleme ve ekipman saglik takibi.',
-      approach:
-        'Edge computing tabanli veri toplama, makine ogrenimi ile anomali tespiti ve OEE optimizasyonu.',
-      impact:
-        "Planlanmamis duruslarda %78 azalma, toplam ekipman verimliligi (OEE) %89'a yukseldi.",
-      stats: [
-        { label: 'Hat', value: '12' },
-        { label: 'Durus', value: '-%78' },
-        { label: 'OEE', value: '%89' },
-      ],
-      featured: true,
+      tags: ['BMS', 'IoT', 'Energy Management', 'Security'],
+      featured: false,
     },
     {
       id: 'villa-bodrum',
@@ -83,6 +212,7 @@ const projectsData = {
         { label: 'Enerji', value: '-%70' },
         { label: 'Erisim', value: '7/24' },
       ],
+      tags: ['Remote Access', 'Cloud', 'Security', 'HVAC'],
       featured: false,
     },
     {
@@ -101,10 +231,36 @@ const projectsData = {
         { label: 'Guvenlik', value: '-%95' },
         { label: 'Memnuniyet', value: '+%40' },
       ],
+      tags: ['Access Control', 'Face Recognition', 'Mobile App'],
+      featured: false,
+    },
+    // ============================================
+    // YAZILIM & PLATFORMLAR
+    // ============================================
+    {
+      id: 'nuvia-crm',
+      title: 'Nuvia Etkinlik Yonetim Platformu',
+      category: 'saas',
+      year: '2024',
+      challenge:
+        'Buyuk olcekli organizasyonlar icin uctan uca planlama, butce ve operasyonel takip ihtiyaci.',
+      approach:
+        'Mikroservis mimarisi, React Native mobil, AWS altyapisi ve gercek zamanli misafir takibi.',
+      impact:
+        'Enterprise seviye olceklenebilirlik, %99.9 uptime, 50+ kurumsal musteri.',
+      stats: [
+        { label: 'Platform', value: 'Web/Mobile' },
+        { label: 'Olcek', value: 'Enterprise' },
+        { label: 'Uptime', value: '%99.9' },
+      ],
+      tags: ['React Native', 'Node.js', 'AWS', 'MongoDB'],
       featured: false,
     },
   ],
   en: [
+    // ============================================
+    // FEATURED - MAIN PROJECTS
+    // ============================================
     {
       id: 'smart-villa-beykoz',
       title: 'Beykoz Villa Project',
@@ -121,8 +277,151 @@ const projectsData = {
         { label: 'Systems', value: '47' },
         { label: 'Savings', value: '42%' },
       ],
+      tags: ['KNX', 'Matter', 'IoT', 'Retrofitting'],
       featured: true,
     },
+    {
+      id: 'fire-analysis-module',
+      title: 'Industrial IoT Fire Analysis Module',
+      category: 'embedded',
+      year: '2023',
+      challenge:
+        'Solving the high false alarm rate and slow response time of traditional fire detectors.',
+      approach:
+        'Hardware design with neural networks processing smoke and heat data in nanoseconds, capable of edge decision-making.',
+      impact:
+        'False alarm rate dropped to 0.01%, response time under 50ms, ATEX-compliant production.',
+      stats: [
+        { label: 'Detection', value: '<50ms' },
+        { label: 'False Alarm', value: '0.01%' },
+        { label: 'Protocol', value: 'LoRaWAN' },
+      ],
+      tags: ['Altium', 'STM32', 'Edge AI', 'C++'],
+      featured: true,
+    },
+    {
+      id: 'underground-mining-safety',
+      title: 'Underground Personnel Positioning Network',
+      category: 'industrial',
+      year: '2022',
+      challenge:
+        'Establishing personnel tracking and emergency communication in mine tunnels without GPS signal.',
+      approach:
+        'RF Mesh technology working even under meters of rock, with Man-Down (immobility) detection feature.',
+      impact:
+        'ATEX-compliant design, 2km+ coverage, 2-year battery life for uninterrupted safety.',
+      stats: [
+        { label: 'Coverage', value: '2km+' },
+        { label: 'Battery', value: '2 Years' },
+        { label: 'Certified', value: 'ATEX' },
+      ],
+      tags: ['RF Mesh', 'Zigbee', 'Embedded C', 'Safety'],
+      featured: true,
+    },
+    // ============================================
+    // EMBEDDED SYSTEMS & HARDWARE
+    // ============================================
+    {
+      id: 'smart-coffee-automation',
+      title: 'PID Controlled Barista Automation',
+      category: 'embedded',
+      year: '2023',
+      challenge:
+        'Precise temperature and pressure control for consistent taste profile in professional coffee machines.',
+      approach:
+        'PID algorithms with 0.1°C precision heat management, flow meter integration, and touchscreen HMI design.',
+      impact:
+        'Coffee consistency increased to 98%, energy consumption reduced by 25%, user experience score 4.9/5.',
+      stats: [
+        { label: 'Precision', value: '±0.1°C' },
+        { label: 'Control', value: 'PID' },
+        { label: 'Energy', value: '-25%' },
+      ],
+      tags: ['PID Control', 'HMI Design', 'Embedded C++', 'Power Electronics'],
+      featured: false,
+    },
+    {
+      id: 'high-efficiency-pmu',
+      title: 'High Efficiency Power Management Unit (PMU)',
+      category: 'embedded',
+      year: '2022',
+      challenge:
+        'Designing a compact, high-efficiency, EMC-compliant power supply for LED lighting systems.',
+      approach:
+        'Buck/Boost converters, active PFC, and thermal management targeting 96% efficiency.',
+      impact:
+        '96% energy efficiency, short-circuit/overload protections, CE and EMC certifications.',
+      stats: [
+        { label: 'Efficiency', value: '96%' },
+        { label: 'Protection', value: '4 Layer' },
+        { label: 'Certified', value: 'CE/EMC' },
+      ],
+      tags: ['Power Electronics', 'Buck Converter', 'EMC', 'Altium'],
+      featured: false,
+    },
+    // ============================================
+    // INDUSTRIAL SOLUTIONS
+    // ============================================
+    {
+      id: 'cold-chain-monitoring',
+      title: 'Critical Cold Chain Monitoring System',
+      category: 'industrial',
+      year: '2023',
+      challenge:
+        'Continuous temperature monitoring and alarm system in -40°C conditions for pharmaceutical and food storage.',
+      approach:
+        'GSM-based data transmission, cloud dashboard, 48-hour autonomous operation during power outages.',
+      impact:
+        '99.99% uptime, FDA and ISO 22000 compliance, 85% reduction in product losses.',
+      stats: [
+        { label: 'Range', value: '-40°C / +85°C' },
+        { label: 'Uptime', value: '99.99%' },
+        { label: 'Backup', value: '48 Hours' },
+      ],
+      tags: ['GSM/GPRS', 'Cloud IoT', 'PCB Design', 'MQTT'],
+      featured: false,
+    },
+    {
+      id: 'predictive-maintenance',
+      title: 'Predictive Maintenance & Vibration Analyzer',
+      category: 'industrial',
+      year: '2024',
+      challenge:
+        'Early detection of unexpected failures and planned maintenance optimization in industrial motors.',
+      approach:
+        'Vibration analysis with FFT algorithms, machine learning-based fault prediction.',
+      impact:
+        'Detecting bearing failures 2 weeks in advance, 78% reduction in unplanned downtime, 6-month ROI.',
+      stats: [
+        { label: 'Sampling', value: '10kHz' },
+        { label: 'Prediction', value: '2 Weeks' },
+        { label: 'ROI', value: '6 Months' },
+      ],
+      tags: ['DSP', 'Python', 'FFT', 'Machine Learning'],
+      featured: false,
+    },
+    {
+      id: 'factory-gebze',
+      title: 'Gebze Production Facility OEE System',
+      category: 'industrial',
+      year: '2023',
+      challenge:
+        'Continuous energy monitoring and equipment health tracking in a 24/7 production line.',
+      approach:
+        'Edge computing-based data collection, machine learning anomaly detection, and OEE optimization.',
+      impact:
+        '78% reduction in unplanned downtime, overall equipment effectiveness (OEE) increased to 89%.',
+      stats: [
+        { label: 'Lines', value: '12' },
+        { label: 'Downtime', value: '-78%' },
+        { label: 'OEE', value: '89%' },
+      ],
+      tags: ['SCADA', 'PLC', 'Edge Computing', 'OPC-UA'],
+      featured: false,
+    },
+    // ============================================
+    // SMART BUILDING & RESIDENCE
+    // ============================================
     {
       id: 'residence-maslak',
       title: 'Maslak Towers Residence',
@@ -139,25 +438,8 @@ const projectsData = {
         { label: 'Savings', value: '2.1M TL' },
         { label: 'Maintenance', value: '-60%' },
       ],
-      featured: true,
-    },
-    {
-      id: 'factory-gebze',
-      title: 'Gebze Production Facility',
-      category: 'industrial',
-      year: '2023',
-      challenge:
-        'Continuous energy monitoring and equipment health tracking in a 24/7 production line.',
-      approach:
-        'Edge computing-based data collection, machine learning anomaly detection, and OEE optimization.',
-      impact:
-        '78% reduction in unplanned downtime, overall equipment effectiveness (OEE) increased to 89%.',
-      stats: [
-        { label: 'Lines', value: '12' },
-        { label: 'Downtime', value: '-78%' },
-        { label: 'OEE', value: '89%' },
-      ],
-      featured: true,
+      tags: ['BMS', 'IoT', 'Energy Management', 'Security'],
+      featured: false,
     },
     {
       id: 'villa-bodrum',
@@ -175,6 +457,7 @@ const projectsData = {
         { label: 'Energy', value: '-70%' },
         { label: 'Access', value: '24/7' },
       ],
+      tags: ['Remote Access', 'Cloud', 'Security', 'HVAC'],
       featured: false,
     },
     {
@@ -193,6 +476,29 @@ const projectsData = {
         { label: 'Security', value: '-95%' },
         { label: 'Satisfaction', value: '+40%' },
       ],
+      tags: ['Access Control', 'Face Recognition', 'Mobile App'],
+      featured: false,
+    },
+    // ============================================
+    // SOFTWARE & PLATFORMS
+    // ============================================
+    {
+      id: 'nuvia-crm',
+      title: 'Nuvia Event Management Platform',
+      category: 'saas',
+      year: '2024',
+      challenge:
+        'End-to-end planning, budget, and operational tracking needs for large-scale organizations.',
+      approach:
+        'Microservice architecture, React Native mobile, AWS infrastructure, and real-time guest tracking.',
+      impact:
+        'Enterprise-level scalability, 99.9% uptime, 50+ corporate clients.',
+      stats: [
+        { label: 'Platform', value: 'Web/Mobile' },
+        { label: 'Scale', value: 'Enterprise' },
+        { label: 'Uptime', value: '99.9%' },
+      ],
+      tags: ['React Native', 'Node.js', 'AWS', 'MongoDB'],
       featured: false,
     },
   ],
@@ -201,15 +507,19 @@ const projectsData = {
 const categories = {
   tr: [
     { id: 'all', label: 'Tumu' },
+    { id: 'embedded', label: 'Gomulu Sistem' },
+    { id: 'industrial', label: 'Endustriyel' },
     { id: 'villa', label: 'Villa' },
     { id: 'residence', label: 'Rezidans' },
-    { id: 'industrial', label: 'Endustriyel' },
+    { id: 'saas', label: 'Yazilim' },
   ],
   en: [
     { id: 'all', label: 'All' },
+    { id: 'embedded', label: 'Embedded' },
+    { id: 'industrial', label: 'Industrial' },
     { id: 'villa', label: 'Villa' },
     { id: 'residence', label: 'Residence' },
-    { id: 'industrial', label: 'Industrial' },
+    { id: 'saas', label: 'Software' },
   ],
 };
 
