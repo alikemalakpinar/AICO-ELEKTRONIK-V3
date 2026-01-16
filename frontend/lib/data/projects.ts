@@ -1,6 +1,6 @@
 // ===========================================
 // AICO Engineering - Project Data
-// Merkezi Proje Veritabani
+// High-End Engineering Portfolio
 // ===========================================
 
 import type { Project, LocalizedContent, CategoryFilter } from '@/types';
@@ -18,44 +18,43 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       id: 'fire-analysis-module',
       slug: 'endustriyel-iot-yangin-analiz-modulu',
       title: 'Endustriyel IoT Yangin Analiz Modulu',
-      subtitle: 'Edge AI Destekli Akilli Guvenlik Sistemi',
+      subtitle: '50ms tepki suresiyle endustriyel guvenligin noral bekcisi.',
       category: 'embedded',
       year: '2023',
       description:
-        'Yapay sinir aglari ile duman ve isi verilerini nanosaniyeler icinde isleyen, yanlis alarm orani %0.01 olan, kendi kendine karar verebilen uc (edge) guvenlik donanimi.',
+        '50ms tepki suresiyle endustriyel guvenligin noral bekcisi. Yapay sinir aglari ile duman ve isi verilerini anlik isleyen, yanlis alarm oranini %0.01e dusuren edge AI cozumu.',
       fullDetailText: `
-        Geleneksel yangin dedektorleri, yuksek yanlis alarm oranlari ve gec tepki sureleri nedeniyle endustriyel ortamlarda ciddi guvenlik aciklarina neden olmaktaydi. Bu proje kapsaminda, yapay zeka destekli yeni nesil bir yangin algilama sistemi gelistirdik.
+        Geleneksel yangin dedektorleri, yuksek yanlis alarm oranlari ve gec tepki sureleri nedeniyle endustriyel ortamlarda ciddi guvenlik aciklarina neden olmaktaydi.
 
-        Sistemimiz, STM32 mikrodenetleyici uzerinde calisan ozel bir sinir agi modeli kullanarak duman yogunlugu, sicaklik degisimi ve partikul analizi verilerini gercek zamanli olarak isliyor. Edge computing yaklasimi sayesinde, bulut baglantisi olmadan bile milisaniyeler icinde karar verebiliyor.
+        Bu proje kapsaminda, STM32 mikrodenetleyici uzerinde calisan ozel bir TensorFlow Lite modeli gelistirdik. Sistem, duman yogunlugu, sicaklik degisimi ve partikul analizi verilerini gercek zamanli olarak isleyerek 50ms altinda karar verebiliyor.
 
-        LoRaWAN protokolu ile 2km+ menzilde kablosuz iletisim saglayan sistem, ATEX sertifikasyonuna uygun olarak tehlikeli ortamlarda guvenle kullanilabiliyor.
+        LoRaWAN protokolu ile 2km+ menzilde kablosuz iletisim saglayan sistem, ATEX Zone 1 sertifikasyonuna uygun olarak patlayici ortamlarda guvenle kullanilabiliyor. Altium Designer ile tasarlanan 4 katmanli PCB, EMC uyumluluğunu garanti ediyor.
       `,
       challenge:
-        'Geleneksel yangin dedektorlerinin yuksek yanlis alarm orani (%15+) ve gec tepki suresi (>5 saniye) sorunlarinin cozumu.',
+        'Geleneksel dedektorlerin %15+ yanlis alarm orani ve 5+ saniye tepki suresi, endustriyel tesislerde guvenlik acigi olusturuyordu.',
       solution:
-        'Yapay sinir aglari ile duman ve isi verilerini nanosaniyeler icinde isleyen, ucta (edge) karar verebilen donanim tasarimi. Coklu sensor fuzyon algoritmasi ile yanlis alarm oranini %0.01e dusurduk.',
+        'Edge AI ile coklu sensor fuzyon algoritmasi. Duman, isi ve partikul verilerini anlik isleme. Yanlis alarm %0.01, tepki suresi <50ms.',
       techStack: [
-        { name: 'STM32', icon: 'cpu', category: 'hardware' },
+        { name: 'STM32H7', icon: 'cpu', category: 'hardware' },
         { name: 'Altium Designer', icon: 'layout', category: 'hardware' },
-        { name: 'Edge AI', icon: 'brain', category: 'software' },
-        { name: 'C/C++', icon: 'code', category: 'software' },
-        { name: 'LoRaWAN', icon: 'radio', category: 'protocol' },
         { name: 'TensorFlow Lite', icon: 'brain', category: 'software' },
+        { name: 'Edge AI', icon: 'brain', category: 'software' },
+        { name: 'LoRaWAN', icon: 'radio', category: 'protocol' },
+        { name: 'C/C++', icon: 'code', category: 'software' },
       ],
       stats: [
-        { label: 'Algilama Suresi', value: '<50ms' },
+        { label: 'Tepki Suresi', value: '<50ms' },
         { label: 'Yanlis Alarm', value: '%0.01' },
         { label: 'Menzil', value: '2km+' },
-        { label: 'Batarya Omru', value: '5 Yil' },
+        { label: 'Batarya', value: '5 Yil' },
       ],
-      tags: ['Altium', 'STM32', 'Edge AI', 'C++', 'LoRaWAN', 'ATEX'],
+      tags: ['Edge AI', 'STM32', 'LoRaWAN', 'ATEX', 'Altium', 'Safety'],
       images: [
-        { src: '/assets/projects/fire-module-pcb.jpg', alt: 'Yangin Modulu PCB', caption: 'Ana kart tasarimi' },
-        { src: '/assets/projects/fire-module-render.jpg', alt: '3D Render', caption: 'Urun gorsellestirmesi' },
+        { src: '/assets/logos/fire-module.jpg', alt: 'Yangin Modulu PCB', caption: 'Ana kart tasarimi' },
       ],
       featured: true,
       cta: {
-        text: 'Benzer bir IoT projesi mi dusunuyorsunuz?',
+        text: 'Benzer bir IoT guvenlik projesi mi dusunuyorsunuz?',
         link: '/tr/contact?subject=consultation',
       },
     },
@@ -64,42 +63,42 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     // 2. YERALTI PERSONEL KONUMLANDIRMA AGI
     // ============================================
     {
-      id: 'underground-mining-safety',
+      id: 'mining-safety-network',
       slug: 'yeralti-personel-konumlandirma-agi',
       title: 'Yeralti Personel Konumlandirma Agi',
-      subtitle: 'Maden Guvenligi icin RF Mesh Teknolojisi',
+      subtitle: "GPS'in ulasamadigi derinliklerde hayat kurtaran RF Mesh agi.",
       category: 'industrial',
       year: '2022',
       description:
-        'GPS sinyalinin olmadigi maden tunellerinde, RF Mesh teknolojisi ile personelin anlik konumunu ve saglik durumunu (Man-Down) takip eden ATEX uyumlu guvenlik sistemi.',
+        "GPS'in ulasamadigi derinliklerde hayat kurtaran RF Mesh agi. Maden tunellerinde personel takibi ve Man-Down algilama sistemi.",
       fullDetailText: `
-        Maden kazalari sirasinda en kritik sorun, mahsur kalan isciloerin konumlarinin belirlenmesidir. GPS sinyallerinin yeralti ortamlarinda calismadigini goz onunde bulundurarak, tamamen RF tabanli bir konumlandirma sistemi gelistirdik.
+        Maden kazalari sirasinda en kritik sorun, mahsur kalan iscilerin konumlarinin belirlenmesidir. GPS sinyallerinin yeralti ortamlarinda calismadigini goz onunde bulundurarak, tamamen RF tabanli bir konumlandirma sistemi gelistirdik.
 
-        Zigbee ve ozel RF protokolleri kullanarak olusturduiumuz mesh agi, metrelerce kaya katmaninin altinda bile guvenilir iletisim sagliyor. Her isci, uzerinde tasidigi bileklik tipi cihaz sayesinde anlik olarak takip edilebiliyor.
+        Zigbee ve ozel RF protokolleri kullanarak olusturduğumuz mesh agi, metrelerce kaya katmaninin altinda bile guvenilir iletisim sagliyor. Her isci, bileklik tipi cihaz ile anlik olarak takip edilebiliyor.
 
-        Man-Down (hareketsizlik) algilama ozelligi, bir iscinin 30 saniyeden fazla hareketsiz kaldiginda otomatik alarm gonderiyor. Sistem, ATEX Zone 1 sertifikasina sahip olup patlayici ortamlarda guvenle kullanilabiliyor.
+        Man-Down ozelligi, 30 saniyeden fazla hareketsizlik durumunda otomatik alarm gonderiyor. ATEX Zone 1 sertifikali sistem, patlayici ortamlarda guvenle kullaniliyor.
       `,
       challenge:
-        'GPS sinyalinin olmadigi maden tunellerinde personel takibi ve acil durum haberlesme sisteminin kurulmasi.',
+        'GPS sinyalinin ulasamadigi maden tunellerinde personel takibi ve acil durumlarda hizli mudahale.',
       solution:
-        'RF Mesh teknolojisi ile metrelerce kaya altinda bile calisan, Man-Down (hareketsizlik) algilama ozellikli, ATEX uyumlu tasarim.',
+        'RF Mesh teknolojisi ile ±3m hassasiyetinde konum tespiti. Man-Down algilama ve 2 yil batarya omru.',
       techStack: [
         { name: 'RF Mesh', icon: 'radio', category: 'protocol' },
         { name: 'Zigbee', icon: 'wifi', category: 'protocol' },
         { name: 'Embedded C', icon: 'code', category: 'software' },
-        { name: 'Low Power Design', icon: 'battery', category: 'hardware' },
-        { name: 'ATEX Certification', icon: 'shield', category: 'hardware' },
+        { name: 'Low Power', icon: 'battery', category: 'hardware' },
+        { name: 'ATEX', icon: 'shield', category: 'hardware' },
+        { name: 'Dashboard', icon: 'monitor', category: 'software' },
       ],
       stats: [
-        { label: 'Kapsama Alani', value: '2km+' },
-        { label: 'Batarya Omru', value: '2 Yil' },
-        { label: 'Konum Hassasiyeti', value: '±3m' },
-        { label: 'Sertifikasyon', value: 'ATEX Zone 1' },
+        { label: 'Kapsama', value: '2km+' },
+        { label: 'Batarya', value: '2 Yil' },
+        { label: 'Hassasiyet', value: '±3m' },
+        { label: 'Sertifika', value: 'ATEX' },
       ],
-      tags: ['RF Mesh', 'Zigbee', 'Embedded C', 'Safety', 'ATEX', 'Mining'],
+      tags: ['RF Mesh', 'Mining', 'Safety', 'ATEX', 'Zigbee', 'IoT'],
       images: [
-        { src: '/assets/projects/mining-wearable.jpg', alt: 'Maden Takip Cihazi', caption: 'Bileklik tipi izleme unitesi' },
-        { src: '/assets/projects/mining-gateway.jpg', alt: 'Gateway Unitesi', caption: 'Tunel icidoor gateway' },
+        { src: '/assets/logos/mining-safety.jpg', alt: 'Maden Guvenlik Sistemi', caption: 'Takip unitesi' },
       ],
       featured: true,
       cta: {
@@ -112,42 +111,42 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     // 3. PID KONTROLLU BARISTA OTOMASYONU
     // ============================================
     {
-      id: 'smart-coffee-automation',
+      id: 'barista-automation',
       slug: 'pid-kontrollu-barista-otomasyonu',
       title: 'PID Kontrollu Barista Otomasyonu',
-      subtitle: 'Hassas Sicaklik Yonetimi ile Mukemmel Kahve',
+      subtitle: 'Her damlada mukemmel basinc ve isi dengesi.',
       category: 'consumer',
       year: '2023',
       description:
-        'Profesyonel kahve makineleri icin gelistirilen; basinc profili ve su sicakligini 0.1°C hassasiyetle kontrol eden, dokunmatik ekranli ana kart tasarimi.',
+        'Her damlada mukemmel basinc ve isi dengesi. Profesyonel espresso makineleri icin ±0.1°C hassasiyetinde sicaklik kontrolu.',
       fullDetailText: `
-        Kahve yapiminda tutarli tat profili elde etmek, sicaklik ve basinci hassas bir sekilde kontrol etmeyi gerektirir. Bu proje kapsaminda, profesyonel espresso makineleri icin tam otomatik bir kontrol sistemi gelistirdik.
+        Kahve yapiminda tutarli tat profili, sicaklik ve basinci hassas kontrol etmeyi gerektirir. Bu projede, profesyonel espresso makineleri icin tam otomatik kontrol sistemi gelistirdik.
 
-        PID (Proportional-Integral-Derivative) algoritmasi kullanarak su sicakligini ±0.1°C hassasiyetle kontrol ediyoruz. Akis olcer entegrasyonu sayesinde su miktari da gram bazinda ayarlanabiliyor.
+        PID algoritmasi ile su sicakligini ±0.1°C hassasiyetle kontrol ediyoruz. Akis olcer entegrasyonu sayesinde su miktari gram bazinda ayarlanabiliyor. 7" kapasitif dokunmatik ekran, kullanici profili ve istatistik takibi sunuyor.
 
-        7" kapasitif dokunmatik ekran uzerindeki ozel arayuz, kullanicilara profil olusturma, zaman ayarlama ve istatistik takibi imkani sunuyor. Sistem ayrica Wi-Fi uzerinden uzaktan izlenebiliyor.
+        Wi-Fi uzerinden uzaktan izleme ve OTA firmware guncelleme ozellikleri, sistemin gelecege hazir olmasini sagliyor.
       `,
       challenge:
-        'Profesyonel kahve makinelerinde tutarli tat profili icin hassas sicaklik (±0.5°C) ve basinc kontrolu.',
+        'Profesyonel kahve makinelerinde tutarli tat icin hassas sicaklik ve basinc kontrolu.',
       solution:
-        'PID algoritmalari ile 0.1°C hassasiyetinde isi yonetimi, akis olcer entegrasyonu ve 7" dokunmatik HMI tasarimi. IoT baglantisi ile uzaktan izleme.',
+        'PID algoritmalari ile ±0.1°C hassasiyet, akis olcer entegrasyonu, 7" HMI ve IoT baglantisi.',
       techStack: [
         { name: 'PID Control', icon: 'sliders', category: 'software' },
-        { name: 'HMI Design', icon: 'monitor', category: 'hardware' },
-        { name: 'Embedded C++', icon: 'code', category: 'software' },
         { name: 'Power Electronics', icon: 'zap', category: 'hardware' },
+        { name: 'HMI 7"', icon: 'monitor', category: 'hardware' },
+        { name: 'ESP32', icon: 'cpu', category: 'hardware' },
         { name: 'Flow Sensor', icon: 'droplet', category: 'hardware' },
+        { name: 'C++', icon: 'code', category: 'software' },
       ],
       stats: [
-        { label: 'Sicaklik Hassasiyeti', value: '±0.1°C' },
+        { label: 'Hassasiyet', value: '±0.1°C' },
         { label: 'Tutarlilik', value: '%98' },
-        { label: 'Enerji Tasarrufu', value: '%25' },
+        { label: 'Tasarruf', value: '%25' },
         { label: 'Ekran', value: '7" Touch' },
       ],
-      tags: ['PID Control', 'HMI Design', 'Embedded C++', 'Power Electronics', 'IoT'],
+      tags: ['PID', 'HMI', 'Consumer Electronics', 'ESP32', 'Power'],
       images: [
-        { src: '/assets/projects/coffee-pcb.jpg', alt: 'Kahve Makinesi PCB', caption: 'Ana kontrol karti' },
-        { src: '/assets/projects/coffee-hmi.jpg', alt: 'HMI Ekrani', caption: 'Kullanici arayuzu' },
+        { src: '/assets/logos/coffee-machine.jpg', alt: 'Kahve Makinesi', caption: 'Kontrol sistemi' },
       ],
       featured: true,
       cta: {
@@ -157,45 +156,91 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     },
 
     // ============================================
-    // 4. KRITIK SOGUK ZINCIR IZLEME SISTEMI
+    // 4. YUKSEK VERIMLI GUC YONETIM UNITESI
     // ============================================
     {
-      id: 'cold-chain-monitoring',
+      id: 'high-efficiency-pmu',
+      slug: 'yuksek-verimli-guc-yonetim-unitesi',
+      title: 'Yuksek Verimli Guc Yonetim Unitesi (PMU)',
+      subtitle: '%96 verimlilikle enerjiyi yoneten kompakt guc canavari.',
+      category: 'embedded',
+      year: '2022',
+      description:
+        '%96 verimlilikle enerjiyi yoneten kompakt guc canavari. LED aydinlatma ve endustriyel uygulamalar icin EMC uyumlu tasarim.',
+      fullDetailText: `
+        LED aydinlatma sistemleri icin kompakt, yuksek verimli ve EMC uyumlu guc kaynagi tasarimi. Buck/Boost donusturuculer ve aktif PFC ile %96 verimlilik hedeflendi.
+
+        Termal yonetim icin ozel PCB layout teknikleri ve bakir alanlari kullanildi. Kisa devre, asiri yuk ve asiri sicaklik korumalari entegre edildi.
+
+        CE ve EMC sertifikasyon testlerinden basariyla gecen urun, seri uretime hazir hale getirildi.
+      `,
+      challenge:
+        'LED sistemleri icin kompakt, yuksek verimli ve EMC uyumlu guc kaynagi ihtiyaci.',
+      solution:
+        'Buck/Boost topoloji, aktif PFC, 4 katmanli koruma ve CE/EMC sertifikasyonu.',
+      techStack: [
+        { name: 'Power Electronics', icon: 'zap', category: 'hardware' },
+        { name: 'Buck/Boost', icon: 'activity', category: 'hardware' },
+        { name: 'EMC Design', icon: 'shield', category: 'hardware' },
+        { name: 'Altium', icon: 'layout', category: 'hardware' },
+        { name: 'Thermal Mgmt', icon: 'thermometer', category: 'hardware' },
+      ],
+      stats: [
+        { label: 'Verimlilik', value: '%96' },
+        { label: 'Koruma', value: '4 Katman' },
+        { label: 'Sertifika', value: 'CE/EMC' },
+        { label: 'Cikis', value: '150W' },
+      ],
+      tags: ['Power Electronics', 'EMC', 'LED Driver', 'Buck Converter'],
+      images: [
+        { src: '/assets/logos/pmu-board.jpg', alt: 'PMU Board', caption: 'Guc karti' },
+      ],
+      featured: false,
+      cta: {
+        text: 'Guc elektronigi projesi icin gorusun',
+        link: '/tr/contact?subject=consultation',
+      },
+    },
+
+    // ============================================
+    // 5. KRITIK SOGUK ZINCIR IZLEME SISTEMI
+    // ============================================
+    {
+      id: 'cold-chain-iot',
       slug: 'kritik-soguk-zincir-izleme-sistemi',
       title: 'Kritik Soguk Zincir Izleme Sistemi',
-      subtitle: 'Ilac ve Gida Guvenliginde %99.99 Uptime',
+      subtitle: "-40°C'de bile veri kaybina tahammulu olmayanlar icin.",
       category: 'iot',
       year: '2023',
       description:
-        'Ilac ve gida depolari icin -40°C zorlu kosullarda calisan, elektrik kesintisinde dahi 48 saat veri aktarabilen GSM tabanli izleme unitesi.',
+        "-40°C'de bile veri kaybina tahammulu olmayanlar icin. Ilac ve gida lojistiginde kesintisiz sicaklik takibi.",
       fullDetailText: `
-        Soguk zincir lojistiginde sicaklik sapmasi, milyonlarca dolarlik urun kaybina ve halk sagligi risklerine yol acabilir. Bu proje kapsaminda, FDA ve ISO 22000 standartlarina uygun bir izleme sistemi gelistirdik.
+        Soguk zincir lojistiginde sicaklik sapmasi, milyonlarca dolarlik urun kaybina ve halk sagligi risklerine yol acabilir. FDA ve ISO 22000 standartlarina uygun izleme sistemi gelistirdik.
 
-        Ozel tasarlanmis PCB, -40°C ile +85°C arasinda sorunsuz calisabiliyor. Dahili batarya sistemi, elektrik kesintisinde 48 saat boyunca veri kaydi ve GSM uzerinden bildirim gondermeye devam ediyor.
+        Ozel tasarlanmis PCB, -40°C ile +85°C arasinda sorunsuz calisabiliyor. Dahili batarya, elektrik kesintisinde 48 saat veri kaydi ve GSM bildirimi sagliyor.
 
-        Bulut tabanli dashboard, tum depolarin anlik sicaklik haritasini gosteriyor. Esik degeri asimlarinda SMS ve e-posta ile aninda alarm gonderiyor.
+        Bulut tabanli dashboard, tum depolarin anlik sicaklik haritasini gosteriyor. Esik asimlarinda SMS ve e-posta ile aninda alarm.
       `,
       challenge:
-        'Ilac ve gida depolarinda -40°C kosullarda kesintisiz sicaklik izleme ve FDA/ISO uyumluluk.',
+        'Ilac ve gida depolarinda -40°C kosullarda kesintisiz izleme ve FDA/ISO uyumluluk.',
       solution:
-        'Ozel PCB tasarimi ile -40°C dayanim, GSM tabanli veri aktarimi, bulut dashboard ve 48 saat otonom calisma suresi.',
+        'GSM tabanli veri aktarimi, 48 saat otonom calisma, bulut dashboard ve anlik alarm.',
       techStack: [
         { name: 'GSM/GPRS', icon: 'signal', category: 'protocol' },
         { name: 'Cloud IoT', icon: 'cloud', category: 'platform' },
         { name: 'PCB Design', icon: 'layout', category: 'hardware' },
         { name: 'MQTT', icon: 'message-square', category: 'protocol' },
-        { name: 'React Dashboard', icon: 'monitor', category: 'software' },
+        { name: 'React', icon: 'code', category: 'software' },
       ],
       stats: [
-        { label: 'Calisma Araligi', value: '-40°C / +85°C' },
-        { label: 'Sistem Uptime', value: '%99.99' },
-        { label: 'Otonom Sure', value: '48 Saat' },
-        { label: 'Urun Kaybi Azalmasi', value: '%85' },
+        { label: 'Aralik', value: '-40°C/+85°C' },
+        { label: 'Uptime', value: '%99.99' },
+        { label: 'Otonom', value: '48 Saat' },
+        { label: 'Kayip Azalma', value: '%85' },
       ],
-      tags: ['GSM/GPRS', 'Cloud IoT', 'PCB Design', 'MQTT', 'FDA', 'ISO 22000'],
+      tags: ['Cold Chain', 'GSM', 'IoT', 'Pharma', 'FDA'],
       images: [
-        { src: '/assets/projects/cold-chain-device.jpg', alt: 'Soguk Zincir Cihazi', caption: 'Izleme unitesi' },
-        { src: '/assets/projects/cold-chain-dashboard.jpg', alt: 'Cloud Dashboard', caption: 'Izleme paneli' },
+        { src: '/assets/logos/cold-chain.jpg', alt: 'Soguk Zincir', caption: 'Izleme unitesi' },
       ],
       featured: false,
       cta: {
@@ -205,46 +250,44 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     },
 
     // ============================================
-    // 5. KESTIRIMCI BAKIM & TITRESIM ANALIZORU
+    // 6. KESTIRIMCI BAKIM TITRESIM ANALIZORU
     // ============================================
     {
       id: 'predictive-maintenance',
       slug: 'kestirimci-bakim-titresim-analizoru',
       title: 'Kestirimci Bakim & Titresim Analizoru',
-      subtitle: 'Arizayi 2 Hafta Onceden Tahmin Eden AI',
+      subtitle: 'Makinelerin sesini dinleyerek arizayi 2 hafta onceden duyan yapay kulak.',
       category: 'industrial',
       year: '2024',
       description:
-        'Sanayi motorlarinin titresimlerini FFT algoritmalarıyla analiz ederek, rulman arizalarini olusmadan 2 hafta once tespit eden yapay zeka destekli sistem.',
+        'Makinelerin sesini dinleyerek arizayi 2 hafta onceden duyan yapay kulak. FFT analizi ve makine ogrenimi ile kestirimci bakim.',
       fullDetailText: `
-        Planlanmamis makine duruslari, uretim tesislerinde yillik milyonlarca dolar kayba neden olur. Bu proje kapsaminda, motor sagligi izleme ve ariza tahmini yapan bir Industry 4.0 cozumu gelistirdik.
+        Planlanmamis makine duruslari, uretim tesislerinde yillik milyonlarca dolar kayba neden olur. Motor sagligi izleme ve ariza tahmini yapan Industry 4.0 cozumu gelistirdik.
 
-        Yuksek hassasiyetli MEMS akselerometre sensorleri, saniyede 10.000 ornekleme hizinda titresim verisi topluyor. Bu veri, FFT (Fast Fourier Transform) algoritmasi ile frekans domenine donusturuluyor.
+        MEMS akselerometre sensorleri, saniyede 10.000 ornekleme hizinda titresim verisi topluyor. FFT algoritmasi ile frekans domenine donusturulen veri, makine ogrenimi modeline besleniyor.
 
-        Makine ogrenimi modeli, titresim desenlerindeki anomalileri tespit ederek rulman, yataklandirma ve dengesizlik arizalarini 2 hafta oncesinden tahmin edebiliyor. Sistem, OPC-UA protokolu ile mevcut SCADA sistemlerine entegre oluyor.
+        Sistem, rulman ve dengesizlik arizalarini 2 hafta oncesinden tahmin edebiliyor. OPC-UA protokolu ile mevcut SCADA sistemlerine entegre oluyor.
       `,
       challenge:
-        'Sanayi motorlarinda beklenmedik arizalarin once tespiti ve planli bakim optimizasyonu.',
+        'Sanayi motorlarinda beklenmedik arizalar ve planlanmamis duruslar.',
       solution:
-        'FFT (Fast Fourier Transform) algoritmalari ile titresim analizi, makine ogrenimi tabanli ariza tahmini, OPC-UA entegrasyonu.',
+        'FFT analizi, ML tabanli ariza tahmini, OPC-UA entegrasyonu. 2 hafta onceden uyari.',
       techStack: [
-        { name: 'DSP', icon: 'activity', category: 'software' },
-        { name: 'Python', icon: 'code', category: 'software' },
-        { name: 'FFT Analysis', icon: 'bar-chart', category: 'software' },
-        { name: 'Machine Learning', icon: 'brain', category: 'software' },
+        { name: 'DSP/FFT', icon: 'activity', category: 'software' },
+        { name: 'Python/ML', icon: 'brain', category: 'software' },
+        { name: 'MEMS Sensor', icon: 'cpu', category: 'hardware' },
         { name: 'OPC-UA', icon: 'server', category: 'protocol' },
         { name: 'SCADA', icon: 'monitor', category: 'platform' },
       ],
       stats: [
-        { label: 'Ornekleme Hizi', value: '10kHz' },
-        { label: 'Tahmin Suresi', value: '2 Hafta' },
-        { label: 'Durus Azalmasi', value: '%78' },
+        { label: 'Ornekleme', value: '10kHz' },
+        { label: 'Tahmin', value: '2 Hafta' },
+        { label: 'Durus Azalma', value: '%78' },
         { label: 'ROI', value: '6 Ay' },
       ],
-      tags: ['DSP', 'Python', 'FFT', 'Machine Learning', 'Industry 4.0', 'SCADA'],
+      tags: ['Predictive', 'FFT', 'ML', 'Industry 4.0', 'SCADA'],
       images: [
-        { src: '/assets/projects/vibration-sensor.jpg', alt: 'Titresim Sensoru', caption: 'MEMS akselerometre' },
-        { src: '/assets/projects/vibration-dashboard.jpg', alt: 'Analiz Ekrani', caption: 'FFT spektrum analizi' },
+        { src: '/assets/logos/vibration-analyzer.jpg', alt: 'Titresim Analizoru', caption: 'Sensor unitesi' },
       ],
       featured: false,
       cta: {
@@ -254,28 +297,75 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     },
 
     // ============================================
-    // 6. NUVIA ETKINLIK YONETIM PLATFORMU
+    // 7. FABRIKA OEE SISTEMI
     // ============================================
     {
-      id: 'nuvia-crm',
-      slug: 'nuvia-etkinlik-yonetim-platformu',
-      title: 'Nuvia Etkinlik Yonetim Platformu',
-      subtitle: 'Enterprise SaaS ile Olceklenebilir Organizasyon',
+      id: 'factory-oee-system',
+      slug: 'fabrika-oee-verimlilik-sistemi',
+      title: 'Fabrika OEE & Verimlilik Takibi',
+      subtitle: 'Uretim hattindaki her saniyenin dijital ikizi.',
+      category: 'industrial',
+      year: '2023',
+      description:
+        'Uretim hattindaki her saniyenin dijital ikizi. Toplam Ekipman Verimliligi (OEE) izleme ve optimizasyon sistemi.',
+      fullDetailText: `
+        24/7 calisan uretim hattinda kesintisiz enerji izleme ve ekipman saglik takibi. Edge computing tabanli veri toplama ve ML ile anomali tespiti.
+
+        12 uretim hatti es zamanli izleniyor. Her hat icin kullanilabilirlik, performans ve kalite metrikleri gercek zamanli hesaplaniyor.
+
+        Dashboard uzerinden OEE skorlari, durus nedenleri ve iyilestirme onerileri sunuluyor. Sistem, OEE'yi %89'a yukseltmeyi basardi.
+      `,
+      challenge:
+        '24/7 uretimde verimsizlik kaynaklarini tespit ve OEE optimizasyonu.',
+      solution:
+        'Edge computing, ML anomali tespiti, gercek zamanli OEE dashboard.',
+      techStack: [
+        { name: 'Edge Computing', icon: 'cpu', category: 'hardware' },
+        { name: 'PLC/SCADA', icon: 'server', category: 'platform' },
+        { name: 'OPC-UA', icon: 'share-2', category: 'protocol' },
+        { name: 'React Dashboard', icon: 'monitor', category: 'software' },
+        { name: 'TimescaleDB', icon: 'database', category: 'platform' },
+      ],
+      stats: [
+        { label: 'Hat Sayisi', value: '12' },
+        { label: 'Durus Azalma', value: '%78' },
+        { label: 'OEE', value: '%89' },
+        { label: 'Uptime', value: '%99.5' },
+      ],
+      tags: ['OEE', 'Manufacturing', 'SCADA', 'Edge', 'Dashboard'],
+      images: [
+        { src: '/assets/logos/factory-oee.jpg', alt: 'Fabrika OEE', caption: 'Dashboard' },
+      ],
+      featured: false,
+      cta: {
+        text: 'Uretim verimliligi projesi icin iletisime gec',
+        link: '/tr/contact?subject=new-project',
+      },
+    },
+
+    // ============================================
+    // 8. NUVIA SAAS PLATFORMU
+    // ============================================
+    {
+      id: 'nuvia-platform',
+      slug: 'nuvia-saas-platformu',
+      title: 'Nuvia SaaS Platformu',
+      subtitle: 'Global olcekte etkinlik yonetiminin dijital omurgasi.',
       category: 'saas',
       year: '2024',
       description:
-        'Buyuk olcekli organizasyonlar icin uctan uca planlama, butce yonetimi ve operasyonel takip saglayan, modern web ve mobil tabanli CRM altyapisi.',
+        'Global olcekte etkinlik yonetiminin dijital omurgasi. Enterprise SaaS ile uctan uca organizasyon yonetimi.',
       fullDetailText: `
-        Kurumsal etkinlik yonetimi, karmasik planlama, butce takibi ve gercek zamanli koordinasyon gerektirir. Nuvia platformu, bu ihtiyaclari tek bir cati altinda toplayan kapsamli bir SaaS cozumudur.
+        Kurumsal etkinlik yonetimi, karmasik planlama, butce takibi ve gercek zamanli koordinasyon gerektirir. Nuvia, bu ihtiyaclari tek catı altinda toplayan SaaS cozumdur.
 
-        Mikroservis mimarisi uzerine insa edilen platform, yuz binlerce kullaniciyi es zamanli olarak destekleyebiliyor. React Native ile gelistirilen mobil uygulama, iOS ve Android platformlarinda sorunsuz calisıyor.
+        Mikroservis mimarisi uzerine insa edilen platform, yuz binlerce kullaniciyi es zamanli destekliyor. React Native mobil uygulama, iOS ve Android'de sorunsuz calisiyor.
 
-        AWS altyapisi uzerinde calisan sistem, %99.9 uptime garantisi sunuyor. Gercek zamanli misafir takibi, QR kodlu check-in ve anlık raporlama ozellikleri ile etkinlik yoneticilerine tam kontrol sagliyor.
+        AWS altyapisi uzerinde %99.9 uptime garantisi. Gercek zamanli misafir takibi, QR check-in ve anlik raporlama ozellikleri.
       `,
       challenge:
-        'Buyuk olcekli organizasyonlar icin uctan uca planlama, butce ve operasyonel takip ihtiyaci.',
+        'Buyuk olcekli organizasyonlar icin uctan uca planlama ve operasyonel takip.',
       solution:
-        'Mikroservis mimarisi, React Native mobil, AWS altyapisi ve gercek zamanli misafir takibi ile enterprise seviye olceklenebilirlik.',
+        'Mikroservis mimarisi, React Native mobil, AWS altyapisi, gercek zamanli takip.',
       techStack: [
         { name: 'React Native', icon: 'smartphone', category: 'software' },
         { name: 'Node.js', icon: 'server', category: 'software' },
@@ -290,10 +380,9 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'Uptime', value: '%99.9' },
         { label: 'Musteri', value: '50+' },
       ],
-      tags: ['React Native', 'Node.js', 'AWS', 'MongoDB', 'SaaS', 'Enterprise'],
+      tags: ['SaaS', 'React Native', 'AWS', 'Enterprise', 'Mobile'],
       images: [
-        { src: '/assets/projects/nuvia-dashboard.jpg', alt: 'Nuvia Dashboard', caption: 'Yonetim paneli' },
-        { src: '/assets/projects/nuvia-mobile.jpg', alt: 'Mobil Uygulama', caption: 'iOS ve Android' },
+        { src: '/assets/logos/nuvia-platform.jpg', alt: 'Nuvia Platform', caption: 'Dashboard' },
       ],
       featured: false,
       cta: {
@@ -305,94 +394,89 @@ export const PROJECTS: LocalizedContent<Project[]> = {
 
   en: [
     // ============================================
-    // 1. INDUSTRIAL IOT FIRE ANALYSIS MODULE
+    // ENGLISH VERSIONS
     // ============================================
     {
       id: 'fire-analysis-module',
       slug: 'industrial-iot-fire-analysis-module',
       title: 'Industrial IoT Fire Analysis Module',
-      subtitle: 'Edge AI Powered Smart Safety System',
+      subtitle: 'Neural guardian of industrial safety with 50ms response time.',
       category: 'embedded',
       year: '2023',
       description:
-        'Hardware design with neural networks processing smoke and heat data in nanoseconds, with 0.01% false alarm rate, capable of autonomous edge decision-making.',
+        'Neural guardian of industrial safety with 50ms response time. Edge AI solution processing smoke and heat data in real-time, reducing false alarms to 0.01%.',
       fullDetailText: `
-        Traditional fire detectors cause serious safety gaps in industrial environments due to high false alarm rates and slow response times. In this project, we developed a next-generation AI-powered fire detection system.
+        Traditional fire detectors caused serious safety gaps in industrial environments due to high false alarm rates and slow response times.
 
-        Our system uses a custom neural network model running on STM32 microcontroller to process smoke density, temperature change, and particle analysis data in real-time. Thanks to the edge computing approach, it can make decisions within milliseconds even without cloud connectivity.
+        We developed a custom TensorFlow Lite model running on STM32 microcontroller. The system processes smoke density, temperature change, and particle analysis data in real-time, making decisions in under 50ms.
 
-        The system provides wireless communication up to 2km+ range with LoRaWAN protocol and can be safely used in hazardous environments with ATEX certification compliance.
+        The system provides wireless communication up to 2km+ with LoRaWAN protocol and is ATEX Zone 1 certified for safe use in explosive environments. The 4-layer PCB designed in Altium Designer ensures EMC compliance.
       `,
       challenge:
-        'Solving the high false alarm rate (15%+) and slow response time (>5 seconds) of traditional fire detectors.',
+        'Traditional detectors 15%+ false alarm rate and 5+ second response time created safety gaps in industrial facilities.',
       solution:
-        'Hardware design with neural networks processing smoke and heat data in nanoseconds, capable of edge decision-making. Multi-sensor fusion algorithm reduced false alarm rate to 0.01%.',
+        'Edge AI with multi-sensor fusion algorithm. Real-time processing of smoke, heat and particle data. False alarm 0.01%, response time <50ms.',
       techStack: [
-        { name: 'STM32', icon: 'cpu', category: 'hardware' },
+        { name: 'STM32H7', icon: 'cpu', category: 'hardware' },
         { name: 'Altium Designer', icon: 'layout', category: 'hardware' },
-        { name: 'Edge AI', icon: 'brain', category: 'software' },
-        { name: 'C/C++', icon: 'code', category: 'software' },
-        { name: 'LoRaWAN', icon: 'radio', category: 'protocol' },
         { name: 'TensorFlow Lite', icon: 'brain', category: 'software' },
+        { name: 'Edge AI', icon: 'brain', category: 'software' },
+        { name: 'LoRaWAN', icon: 'radio', category: 'protocol' },
+        { name: 'C/C++', icon: 'code', category: 'software' },
       ],
       stats: [
-        { label: 'Detection Time', value: '<50ms' },
+        { label: 'Response', value: '<50ms' },
         { label: 'False Alarm', value: '0.01%' },
         { label: 'Range', value: '2km+' },
-        { label: 'Battery Life', value: '5 Years' },
+        { label: 'Battery', value: '5 Years' },
       ],
-      tags: ['Altium', 'STM32', 'Edge AI', 'C++', 'LoRaWAN', 'ATEX'],
+      tags: ['Edge AI', 'STM32', 'LoRaWAN', 'ATEX', 'Altium', 'Safety'],
       images: [
-        { src: '/assets/projects/fire-module-pcb.jpg', alt: 'Fire Module PCB', caption: 'Main board design' },
-        { src: '/assets/projects/fire-module-render.jpg', alt: '3D Render', caption: 'Product visualization' },
+        { src: '/assets/logos/fire-module.jpg', alt: 'Fire Module PCB', caption: 'Main board design' },
       ],
       featured: true,
       cta: {
-        text: 'Considering a similar IoT project?',
+        text: 'Considering a similar IoT safety project?',
         link: '/en/contact?subject=consultation',
       },
     },
-
-    // ============================================
-    // 2. UNDERGROUND PERSONNEL POSITIONING NETWORK
-    // ============================================
     {
-      id: 'underground-mining-safety',
+      id: 'mining-safety-network',
       slug: 'underground-personnel-positioning-network',
       title: 'Underground Personnel Positioning Network',
-      subtitle: 'RF Mesh Technology for Mining Safety',
+      subtitle: 'Life-saving RF Mesh network in depths GPS cannot reach.',
       category: 'industrial',
       year: '2022',
       description:
-        'ATEX-compliant safety system that tracks personnel location and health status (Man-Down) in real-time using RF Mesh technology in mine tunnels without GPS signal.',
+        'Life-saving RF Mesh network in depths GPS cannot reach. Personnel tracking and Man-Down detection in mine tunnels.',
       fullDetailText: `
-        During mining accidents, the most critical issue is determining the location of trapped workers. Considering that GPS signals do not work in underground environments, we developed a fully RF-based positioning system.
+        During mining accidents, the most critical issue is determining the location of trapped workers. We developed a fully RF-based positioning system since GPS signals dont work underground.
 
-        The mesh network we created using Zigbee and custom RF protocols provides reliable communication even under meters of rock layers. Each worker can be tracked in real-time through a wristband-type device.
+        The mesh network using Zigbee and custom RF protocols provides reliable communication even under meters of rock. Each worker is tracked in real-time via wristband device.
 
-        The Man-Down (immobility) detection feature automatically sends an alarm when a worker remains motionless for more than 30 seconds. The system is ATEX Zone 1 certified and can be safely used in explosive environments.
+        Man-Down feature sends automatic alarm after 30 seconds of immobility. ATEX Zone 1 certified system is safe for explosive environments.
       `,
       challenge:
-        'Establishing personnel tracking and emergency communication in mine tunnels without GPS signal.',
+        'Personnel tracking in mine tunnels where GPS cannot reach and rapid intervention in emergencies.',
       solution:
-        'RF Mesh technology working even under meters of rock, with Man-Down (immobility) detection feature, ATEX-compliant design.',
+        'RF Mesh technology with ±3m accuracy positioning. Man-Down detection and 2-year battery life.',
       techStack: [
         { name: 'RF Mesh', icon: 'radio', category: 'protocol' },
         { name: 'Zigbee', icon: 'wifi', category: 'protocol' },
         { name: 'Embedded C', icon: 'code', category: 'software' },
-        { name: 'Low Power Design', icon: 'battery', category: 'hardware' },
-        { name: 'ATEX Certification', icon: 'shield', category: 'hardware' },
+        { name: 'Low Power', icon: 'battery', category: 'hardware' },
+        { name: 'ATEX', icon: 'shield', category: 'hardware' },
+        { name: 'Dashboard', icon: 'monitor', category: 'software' },
       ],
       stats: [
-        { label: 'Coverage Area', value: '2km+' },
-        { label: 'Battery Life', value: '2 Years' },
-        { label: 'Position Accuracy', value: '±3m' },
-        { label: 'Certification', value: 'ATEX Zone 1' },
+        { label: 'Coverage', value: '2km+' },
+        { label: 'Battery', value: '2 Years' },
+        { label: 'Accuracy', value: '±3m' },
+        { label: 'Certified', value: 'ATEX' },
       ],
-      tags: ['RF Mesh', 'Zigbee', 'Embedded C', 'Safety', 'ATEX', 'Mining'],
+      tags: ['RF Mesh', 'Mining', 'Safety', 'ATEX', 'Zigbee', 'IoT'],
       images: [
-        { src: '/assets/projects/mining-wearable.jpg', alt: 'Mining Tracking Device', caption: 'Wristband tracking unit' },
-        { src: '/assets/projects/mining-gateway.jpg', alt: 'Gateway Unit', caption: 'In-tunnel gateway' },
+        { src: '/assets/logos/mining-safety.jpg', alt: 'Mining Safety System', caption: 'Tracking unit' },
       ],
       featured: true,
       cta: {
@@ -400,47 +484,43 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         link: '/en/contact?subject=new-project',
       },
     },
-
-    // ============================================
-    // 3. PID CONTROLLED BARISTA AUTOMATION
-    // ============================================
     {
-      id: 'smart-coffee-automation',
+      id: 'barista-automation',
       slug: 'pid-controlled-barista-automation',
       title: 'PID Controlled Barista Automation',
-      subtitle: 'Perfect Coffee with Precision Temperature Management',
+      subtitle: 'Perfect pressure and temperature balance in every drop.',
       category: 'consumer',
       year: '2023',
       description:
-        'Main board design for professional coffee machines featuring pressure profile and water temperature control with 0.1°C precision, with touchscreen interface.',
+        'Perfect pressure and temperature balance in every drop. ±0.1°C precision temperature control for professional espresso machines.',
       fullDetailText: `
-        Achieving consistent taste profile in coffee making requires precise control of temperature and pressure. In this project, we developed a fully automatic control system for professional espresso machines.
+        Consistent taste profile in coffee making requires precise control of temperature and pressure. We developed a fully automatic control system for professional espresso machines.
 
-        Using PID (Proportional-Integral-Derivative) algorithm, we control water temperature with ±0.1°C precision. Flow meter integration allows water quantity to be adjusted on a gram basis.
+        PID algorithm controls water temperature with ±0.1°C precision. Flow meter integration allows gram-based water quantity adjustment. 7" capacitive touchscreen offers user profiles and statistics.
 
-        The custom interface on the 7" capacitive touchscreen offers users profile creation, time adjustment, and statistics tracking. The system can also be monitored remotely via Wi-Fi.
+        Remote monitoring via Wi-Fi and OTA firmware updates ensure the system is future-ready.
       `,
       challenge:
-        'Precise temperature (±0.5°C) and pressure control for consistent taste profile in professional coffee machines.',
+        'Precise temperature and pressure control for consistent taste in professional coffee machines.',
       solution:
-        'PID algorithms with 0.1°C precision heat management, flow meter integration, and 7" touchscreen HMI design. Remote monitoring via IoT connectivity.',
+        'PID algorithms with ±0.1°C precision, flow meter integration, 7" HMI and IoT connectivity.',
       techStack: [
         { name: 'PID Control', icon: 'sliders', category: 'software' },
-        { name: 'HMI Design', icon: 'monitor', category: 'hardware' },
-        { name: 'Embedded C++', icon: 'code', category: 'software' },
         { name: 'Power Electronics', icon: 'zap', category: 'hardware' },
+        { name: 'HMI 7"', icon: 'monitor', category: 'hardware' },
+        { name: 'ESP32', icon: 'cpu', category: 'hardware' },
         { name: 'Flow Sensor', icon: 'droplet', category: 'hardware' },
+        { name: 'C++', icon: 'code', category: 'software' },
       ],
       stats: [
-        { label: 'Temperature Precision', value: '±0.1°C' },
+        { label: 'Precision', value: '±0.1°C' },
         { label: 'Consistency', value: '98%' },
-        { label: 'Energy Savings', value: '25%' },
+        { label: 'Savings', value: '25%' },
         { label: 'Display', value: '7" Touch' },
       ],
-      tags: ['PID Control', 'HMI Design', 'Embedded C++', 'Power Electronics', 'IoT'],
+      tags: ['PID', 'HMI', 'Consumer Electronics', 'ESP32', 'Power'],
       images: [
-        { src: '/assets/projects/coffee-pcb.jpg', alt: 'Coffee Machine PCB', caption: 'Main control board' },
-        { src: '/assets/projects/coffee-hmi.jpg', alt: 'HMI Screen', caption: 'User interface' },
+        { src: '/assets/logos/coffee-machine.jpg', alt: 'Coffee Machine', caption: 'Control system' },
       ],
       featured: true,
       cta: {
@@ -448,47 +528,85 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         link: '/en/contact?subject=consultation',
       },
     },
-
-    // ============================================
-    // 4. CRITICAL COLD CHAIN MONITORING SYSTEM
-    // ============================================
     {
-      id: 'cold-chain-monitoring',
+      id: 'high-efficiency-pmu',
+      slug: 'high-efficiency-power-management-unit',
+      title: 'High Efficiency Power Management Unit (PMU)',
+      subtitle: 'Compact power beast managing energy at 96% efficiency.',
+      category: 'embedded',
+      year: '2022',
+      description:
+        'Compact power beast managing energy at 96% efficiency. EMC compliant design for LED lighting and industrial applications.',
+      fullDetailText: `
+        Compact, high-efficiency, EMC-compliant power supply design for LED lighting systems. Buck/Boost converters and active PFC targeting 96% efficiency.
+
+        Special PCB layout techniques and copper areas used for thermal management. Short circuit, overload and over-temperature protections integrated.
+
+        Product successfully passed CE and EMC certification tests, ready for mass production.
+      `,
+      challenge:
+        'Need for compact, high-efficiency, EMC-compliant power supply for LED systems.',
+      solution:
+        'Buck/Boost topology, active PFC, 4-layer protection and CE/EMC certification.',
+      techStack: [
+        { name: 'Power Electronics', icon: 'zap', category: 'hardware' },
+        { name: 'Buck/Boost', icon: 'activity', category: 'hardware' },
+        { name: 'EMC Design', icon: 'shield', category: 'hardware' },
+        { name: 'Altium', icon: 'layout', category: 'hardware' },
+        { name: 'Thermal Mgmt', icon: 'thermometer', category: 'hardware' },
+      ],
+      stats: [
+        { label: 'Efficiency', value: '96%' },
+        { label: 'Protection', value: '4 Layer' },
+        { label: 'Certified', value: 'CE/EMC' },
+        { label: 'Output', value: '150W' },
+      ],
+      tags: ['Power Electronics', 'EMC', 'LED Driver', 'Buck Converter'],
+      images: [
+        { src: '/assets/logos/pmu-board.jpg', alt: 'PMU Board', caption: 'Power board' },
+      ],
+      featured: false,
+      cta: {
+        text: 'Discuss your power electronics project',
+        link: '/en/contact?subject=consultation',
+      },
+    },
+    {
+      id: 'cold-chain-iot',
       slug: 'critical-cold-chain-monitoring-system',
       title: 'Critical Cold Chain Monitoring System',
-      subtitle: '99.99% Uptime in Pharmaceutical and Food Safety',
+      subtitle: 'For those who cannot tolerate data loss even at -40°C.',
       category: 'iot',
       year: '2023',
       description:
-        'GSM-based monitoring unit for pharmaceutical and food storage that operates in -40°C harsh conditions and can transmit data for 48 hours even during power outages.',
+        'For those who cannot tolerate data loss even at -40°C. Continuous temperature tracking in pharmaceutical and food logistics.',
       fullDetailText: `
-        Temperature deviations in cold chain logistics can lead to millions of dollars in product loss and public health risks. In this project, we developed a monitoring system compliant with FDA and ISO 22000 standards.
+        Temperature deviation in cold chain logistics can lead to millions in product loss and public health risks. We developed FDA and ISO 22000 compliant monitoring system.
 
-        The specially designed PCB operates seamlessly between -40°C and +85°C. The internal battery system continues data recording and GSM notification for 48 hours during power outages.
+        Custom PCB operates seamlessly between -40°C and +85°C. Internal battery provides 48 hours of data recording and GSM notification during power outage.
 
-        The cloud-based dashboard shows real-time temperature maps of all warehouses. It sends instant alarms via SMS and email when threshold values are exceeded.
+        Cloud dashboard shows real-time temperature map of all warehouses. Instant SMS and email alarm on threshold violations.
       `,
       challenge:
-        'Continuous temperature monitoring in -40°C conditions and FDA/ISO compliance in pharmaceutical and food storage.',
+        'Continuous monitoring at -40°C conditions and FDA/ISO compliance in pharmaceutical and food storage.',
       solution:
-        'Custom PCB design with -40°C durability, GSM-based data transmission, cloud dashboard, and 48-hour autonomous operation time.',
+        'GSM-based data transmission, 48-hour autonomous operation, cloud dashboard and instant alerts.',
       techStack: [
         { name: 'GSM/GPRS', icon: 'signal', category: 'protocol' },
         { name: 'Cloud IoT', icon: 'cloud', category: 'platform' },
         { name: 'PCB Design', icon: 'layout', category: 'hardware' },
         { name: 'MQTT', icon: 'message-square', category: 'protocol' },
-        { name: 'React Dashboard', icon: 'monitor', category: 'software' },
+        { name: 'React', icon: 'code', category: 'software' },
       ],
       stats: [
-        { label: 'Operating Range', value: '-40°C / +85°C' },
-        { label: 'System Uptime', value: '99.99%' },
-        { label: 'Autonomous Time', value: '48 Hours' },
-        { label: 'Product Loss Reduction', value: '85%' },
+        { label: 'Range', value: '-40°C/+85°C' },
+        { label: 'Uptime', value: '99.99%' },
+        { label: 'Backup', value: '48 Hours' },
+        { label: 'Loss Reduction', value: '85%' },
       ],
-      tags: ['GSM/GPRS', 'Cloud IoT', 'PCB Design', 'MQTT', 'FDA', 'ISO 22000'],
+      tags: ['Cold Chain', 'GSM', 'IoT', 'Pharma', 'FDA'],
       images: [
-        { src: '/assets/projects/cold-chain-device.jpg', alt: 'Cold Chain Device', caption: 'Monitoring unit' },
-        { src: '/assets/projects/cold-chain-dashboard.jpg', alt: 'Cloud Dashboard', caption: 'Monitoring panel' },
+        { src: '/assets/logos/cold-chain.jpg', alt: 'Cold Chain', caption: 'Monitoring unit' },
       ],
       featured: false,
       cta: {
@@ -496,48 +614,42 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         link: '/en/contact?subject=new-project',
       },
     },
-
-    // ============================================
-    // 5. PREDICTIVE MAINTENANCE & VIBRATION ANALYZER
-    // ============================================
     {
       id: 'predictive-maintenance',
       slug: 'predictive-maintenance-vibration-analyzer',
       title: 'Predictive Maintenance & Vibration Analyzer',
-      subtitle: 'AI That Predicts Failures 2 Weeks in Advance',
+      subtitle: 'Artificial ear that hears failures 2 weeks ahead by listening to machines.',
       category: 'industrial',
       year: '2024',
       description:
-        'AI-powered system that analyzes industrial motor vibrations with FFT algorithms and detects bearing failures 2 weeks before they occur.',
+        'Artificial ear that hears failures 2 weeks ahead by listening to machines. FFT analysis and machine learning for predictive maintenance.',
       fullDetailText: `
-        Unplanned machine downtimes cause millions of dollars in losses annually in production facilities. In this project, we developed an Industry 4.0 solution for motor health monitoring and failure prediction.
+        Unplanned machine downtime causes millions in losses annually. We developed an Industry 4.0 solution for motor health monitoring and failure prediction.
 
-        High-precision MEMS accelerometer sensors collect vibration data at 10,000 samples per second. This data is converted to the frequency domain using FFT (Fast Fourier Transform) algorithm.
+        MEMS accelerometer sensors collect vibration data at 10,000 samples per second. Data converted to frequency domain via FFT algorithm feeds into ML model.
 
-        The machine learning model can predict bearing, bushing, and imbalance failures 2 weeks in advance by detecting anomalies in vibration patterns. The system integrates with existing SCADA systems via OPC-UA protocol.
+        System can predict bearing and imbalance failures 2 weeks in advance. Integrates with existing SCADA systems via OPC-UA protocol.
       `,
       challenge:
-        'Early detection of unexpected failures and planned maintenance optimization in industrial motors.',
+        'Unexpected failures and unplanned downtime in industrial motors.',
       solution:
-        'Vibration analysis with FFT (Fast Fourier Transform) algorithms, machine learning-based failure prediction, OPC-UA integration.',
+        'FFT analysis, ML-based failure prediction, OPC-UA integration. 2-week advance warning.',
       techStack: [
-        { name: 'DSP', icon: 'activity', category: 'software' },
-        { name: 'Python', icon: 'code', category: 'software' },
-        { name: 'FFT Analysis', icon: 'bar-chart', category: 'software' },
-        { name: 'Machine Learning', icon: 'brain', category: 'software' },
+        { name: 'DSP/FFT', icon: 'activity', category: 'software' },
+        { name: 'Python/ML', icon: 'brain', category: 'software' },
+        { name: 'MEMS Sensor', icon: 'cpu', category: 'hardware' },
         { name: 'OPC-UA', icon: 'server', category: 'protocol' },
         { name: 'SCADA', icon: 'monitor', category: 'platform' },
       ],
       stats: [
-        { label: 'Sampling Rate', value: '10kHz' },
-        { label: 'Prediction Time', value: '2 Weeks' },
-        { label: 'Downtime Reduction', value: '78%' },
+        { label: 'Sampling', value: '10kHz' },
+        { label: 'Prediction', value: '2 Weeks' },
+        { label: 'Downtime Cut', value: '78%' },
         { label: 'ROI', value: '6 Months' },
       ],
-      tags: ['DSP', 'Python', 'FFT', 'Machine Learning', 'Industry 4.0', 'SCADA'],
+      tags: ['Predictive', 'FFT', 'ML', 'Industry 4.0', 'SCADA'],
       images: [
-        { src: '/assets/projects/vibration-sensor.jpg', alt: 'Vibration Sensor', caption: 'MEMS accelerometer' },
-        { src: '/assets/projects/vibration-dashboard.jpg', alt: 'Analysis Screen', caption: 'FFT spectrum analysis' },
+        { src: '/assets/logos/vibration-analyzer.jpg', alt: 'Vibration Analyzer', caption: 'Sensor unit' },
       ],
       featured: false,
       cta: {
@@ -545,30 +657,69 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         link: '/en/contact?subject=consultation',
       },
     },
-
-    // ============================================
-    // 6. NUVIA EVENT MANAGEMENT PLATFORM
-    // ============================================
     {
-      id: 'nuvia-crm',
-      slug: 'nuvia-event-management-platform',
-      title: 'Nuvia Event Management Platform',
-      subtitle: 'Scalable Organization with Enterprise SaaS',
+      id: 'factory-oee-system',
+      slug: 'factory-oee-efficiency-system',
+      title: 'Factory OEE & Efficiency Tracking',
+      subtitle: 'Digital twin of every second on the production line.',
+      category: 'industrial',
+      year: '2023',
+      description:
+        'Digital twin of every second on the production line. Overall Equipment Effectiveness (OEE) monitoring and optimization system.',
+      fullDetailText: `
+        Continuous energy monitoring and equipment health tracking in 24/7 production. Edge computing based data collection and ML anomaly detection.
+
+        12 production lines monitored simultaneously. Availability, performance and quality metrics calculated in real-time for each line.
+
+        OEE scores, downtime reasons and improvement suggestions displayed on dashboard. System achieved 89% OEE.
+      `,
+      challenge:
+        'Identifying inefficiency sources in 24/7 production and OEE optimization.',
+      solution:
+        'Edge computing, ML anomaly detection, real-time OEE dashboard.',
+      techStack: [
+        { name: 'Edge Computing', icon: 'cpu', category: 'hardware' },
+        { name: 'PLC/SCADA', icon: 'server', category: 'platform' },
+        { name: 'OPC-UA', icon: 'share-2', category: 'protocol' },
+        { name: 'React Dashboard', icon: 'monitor', category: 'software' },
+        { name: 'TimescaleDB', icon: 'database', category: 'platform' },
+      ],
+      stats: [
+        { label: 'Lines', value: '12' },
+        { label: 'Downtime Cut', value: '78%' },
+        { label: 'OEE', value: '89%' },
+        { label: 'Uptime', value: '99.5%' },
+      ],
+      tags: ['OEE', 'Manufacturing', 'SCADA', 'Edge', 'Dashboard'],
+      images: [
+        { src: '/assets/logos/factory-oee.jpg', alt: 'Factory OEE', caption: 'Dashboard' },
+      ],
+      featured: false,
+      cta: {
+        text: 'Contact for manufacturing efficiency project',
+        link: '/en/contact?subject=new-project',
+      },
+    },
+    {
+      id: 'nuvia-platform',
+      slug: 'nuvia-saas-platform',
+      title: 'Nuvia SaaS Platform',
+      subtitle: 'Digital backbone of event management at global scale.',
       category: 'saas',
       year: '2024',
       description:
-        'Comprehensive web and mobile-based CRM infrastructure providing end-to-end planning, budget management, and operational tracking for large-scale organizations.',
+        'Digital backbone of event management at global scale. End-to-end organization management with Enterprise SaaS.',
       fullDetailText: `
-        Corporate event management requires complex planning, budget tracking, and real-time coordination. Nuvia platform is a comprehensive SaaS solution that brings these needs under one roof.
+        Corporate event management requires complex planning, budget tracking and real-time coordination. Nuvia is the SaaS solution bringing these needs under one roof.
 
-        Built on microservice architecture, the platform can simultaneously support hundreds of thousands of users. The mobile application developed with React Native works seamlessly on iOS and Android platforms.
+        Platform built on microservice architecture supports hundreds of thousands of concurrent users. React Native mobile app runs seamlessly on iOS and Android.
 
-        Running on AWS infrastructure, the system offers 99.9% uptime guarantee. Real-time guest tracking, QR-coded check-in, and instant reporting features provide full control to event managers.
+        99.9% uptime guarantee on AWS infrastructure. Real-time guest tracking, QR check-in and instant reporting features.
       `,
       challenge:
-        'End-to-end planning, budget, and operational tracking needs for large-scale organizations.',
+        'End-to-end planning and operational tracking for large-scale organizations.',
       solution:
-        'Microservice architecture, React Native mobile, AWS infrastructure, and real-time guest tracking for enterprise-level scalability.',
+        'Microservice architecture, React Native mobile, AWS infrastructure, real-time tracking.',
       techStack: [
         { name: 'React Native', icon: 'smartphone', category: 'software' },
         { name: 'Node.js', icon: 'server', category: 'software' },
@@ -583,10 +734,9 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'Uptime', value: '99.9%' },
         { label: 'Clients', value: '50+' },
       ],
-      tags: ['React Native', 'Node.js', 'AWS', 'MongoDB', 'SaaS', 'Enterprise'],
+      tags: ['SaaS', 'React Native', 'AWS', 'Enterprise', 'Mobile'],
       images: [
-        { src: '/assets/projects/nuvia-dashboard.jpg', alt: 'Nuvia Dashboard', caption: 'Management panel' },
-        { src: '/assets/projects/nuvia-mobile.jpg', alt: 'Mobile App', caption: 'iOS and Android' },
+        { src: '/assets/logos/nuvia-platform.jpg', alt: 'Nuvia Platform', caption: 'Dashboard' },
       ],
       featured: false,
       cta: {
@@ -605,7 +755,7 @@ export const PROJECT_CATEGORIES: LocalizedContent<CategoryFilter[]> = {
   tr: [
     { id: 'all', label: 'Tum Projeler' },
     { id: 'embedded', label: 'Gomulu Sistemler' },
-    { id: 'industrial', label: 'Endustriyel' },
+    { id: 'industrial', label: 'Endustriyel IoT' },
     { id: 'iot', label: 'IoT & Baglanti' },
     { id: 'consumer', label: 'Tuketici Elektronigi' },
     { id: 'saas', label: 'Yazilim & SaaS' },
@@ -613,7 +763,7 @@ export const PROJECT_CATEGORIES: LocalizedContent<CategoryFilter[]> = {
   en: [
     { id: 'all', label: 'All Projects' },
     { id: 'embedded', label: 'Embedded Systems' },
-    { id: 'industrial', label: 'Industrial' },
+    { id: 'industrial', label: 'Industrial IoT' },
     { id: 'iot', label: 'IoT & Connectivity' },
     { id: 'consumer', label: 'Consumer Electronics' },
     { id: 'saas', label: 'Software & SaaS' },
