@@ -16,8 +16,8 @@ import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 
 // ===========================================
-// InteractiveServices - Premium Modal System
-// Apple-style glassmorphism modals for service details
+// InteractiveServices - Compact & Elegant
+// Refined modal system with sleek cards
 // ===========================================
 
 export interface ServiceDetail {
@@ -38,7 +38,7 @@ interface InteractiveServicesProps {
   className?: string;
 }
 
-// Service Card Component
+// Service Card Component - COMPACT
 function ServiceCard({
   service,
   onClick,
@@ -52,35 +52,33 @@ function ServiceCard({
 
   return (
     <motion.button
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
+      transition={{ delay: index * 0.06 }}
       onClick={onClick}
-      className={`group p-8 text-left bg-gradient-to-br from-onyx-800/80 to-onyx-800/40 border border-white/5 rounded-2xl hover:border-${service.color}/30 transition-all duration-300 hover:scale-[1.02] w-full`}
+      className="group p-5 text-left bg-gradient-to-br from-onyx-800/60 to-onyx-800/30 border border-white/[0.04] rounded-xl hover:border-engineer-500/20 transition-all duration-300 hover:scale-[1.015] w-full"
     >
-      <div
-        className={`w-16 h-16 rounded-xl bg-${service.color}/10 flex items-center justify-center mb-6 group-hover:bg-${service.color}/20 transition-colors`}
-      >
-        <Icon size={32} className={`text-${service.color}`} />
+      <div className="w-10 h-10 rounded-lg bg-engineer-500/8 flex items-center justify-center mb-3.5 group-hover:bg-engineer-500/15 transition-colors">
+        <Icon size={20} className="text-engineer-500" />
       </div>
 
-      <h3 className="text-xl font-bold text-offwhite-400 mb-2">{service.title}</h3>
-      <p className="text-sm text-offwhite-600 mb-4">{service.subtitle}</p>
-      <p className="text-offwhite-700 line-clamp-2">{service.description}</p>
+      <h3 className="text-base font-semibold text-offwhite-400 mb-1 tracking-tight">{service.title}</h3>
+      <p className="text-xs text-offwhite-700 mb-2">{service.subtitle}</p>
+      <p className="text-sm text-offwhite-600 line-clamp-2 leading-relaxed">{service.description}</p>
 
-      <div className="mt-6 flex items-center gap-2 text-engineer-500 font-medium">
-        <span className="text-sm">Details</span>
+      <div className="mt-3.5 flex items-center gap-1.5 text-engineer-500 font-medium">
+        <span className="text-xs">Details</span>
         <ArrowRight
-          size={16}
-          className="group-hover:translate-x-1 transition-transform"
+          size={12}
+          className="group-hover:translate-x-0.5 transition-transform"
         />
       </div>
     </motion.button>
   );
 }
 
-// Service Modal Component
+// Service Modal Component - REFINED
 function ServiceModal({
   service,
   onClose,
@@ -114,73 +112,69 @@ function ServiceModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6"
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-onyx-900/80 backdrop-blur-xl" />
+      <div className="absolute inset-0 bg-onyx-900/85 backdrop-blur-xl" />
 
-      {/* Modal Content */}
+      {/* Modal Content - COMPACT */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        exit={{ opacity: 0, scale: 0.95, y: 12 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 350 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-onyx-800/95 to-onyx-900/95 border border-white/10 rounded-3xl shadow-2xl"
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-gradient-to-br from-onyx-800/95 to-onyx-900/95 border border-white/8 rounded-2xl shadow-2xl"
       >
         {/* Header Gradient */}
-        <div
-          className={`absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-${service.color}/20 to-transparent pointer-events-none rounded-t-3xl`}
-        />
+        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-engineer-500/10 to-transparent pointer-events-none rounded-t-2xl" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/8 hover:bg-white/15 flex items-center justify-center transition-colors z-10"
         >
-          <X size={20} className="text-offwhite-400" />
+          <X size={16} className="text-offwhite-400" />
         </button>
 
-        <div className="relative p-8 md:p-12">
+        <div className="relative p-6 md:p-7">
           {/* Icon & Title */}
-          <div className="flex items-start gap-6 mb-8">
-            <div
-              className={`w-20 h-20 rounded-2xl bg-${service.color}/10 flex items-center justify-center flex-shrink-0`}
-            >
-              <Icon size={40} className={`text-${service.color}`} />
+          <div className="flex items-start gap-4 mb-5">
+            <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center flex-shrink-0">
+              <Icon size={24} className="text-engineer-500" />
             </div>
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-2">
+              <h2 className="text-xl md:text-2xl font-bold text-offwhite-400 mb-1 tracking-tight">
                 {service.title}
               </h2>
-              <p className={`text-lg text-${service.color}`}>{service.subtitle}</p>
+              <p className="text-sm text-engineer-500">{service.subtitle}</p>
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-lg text-offwhite-600 leading-relaxed mb-10">
+          <p className="text-sm text-offwhite-600 leading-relaxed mb-6">
             {service.description}
           </p>
 
-          {/* Content Grid */}
-          <div className="grid md:grid-cols-3 gap-8 mb-10">
+          {/* Content Grid - COMPACT */}
+          <div className="grid md:grid-cols-3 gap-5 mb-6">
             {/* Features */}
             <div>
-              <h3 className="text-sm font-medium text-offwhite-500 uppercase tracking-wider mb-4">
+              <h3 className="text-[10px] font-medium text-offwhite-500 uppercase tracking-wider mb-2.5">
                 {lang === 'tr' ? 'Ozellikler' : 'Features'}
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-1.5">
                 {service.features.map((feature, idx) => (
                   <li
                     key={idx}
-                    className="flex items-start gap-2 text-offwhite-600"
+                    className="flex items-start gap-1.5 text-offwhite-600"
                   >
                     <CheckCircle
-                      size={16}
-                      className={`text-${service.color} flex-shrink-0 mt-0.5`}
+                      size={12}
+                      className="text-engineer-500 flex-shrink-0 mt-0.5"
                     />
-                    <span className="text-sm">{feature}</span>
+                    <span className="text-xs leading-relaxed">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -188,14 +182,14 @@ function ServiceModal({
 
             {/* Technologies */}
             <div>
-              <h3 className="text-sm font-medium text-offwhite-500 uppercase tracking-wider mb-4">
+              <h3 className="text-[10px] font-medium text-offwhite-500 uppercase tracking-wider mb-2.5">
                 {lang === 'tr' ? 'Teknolojiler' : 'Technologies'}
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {service.technologies.map((tech, idx) => (
                   <span
                     key={idx}
-                    className={`px-3 py-1 bg-${service.color}/10 text-${service.color} text-xs font-medium rounded-full`}
+                    className="px-2 py-0.5 bg-engineer-500/8 text-engineer-500 text-[10px] font-medium rounded-full"
                   >
                     {tech}
                   </span>
@@ -205,42 +199,40 @@ function ServiceModal({
 
             {/* Deliverables */}
             <div>
-              <h3 className="text-sm font-medium text-offwhite-500 uppercase tracking-wider mb-4">
+              <h3 className="text-[10px] font-medium text-offwhite-500 uppercase tracking-wider mb-2.5">
                 {lang === 'tr' ? 'Teslim Edilenler' : 'Deliverables'}
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-1.5">
                 {service.deliverables.map((item, idx) => (
                   <li
                     key={idx}
-                    className="flex items-start gap-2 text-offwhite-600"
+                    className="flex items-start gap-1.5 text-offwhite-600"
                   >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full bg-${service.color} flex-shrink-0 mt-2`}
-                    />
-                    <span className="text-sm">{item}</span>
+                    <span className="w-1 h-1 rounded-full bg-engineer-500 flex-shrink-0 mt-1.5" />
+                    <span className="text-xs leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
 
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          {/* CTA - COMPACT */}
+          <div className="flex flex-col sm:flex-row gap-2.5">
             <Link
               href={`/${lang}/contact?service=${service.id}`}
-              className={`group inline-flex items-center justify-center gap-3 px-8 py-4 bg-${service.color} hover:opacity-90 text-white font-medium rounded-xl transition-all duration-300`}
+              className="group inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-lg transition-all duration-300"
             >
               <span>
                 {lang === 'tr' ? 'Teklif Al' : 'Get Quote'}
               </span>
               <ArrowRight
-                size={18}
-                className="group-hover:translate-x-1 transition-transform"
+                size={14}
+                className="group-hover:translate-x-0.5 transition-transform"
               />
             </Link>
             <button
               onClick={onClose}
-              className="inline-flex items-center justify-center px-8 py-4 border border-white/10 hover:border-white/20 text-offwhite-400 font-medium rounded-xl transition-colors"
+              className="inline-flex items-center justify-center px-5 py-2.5 border border-white/8 hover:border-white/15 text-offwhite-400 text-sm font-medium rounded-lg transition-colors"
             >
               {lang === 'tr' ? 'Kapat' : 'Close'}
             </button>
@@ -261,8 +253,8 @@ export default function InteractiveServices({
 
   return (
     <div className={className}>
-      {/* Services Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Services Grid - COMPACT */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {services.map((service, index) => (
           <ServiceCard
             key={service.id}
@@ -296,8 +288,8 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
     subtitle: lang === 'tr' ? 'Profesyonel devre tasarimi' : 'Professional circuit design',
     description:
       lang === 'tr'
-        ? 'Altium Designer ile profesyonel sematik tasarim. Komponent secimi, guc hesaplamalari ve devre optimizasyonu. Her projede DFM uyumluluk kontrolu.'
-        : 'Professional schematic design with Altium Designer. Component selection, power calculations and circuit optimization. DFM compliance check in every project.',
+        ? 'Altium Designer ile profesyonel sematik tasarim. Komponent secimi, guc hesaplamalari ve devre optimizasyonu.'
+        : 'Professional schematic design with Altium Designer. Component selection, power calculations and circuit optimization.',
     features:
       lang === 'tr'
         ? [
@@ -305,21 +297,19 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
             'Komponent secimi ve tedarik',
             'Guc ve termal analiz',
             'DFM uyumluluk kontrolu',
-            'Tasarim dokumantasyonu',
           ]
         : [
             'Altium Designer / KiCAD',
             'Component selection & sourcing',
             'Power & thermal analysis',
             'DFM compliance check',
-            'Design documentation',
           ],
-    technologies: ['Altium Designer', 'KiCAD', 'LTSpice', 'MATLAB'],
+    technologies: ['Altium', 'KiCAD', 'LTSpice', 'MATLAB'],
     deliverables:
       lang === 'tr'
-        ? ['Sematik dosyalari', 'BOM listesi', 'Analiz raporu', 'Tasarim incelemesi']
-        : ['Schematic files', 'BOM list', 'Analysis report', 'Design review'],
-    color: 'blue-500',
+        ? ['Sematik dosyalari', 'BOM listesi', 'Analiz raporu']
+        : ['Schematic files', 'BOM list', 'Analysis report'],
+    color: 'engineer-500',
   },
   {
     id: 'pcb',
@@ -328,29 +318,27 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
     subtitle: lang === 'tr' ? 'Cok katmanli tasarim' : 'Multi-layer design',
     description:
       lang === 'tr'
-        ? 'Cok katmanli, yuksek hizli PCB tasarimi. EMC uyumluluk, sinyal butunlugu ve termal yonetim. RF ve mixed-signal tasarim uzmanlik alani.'
-        : 'Multi-layer, high-speed PCB design. EMC compliance, signal integrity and thermal management. RF and mixed-signal design expertise.',
+        ? 'Cok katmanli, yuksek hizli PCB tasarimi. EMC uyumluluk, sinyal butunlugu ve termal yonetim.'
+        : 'Multi-layer, high-speed PCB design. EMC compliance, signal integrity and thermal management.',
     features:
       lang === 'tr'
         ? [
-            'Cok katmanli tasarim (12+ katman)',
+            'Cok katmanli tasarim (12+)',
             'Yuksek hiz / RF tasarim',
             'Impedans kontrollu routing',
             'EMC & SI analizi',
-            'Termal yonetim',
           ]
         : [
-            'Multi-layer design (12+ layers)',
+            'Multi-layer design (12+)',
             'High-speed / RF design',
             'Impedance controlled routing',
             'EMC & SI analysis',
-            'Thermal management',
           ],
-    technologies: ['Altium Designer', 'HyperLynx', 'CST Studio', 'ANSYS'],
+    technologies: ['Altium', 'HyperLynx', 'CST Studio', 'ANSYS'],
     deliverables:
       lang === 'tr'
-        ? ['Gerber dosyalari', 'Pick & Place', '3D model', 'Uretim dokumanlari']
-        : ['Gerber files', 'Pick & Place', '3D model', 'Manufacturing docs'],
+        ? ['Gerber dosyalari', 'Pick & Place', '3D model']
+        : ['Gerber files', 'Pick & Place', '3D model'],
     color: 'engineer-500',
   },
   {
@@ -360,30 +348,28 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
     subtitle: lang === 'tr' ? 'Profesyonel firmware' : 'Professional firmware',
     description:
       lang === 'tr'
-        ? 'STM32, ESP32, nRF platformlarinda profesyonel firmware gelistirme. RTOS, BLE, WiFi entegrasyonu ve OTA guncelleme altyapisi.'
-        : 'Professional firmware development on STM32, ESP32, nRF platforms. RTOS, BLE, WiFi integration and OTA update infrastructure.',
+        ? 'STM32, ESP32, nRF platformlarinda profesyonel firmware gelistirme. RTOS ve OTA altyapisi.'
+        : 'Professional firmware development on STM32, ESP32, nRF platforms. RTOS and OTA infrastructure.',
     features:
       lang === 'tr'
         ? [
             'STM32 / ESP32 / nRF',
             'FreeRTOS / Zephyr',
             'BLE / WiFi / LoRa',
-            'OTA guncelleme altyapisi',
-            'Power management',
+            'OTA guncelleme',
           ]
         : [
             'STM32 / ESP32 / nRF',
             'FreeRTOS / Zephyr',
             'BLE / WiFi / LoRa',
-            'OTA update infrastructure',
-            'Power management',
+            'OTA updates',
           ],
-    technologies: ['C/C++', 'Rust', 'FreeRTOS', 'Zephyr', 'BLE', 'MQTT'],
+    technologies: ['C/C++', 'Rust', 'FreeRTOS', 'BLE', 'MQTT'],
     deliverables:
       lang === 'tr'
-        ? ['Kaynak kodu', 'Test raporu', 'API dokumantasyonu', 'Kullanim kilavuzu']
-        : ['Source code', 'Test report', 'API documentation', 'User guide'],
-    color: 'green-500',
+        ? ['Kaynak kodu', 'Test raporu', 'API dokumantasyonu']
+        : ['Source code', 'Test report', 'API documentation'],
+    color: 'engineer-500',
   },
   {
     id: 'prototype',
@@ -392,30 +378,28 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
     subtitle: lang === 'tr' ? 'Hizli uretim ve test' : 'Rapid production & test',
     description:
       lang === 'tr'
-        ? 'Hizli prototip uretimi ve test. Fonksiyonel dogrulama, performans olcumleri ve iteratif gelistirme. Test fiksturleri ile kapsamli validasyon.'
-        : 'Rapid prototype production and testing. Functional validation, performance measurements and iterative development. Comprehensive validation with test fixtures.',
+        ? 'Hizli prototip uretimi ve test. Fonksiyonel dogrulama ve iteratif gelistirme.'
+        : 'Rapid prototype production and testing. Functional validation and iterative development.',
     features:
       lang === 'tr'
         ? [
             'Hizli PCB uretimi',
             'SMT montaj',
             'Test fiksturu tasarimi',
-            'Fonksiyonel test raporu',
-            'Iteratif gelistirme',
+            'Fonksiyonel test',
           ]
         : [
             'Rapid PCB manufacturing',
             'SMT assembly',
             'Test fixture design',
-            'Functional test report',
-            'Iterative development',
+            'Functional test',
           ],
-    technologies: ['SMT', 'AOI', 'ICT', 'Functional Test', '3D Printing'],
+    technologies: ['SMT', 'AOI', 'ICT', '3D Printing'],
     deliverables:
       lang === 'tr'
-        ? ['Prototip uniteler', 'Test raporu', 'Kalite raporu', 'Iyilestirme onerileri']
-        : ['Prototype units', 'Test report', 'Quality report', 'Improvement suggestions'],
-    color: 'purple-500',
+        ? ['Prototip uniteler', 'Test raporu', 'Kalite raporu']
+        : ['Prototype units', 'Test report', 'Quality report'],
+    color: 'engineer-500',
   },
   {
     id: 'consulting',
@@ -424,29 +408,27 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
     subtitle: lang === 'tr' ? 'Uzman muhendislik destegi' : 'Expert engineering support',
     description:
       lang === 'tr'
-        ? 'Mevcut projelerin teknik incelemesi, optimizasyon onerileri ve muhendislik destek hizmetleri. Sertifikasyon sureci danismanligi.'
-        : 'Technical review of existing projects, optimization recommendations and engineering support services. Certification process consulting.',
+        ? 'Mevcut projelerin teknik incelemesi, optimizasyon onerileri ve sertifikasyon danismanligi.'
+        : 'Technical review of existing projects, optimization recommendations and certification consulting.',
     features:
       lang === 'tr'
         ? [
             'Tasarim inceleme (DFM/DFT)',
             'Maliyet optimizasyonu',
             'Sertifikasyon danismanligi',
-            'Tedarik zinciri yonetimi',
             'Teknik egitim',
           ]
         : [
             'Design review (DFM/DFT)',
             'Cost optimization',
             'Certification consulting',
-            'Supply chain management',
             'Technical training',
           ],
-    technologies: ['CE', 'FCC', 'UL', 'ISO', 'IPC Standards'],
+    technologies: ['CE', 'FCC', 'UL', 'ISO', 'IPC'],
     deliverables:
       lang === 'tr'
-        ? ['Inceleme raporu', 'Optimizasyon plani', 'Sertifikasyon yol haritasi', 'Egitim materyalleri']
-        : ['Review report', 'Optimization plan', 'Certification roadmap', 'Training materials'],
-    color: 'yellow-500',
+        ? ['Inceleme raporu', 'Optimizasyon plani', 'Yol haritasi']
+        : ['Review report', 'Optimization plan', 'Roadmap'],
+    color: 'engineer-500',
   },
 ];
