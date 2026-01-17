@@ -1,12 +1,13 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, Zap, Shield, Cpu } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Zap } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
 import ServicesSection from '@/components/premium/ServicesSection';
+import TechStack from '@/components/premium/TechStack';
 
 // Dynamically import NeuralCore to avoid SSR issues with Three.js
 const NeuralCore = dynamic(
@@ -21,43 +22,25 @@ const NeuralCore = dynamic(
   }
 );
 
+// Dynamically import SmartLifestylePreview to improve initial load
+const SmartLifestylePreview = dynamic(
+  () => import('@/components/premium/SmartLifestylePreview'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-screen bg-onyx-950 flex items-center justify-center">
+        <div className="w-16 h-16 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+      </div>
+    )
+  }
+);
+
 interface HomePageClientProps {
   lang: Locale;
 }
 
 export default function HomePageClient({ lang }: HomePageClientProps) {
   const t = getTranslations(lang);
-
-  const solutions = [
-    {
-      id: 'smart-villa',
-      title: lang === 'tr' ? 'Akilli Villa' : 'Smart Villa',
-      description:
-        lang === 'tr'
-          ? 'Kisisel luks, gorunmez teknoloji. Yasam alaninizi algoritmik sistemlerle donusturun.'
-          : 'Personal luxury, invisible technology. Transform your living space with algorithmic systems.',
-      icon: Shield,
-      href: `/${lang}/solutions/smart-villa`,
-      stats: [
-        { label: lang === 'tr' ? 'Enerji Tasarrufu' : 'Energy Savings', value: '%42' },
-        { label: lang === 'tr' ? 'Sistem' : 'Systems', value: '47+' },
-      ],
-    },
-    {
-      id: 'smart-residence',
-      title: lang === 'tr' ? 'Akilli Rezidans' : 'Smart Residence',
-      description:
-        lang === 'tr'
-          ? 'Merkezi yonetim, olceklenebilir guc. 500+ daireyi tek ekrandan yonetin.'
-          : 'Central management, scalable power. Manage 500+ units from a single screen.',
-      icon: Cpu,
-      href: `/${lang}/solutions/smart-residence`,
-      stats: [
-        { label: lang === 'tr' ? 'Bakim Tasarrufu' : 'Maintenance Savings', value: '%60' },
-        { label: lang === 'tr' ? 'Daire' : 'Units', value: '500+' },
-      ],
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-onyx-900">
@@ -97,7 +80,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-onyx-900/80 backdrop-blur-sm rounded-full border border-white/10">
               <Zap size={14} className="text-engineer-500" />
               <span className="text-offwhite-600 text-sm font-medium">
-                {lang === 'tr' ? 'Muhendislik Çözümleri' : 'Engineering Solutions'}
+                {lang === 'tr' ? 'Uctan Uca Teknoloji Cozumleri' : 'End-to-End Technology Solutions'}
               </span>
             </span>
           </motion.div>
@@ -120,7 +103,9 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-xl md:text-2xl text-offwhite-700 max-w-2xl mx-auto mb-12"
           >
-            {t.home.heroSubtitle}
+            {lang === 'tr'
+              ? 'PCB tasarimindan akilli yasam sistemlerine, kiosk cozumlerinden POS otomasyonuna kadar tum ihtiyaclariniz icin tek adres.'
+              : 'From PCB design to smart living systems, from kiosk solutions to POS automation - your single destination for all technology needs.'}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -141,10 +126,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               />
             </Link>
             <Link
-              href={`/${lang}/solutions/smart-villa`}
+              href={`/${lang}/contact`}
               className="group flex items-center gap-2 px-8 py-4 bg-onyx-900/80 backdrop-blur-sm border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-lg transition-all duration-300"
             >
-              <span>{t.home.discoverSolutions}</span>
+              <span>{lang === 'tr' ? 'Teklif Alin' : 'Get a Quote'}</span>
               <ArrowUpRight
                 size={18}
                 className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
@@ -169,105 +154,30 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
         </motion.div>
       </section>
 
-      {/* Services Section - PCB Design & Embedded Consulting */}
+      {/* Technologies We Use - Strip below Hero */}
+      <TechStack lang={lang} />
+
+      {/* Services Section - Engineering Services & Product Solutions */}
       <ServicesSection lang={lang} />
 
-      {/* Solutions Section */}
-      <section className="py-32 relative">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
-              <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'COZUMLER' : 'SOLUTIONS'}
-              <span className="w-8 h-px bg-engineer-500" />
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-offwhite-400 mb-6">
-              {lang === 'tr'
-                ? 'Muhendislik Cozumleri'
-                : 'Engineering Solutions'}
-            </h2>
-            <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
-              {lang === 'tr'
-                ? 'Villa ve rezidans projeleri icin ozel tasarlanmis akilli yasam sistemleri.'
-                : 'Smart living systems custom designed for villa and residence projects.'}
-            </p>
-          </motion.div>
+      {/* Smart Lifestyle Preview - Apple-style Scrollytelling Demo */}
+      <SmartLifestylePreview lang={lang} />
 
-          {/* Solutions Grid */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {solutions.map((solution, index) => {
-              const Icon = solution.icon;
-              return (
-                <motion.div
-                  key={solution.id}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Link
-                    href={solution.href}
-                    className="group block p-8 lg:p-10 bg-onyx-800/50 backdrop-blur-sm border border-white/5 rounded-2xl hover:border-engineer-500/30 transition-all duration-500"
-                  >
-                    {/* Icon */}
-                    <div className="w-14 h-14 rounded-xl bg-engineer-500/10 flex items-center justify-center mb-6 group-hover:bg-engineer-500/20 transition-colors">
-                      <Icon size={28} className="text-engineer-500" />
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-2xl font-bold text-offwhite-400 mb-4 group-hover:text-engineer-500 transition-colors">
-                      {solution.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-offwhite-700 mb-8 leading-relaxed">
-                      {solution.description}
-                    </p>
-
-                    {/* Stats */}
-                    <div className="flex gap-8 mb-8">
-                      {solution.stats.map((stat, idx) => (
-                        <div key={idx}>
-                          <div className="font-mono text-2xl font-bold text-offwhite-400">
-                            {stat.value}
-                          </div>
-                          <div className="text-xs text-offwhite-800 uppercase tracking-wide">
-                            {stat.label}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* CTA */}
-                    <div className="flex items-center gap-2 text-engineer-500 text-sm font-medium">
-                      <span>{t.common.learnMore}</span>
-                      <ArrowRight
-                        size={16}
-                        className="group-hover:translate-x-1 transition-transform"
-                      />
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-32 border-t border-white/5">
+      {/* Final CTA Section */}
+      <section className="py-32 border-t border-white/5 bg-onyx-900">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
+            {/* Badge */}
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'BIRLIKTE CALISALIM' : "LET'S COLLABORATE"}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
               {lang === 'tr'
                 ? 'Projenizi birlikte tasarlayalim'
@@ -275,19 +185,56 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             </h2>
             <p className="text-lg text-offwhite-700 mb-10">
               {lang === 'tr'
-                ? 'Muhendislik ekibimiz, ihtiyaclariniza ozel bir cozum tasarlamak icin hazir.'
-                : 'Our engineering team is ready to design a custom solution for your needs.'}
+                ? 'Muhendislik ekibimiz, ihtiyaclariniza ozel bir cozum tasarlamak icin hazir. PCB tasarimindan akilli bina sistemlerine kadar her projede yaninizdayiz.'
+                : 'Our engineering team is ready to design a custom solution for your needs. From PCB design to smart building systems, we are with you in every project.'}
             </p>
-            <Link
-              href={`/${lang}/contact`}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-lg transition-all duration-300"
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href={`/${lang}/contact`}
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-lg transition-all duration-300"
+              >
+                <span>{t.nav.engineeringRequest}</span>
+                <ArrowRight
+                  size={18}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
+              </Link>
+              <Link
+                href={`/${lang}/about`}
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-lg transition-all duration-300"
+              >
+                <span>{lang === 'tr' ? 'Bizi Taniyin' : 'About Us'}</span>
+                <ArrowUpRight
+                  size={18}
+                  className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                />
+              </Link>
+            </div>
+
+            {/* Trust Indicators */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="mt-12 pt-8 border-t border-white/5"
             >
-              <span>{t.nav.engineeringRequest}</span>
-              <ArrowRight
-                size={18}
-                className="group-hover:translate-x-1 transition-transform"
-              />
-            </Link>
+              <p className="text-sm text-offwhite-800 mb-4">
+                {lang === 'tr' ? 'Guvenilir Ortaklar' : 'Trusted Partners'}
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-8">
+                {['ISO 9001', 'CE', 'RoHS', 'UL'].map((cert) => (
+                  <span
+                    key={cert}
+                    className="text-offwhite-700 font-mono text-sm border border-white/10 px-4 py-2 rounded-lg"
+                  >
+                    {cert}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
