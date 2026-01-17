@@ -1,469 +1,616 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { getTranslations, type Locale } from '@/lib/i18n';
 import {
-  Mail,
-  Phone,
-  MapPin,
   Send,
-  CheckCircle,
-  Calendar,
-  ArrowRight,
-  Building2,
+  Check,
+  MapPin,
+  Phone,
+  Mail,
   Clock,
+  Linkedin,
+  Twitter,
+  Github,
+  ArrowRight,
+  Zap,
+  Building2,
+  Globe,
+  Calendar,
   ExternalLink,
 } from 'lucide-react';
-import { getTranslations, type Locale } from '@/lib/i18n';
-
-// Lazy load 3D component for performance
-const NetworkGlobe = dynamic(
-  () => import('@/components/premium/3d/NetworkGlobe'),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
-    ),
-  }
-);
 
 interface ContactPageProps {
   params: { lang: Locale };
 }
 
-// Contact form subjects
-const subjects = {
-  tr: [
-    { value: 'new-project', label: 'Yeni Proje' },
-    { value: 'consultation', label: 'Danismanlik Istegi' },
-    { value: 'technical-support', label: 'Teknik Destek' },
-    { value: 'other', label: 'Diger' },
-  ],
-  en: [
-    { value: 'new-project', label: 'New Project' },
-    { value: 'consultation', label: 'Consultation Request' },
-    { value: 'technical-support', label: 'Technical Support' },
-    { value: 'other', label: 'Other' },
-  ],
-};
+// Floating Label Input Component
+function FloatingInput({
+  id,
+  label,
+  type = 'text',
+  required = false,
+  value,
+  onChange,
+  isTextarea = false,
+}: {
+  id: string;
+  label: string;
+  type?: string;
+  required?: boolean;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  isTextarea?: boolean;
+}) {
+  const [isFocused, setIsFocused] = useState(false);
+  const hasValue = value.length > 0;
+  const isActive = isFocused || hasValue;
+
+  const InputComponent = isTextarea ? 'textarea' : 'input';
+
+  return (
+    <div className="relative">
+      <InputComponent
+        id={id}
+        type={type}
+        required={required}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        className={`w-full px-4 pt-6 pb-2 bg-white/5 border rounded-xl text-offwhite-400 placeholder-transparent focus:outline-none transition-all duration-300 resize-none ${
+          isFocused
+            ? 'border-engineer-500 ring-1 ring-engineer-500/30'
+            : 'border-white/10 hover:border-white/20'
+        } ${isTextarea ? 'h-32' : ''}`}
+        placeholder={label}
+      />
+      <label
+        htmlFor={id}
+        className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+          isActive
+            ? 'top-2 text-xs text-engineer-500'
+            : 'top-4 text-sm text-offwhite-600'
+        }`}
+      >
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+
+      {/* Active glow effect */}
+      {isFocused && (
+        <motion.div
+          layoutId={`glow-${id}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 -z-10 rounded-xl"
+          style={{
+            background: 'radial-gradient(circle at center, rgba(249, 115, 22, 0.1), transparent 70%)',
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+// Magnetic Submit Button
+function MagneticSubmitButton({
+  isSubmitting,
+  isSuccess,
+  label,
+}: {
+  isSubmitting: boolean;
+  isSuccess: boolean;
+  label: string;
+}) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { stiffness: 150, damping: 15, mass: 0.1 };
+  const x = useSpring(mouseX, springConfig);
+  const y = useSpring(mouseY, springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!buttonRef.current || isSubmitting || isSuccess) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    mouseX.set((e.clientX - centerX) * 0.3);
+    mouseY.set((e.clientY - centerY) * 0.3);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  return (
+    <motion.button
+      ref={buttonRef}
+      type="submit"
+      disabled={isSubmitting || isSuccess}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ x, y }}
+      whileTap={{ scale: 0.95 }}
+      className={`relative w-full py-4 rounded-xl font-medium text-white overflow-hidden transition-all duration-500 ${
+        isSuccess
+          ? 'bg-success-500'
+          : 'bg-engineer-500 hover:bg-engineer-600 hover:shadow-lg hover:shadow-engineer-500/25'
+      }`}
+    >
+      {/* Button content */}
+      <AnimatePresence mode="wait">
+        {isSuccess ? (
+          <motion.div
+            key="success"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+            className="flex items-center justify-center gap-2"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: [0, 1.2, 1] }}
+              transition={{ duration: 0.4 }}
+            >
+              <Check size={20} />
+            </motion.div>
+            <span>Sent!</span>
+          </motion.div>
+        ) : isSubmitting ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex items-center justify-center gap-2"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+            />
+            <span>Sending...</span>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="default"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex items-center justify-center gap-2 group"
+          >
+            <span>{label}</span>
+            <Send size={18} className="group-hover:translate-x-1 transition-transform" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Ripple effect on hover */}
+      <motion.div
+        className="absolute inset-0 bg-white/10 rounded-xl"
+        initial={{ scale: 0, opacity: 0 }}
+        whileHover={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        style={{ originX: 0.5, originY: 0.5 }}
+      />
+    </motion.button>
+  );
+}
+
+// Connected Globe Visualization (CSS-based for performance)
+function GlobalReachMap() {
+  const [activeLocation, setActiveLocation] = useState<number | null>(null);
+
+  const locations = [
+    { id: 0, name: 'Istanbul HQ', x: 53, y: 38, isPrimary: true },
+    { id: 1, name: 'Ankara', x: 55, y: 40, isPrimary: false },
+    { id: 2, name: 'Izmir', x: 50, y: 40, isPrimary: false },
+    { id: 3, name: 'Antalya', x: 52, y: 42, isPrimary: false },
+    { id: 4, name: 'Europe', x: 48, y: 35, isPrimary: false },
+    { id: 5, name: 'Middle East', x: 58, y: 42, isPrimary: false },
+  ];
+
+  return (
+    <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-onyx-800/50 border border-white/5">
+      {/* World map outline (simplified) */}
+      <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full opacity-20">
+        {/* Europe */}
+        <ellipse cx="48" cy="25" rx="12" ry="8" fill="none" stroke="#F97316" strokeWidth="0.3" />
+        {/* Asia */}
+        <ellipse cx="65" cy="28" rx="18" ry="10" fill="none" stroke="#F97316" strokeWidth="0.3" />
+        {/* Africa */}
+        <ellipse cx="48" cy="42" rx="8" ry="10" fill="none" stroke="#F97316" strokeWidth="0.3" />
+        {/* Middle East */}
+        <ellipse cx="56" cy="35" rx="5" ry="4" fill="none" stroke="#F97316" strokeWidth="0.3" />
+
+        {/* Connection lines from Istanbul */}
+        {locations.slice(1).map((loc) => (
+          <motion.line
+            key={loc.id}
+            x1={locations[0].x}
+            y1={locations[0].y}
+            x2={loc.x}
+            y2={loc.y}
+            stroke="#F97316"
+            strokeWidth="0.2"
+            strokeDasharray="2,2"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.3 }}
+            transition={{ duration: 1.5, delay: loc.id * 0.2 }}
+          />
+        ))}
+      </svg>
+
+      {/* Location dots */}
+      {locations.map((loc) => (
+        <motion.div
+          key={loc.id}
+          className="absolute cursor-pointer"
+          style={{ left: `${loc.x}%`, top: `${loc.y}%` }}
+          onHoverStart={() => setActiveLocation(loc.id)}
+          onHoverEnd={() => setActiveLocation(null)}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: loc.id * 0.1 + 0.5 }}
+        >
+          <motion.div
+            className={`relative ${loc.isPrimary ? 'w-4 h-4' : 'w-2.5 h-2.5'} rounded-full ${
+              loc.isPrimary ? 'bg-engineer-500' : 'bg-engineer-500/60'
+            }`}
+            animate={{
+              scale: activeLocation === loc.id ? 1.5 : 1,
+            }}
+          >
+            {/* Pulse animation for HQ */}
+            {loc.isPrimary && (
+              <motion.div
+                className="absolute inset-0 rounded-full bg-engineer-500"
+                animate={{ scale: [1, 2, 2], opacity: [0.5, 0.2, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              />
+            )}
+          </motion.div>
+
+          {/* Label on hover */}
+          <AnimatePresence>
+            {activeLocation === loc.id && (
+              <motion.div
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 5 }}
+                className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 bg-onyx-900 border border-white/10 rounded-md text-xs text-offwhite-400"
+              >
+                {loc.name}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      ))}
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-onyx-900 via-transparent to-transparent pointer-events-none" />
+    </div>
+  );
+}
 
 export default function ContactPage({ params }: ContactPageProps) {
   const lang = params.lang;
   const t = getTranslations(lang);
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState('new-project');
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    subject: '',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Check for subject in URL params
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const subjectParam = urlParams.get('subject');
-      if (subjectParam && subjects[lang].some((s) => s.value === subjectParam)) {
-        setSelectedSubject(subjectParam);
+      if (subjectParam) {
+        setFormData((prev) => ({ ...prev, subject: subjectParam }));
       }
     }
-  }, [lang]);
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    // Simulate form submission
+    setIsSubmitting(true);
+
+    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    setSubmitted(true);
-    setLoading(false);
+
+    setIsSubmitting(false);
+    setIsSuccess(true);
+
+    // Reset after success animation
+    setTimeout(() => {
+      setIsSuccess(false);
+      setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+    }, 3000);
   };
 
-  const text = {
-    tr: {
-      badge: 'ILETISIM',
-      title: 'Projenizi Anlatin',
-      subtitle:
-        'Fikirlerinizi dinlemek ve size en uygun muhendislik cozumunu sunmak icin buradayiz.',
-      contactInfo: 'Iletisim Bilgileri',
-      email: 'E-posta',
-      phone: 'Telefon',
-      address: 'Ofis Adresi',
-      workingHours: 'Calisma Saatleri',
-      workingHoursValue: 'Pzt - Cum: 09:00 - 18:00',
-      scheduleCall: 'Gorusme Planla',
-      scheduleCallDesc:
-        'Takvimimizden uygun bir saat secin, sizi arayalim.',
-      formTitle: 'Bize Ulasin',
-      name: 'Ad Soyad',
-      namePlaceholder: 'Adiniz Soyadiniz',
-      emailPlaceholder: 'email@ornek.com',
-      company: 'Sirket (Opsiyonel)',
-      companyPlaceholder: 'Sirket Adi',
-      phonePlaceholder: '+90 5XX XXX XX XX',
-      subject: 'Konu',
-      message: 'Mesajiniz',
-      messagePlaceholder:
-        'Projeniz hakkinda kisa bilgi verin. Ne tur bir cozum ariyorsunuz?',
-      submit: 'Mesaj Gonder',
-      successTitle: 'Tesekkurler!',
-      successMessage:
-        'Mesajiniz alindi. En kisa surede muhendislik ekibimiz sizinle iletisime gececek.',
-      calendlyButton: 'Calendly ile Randevu Al',
-    },
-    en: {
-      badge: 'CONTACT',
-      title: 'Tell Us About Your Project',
-      subtitle:
-        "We're here to listen to your ideas and offer you the most suitable engineering solution.",
-      contactInfo: 'Contact Information',
-      email: 'Email',
-      phone: 'Phone',
-      address: 'Office Address',
-      workingHours: 'Working Hours',
-      workingHoursValue: 'Mon - Fri: 09:00 - 18:00',
-      scheduleCall: 'Schedule a Call',
-      scheduleCallDesc:
-        'Pick a suitable time from our calendar, and we will call you.',
-      formTitle: 'Get in Touch',
-      name: 'Full Name',
-      namePlaceholder: 'Your Name',
-      emailPlaceholder: 'email@example.com',
-      company: 'Company (Optional)',
-      companyPlaceholder: 'Company Name',
-      phonePlaceholder: '+90 5XX XXX XX XX',
-      subject: 'Subject',
-      message: 'Your Message',
-      messagePlaceholder:
-        'Give us brief info about your project. What kind of solution are you looking for?',
-      submit: 'Send Message',
-      successTitle: 'Thank You!',
-      successMessage:
-        'Your message has been received. Our engineering team will contact you shortly.',
-      calendlyButton: 'Book with Calendly',
-    },
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const content = text[lang];
+  const subjects = [
+    { id: 'consultation', label: lang === 'tr' ? 'Proje Danismanligi' : 'Project Consultation' },
+    { id: 'demo', label: lang === 'tr' ? 'Demo Talebi' : 'Demo Request' },
+    { id: 'partnership', label: lang === 'tr' ? 'Is Ortakligi' : 'Partnership' },
+    { id: 'support', label: lang === 'tr' ? 'Teknik Destek' : 'Technical Support' },
+    { id: 'other', label: lang === 'tr' ? 'Diger' : 'Other' },
+  ];
 
   return (
-    <div className="min-h-screen bg-onyx-900">
+    <div className="min-h-screen bg-onyx-900 pt-32 pb-24">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-12 overflow-hidden">
-        {/* 3D Network Globe Background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute right-0 top-0 w-[600px] h-[600px] -translate-y-20 translate-x-40 opacity-40">
-            <NetworkGlobe />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-onyx-900 via-onyx-900/95 to-onyx-900/50" />
-        </div>
+      <section className="max-w-7xl mx-auto px-6 mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-3xl"
+        >
+          <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+            <span className="w-8 h-px bg-engineer-500" />
+            {lang === 'tr' ? 'ILETISIM' : 'CONTACT'}
+          </span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6 tracking-tight">
+            {lang === 'tr' ? 'Konusalim' : "Let's Talk"}
+          </h1>
+          <p className="text-xl text-offwhite-600 leading-relaxed">
+            {lang === 'tr'
+              ? 'Projenizi tartismak, demo talep etmek veya sorularinizi sormak icin bizimle iletisime gecin.'
+              : 'Get in touch to discuss your project, request a demo, or ask any questions.'}
+          </p>
+        </motion.div>
+      </section>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6">
+      {/* Main Content */}
+      <section className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+          {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
-              <span className="w-8 h-px bg-engineer-500" />
-              {content.badge}
-              <span className="w-8 h-px bg-engineer-500" />
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6">
-              {content.title}
-            </h1>
-            <p className="text-xl text-offwhite-700 max-w-2xl mx-auto">
-              {content.subtitle}
-            </p>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name & Email Row */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                <FloatingInput
+                  id="name"
+                  label={lang === 'tr' ? 'Adiniz' : 'Your Name'}
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+                <FloatingInput
+                  id="email"
+                  label={lang === 'tr' ? 'E-posta' : 'Email'}
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/* Company */}
+              <FloatingInput
+                id="company"
+                label={lang === 'tr' ? 'Sirket (Opsiyonel)' : 'Company (Optional)'}
+                value={formData.company}
+                onChange={handleChange}
+              />
+
+              {/* Subject Selection */}
+              <div className="space-y-2">
+                <label className="text-sm text-offwhite-600">
+                  {lang === 'tr' ? 'Konu' : 'Subject'}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {subjects.map((subject) => (
+                    <button
+                      key={subject.id}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, subject: subject.id })}
+                      className={`px-4 py-2 rounded-lg text-sm transition-all ${
+                        formData.subject === subject.id
+                          ? 'bg-engineer-500 text-white'
+                          : 'bg-white/5 text-offwhite-500 hover:bg-white/10 border border-white/5'
+                      }`}
+                    >
+                      {subject.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Message */}
+              <FloatingInput
+                id="message"
+                label={lang === 'tr' ? 'Mesajiniz' : 'Your Message'}
+                required
+                isTextarea
+                value={formData.message}
+                onChange={handleChange}
+              />
+
+              {/* Submit Button */}
+              <MagneticSubmitButton
+                isSubmitting={isSubmitting}
+                isSuccess={isSuccess}
+                label={lang === 'tr' ? 'Mesaj Gonder' : 'Send Message'}
+              />
+            </form>
+          </motion.div>
+
+          {/* Contact Info & Map */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="space-y-8"
+          >
+            {/* Global Reach Map */}
+            <div>
+              <h3 className="text-sm font-medium text-offwhite-500 mb-4 flex items-center gap-2">
+                <Globe size={16} className="text-engineer-500" />
+                {lang === 'tr' ? 'Global Erisim' : 'Global Reach'}
+              </h3>
+              <GlobalReachMap />
+            </div>
+
+            {/* Contact Cards */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <motion.a
+                href="mailto:info@aicoelektronik.com"
+                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                whileHover={{ y: -4 }}
+              >
+                <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
+                  <Mail size={20} className="text-engineer-500" />
+                </div>
+                <div className="text-sm text-offwhite-600 mb-1">E-posta</div>
+                <div className="text-offwhite-400 font-medium">info@aicoelektronik.com</div>
+              </motion.a>
+
+              <motion.a
+                href="tel:+908508408600"
+                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                whileHover={{ y: -4 }}
+              >
+                <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
+                  <Phone size={20} className="text-engineer-500" />
+                </div>
+                <div className="text-sm text-offwhite-600 mb-1">{lang === 'tr' ? 'Telefon' : 'Phone'}</div>
+                <div className="text-offwhite-400 font-medium">+90 850 840 86 00</div>
+              </motion.a>
+
+              <motion.div
+                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                whileHover={{ y: -4 }}
+              >
+                <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
+                  <MapPin size={20} className="text-engineer-500" />
+                </div>
+                <div className="text-sm text-offwhite-600 mb-1">{lang === 'tr' ? 'Adres' : 'Address'}</div>
+                <div className="text-offwhite-400 font-medium">Istanbul, Turkiye</div>
+              </motion.div>
+
+              <motion.div
+                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                whileHover={{ y: -4 }}
+              >
+                <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
+                  <Clock size={20} className="text-engineer-500" />
+                </div>
+                <div className="text-sm text-offwhite-600 mb-1">{lang === 'tr' ? 'Calisma Saatleri' : 'Working Hours'}</div>
+                <div className="text-offwhite-400 font-medium">09:00 - 18:00 GMT+3</div>
+              </motion.div>
+            </div>
+
+            {/* Schedule Call CTA */}
+            <div className="p-6 bg-gradient-to-br from-engineer-500/10 to-transparent border border-engineer-500/20 rounded-2xl">
+              <div className="flex items-center gap-3 mb-3">
+                <Calendar size={24} className="text-engineer-500" />
+                <h3 className="text-lg font-semibold text-offwhite-400">
+                  {lang === 'tr' ? 'Gorusme Planla' : 'Schedule a Call'}
+                </h3>
+              </div>
+              <p className="text-sm text-offwhite-600 mb-4">
+                {lang === 'tr'
+                  ? 'Takvimimizden uygun bir saat secin, sizi arayalim.'
+                  : 'Pick a suitable time from our calendar, and we will call you.'}
+              </p>
+              <a
+                href="https://calendly.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-lg transition-all"
+              >
+                <span>{lang === 'tr' ? 'Calendly ile Randevu Al' : 'Book with Calendly'}</span>
+                <ExternalLink
+                  size={14}
+                  className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                />
+              </a>
+            </div>
+
+            {/* Social Links */}
+            <div className="pt-4 border-t border-white/5">
+              <h3 className="text-sm font-medium text-offwhite-500 mb-4">
+                {lang === 'tr' ? 'Sosyal Medya' : 'Social Media'}
+              </h3>
+              <div className="flex gap-4">
+                {[
+                  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+                  { icon: Twitter, href: '#', label: 'Twitter' },
+                  { icon: Github, href: '#', label: 'GitHub' },
+                ].map((social) => (
+                  <motion.a
+                    key={social.label}
+                    href={social.href}
+                    className="p-3 bg-white/5 rounded-lg text-offwhite-500 hover:text-engineer-500 hover:bg-white/10 transition-all"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <social.icon size={20} />
+                  </motion.a>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Main Content */}
-      <section className="pb-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-5 gap-16">
-            {/* Left Side - Contact Info */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="lg:col-span-2 space-y-8"
+      {/* FAQ Quick Links */}
+      <section className="max-w-7xl mx-auto px-6 mt-24">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="p-8 bg-onyx-800/30 border border-white/5 rounded-2xl"
+        >
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center flex-shrink-0">
+                <Zap size={24} className="text-engineer-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-offwhite-400 mb-1">
+                  {lang === 'tr' ? 'Hizli Cevap Almak Ister misiniz?' : 'Want a Quick Response?'}
+                </h3>
+                <p className="text-sm text-offwhite-600">
+                  {lang === 'tr'
+                    ? 'Demo talebi icin direkt olarak planlayin. 24 saat icerisinde donus yapariz.'
+                    : 'Schedule directly for demo requests. We respond within 24 hours.'}
+                </p>
+              </div>
+            </div>
+            <motion.a
+              href={`/${lang}/contact?subject=demo`}
+              className="group inline-flex items-center gap-2 px-6 py-3 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all flex-shrink-0"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <h2 className="text-2xl font-bold text-offwhite-400 mb-8">
-                {content.contactInfo}
-              </h2>
-
-              {/* Email */}
-              <div className="group">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center group-hover:bg-engineer-500/20 transition-colors">
-                    <Mail size={22} className="text-engineer-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-offwhite-700 mb-1">
-                      {content.email}
-                    </p>
-                    <a
-                      href="mailto:info@aicoelektronik.com"
-                      className="text-xl font-semibold text-offwhite-400 hover:text-engineer-500 transition-colors"
-                    >
-                      info@aicoelektronik.com
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="group">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center group-hover:bg-engineer-500/20 transition-colors">
-                    <Phone size={22} className="text-engineer-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-offwhite-700 mb-1">
-                      {content.phone}
-                    </p>
-                    <a
-                      href="tel:+903125550000"
-                      className="text-xl font-semibold text-offwhite-400 hover:text-engineer-500 transition-colors"
-                    >
-                      +90 312 555 0000
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Address */}
-              <div className="group">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center group-hover:bg-engineer-500/20 transition-colors">
-                    <Building2 size={22} className="text-engineer-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-offwhite-700 mb-1">
-                      {content.address}
-                    </p>
-                    <p className="text-xl font-semibold text-offwhite-400">
-                      Ankara, Turkiye
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Working Hours */}
-              <div className="group">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center group-hover:bg-engineer-500/20 transition-colors">
-                    <Clock size={22} className="text-engineer-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-offwhite-700 mb-1">
-                      {content.workingHours}
-                    </p>
-                    <p className="text-xl font-semibold text-offwhite-400">
-                      {content.workingHoursValue}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="border-t border-white/5 pt-8">
-                {/* Schedule Call CTA */}
-                <div className="p-6 bg-gradient-to-br from-engineer-500/10 to-transparent border border-engineer-500/20 rounded-2xl">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Calendar size={24} className="text-engineer-500" />
-                    <h3 className="text-lg font-semibold text-offwhite-400">
-                      {content.scheduleCall}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-offwhite-700 mb-4">
-                    {content.scheduleCallDesc}
-                  </p>
-                  <a
-                    href="https://calendly.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-lg transition-all"
-                  >
-                    <span>{content.calendlyButton}</span>
-                    <ExternalLink
-                      size={14}
-                      className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-                    />
-                  </a>
-                </div>
-              </div>
-
-              {/* Map Placeholder */}
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-onyx-800 border border-white/5">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin
-                      size={48}
-                      className="text-engineer-500/50 mx-auto mb-2"
-                    />
-                    <p className="text-offwhite-700 text-sm">Ankara, Turkiye</p>
-                  </div>
-                </div>
-                {/* You can replace this with actual map embed */}
-                <div
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage: `
-                      linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '30px 30px',
-                  }}
-                />
-              </div>
-            </motion.div>
-
-            {/* Right Side - Form */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="lg:col-span-3"
-            >
-              <div className="p-8 md:p-10 bg-onyx-800/30 border border-white/5 rounded-3xl">
-                <h2 className="text-2xl font-bold text-offwhite-400 mb-8">
-                  {content.formTitle}
-                </h2>
-
-                {submitted ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center py-16"
-                  >
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-success-500/20 flex items-center justify-center">
-                      <CheckCircle size={40} className="text-success-500" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-offwhite-400 mb-3">
-                      {content.successTitle}
-                    </h3>
-                    <p className="text-offwhite-700 max-w-md mx-auto">
-                      {content.successMessage}
-                    </p>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-8">
-                    {/* Name & Email Row */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Name */}
-                      <div className="group">
-                        <label className="block text-sm font-medium text-offwhite-600 mb-3">
-                          {content.name} *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-white/10 text-offwhite-400 placeholder-offwhite-800 focus:border-engineer-500 focus:outline-none transition-colors"
-                          placeholder={content.namePlaceholder}
-                        />
-                      </div>
-
-                      {/* Email */}
-                      <div className="group">
-                        <label className="block text-sm font-medium text-offwhite-600 mb-3">
-                          Email *
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-white/10 text-offwhite-400 placeholder-offwhite-800 focus:border-engineer-500 focus:outline-none transition-colors"
-                          placeholder={content.emailPlaceholder}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Company & Phone Row */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Company */}
-                      <div className="group">
-                        <label className="block text-sm font-medium text-offwhite-600 mb-3">
-                          {content.company}
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-white/10 text-offwhite-400 placeholder-offwhite-800 focus:border-engineer-500 focus:outline-none transition-colors"
-                          placeholder={content.companyPlaceholder}
-                        />
-                      </div>
-
-                      {/* Phone */}
-                      <div className="group">
-                        <label className="block text-sm font-medium text-offwhite-600 mb-3">
-                          {content.phone}
-                        </label>
-                        <input
-                          type="tel"
-                          className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-white/10 text-offwhite-400 placeholder-offwhite-800 focus:border-engineer-500 focus:outline-none transition-colors"
-                          placeholder={content.phonePlaceholder}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Subject */}
-                    <div>
-                      <label className="block text-sm font-medium text-offwhite-600 mb-3">
-                        {content.subject} *
-                      </label>
-                      <div className="flex flex-wrap gap-3">
-                        {subjects[lang].map((subj) => (
-                          <button
-                            key={subj.value}
-                            type="button"
-                            onClick={() => setSelectedSubject(subj.value)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                              selectedSubject === subj.value
-                                ? 'bg-engineer-500 text-white'
-                                : 'bg-white/5 text-offwhite-600 hover:bg-white/10'
-                            }`}
-                          >
-                            {subj.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Message */}
-                    <div>
-                      <label className="block text-sm font-medium text-offwhite-600 mb-3">
-                        {content.message} *
-                      </label>
-                      <textarea
-                        rows={5}
-                        required
-                        className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-white/10 text-offwhite-400 placeholder-offwhite-800 focus:border-engineer-500 focus:outline-none transition-colors resize-none"
-                        placeholder={content.messagePlaceholder}
-                      />
-                    </div>
-
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 disabled:bg-engineer-500/50 text-white font-medium rounded-xl transition-all duration-300"
-                    >
-                      {loading ? (
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      ) : (
-                        <>
-                          <Send size={18} />
-                          <span>{content.submit}</span>
-                          <ArrowRight
-                            size={18}
-                            className="group-hover:translate-x-1 transition-transform"
-                          />
-                        </>
-                      )}
-                    </button>
-                  </form>
-                )}
-              </div>
-            </motion.div>
+              <span>{lang === 'tr' ? 'Demo Planla' : 'Schedule Demo'}</span>
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </motion.a>
           </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   );
