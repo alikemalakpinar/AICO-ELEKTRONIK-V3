@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import {
   Coffee,
@@ -18,6 +19,12 @@ import {
 import { ImmersiveHero, BentoGrid } from '@/components/modules';
 import type { BentoItem } from '@/components/modules';
 import type { Locale } from '@/types';
+
+// Dynamic import for the coffee brew demo
+const CoffeeBrewDemo = dynamic(
+  () => import('@/components/products/coffee/CoffeeBrewDemo'),
+  { ssr: false, loading: () => <div className="aspect-[4/3] bg-onyx-800/50 rounded-2xl animate-pulse" /> }
+);
 
 interface CoffeeClientProps {
   lang: Locale;
@@ -120,14 +127,6 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
     },
   };
 
-  // Coffee recipes for demo
-  const recipes = [
-    { name: 'Espresso', temp: 93, strength: 'Strong', time: '25s' },
-    { name: 'Americano', temp: 92, strength: 'Medium', time: '35s' },
-    { name: 'Cappuccino', temp: 65, strength: 'Medium', time: '45s' },
-    { name: 'Latte', temp: 60, strength: 'Light', time: '50s' },
-  ];
-
   return (
     <div className="min-h-screen bg-onyx-950">
       <ImmersiveHero
@@ -164,85 +163,16 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
             </p>
           </motion.div>
 
-          {/* Phone Mockup with App UI */}
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-12">
-            {/* Phone Frame */}
+          {/* Interactive Brew Demo */}
+          <div className="flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12">
+            {/* Coffee Brew Demo */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="relative"
+              className="w-full max-w-md"
             >
-              <div className="relative w-[280px] h-[580px] bg-onyx-800 rounded-[3rem] p-2 shadow-2xl border border-white/10">
-                {/* Dynamic Island */}
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-7 bg-onyx-900 rounded-full z-20" />
-
-                {/* Screen */}
-                <div className="relative w-full h-full bg-onyx-900 rounded-[2.5rem] overflow-hidden">
-                  {/* App Header */}
-                  <div className="p-6 pt-12 text-center"
-                    style={{ background: `linear-gradient(to bottom, ${accentColor}20, transparent)` }}>
-                    <Coffee size={40} style={{ color: accentColor }} className="mx-auto mb-2" />
-                    <h3 className="text-white font-semibold">AICO Coffee</h3>
-                    <p className="text-offwhite-700 text-xs mt-1">
-                      {lang === 'tr' ? 'Hazir' : 'Ready'}
-                    </p>
-                  </div>
-
-                  {/* Recipe Cards */}
-                  <div className="p-4 space-y-3">
-                    {recipes.map((recipe, i) => (
-                      <motion.div
-                        key={recipe.name}
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                        className="flex items-center justify-between p-3 bg-white/5 rounded-xl"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-10 h-10 rounded-lg flex items-center justify-center"
-                            style={{ backgroundColor: `${accentColor}20` }}
-                          >
-                            <Coffee size={18} style={{ color: accentColor }} />
-                          </div>
-                          <div>
-                            <div className="text-white text-sm font-medium">{recipe.name}</div>
-                            <div className="text-offwhite-700 text-xs">{recipe.strength}</div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-white text-sm font-mono">{recipe.temp}°C</div>
-                          <div className="text-offwhite-700 text-xs">{recipe.time}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Quick Brew Button */}
-                  <div className="absolute bottom-8 left-4 right-4">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full p-4 rounded-2xl font-semibold text-white flex items-center justify-center gap-2"
-                      style={{ backgroundColor: accentColor }}
-                    >
-                      <Zap size={18} />
-                      {lang === 'tr' ? 'Hizli Demleme' : 'Quick Brew'}
-                    </motion.button>
-                  </div>
-                </div>
-
-                {/* Home Indicator */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full" />
-              </div>
-
-              {/* Glow */}
-              <div
-                className="absolute inset-0 blur-3xl -z-10 scale-150"
-                style={{ background: `radial-gradient(circle, ${accentColor}20, transparent)` }}
-              />
+              <CoffeeBrewDemo lang={lang} />
             </motion.div>
 
             {/* Features List */}
@@ -250,13 +180,16 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="space-y-4 max-w-sm"
+              className="space-y-4 max-w-sm flex-shrink-0"
             >
+              <h3 className="text-lg font-semibold text-offwhite-400 mb-4">
+                {lang === 'tr' ? 'Akıllı Özellikler' : 'Smart Features'}
+              </h3>
               {[
-                { icon: Wifi, text: lang === 'tr' ? 'WiFi & Bluetooth baglanti' : 'WiFi & Bluetooth connectivity' },
-                { icon: Clock, text: lang === 'tr' ? 'Zamanlayici ile sabah kahvesi' : 'Morning coffee with timer' },
-                { icon: Star, text: lang === 'tr' ? 'Favori tariflerinizi kaydedin' : 'Save your favorite recipes' },
-                { icon: Settings, text: lang === 'tr' ? 'Detayli ogutme ayarlari' : 'Detailed grind settings' },
+                { icon: Wifi, text: lang === 'tr' ? 'WiFi & Bluetooth bağlantı' : 'WiFi & Bluetooth connectivity', desc: lang === 'tr' ? 'Uzaktan kontrol' : 'Remote control' },
+                { icon: Clock, text: lang === 'tr' ? 'Zamanlayıcı' : 'Timer', desc: lang === 'tr' ? 'Sabah kahveniz sizi beklesin' : 'Your morning coffee awaits' },
+                { icon: Star, text: lang === 'tr' ? 'Kişisel Tarifler' : 'Personal Recipes', desc: lang === 'tr' ? 'Sınırsız tarif kaydedin' : 'Save unlimited recipes' },
+                { icon: Settings, text: lang === 'tr' ? 'Öğütme Ayarları' : 'Grind Settings', desc: lang === 'tr' ? '15 farklı seviye' : '15 different levels' },
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -264,15 +197,18 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-4 p-4 bg-onyx-800/50 rounded-xl border border-white/5"
+                  className="flex items-start gap-4 p-4 bg-onyx-800/50 rounded-xl border border-white/5 hover:border-purple-500/30 transition-colors group"
                 >
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
                     style={{ backgroundColor: `${accentColor}15` }}
                   >
                     <item.icon size={20} style={{ color: accentColor }} />
                   </div>
-                  <span className="text-offwhite-400">{item.text}</span>
+                  <div>
+                    <div className="text-offwhite-400 font-medium">{item.text}</div>
+                    <div className="text-offwhite-700 text-sm">{item.desc}</div>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>

@@ -44,6 +44,16 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    /* Product Theme Variables (default: engineer orange) */
+    --product-primary: #F97316;
+    --product-primary-light: #FB923C;
+    --product-primary-dark: #EA580C;
+    --product-gradient: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+    --product-glow: rgba(249, 115, 22, 0.25);
+    --product-selection: rgba(249, 115, 22, 0.3);
+    --scrollbar-thumb: rgba(249, 115, 22, 0.4);
+    --scrollbar-thumb-hover: rgba(249, 115, 22, 0.6);
   }
 
   .dark {
@@ -95,12 +105,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Selection styling */
-  ::selection {
-    @apply bg-engineer-500/30 text-offwhite-200;
-  }
-
-  /* Scrollbar styling */
+  /* Scrollbar styling - uses theme colors */
   ::-webkit-scrollbar {
     @apply w-2;
   }
@@ -110,11 +115,18 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-onyx-600 rounded-full;
+    background-color: var(--scrollbar-thumb);
+    @apply rounded-full transition-colors duration-300;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-onyx-500;
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
+  /* Dynamic selection color based on product theme */
+  ::selection {
+    background-color: var(--product-selection);
+    @apply text-offwhite-200;
   }
 
   /* Focus visible styling */
@@ -186,6 +198,31 @@
 }
 
 @layer utilities {
+  /* ===========================================
+     SCROLL SNAP - Apple-style Section Snapping
+  =========================================== */
+  .snap-container {
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;
+    height: 100vh;
+  }
+
+  .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100vh;
+  }
+
+  .snap-container-x {
+    scroll-snap-type: x mandatory;
+    overflow-x: auto;
+    scroll-padding: 0 1rem;
+  }
+
+  .snap-item {
+    scroll-snap-align: center;
+  }
+
   /* Smooth scrollytelling */
   .scrolly-section {
     @apply min-h-screen flex items-center justify-center;
@@ -220,18 +257,193 @@
     display: none;
   }
 
-  /* Glass effect */
+  /* ===========================================
+     GLASSMORPHISM - Premium Glass Effects
+  =========================================== */
   .glass {
     @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
 
-  /* Glow effects */
+  .glass-premium {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* ===========================================
+     GLOW EFFECTS - Dynamic Product Colors
+  =========================================== */
   .glow-orange {
     box-shadow: 0 0 40px rgba(249, 115, 22, 0.15);
   }
 
   .glow-orange-lg {
     box-shadow: 0 0 80px rgba(249, 115, 22, 0.2);
+  }
+
+  .glow-product {
+    box-shadow: 0 0 40px var(--product-glow);
+  }
+
+  .glow-product-lg {
+    box-shadow: 0 0 80px var(--product-glow);
+  }
+
+  /* Animated glow pulse */
+  .glow-pulse {
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% {
+      box-shadow: 0 0 20px var(--product-glow);
+    }
+    50% {
+      box-shadow: 0 0 50px var(--product-glow);
+    }
+  }
+
+  /* ===========================================
+     MAGNETIC BUTTON EFFECTS
+  =========================================== */
+  .btn-magnetic {
+    @apply relative overflow-hidden transition-all duration-300 ease-out;
+    will-change: transform;
+  }
+
+  .btn-magnetic::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: var(--product-gradient);
+  }
+
+  .btn-magnetic:hover::before {
+    @apply opacity-10;
+  }
+
+  .btn-magnetic::after {
+    content: '';
+    @apply absolute w-full h-full rounded-full scale-0 transition-transform duration-500;
+    background: radial-gradient(circle, var(--product-glow), transparent 70%);
+    top: var(--mouse-y, 50%);
+    left: var(--mouse-x, 50%);
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  .btn-magnetic:hover::after {
+    transform: translate(-50%, -50%) scale(2);
+  }
+
+  /* ===========================================
+     PREMIUM CARD HOVER EFFECTS
+  =========================================== */
+  .card-hover-lift {
+    @apply transition-all duration-500 ease-out;
+    will-change: transform, box-shadow;
+  }
+
+  .card-hover-lift:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 60px var(--product-glow);
+  }
+
+  .card-hover-glow {
+    @apply transition-all duration-500;
+    position: relative;
+  }
+
+  .card-hover-glow::before {
+    content: '';
+    @apply absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-500;
+    background: var(--product-gradient);
+    z-index: -1;
+  }
+
+  .card-hover-glow:hover::before {
+    @apply opacity-30;
+    filter: blur(20px);
+  }
+
+  /* ===========================================
+     SHIMMER & LOADING EFFECTS
+  =========================================== */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* ===========================================
+     LINE ANIMATIONS
+  =========================================== */
+  .line-reveal {
+    @apply relative overflow-hidden;
+  }
+
+  .line-reveal::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-px transition-all duration-500;
+    background: var(--product-gradient);
+  }
+
+  .line-reveal:hover::after {
+    @apply w-full;
+  }
+
+  /* ===========================================
+     PERSPECTIVE & 3D EFFECTS
+  =========================================== */
+  .perspective-container {
+    perspective: 1000px;
+    perspective-origin: center;
+  }
+
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease-out;
+  }
+
+  .card-3d:hover {
+    transform: rotateX(5deg) rotateY(-5deg) translateZ(20px);
+  }
+
+  /* ===========================================
+     NOISE TEXTURE OVERLAY
+  =========================================== */
+  .noise-overlay {
+    @apply pointer-events-none fixed inset-0 z-50 opacity-[0.015];
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 }
 

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import {
   Menu,
   X,
@@ -27,8 +27,18 @@ interface PremiumNavbarProps {
   lang: Locale;
 }
 
+// Get accent color based on current page
+function getPageAccentColor(pathname: string): string {
+  if (pathname.includes('fire-safety') || pathname.includes('firelink')) return '#EF4444';
+  if (pathname.includes('mining-iot') || pathname.includes('mineguard')) return '#EAB308';
+  if (pathname.includes('cold-chain') || pathname.includes('coldtrack')) return '#06B6D4';
+  if (pathname.includes('coffee')) return '#A855F7';
+  return '#F97316'; // Default engineer orange
+}
+
 export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVeryScrolled, setIsVeryScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
   const [smartLivingOpen, setSmartLivingOpen] = useState(false);
@@ -37,10 +47,21 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
   const t = getTranslations(lang);
   const { playClick } = useAudio();
 
+  // Get accent color for current page
+  const accentColor = useMemo(() => getPageAccentColor(pathname), [pathname]);
+
+  // Scroll progress for smooth animations
+  const { scrollY } = useScroll();
+  const navWidth = useTransform(scrollY, [0, 100, 200], ['100%', '95%', '85%']);
+  const navBorderRadius = useTransform(scrollY, [0, 100, 200], [0, 12, 24]);
+  const navMarginTop = useTransform(scrollY, [0, 100], [0, 8]);
+
   // Handle scroll effect with height transition
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+      setIsVeryScrolled(scrollTop > 200);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -142,15 +163,44 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
 
   return (
     <>
-      {/* Main Navbar */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      {/* Main Navbar - Dynamic Island style */}
+      <motion.header
+        className={`fixed z-50 transition-all duration-500 ${
           isScrolled
-            ? 'bg-onyx-900/80 backdrop-blur-xl border-b border-white/5 h-14'
-            : 'bg-transparent h-20'
+            ? 'left-1/2 -translate-x-1/2'
+            : 'left-0 right-0'
         }`}
+        style={{
+          width: isScrolled ? navWidth : '100%',
+          borderRadius: isScrolled ? navBorderRadius : 0,
+          marginTop: isScrolled ? navMarginTop : 0,
+          top: 0,
+        }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-full">
+        <div
+          className={`transition-all duration-500 ${
+            isScrolled
+              ? 'bg-onyx-900/85 backdrop-blur-2xl border border-white/10 shadow-2xl h-14'
+              : 'bg-transparent h-20'
+          }`}
+          style={{
+            borderRadius: 'inherit',
+            boxShadow: isVeryScrolled ? `0 0 40px ${accentColor}15, 0 4px 30px rgba(0,0,0,0.3)` : 'none',
+          }}
+        >
+          {/* Subtle glow indicator for current product page */}
+          {isScrolled && (
+            <motion.div
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px"
+              initial={{ width: 0 }}
+              animate={{ width: isVeryScrolled ? '60%' : '0%' }}
+              transition={{ duration: 0.5 }}
+              style={{
+                background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
+              }}
+            />
+          )}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
             {/* Logo */}
             <Link href={`/${lang}`} className="flex items-center gap-2 group flex-shrink-0">
@@ -328,8 +378,9 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
+          </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>

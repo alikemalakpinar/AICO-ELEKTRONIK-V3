@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import {
   Thermometer,
@@ -20,6 +21,12 @@ import {
 import { ImmersiveHero, BentoGrid } from '@/components/modules';
 import type { BentoItem } from '@/components/modules';
 import type { Locale } from '@/types';
+
+// Dynamic import for the map demo to avoid SSR issues
+const FleetMapDemo = dynamic(
+  () => import('@/components/products/coldchain/FleetMapDemo'),
+  { ssr: false, loading: () => <div className="aspect-[16/10] bg-onyx-800/50 rounded-2xl animate-pulse" /> }
+);
 
 interface ColdChainClientProps {
   lang: Locale;
@@ -124,14 +131,6 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
     },
   };
 
-  // Sample fleet data for demo visualization
-  const fleetData = [
-    { id: 'TRK-001', temp: -18.2, target: -18, location: 'Istanbul-Ankara', status: 'normal', progress: 65 },
-    { id: 'TRK-002', temp: 4.1, target: 4, location: 'Izmir-Antalya', status: 'normal', progress: 40 },
-    { id: 'TRK-003', temp: -15.8, target: -18, location: 'Bursa-Istanbul', status: 'warning', progress: 82 },
-    { id: 'TRK-004', temp: 2.3, target: 2, location: 'Ankara-Konya', status: 'normal', progress: 25 },
-  ];
-
   return (
     <div className="min-h-screen bg-onyx-950">
       <ImmersiveHero
@@ -168,108 +167,13 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
             </p>
           </motion.div>
 
-          {/* Fleet Dashboard */}
+          {/* Fleet Map Demo */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-onyx-800/50 rounded-2xl border border-white/10 overflow-hidden"
           >
-            {/* Dashboard Header */}
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <Truck size={20} style={{ color: accentColor }} />
-                <span className="text-offwhite-400 font-medium">
-                  {lang === 'tr' ? 'Filo Durumu' : 'Fleet Status'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Wifi size={14} className="text-green-500" />
-                <span className="text-offwhite-700 text-xs">
-                  {lang === 'tr' ? 'Canli' : 'Live'}
-                </span>
-              </div>
-            </div>
-
-            {/* Fleet List */}
-            <div className="divide-y divide-white/5">
-              {fleetData.map((vehicle, index) => (
-                <motion.div
-                  key={vehicle.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="p-4 hover:bg-white/5 transition-colors"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center"
-                        style={{ backgroundColor: `${accentColor}15` }}
-                      >
-                        <Package size={20} style={{ color: accentColor }} />
-                      </div>
-                      <div>
-                        <div className="text-offwhite-400 font-medium">{vehicle.id}</div>
-                        <div className="text-offwhite-800 text-xs flex items-center gap-1">
-                          <MapPin size={10} />
-                          {vehicle.location}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className={`text-2xl font-mono font-bold ${
-                        vehicle.status === 'warning' ? 'text-yellow-400' : 'text-green-400'
-                      }`}>
-                        {vehicle.temp}°C
-                      </div>
-                      <div className="text-offwhite-800 text-xs">
-                        {lang === 'tr' ? 'Hedef' : 'Target'}: {vehicle.target}°C
-                      </div>
-                    </div>
-                  </div>
-                  {/* Progress bar */}
-                  <div className="h-1.5 bg-onyx-700 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{ backgroundColor: accentColor }}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${vehicle.progress}%` }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1 + 0.3 }}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-1">
-                    <span className="text-offwhite-800 text-xs">
-                      {lang === 'tr' ? 'Rota Ilerleme' : 'Route Progress'}
-                    </span>
-                    <span className="text-offwhite-700 text-xs font-mono">{vehicle.progress}%</span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Dashboard Footer */}
-            <div className="p-4 border-t border-white/10 bg-onyx-800/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                    <span className="text-offwhite-700 text-xs">
-                      {fleetData.filter(v => v.status === 'normal').length} {lang === 'tr' ? 'Normal' : 'Normal'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                    <span className="text-offwhite-700 text-xs">
-                      {fleetData.filter(v => v.status === 'warning').length} {lang === 'tr' ? 'Uyari' : 'Warning'}
-                    </span>
-                  </div>
-                </div>
-                <span className="text-offwhite-800 text-xs font-mono">ColdTrack v2.5</span>
-              </div>
-            </div>
+            <FleetMapDemo lang={lang} />
           </motion.div>
         </div>
       </section>
