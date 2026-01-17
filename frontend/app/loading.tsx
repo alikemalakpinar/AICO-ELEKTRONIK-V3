@@ -159,7 +159,7 @@ export default function Loading() {
                 ease: 'linear',
               }}
             >
-              <motion.animate
+              <animate
                 attributeName="opacity"
                 values="1;0.5;1"
                 dur="0.5s"
