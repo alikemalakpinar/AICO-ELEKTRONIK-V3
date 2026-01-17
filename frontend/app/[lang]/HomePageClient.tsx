@@ -97,7 +97,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-onyx-900/80 backdrop-blur-sm rounded-full border border-white/10">
               <Zap size={14} className="text-engineer-500" />
               <span className="text-offwhite-600 text-sm font-medium">
-                {lang === 'tr' ? 'Muhendislik Showroom' : 'Engineering Showroom'}
+                {lang === 'tr' ? 'Muhendislik Çözümleri' : 'Engineering Solutions'}
               </span>
             </span>
           </motion.div>
