@@ -8,7 +8,7 @@ import './globals.css';
 // Default metadata
 export const metadata: Metadata = {
   title: {
-    default: 'AICO Elektronik | Muhendislik Showroom',
+    default: 'AICO Elektronik | Muhendislik Çözümleri',
     template: '%s | AICO Elektronik',
   },
   description:
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     locale: 'tr_TR',
     alternateLocale: 'en_US',
     siteName: 'AICO Elektronik',
-    title: 'AICO Elektronik | Muhendislik Showroom',
+    title: 'AICO Elektronik | Muhendislik Çözümleri',
     description:
       'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri.',
     images: [
@@ -48,13 +48,13 @@ export const metadata: Metadata = {
         url: '/assets/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'AICO Elektronik - Muhendislik Showroom',
+        alt: 'AICO Elektronik - Muhendislik Çözümleri',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AICO Elektronik | Muhendislik Showroom',
+    title: 'AICO Elektronik | Muhendislik Çözümleri',
     description:
       'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri.',
     images: ['/assets/og-image.jpg'],

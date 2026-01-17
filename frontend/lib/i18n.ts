@@ -19,7 +19,7 @@ export const translations = {
     },
     // Footer
     footer: {
-      tagline: 'Muhendislik Showroom',
+      tagline: 'Muhendislik Çözümleri',
       description: 'Yillik cirosu 100M$+ olan kurumsal projelere muhendislik cozumleri sunuyoruz.',
       quickLinks: 'Hizli Erisim',
       solutions: 'Cozumler',
@@ -35,7 +35,7 @@ export const translations = {
     // Home Page
     home: {
       heroTitle: 'Muhendislik',
-      heroHighlight: 'Showroom',
+      heroHighlight: 'çözümleri',
       heroSubtitle: 'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri.',
       exploreProjects: 'Projeleri Kesfedin',
       discoverSolutions: 'Cozumleri Inceleyin',
@@ -104,7 +104,7 @@ export const translations = {
     },
     // Meta
     meta: {
-      siteTitle: 'AICO Elektronik | Muhendislik Showroom',
+      siteTitle: 'AICO Elektronik | Muhendislik Çözümleri',
       siteDescription: 'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri. Villa, rezidans ve fabrika projeleri icin muhendislik danismanligi.',
     },
   },
@@ -120,7 +120,7 @@ export const translations = {
     },
     // Footer
     footer: {
-      tagline: 'Engineering Showroom',
+      tagline: 'Engineering Solutions',
       description: 'We provide engineering solutions for corporate projects with $100M+ annual revenue.',
       quickLinks: 'Quick Links',
       solutions: 'Solutions',
@@ -205,7 +205,7 @@ export const translations = {
     },
     // Meta
     meta: {
-      siteTitle: 'AICO Elektronik | Engineering Showroom',
+      siteTitle: 'AICO Elektronik | Engineering Solutions',
       siteDescription: 'Smart living technologies and industrial automation solutions. Engineering consultancy for villa, residence, and factory projects.',
     },
   },
