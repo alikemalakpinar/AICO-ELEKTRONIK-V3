@@ -24,32 +24,47 @@ interface StickyScrollStoryProps {
   autoPlayInterval?: number;
 }
 
+// Hook to detect mobile devices
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+}
+
 // Device Frame Components with improved mobile responsiveness
 function PhoneFrame({ children, accentColor }: { children: ReactNode; accentColor?: string }) {
   const glowColor = accentColor || '#F97316';
 
   return (
-    <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] md:w-[300px] md:h-[620px] lg:w-[320px] lg:h-[660px]">
+    <div className="relative w-[220px] h-[440px] sm:w-[260px] sm:h-[520px] md:w-[280px] md:h-[560px] lg:w-[300px] lg:h-[620px]">
       {/* Phone bezel */}
-      <div className="absolute inset-0 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-[2.5rem] sm:rounded-[3rem] p-[6px] sm:p-2 shadow-2xl border border-white/10">
+      <div className="absolute inset-0 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-[2rem] sm:rounded-[2.5rem] p-[5px] sm:p-[6px] shadow-2xl border border-white/10">
         {/* Dynamic Island */}
-        <div className="absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 w-20 sm:w-24 md:w-28 h-5 sm:h-6 md:h-7 bg-onyx-900 rounded-full z-20">
-          {/* Notch inner glow */}
+        <div className="absolute top-2 sm:top-3 left-1/2 -translate-x-1/2 w-16 sm:w-20 md:w-24 h-4 sm:h-5 md:h-6 bg-onyx-900 rounded-full z-20">
           <div
             className="absolute inset-0 rounded-full opacity-50"
             style={{ boxShadow: `inset 0 0 10px ${glowColor}20` }}
           />
         </div>
         {/* Screen */}
-        <div className="relative w-full h-full bg-onyx-900 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden">
-          {/* Screen reflection */}
+        <div className="relative w-full h-full bg-onyx-900 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none z-10" />
           {children}
         </div>
         {/* Home indicator */}
-        <div className="absolute bottom-1.5 sm:bottom-2 left-1/2 -translate-x-1/2 w-24 sm:w-28 md:w-32 h-1 bg-white/30 rounded-full" />
+        <div className="absolute bottom-1 sm:bottom-1.5 left-1/2 -translate-x-1/2 w-20 sm:w-24 h-1 bg-white/30 rounded-full" />
       </div>
-      {/* Ambient glow - uses accent color */}
+      {/* Ambient glow */}
       <div
         className="absolute inset-0 blur-3xl -z-10 scale-150 opacity-40"
         style={{ background: `radial-gradient(circle, ${glowColor}30, transparent 70%)` }}
@@ -62,11 +77,9 @@ function TabletFrame({ children, accentColor }: { children: ReactNode; accentCol
   const glowColor = accentColor || '#F97316';
 
   return (
-    <div className="relative w-[320px] h-[240px] sm:w-[400px] sm:h-[300px] md:w-[500px] md:h-[380px] lg:w-[560px] lg:h-[420px]">
-      <div className="absolute inset-0 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-2xl border border-white/10">
-        {/* Camera */}
-        <div className="absolute top-1/2 left-2 sm:left-3 -translate-y-1/2 w-1.5 sm:w-2 h-1.5 sm:h-2 bg-onyx-600 rounded-full" />
-        {/* Screen */}
+    <div className="relative w-[280px] h-[210px] sm:w-[360px] sm:h-[270px] md:w-[440px] md:h-[330px] lg:w-[520px] lg:h-[390px]">
+      <div className="absolute inset-0 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-2xl border border-white/10">
+        <div className="absolute top-1/2 left-1.5 sm:left-2 -translate-y-1/2 w-1 sm:w-1.5 h-1 sm:h-1.5 bg-onyx-600 rounded-full" />
         <div className="relative w-full h-full bg-onyx-900 rounded-lg sm:rounded-xl overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none z-10" />
           {children}
@@ -84,24 +97,19 @@ function MonitorFrame({ children, accentColor }: { children: ReactNode; accentCo
   const glowColor = accentColor || '#F97316';
 
   return (
-    <div className="relative w-[340px] h-[220px] sm:w-[480px] sm:h-[300px] md:w-[600px] md:h-[380px] lg:w-[680px] lg:h-[420px]">
-      {/* Monitor body */}
-      <div className="absolute inset-0 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-2xl border border-white/10">
-        {/* Power LED */}
+    <div className="relative w-[300px] h-[190px] sm:w-[420px] sm:h-[260px] md:w-[540px] md:h-[340px] lg:w-[640px] lg:h-[400px]">
+      <div className="absolute inset-0 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-lg sm:rounded-xl p-1 sm:p-1.5 shadow-2xl border border-white/10">
         <div
-          className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full"
+          className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
           style={{ backgroundColor: glowColor, boxShadow: `0 0 8px ${glowColor}` }}
         />
-        {/* Screen */}
-        <div className="relative w-full h-[calc(100%-8px)] bg-onyx-900 rounded-lg sm:rounded-xl overflow-hidden">
+        <div className="relative w-full h-[calc(100%-6px)] bg-onyx-900 rounded-md sm:rounded-lg overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none z-10" />
           {children}
         </div>
       </div>
-      {/* Stand */}
-      <div className="absolute -bottom-4 sm:-bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 w-16 sm:w-20 md:w-24 h-4 sm:h-6 md:h-8 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-b-lg border-x border-b border-white/10" />
-      <div className="absolute -bottom-5 sm:-bottom-8 md:-bottom-10 left-1/2 -translate-x-1/2 w-28 sm:w-32 md:w-40 h-2 sm:h-2.5 md:h-3 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-full border border-white/10" />
-      {/* Glow */}
+      <div className="absolute -bottom-3 sm:-bottom-5 left-1/2 -translate-x-1/2 w-12 sm:w-16 h-3 sm:h-5 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-b-md border-x border-b border-white/10" />
+      <div className="absolute -bottom-4 sm:-bottom-6 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-1.5 sm:h-2 bg-gradient-to-b from-onyx-700 to-onyx-800 rounded-full border border-white/10" />
       <div
         className="absolute inset-0 blur-3xl -z-10 scale-150 opacity-25"
         style={{ background: `radial-gradient(circle, ${glowColor}20, transparent 70%)` }}
@@ -126,6 +134,70 @@ function ProgressBar({ progress, accentColor }: { progress: number; accentColor:
   );
 }
 
+// Mobile-optimized step card
+function MobileStepCard({
+  step,
+  index,
+  isActive,
+  onClick,
+  DeviceFrame,
+}: {
+  step: StoryStep;
+  index: number;
+  isActive: boolean;
+  onClick: () => void;
+  DeviceFrame: React.ComponentType<{ children: ReactNode; accentColor?: string }>;
+}) {
+  const stepColor = step.accentColor || '#F97316';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="py-8 sm:py-12"
+    >
+      {/* Step indicator */}
+      <div className="flex items-center gap-3 mb-6">
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center font-mono text-xs text-white"
+          style={{ backgroundColor: stepColor }}
+        >
+          {String(index + 1).padStart(2, '0')}
+        </div>
+        {step.badge && (
+          <span
+            className="font-mono text-xs tracking-widest uppercase"
+            style={{ color: stepColor }}
+          >
+            {step.badge}
+          </span>
+        )}
+      </div>
+
+      {/* Device/Demo - Shown first on mobile */}
+      <div className="flex justify-center mb-8">
+        <DeviceFrame accentColor={stepColor}>
+          <div className="absolute inset-0">
+            {step.component}
+          </div>
+        </DeviceFrame>
+      </div>
+
+      {/* Text content */}
+      <div className="text-center px-4">
+        <h3 className="text-2xl sm:text-3xl font-bold text-offwhite-400 mb-4 leading-tight">
+          {step.title}
+        </h3>
+        <p className="text-offwhite-700 text-base sm:text-lg leading-relaxed max-w-lg mx-auto">
+          {step.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function StickyScrollStory({
   steps,
   lang,
@@ -139,8 +211,9 @@ export default function StickyScrollStory({
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
+  const isMobile = useIsMobile();
 
-  // Mouse position for magnetic effects
+  // Mouse position for magnetic effects (desktop only)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springConfig = { stiffness: 300, damping: 30 };
@@ -152,8 +225,10 @@ export default function StickyScrollStory({
     offset: ['start start', 'end end'],
   });
 
-  // Update active index based on scroll
+  // Update active index based on scroll (desktop only)
   useEffect(() => {
+    if (isMobile) return;
+
     const unsubscribe = scrollYProgress.on('change', (value) => {
       const newIndex = Math.min(
         Math.floor(value * steps.length),
@@ -161,29 +236,30 @@ export default function StickyScrollStory({
       );
       if (newIndex !== activeIndex && newIndex >= 0) {
         setActiveIndex(newIndex);
-        setIsAutoPlaying(false); // Stop autoplay on scroll
+        setIsAutoPlaying(false);
       }
     });
     return () => unsubscribe();
-  }, [scrollYProgress, steps.length, activeIndex]);
+  }, [scrollYProgress, steps.length, activeIndex, isMobile]);
 
-  // Auto-play functionality
+  // Auto-play functionality (desktop only)
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || isMobile) return;
 
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % steps.length);
     }, autoPlayInterval);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, autoPlayInterval, steps.length]);
+  }, [isAutoPlaying, autoPlayInterval, steps.length, isMobile]);
 
   // Handle mouse move for magnetic effects
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return;
     const rect = e.currentTarget.getBoundingClientRect();
     mouseX.set((e.clientX - rect.left - rect.width / 2) / 20);
     mouseY.set((e.clientY - rect.top - rect.height / 2) / 20);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isMobile]);
 
   const handleMouseLeave = useCallback(() => {
     mouseX.set(0);
@@ -199,9 +275,52 @@ export default function StickyScrollStory({
                       deviceType === 'monitor' ? MonitorFrame :
                       ({ children }: { children: ReactNode }) => <>{children}</>;
 
-  // Calculate scroll progress for current step
-  const progress = scrollYProgress;
+  // ==========================================
+  // MOBILE LAYOUT - Vertical Stack
+  // ==========================================
+  if (isMobile) {
+    return (
+      <section className={`relative bg-onyx-950 ${className}`}>
+        {/* Mobile: Simple vertical layout with no sticky behavior */}
+        <div className="max-w-lg mx-auto px-4 py-12">
+          {/* Section Header */}
+          <div className="text-center mb-8">
+            <div className="flex justify-center gap-2 mb-4">
+              {steps.map((step, idx) => (
+                <div
+                  key={step.id}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    idx === activeIndex ? 'w-8' : 'w-2'
+                  }`}
+                  style={{
+                    backgroundColor: idx === activeIndex ? step.accentColor || '#F97316' : 'rgba(255,255,255,0.2)'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
 
+          {/* Steps - Rendered as stacked cards */}
+          <div className="space-y-16">
+            {steps.map((step, index) => (
+              <MobileStepCard
+                key={step.id}
+                step={step}
+                index={index}
+                isActive={index === activeIndex}
+                onClick={() => setActiveIndex(index)}
+                DeviceFrame={DeviceFrame}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ==========================================
+  // DESKTOP LAYOUT - Sticky Side-by-Side
+  // ==========================================
   return (
     <section
       ref={containerRef}
@@ -235,31 +354,11 @@ export default function StickyScrollStory({
       {/* Sticky Container */}
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-8 lg:gap-12 xl:gap-20">
-            {/* Left: Text Content - Mobile first approach */}
-            <div className="flex-1 w-full max-w-lg order-2 lg:order-1">
-              {/* Mobile Step Indicators */}
-              <div className="flex lg:hidden gap-1.5 sm:gap-2 mb-4 sm:mb-6 justify-center">
-                {steps.map((step, idx) => (
-                  <button
-                    key={step.id}
-                    onClick={() => {
-                      setActiveIndex(idx);
-                      setIsAutoPlaying(false);
-                    }}
-                    className={`h-1.5 sm:h-2 rounded-full transition-all duration-500 ${
-                      idx === activeIndex
-                        ? 'w-6 sm:w-8'
-                        : 'w-1.5 sm:w-2 bg-white/20 hover:bg-white/40'
-                    }`}
-                    style={idx === activeIndex ? { backgroundColor: currentColor } : {}}
-                    aria-label={`Go to step ${idx + 1}: ${step.title}`}
-                  />
-                ))}
-              </div>
-
+          <div className="flex flex-row items-center gap-12 xl:gap-20">
+            {/* Left: Text Content */}
+            <div className="flex-1 max-w-lg">
               {/* Desktop Step Navigation */}
-              <div className="hidden lg:flex flex-col gap-3 mb-8">
+              <div className="flex flex-col gap-3 mb-8">
                 {steps.map((step, idx) => {
                   const isActive = idx === activeIndex;
                   const stepColor = step.accentColor || '#F97316';
@@ -279,7 +378,6 @@ export default function StickyScrollStory({
                       whileHover={{ x: isActive ? 0 : 4 }}
                       style={isActive ? { borderColor: `${stepColor}30` } : {}}
                     >
-                      {/* Step Number */}
                       <div
                         className={`w-8 h-8 xl:w-10 xl:h-10 rounded-lg xl:rounded-xl flex items-center justify-center font-mono text-xs xl:text-sm transition-all ${
                           isActive
@@ -290,7 +388,6 @@ export default function StickyScrollStory({
                       >
                         {String(idx + 1).padStart(2, '0')}
                       </div>
-                      {/* Step Title */}
                       <span
                         className={`font-medium text-sm xl:text-base transition-colors ${
                           isActive ? 'text-offwhite-400' : 'text-offwhite-700'
@@ -298,7 +395,6 @@ export default function StickyScrollStory({
                       >
                         {step.title}
                       </span>
-                      {/* Active indicator */}
                       <div
                         className={`ml-auto w-1 xl:w-1.5 h-6 xl:h-8 rounded-full transition-all ${
                           isActive ? '' : 'bg-transparent'
@@ -318,21 +414,20 @@ export default function StickyScrollStory({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.4, ease: 'easeOut' }}
-                  className="text-center lg:text-left px-2 sm:px-0"
                 >
                   {currentStep.badge && (
                     <span
-                      className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs tracking-widest uppercase mb-3 sm:mb-4"
+                      className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase mb-4"
                       style={{ color: currentColor }}
                     >
-                      <span className="w-4 sm:w-6 h-px" style={{ backgroundColor: currentColor }} />
+                      <span className="w-6 h-px" style={{ backgroundColor: currentColor }} />
                       {currentStep.badge}
                     </span>
                   )}
-                  <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-offwhite-400 mb-3 sm:mb-4 leading-tight">
+                  <h3 className="text-3xl lg:text-4xl font-bold text-offwhite-400 mb-4 leading-tight">
                     {currentStep.title}
                   </h3>
-                  <p className="text-offwhite-700 text-sm sm:text-base md:text-lg leading-relaxed">
+                  <p className="text-offwhite-700 text-base md:text-lg leading-relaxed">
                     {currentStep.description}
                   </p>
                 </motion.div>
@@ -341,7 +436,7 @@ export default function StickyScrollStory({
 
             {/* Right: Device with Dynamic Content */}
             <motion.div
-              className="flex-shrink-0 order-1 lg:order-2"
+              className="flex-shrink-0"
               style={{ x: springX, y: springY }}
             >
               {customDevice ? (
@@ -386,15 +481,15 @@ export default function StickyScrollStory({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: activeIndex === 0 ? 1 : 0, y: 0 }}
         transition={{ delay: 1 }}
-        className="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
       >
-        <span className="text-offwhite-800 text-[10px] sm:text-xs uppercase tracking-widest">
+        <span className="text-offwhite-800 text-xs uppercase tracking-widest">
           {lang === 'tr' ? 'Kaydırın' : 'Scroll'}
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-          className="w-px h-6 sm:h-8 bg-gradient-to-b from-white/40 to-transparent"
+          className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent"
         />
       </motion.div>
 
@@ -402,16 +497,16 @@ export default function StickyScrollStory({
       {autoPlay && (
         <button
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-          className="fixed bottom-6 sm:bottom-8 right-6 sm:right-8 z-50 p-2 sm:p-3 rounded-full bg-onyx-800/80 border border-white/10 backdrop-blur-sm transition-all hover:bg-onyx-700/80"
+          className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-onyx-800/80 border border-white/10 backdrop-blur-sm transition-all hover:bg-onyx-700/80"
           style={{ boxShadow: isAutoPlaying ? `0 0 20px ${currentColor}40` : 'none' }}
         >
           {isAutoPlaying ? (
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-offwhite-400" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-offwhite-400" fill="currentColor" viewBox="0 0 24 24">
               <rect x="6" y="4" width="4" height="16" />
               <rect x="14" y="4" width="4" height="16" />
             </svg>
           ) : (
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-offwhite-400" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-offwhite-400" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
           )}
