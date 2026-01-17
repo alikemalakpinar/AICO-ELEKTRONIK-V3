@@ -4,11 +4,23 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, ArrowRight, ChevronDown, User, LogIn } from 'lucide-react';
+import {
+  Menu,
+  X,
+  Globe,
+  ArrowRight,
+  ChevronDown,
+  Flame,
+  HardHat,
+  Thermometer,
+  Coffee,
+  Home,
+  Building,
+  Building2,
+} from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
 import Image from 'next/image';
 import SoundToggle from './SoundToggle';
-import LoginModal from './LoginModal';
 import { useAudio } from './AudioProvider';
 
 interface PremiumNavbarProps {
@@ -18,21 +30,14 @@ interface PremiumNavbarProps {
 export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [solutionsOpen, setSolutionsOpen] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
+  const [smartLivingOpen, setSmartLivingOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const t = getTranslations(lang);
   const { playClick } = useAudio();
 
-  // Check for existing session
-  useEffect(() => {
-    const session = localStorage.getItem('aico-demo-session');
-    setIsLoggedIn(!!session);
-  }, [pathname]);
-
-  // Handle scroll effect
+  // Handle scroll effect with height transition
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -41,10 +46,11 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Close menus on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-    setSolutionsOpen(false);
+    setProductsOpen(false);
+    setSmartLivingOpen(false);
   }, [pathname]);
 
   // Language switch handler
@@ -55,34 +61,81 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
     router.push(`/${newLang}${currentPath || ''}`);
   };
 
-  // Handle login/dashboard click
-  const handleAuthClick = () => {
-    playClick();
-    if (isLoggedIn) {
-      router.push(`/${lang}/dashboard`);
-    } else {
-      setLoginModalOpen(true);
-    }
-  };
+  // Product categories
+  const products = [
+    {
+      id: 'fire-safety',
+      icon: Flame,
+      title: 'FireLink',
+      subtitle: lang === 'tr' ? 'Yangin Guvenlik Karti' : 'Fire Safety Card',
+      description: lang === 'tr'
+        ? 'Termal izleme ve erken uyari sistemi'
+        : 'Thermal monitoring and early warning system',
+      href: `/${lang}/solutions/fire-safety`,
+      color: '#EF4444',
+    },
+    {
+      id: 'mining-iot',
+      icon: HardHat,
+      title: 'MineGuard',
+      subtitle: lang === 'tr' ? 'Maden Guvenligi' : 'Mining Safety',
+      description: lang === 'tr'
+        ? 'Isci takip ve gaz algilama sistemi'
+        : 'Worker tracking and gas detection system',
+      href: `/${lang}/solutions/mining-iot`,
+      color: '#EAB308',
+    },
+    {
+      id: 'cold-chain',
+      icon: Thermometer,
+      title: 'ColdTrack',
+      subtitle: lang === 'tr' ? 'Soguk Zincir' : 'Cold Chain',
+      description: lang === 'tr'
+        ? 'Sicaklik izleme ve lojistik yonetimi'
+        : 'Temperature monitoring and logistics management',
+      href: `/${lang}/solutions/cold-chain`,
+      color: '#06B6D4',
+    },
+    {
+      id: 'coffee',
+      icon: Coffee,
+      title: 'AICO Coffee',
+      subtitle: lang === 'tr' ? 'Akilli Kahve Makinesi' : 'Smart Coffee Machine',
+      description: lang === 'tr'
+        ? 'IoT baglantili premium kahve deneyimi'
+        : 'IoT-connected premium coffee experience',
+      href: `/${lang}/products/coffee`,
+      color: '#A855F7',
+    },
+  ];
 
-  // Solution items
-  const solutions = [
+  // Smart Living solutions
+  const smartLiving = [
     {
       id: 'smart-villa',
+      icon: Home,
       title: lang === 'tr' ? 'Akilli Villa' : 'Smart Villa',
-      description:
-        lang === 'tr'
-          ? 'Kisisel luks, gorunmez teknoloji'
-          : 'Personal luxury, invisible technology',
+      description: lang === 'tr'
+        ? 'Kisisel luks, gorunmez teknoloji'
+        : 'Personal luxury, invisible technology',
       href: `/${lang}/solutions/smart-villa`,
     },
     {
+      id: 'smart-apartment',
+      icon: Building,
+      title: lang === 'tr' ? 'Akilli Apartman' : 'Smart Apartment',
+      description: lang === 'tr'
+        ? 'Ortak alan yonetimi ve iletisim'
+        : 'Common area management and communication',
+      href: `/${lang}/solutions/smart-apartment`,
+    },
+    {
       id: 'smart-residence',
+      icon: Building2,
       title: lang === 'tr' ? 'Akilli Rezidans' : 'Smart Residence',
-      description:
-        lang === 'tr'
-          ? 'Merkezi yonetim, olceklenebilir guc'
-          : 'Central management, scalable power',
+      description: lang === 'tr'
+        ? 'Merkezi yonetim, olceklenebilir guc'
+        : 'Central management, scalable power',
       href: `/${lang}/solutions/smart-residence`,
     },
   ];
@@ -93,85 +146,133 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
-            ? 'bg-onyx-900/80 backdrop-blur-xl border-b border-white/5'
-            : 'bg-transparent'
+            ? 'bg-onyx-900/80 backdrop-blur-xl border-b border-white/5 h-14'
+            : 'bg-transparent h-20'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo - COMPACT */}
-            <Link href={`/${lang}`} className="flex items-center gap-2 group">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-full">
+          <div className="flex items-center justify-between h-full">
+            {/* Logo */}
+            <Link href={`/${lang}`} className="flex items-center gap-2 group flex-shrink-0">
               <Image
                 src="/assets/logos/aicoelektroniklogo.png"
                 alt="AICO"
                 width={82}
                 height={34}
-                className="h-8 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
+                className={`w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-all duration-300 ${
+                  isScrolled ? 'h-6' : 'h-8'
+                }`}
                 priority
               />
             </Link>
 
-            {/* Desktop Navigation - COMPACT */}
-            <nav className="hidden lg:flex items-center gap-0.5">
-              {/* Solutions Dropdown */}
+            {/* Center Navigation - Products */}
+            <nav className="hidden lg:flex items-center gap-1">
+              {/* Products Dropdown */}
               <div
                 className="relative"
-                onMouseEnter={() => setSolutionsOpen(true)}
-                onMouseLeave={() => setSolutionsOpen(false)}
+                onMouseEnter={() => setProductsOpen(true)}
+                onMouseLeave={() => setProductsOpen(false)}
               >
-                <button className="flex items-center gap-1 px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide">
-                  {t.nav.solutions}
+                <button className="flex items-center gap-1.5 px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium">
+                  {lang === 'tr' ? 'Urunler' : 'Products'}
                   <ChevronDown
                     size={14}
                     className={`transition-transform duration-200 ${
-                      solutionsOpen ? 'rotate-180' : ''
+                      productsOpen ? 'rotate-180' : ''
                     }`}
                   />
                 </button>
 
                 <AnimatePresence>
-                  {solutionsOpen && (
+                  {productsOpen && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full left-0 mt-2 w-80 bg-onyx-800/95 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden shadow-2xl"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[480px] bg-onyx-800/95 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
                     >
-                      <div className="p-2">
-                        {solutions.map((solution) => (
+                      <div className="p-3 grid grid-cols-2 gap-2">
+                        {products.map((product) => (
                           <Link
-                            key={solution.id}
-                            href={solution.href}
-                            className="group flex items-start gap-4 p-4 rounded-lg hover:bg-white/5 transition-colors"
+                            key={product.id}
+                            href={product.href}
+                            className="group flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors"
                           >
-                            <div className="flex-1">
-                              <div className="text-offwhite-400 font-medium text-sm mb-1 group-hover:text-engineer-500 transition-colors">
-                                {solution.title}
+                            <div
+                              className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+                              style={{ backgroundColor: `${product.color}15` }}
+                            >
+                              <product.icon size={20} style={{ color: product.color }} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-offwhite-400 font-semibold text-sm group-hover:text-white transition-colors">
+                                  {product.title}
+                                </span>
                               </div>
-                              <div className="text-offwhite-800 text-xs">
-                                {solution.description}
+                              <div className="text-offwhite-800 text-xs mt-0.5">
+                                {product.subtitle}
                               </div>
                             </div>
-                            <ArrowRight
-                              size={16}
-                              className="text-offwhite-800 group-hover:text-engineer-500 group-hover:translate-x-1 transition-all mt-1"
-                            />
                           </Link>
                         ))}
                       </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-                      {/* All Solutions Link */}
-                      <div className="border-t border-white/5 p-3">
-                        <Link
-                          href={`/${lang}/solutions/smart-villa`}
-                          className="flex items-center justify-between text-xs text-offwhite-700 hover:text-offwhite-400 transition-colors"
-                        >
-                          <span>
-                            {lang === 'tr' ? 'Tum cozumler' : 'All solutions'}
-                          </span>
-                          <ArrowRight size={12} />
-                        </Link>
+              {/* Smart Living Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setSmartLivingOpen(true)}
+                onMouseLeave={() => setSmartLivingOpen(false)}
+              >
+                <button className="flex items-center gap-1.5 px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium">
+                  Smart Living
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${
+                      smartLivingOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {smartLivingOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-onyx-800/95 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
+                    >
+                      <div className="p-2">
+                        {smartLiving.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={item.href}
+                            className="group flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors"
+                          >
+                            <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-engineer-500/20 transition-colors">
+                              <item.icon size={20} className="text-engineer-500" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-offwhite-400 font-medium text-sm group-hover:text-white transition-colors">
+                                {item.title}
+                              </div>
+                              <div className="text-offwhite-800 text-xs mt-0.5">
+                                {item.description}
+                              </div>
+                            </div>
+                            <ArrowRight
+                              size={14}
+                              className="text-offwhite-800 group-hover:text-engineer-500 group-hover:translate-x-1 transition-all mt-1 flex-shrink-0"
+                            />
+                          </Link>
+                        ))}
                       </div>
                     </motion.div>
                   )}
@@ -181,7 +282,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               {/* Projects */}
               <Link
                 href={`/${lang}/projects`}
-                className="px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide"
+                className="px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium"
               >
                 {t.nav.projects}
               </Link>
@@ -189,70 +290,42 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               {/* About */}
               <Link
                 href={`/${lang}/about`}
-                className="px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide"
+                className="px-4 py-2 text-offwhite-600 hover:text-offwhite-400 transition-colors text-sm font-medium"
               >
                 {t.nav.about}
               </Link>
-
-              {/* Contact */}
-              <Link
-                href={`/${lang}/contact`}
-                className="px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400 transition-colors text-xs font-medium tracking-wide"
-              >
-                {t.nav.contact}
-              </Link>
             </nav>
 
-            {/* Right Side Actions - COMPACT */}
-            <div className="hidden lg:flex items-center gap-2">
+            {/* Right Side Actions */}
+            <div className="hidden lg:flex items-center gap-3">
               {/* Sound Toggle */}
               <SoundToggle />
 
               {/* Language Switcher */}
               <button
                 onClick={handleLanguageSwitch}
-                className="flex items-center gap-1.5 px-2 py-1 text-offwhite-700 hover:text-offwhite-400 transition-colors text-xs font-mono"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-offwhite-700 hover:text-offwhite-400 transition-colors text-xs font-mono rounded-lg hover:bg-white/5"
               >
-                <Globe size={12} />
+                <Globe size={14} />
                 <span className="uppercase">{t.nav.languageSwitch}</span>
               </button>
 
-              {/* Customer Portal / Dashboard Button */}
-              <button
-                onClick={handleAuthClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-offwhite-600 hover:text-offwhite-400
-                         bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20
-                         rounded-md transition-all text-xs font-medium"
-              >
-                {isLoggedIn ? (
-                  <>
-                    <User size={14} />
-                    <span>{lang === 'tr' ? 'Panel' : 'Dashboard'}</span>
-                  </>
-                ) : (
-                  <>
-                    <LogIn size={14} />
-                    <span>{lang === 'tr' ? 'Giris' : 'Login'}</span>
-                  </>
-                )}
-              </button>
-
-              {/* CTA Button */}
+              {/* Demo Request CTA */}
               <Link
-                href={`/${lang}/contact`}
-                className="group relative px-4 py-2 bg-transparent border border-engineer-500/30 hover:border-engineer-500 text-offwhite-400 text-xs font-medium rounded-md overflow-hidden transition-all duration-300"
+                href={`/${lang}/contact?subject=demo`}
+                className="group relative flex items-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-engineer-500/20"
               >
-                <span className="relative z-10">{t.nav.engineeringRequest}</span>
-                <div className="absolute inset-0 bg-engineer-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span>{lang === 'tr' ? 'Demo Talep Et' : 'Request Demo'}</span>
+                <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
 
-            {/* Mobile Menu Button - COMPACT */}
+            {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-1.5 text-offwhite-400 hover:text-offwhite-200 transition-colors"
+              className="lg:hidden p-2 text-offwhite-400 hover:text-offwhite-200 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -267,35 +340,66 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-onyx-900/95 backdrop-blur-xl z-40 lg:hidden"
+              className="fixed inset-0 bg-onyx-950/95 backdrop-blur-xl z-40 lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
 
             {/* Menu Content */}
             <motion.div
-              initial={{ opacity: 0, x: '100%' }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed top-16 right-0 bottom-0 w-full max-w-sm bg-onyx-900 border-l border-white/5 z-40 lg:hidden overflow-y-auto"
+              className="fixed top-14 left-0 right-0 bottom-0 bg-onyx-950 z-40 lg:hidden overflow-y-auto"
             >
               <div className="p-6 space-y-6">
-                {/* Solutions */}
+                {/* Products Section */}
                 <div className="space-y-3">
-                  <div className="text-offwhite-800 text-xs font-mono uppercase tracking-widest">
-                    {t.nav.solutions}
+                  <div className="text-offwhite-800 text-xs font-mono uppercase tracking-widest px-2">
+                    {lang === 'tr' ? 'Urunler' : 'Products'}
                   </div>
-                  {solutions.map((solution) => (
+                  <div className="grid grid-cols-2 gap-2">
+                    {products.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={product.href}
+                        className="flex flex-col items-center gap-2 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-center"
+                      >
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center"
+                          style={{ backgroundColor: `${product.color}15` }}
+                        >
+                          <product.icon size={24} style={{ color: product.color }} />
+                        </div>
+                        <div className="text-offwhite-400 font-medium text-sm">
+                          {product.title}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Smart Living Section */}
+                <div className="space-y-3">
+                  <div className="text-offwhite-800 text-xs font-mono uppercase tracking-widest px-2">
+                    Smart Living
+                  </div>
+                  {smartLiving.map((item) => (
                     <Link
-                      key={solution.id}
-                      href={solution.href}
-                      className="block p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                      key={item.id}
+                      href={item.href}
+                      className="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
                     >
-                      <div className="text-offwhite-400 font-medium mb-1">
-                        {solution.title}
+                      <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center">
+                        <item.icon size={20} className="text-engineer-500" />
                       </div>
-                      <div className="text-offwhite-800 text-sm">
-                        {solution.description}
+                      <div className="flex-1">
+                        <div className="text-offwhite-400 font-medium">
+                          {item.title}
+                        </div>
+                        <div className="text-offwhite-800 text-sm">
+                          {item.description}
+                        </div>
                       </div>
                     </Link>
                   ))}
@@ -304,7 +408,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                 {/* Divider */}
                 <div className="border-t border-white/5" />
 
-                {/* Navigation Links */}
+                {/* Other Links */}
                 <div className="space-y-1">
                   <Link
                     href={`/${lang}/projects`}
@@ -340,38 +444,19 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   </span>
                 </button>
 
-                {/* Customer Portal Button */}
-                <button
-                  onClick={handleAuthClick}
-                  className="flex items-center gap-3 px-4 py-3 text-offwhite-600 hover:text-offwhite-400 transition-colors w-full"
-                >
-                  {isLoggedIn ? <User size={18} /> : <LogIn size={18} />}
-                  <span>
-                    {isLoggedIn
-                      ? (lang === 'tr' ? 'Kontrol Paneli' : 'Dashboard')
-                      : (lang === 'tr' ? 'Musteri Girisi' : 'Customer Login')}
-                  </span>
-                </button>
-
-                {/* CTA Button */}
+                {/* Demo Request CTA */}
                 <Link
-                  href={`/${lang}/contact`}
-                  className="block w-full px-6 py-4 bg-engineer-500 hover:bg-engineer-600 text-white text-center font-medium rounded-lg transition-colors"
+                  href={`/${lang}/contact?subject=demo`}
+                  className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-colors"
                 >
-                  {t.nav.engineeringRequest}
+                  <span>{lang === 'tr' ? 'Demo Talep Et' : 'Request Demo'}</span>
+                  <ArrowRight size={18} />
                 </Link>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-
-      {/* Login Modal */}
-      <LoginModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        lang={lang}
-      />
     </>
   );
 }
