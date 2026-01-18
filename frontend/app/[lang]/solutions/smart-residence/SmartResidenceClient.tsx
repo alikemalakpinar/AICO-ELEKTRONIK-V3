@@ -348,38 +348,91 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
         </div>
       </section>
 
-      {/* Interactive Mobile App Demo */}
-      <section className="py-20 dark:bg-onyx-900 light:bg-gray-100">
+      {/* Interactive Mobile App Demo - Split Layout */}
+      <section className="py-20 dark:bg-onyx-900 light:bg-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
-              <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'MOBİL UYGULAMA' : 'MOBILE APP'}
-              <span className="w-8 h-px bg-engineer-500" />
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {lang === 'tr' ? 'Dijital Kapıcı' : 'Digital Concierge'}
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {lang === 'tr'
-                ? 'Kapıyı açın, misafir QR kodu oluşturun, interkom çağrılarını yanıtlayın - hepsi avucunuzda.'
-                : 'Unlock the door, generate guest QR codes, answer intercom calls - all in your palm.'}
-            </p>
-          </motion.div>
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="order-2 lg:order-1"
+            >
+              <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+                <span className="w-8 h-px bg-engineer-500" />
+                {lang === 'tr' ? 'MOBİL UYGULAMA' : 'MOBILE APP'}
+              </span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+                {lang === 'tr' ? 'Dijital Kapıcı' : 'Digital Concierge'}
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                {lang === 'tr'
+                  ? 'Kapıyı açın, misafir QR kodu oluşturun, interkom çağrılarını yanıtlayın - hepsi avucunuzda.'
+                  : 'Unlock the door, generate guest QR codes, answer intercom calls - all in your palm.'}
+              </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <ResidenceMobileDemo lang={lang} />
-          </motion.div>
+              {/* Feature List */}
+              <div className="space-y-4">
+                {[
+                  {
+                    icon: Lock,
+                    title: lang === 'tr' ? 'Tek Dokunuşla Giriş' : 'One-Touch Entry',
+                    desc: lang === 'tr' ? 'Ana kapıyı kaydırarak açın' : 'Slide to unlock main door',
+                  },
+                  {
+                    icon: QrCode,
+                    title: lang === 'tr' ? 'Misafir QR Kodu' : 'Guest QR Code',
+                    desc: lang === 'tr' ? 'Tek kullanımlık, 5 dakika geçerli' : 'One-time use, 5 min validity',
+                  },
+                  {
+                    icon: Bell,
+                    title: lang === 'tr' ? 'Video İnterkom' : 'Video Intercom',
+                    desc: lang === 'tr' ? 'Lobi çağrılarını anında yanıtlayın' : 'Answer lobby calls instantly',
+                  },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex items-start gap-4 p-4 rounded-xl dark:bg-white/5 light:bg-white border dark:border-white/5 light:border-gray-200"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center flex-shrink-0">
+                      <item.icon size={20} className="text-engineer-500" />
+                    </div>
+                    <div>
+                      <div className="text-foreground font-medium">{item.title}</div>
+                      <div className="text-muted-foreground text-sm">{item.desc}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right: Phone Demo */}
+            <motion.div
+              initial={{ opacity: 0, x: 40, y: 20 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="order-1 lg:order-2 relative"
+            >
+              {/* Floating animation wrapper */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+              >
+                <ResidenceMobileDemo lang={lang} />
+              </motion.div>
+
+              {/* Decorative glow behind phone */}
+              <div className="absolute inset-0 -z-10 blur-3xl opacity-30">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-engineer-500" />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
