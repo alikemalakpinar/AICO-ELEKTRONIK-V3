@@ -128,7 +128,7 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
   };
 
   return (
-    <div className="min-h-screen bg-onyx-950">
+    <div className="min-h-screen bg-background">
       <ImmersiveHero
         badge={content.hero.badge}
         title={content.hero.title}
@@ -141,7 +141,7 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
       />
 
       {/* App Preview Demo */}
-      <section id="demo" className="py-24 md:py-32 bg-onyx-900">
+      <section id="demo" className="py-24 md:py-32 dark:bg-onyx-900 light:bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -155,10 +155,10 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
               {lang === 'tr' ? 'UYGULAMA' : 'APP'}
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               {content.demo.title}
             </h2>
-            <p className="text-offwhite-700 max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               {content.demo.subtitle}
             </p>
           </motion.div>
@@ -182,7 +182,7 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
               viewport={{ once: true }}
               className="space-y-4 max-w-sm flex-shrink-0"
             >
-              <h3 className="text-lg font-semibold text-offwhite-400 mb-4">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 {lang === 'tr' ? 'Akıllı Özellikler' : 'Smart Features'}
               </h3>
               {[
@@ -197,7 +197,7 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex items-start gap-4 p-4 bg-onyx-800/50 rounded-xl border border-white/5 hover:border-purple-500/30 transition-colors group"
+                  className="flex items-start gap-4 p-4 dark:bg-onyx-800/50 light:bg-white rounded-xl border dark:border-white/5 light:border-gray-200 hover:border-purple-500/30 transition-colors group dark:shadow-none light:shadow-sm"
                 >
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
@@ -206,8 +206,8 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
                     <item.icon size={20} style={{ color: accentColor }} />
                   </div>
                   <div>
-                    <div className="text-offwhite-400 font-medium">{item.text}</div>
-                    <div className="text-offwhite-700 text-sm">{item.desc}</div>
+                    <div className="text-foreground font-medium">{item.text}</div>
+                    <div className="text-muted-foreground text-sm">{item.desc}</div>
                   </div>
                 </motion.div>
               ))}
@@ -226,7 +226,7 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
       />
 
       {/* Final CTA */}
-      <section className="py-24 md:py-32 bg-onyx-950 border-t border-white/5">
+      <section className="py-24 md:py-32 dark:bg-onyx-950 light:bg-white border-t dark:border-white/5 light:border-gray-200">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -239,10 +239,10 @@ export default function CoffeeClient({ lang }: CoffeeClientProps) {
             >
               <Coffee size={40} style={{ color: accentColor }} />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               {content.cta.title}
             </h2>
-            <p className="text-lg text-offwhite-700 mb-10">
+            <p className="text-lg text-muted-foreground mb-10">
               {content.cta.subtitle}
             </p>
             <Link

@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import {
   Coffee,
   Droplets,
   ThermometerSun,
   Clock,
-  Star,
   Settings,
   Play,
   Pause,
@@ -17,6 +16,7 @@ import {
   Heart,
 } from 'lucide-react';
 import type { Locale } from '@/types';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface CoffeeBrewDemoProps {
   lang?: Locale;
@@ -92,6 +92,8 @@ function LiquidFill({ progress, color }: { progress: number; color: string }) {
 }
 
 export default function CoffeeBrewDemo({ lang = 'tr', className = '', compact = false }: CoffeeBrewDemoProps) {
+  const { mode } = useTheme();
+  const isDark = mode === 'dark';
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe>(recipes[0]);
   const [isBrewing, setIsBrewing] = useState(false);
   const [brewProgress, setBrwProgress] = useState(0);
@@ -181,9 +183,10 @@ export default function CoffeeBrewDemo({ lang = 'tr', className = '', compact = 
   const accentColor = '#A855F7';
 
   return (
-    <div className={`relative bg-onyx-900 rounded-2xl overflow-hidden ${className}`}>
+    <div className={`relative rounded-2xl overflow-hidden shadow-2xl ${isDark ? 'bg-onyx-900' : 'bg-white'} ${className}`}
+         style={{ boxShadow: isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.15)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-white/10 bg-onyx-800/50">
+      <div className={`flex items-center justify-between p-3 sm:p-4 border-b ${isDark ? 'border-white/10 bg-onyx-800/50' : 'border-gray-200 bg-gray-50'}`}>
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="relative">
             <Coffee size={compact ? 14 : 16} className="text-purple-500" />
@@ -193,17 +196,17 @@ export default function CoffeeBrewDemo({ lang = 'tr', className = '', compact = 
               transition={{ duration: 2, repeat: Infinity }}
             />
           </div>
-          <span className="text-offwhite-400 text-xs sm:text-sm font-medium">AICO Coffee</span>
+          <span className={`text-xs sm:text-sm font-medium ${isDark ? 'text-offwhite-400' : 'text-gray-900'}`}>AICO Coffee</span>
           <div className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/30">
             <Wifi size={10} className="text-purple-500" />
             <span className="text-purple-500 text-[10px] font-mono">CONNECTED</span>
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Volume2 size={12} className="text-offwhite-600" />
+          <Volume2 size={12} className={isDark ? 'text-offwhite-600' : 'text-gray-500'} />
           <div className="flex gap-0.5">
             {[1, 2, 3].map(i => (
-              <div key={i} className={`w-1 h-${i + 1} rounded-full ${i <= 2 ? 'bg-purple-500' : 'bg-onyx-600'}`} />
+              <div key={i} className={`w-1 rounded-full ${i <= 2 ? 'bg-purple-500' : isDark ? 'bg-onyx-600' : 'bg-gray-300'}`} style={{ height: `${(i + 1) * 4}px` }} />
             ))}
           </div>
         </div>
