@@ -40,7 +40,7 @@ export default function LangLayout({
   const lang = params.lang;
 
   return (
-    <div className="flex min-h-screen flex-col bg-onyx-900">
+    <div className="flex min-h-screen flex-col bg-background transition-colors duration-300">
       {/* Premium Navbar */}
       <PremiumNavbar lang={lang} />
 
@@ -50,14 +50,15 @@ export default function LangLayout({
       {/* Premium Footer */}
       <PremiumFooter lang={lang} />
 
-      {/* Toast Notifications */}
+      {/* Toast Notifications - Theme Adaptive */}
       <Toaster
         position="top-right"
         toastOptions={{
+          className: 'toast-adaptive',
           style: {
-            background: '#0A0A0A',
-            color: '#F8FAFC',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'hsl(var(--card))',
+            color: 'hsl(var(--foreground))',
+            border: '1px solid hsl(var(--border))',
           },
         }}
       />

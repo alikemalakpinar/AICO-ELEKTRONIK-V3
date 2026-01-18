@@ -16,74 +16,156 @@
 
 @layer base {
   :root {
-    /* Light mode (default - but we're premium dark) */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* ===========================================
+       LIGHT MODE - Engineering White
+       Clean, high-contrast, professional
+    =========================================== */
+    --background: 0 0% 99%;
+    --background-rgb: 252, 252, 252;
+    --foreground: 220 20% 10%;
+    --foreground-rgb: 23, 26, 31;
+
+    /* Surface colors for cards, popovers */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 20% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 20% 10%;
+
+    /* Primary accent (engineer orange) */
     --primary: 24 95% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary surfaces */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 20% 10%;
+
+    /* Muted text and backgrounds */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 45%;
+
+    /* Accent for highlights */
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 20% 10%;
+
+    /* Destructive states */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 220 14% 90%;
+    --input: 220 14% 90%;
     --ring: 24 95% 53%;
     --radius: 0.5rem;
 
-    /* Chart colors */
-    --chart-1: 12 76% 61%;
+    /* Surface elevation levels */
+    --surface-0: 0 0% 99%;
+    --surface-1: 0 0% 100%;
+    --surface-2: 220 14% 97%;
+    --surface-3: 220 14% 95%;
+
+    /* Text hierarchy */
+    --text-primary: 220 20% 10%;
+    --text-secondary: 220 10% 35%;
+    --text-tertiary: 220 8% 55%;
+    --text-muted: 220 8% 65%;
+
+    /* Chart colors - light mode */
+    --chart-1: 24 95% 53%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-4: 43 74% 50%;
+    --chart-5: 340 75% 55%;
 
     /* Product Theme Variables (default: engineer orange) */
     --product-primary: #F97316;
     --product-primary-light: #FB923C;
     --product-primary-dark: #EA580C;
     --product-gradient: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
-    --product-glow: rgba(249, 115, 22, 0.25);
-    --product-selection: rgba(249, 115, 22, 0.3);
-    --scrollbar-thumb: rgba(249, 115, 22, 0.4);
-    --scrollbar-thumb-hover: rgba(249, 115, 22, 0.6);
+    --product-glow: rgba(249, 115, 22, 0.15);
+    --product-selection: rgba(249, 115, 22, 0.2);
+    --scrollbar-thumb: rgba(249, 115, 22, 0.3);
+    --scrollbar-thumb-hover: rgba(249, 115, 22, 0.5);
+
+    /* Overlay colors */
+    --overlay-light: rgba(255, 255, 255, 0.8);
+    --overlay-heavy: rgba(255, 255, 255, 0.95);
+
+    /* Shadows for light mode */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+    --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.1);
   }
 
   .dark {
-    /* Premium Dark Mode - Deep Onyx */
+    /* ===========================================
+       DARK MODE - Premium Onyx
+       Deep, luxurious, cinematic
+    =========================================== */
     --background: 0 0% 2%;
+    --background-rgb: 5, 5, 5;
     --foreground: 210 40% 98%;
+    --foreground-rgb: 248, 250, 252;
+
+    /* Surface colors for cards, popovers */
     --card: 0 0% 4%;
     --card-foreground: 210 40% 98%;
     --popover: 0 0% 4%;
     --popover-foreground: 210 40% 98%;
+
+    /* Primary accent (engineer orange) */
     --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
+
+    /* Secondary surfaces */
     --secondary: 0 0% 8%;
     --secondary-foreground: 210 40% 98%;
+
+    /* Muted text and backgrounds */
     --muted: 0 0% 8%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 20% 65%;
+
+    /* Accent for highlights */
     --accent: 0 0% 8%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+
+    /* Destructive states */
+    --destructive: 0 62% 30%;
     --destructive-foreground: 210 40% 98%;
-    --border: 0 0% 10%;
-    --input: 0 0% 10%;
+
+    /* Borders and inputs */
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
     --ring: 24 95% 53%;
 
+    /* Surface elevation levels */
+    --surface-0: 0 0% 2%;
+    --surface-1: 0 0% 4%;
+    --surface-2: 0 0% 6%;
+    --surface-3: 0 0% 8%;
+
+    /* Text hierarchy */
+    --text-primary: 210 40% 98%;
+    --text-secondary: 215 20% 75%;
+    --text-tertiary: 215 15% 55%;
+    --text-muted: 215 10% 45%;
+
     /* Chart colors - dark mode */
-    --chart-1: 220 70% 50%;
+    --chart-1: 24 95% 53%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Overlay colors */
+    --overlay-light: rgba(0, 0, 0, 0.5);
+    --overlay-heavy: rgba(0, 0, 0, 0.85);
+
+    /* Shadows for dark mode */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -95,23 +177,29 @@
   html {
     @apply scroll-smooth;
     scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  html.light {
+    color-scheme: light;
   }
 
   body {
-    @apply bg-onyx-900 text-offwhite-400 antialiased;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Scrollbar styling - uses theme colors */
+  /* Scrollbar styling - adapts to theme */
   ::-webkit-scrollbar {
     @apply w-2;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-onyx-900;
+    background-color: hsl(var(--surface-0));
   }
 
   ::-webkit-scrollbar-thumb {
@@ -126,20 +214,50 @@
   /* Dynamic selection color based on product theme */
   ::selection {
     background-color: var(--product-selection);
-    @apply text-offwhite-200;
+    color: hsl(var(--foreground));
   }
 
-  /* Focus visible styling */
+  .dark ::selection {
+    color: #FCFCFC;
+  }
+
+  .light ::selection {
+    color: #1a1a1a;
+  }
+
+  /* Focus visible styling - adapts to theme */
   :focus-visible {
-    @apply outline-none ring-2 ring-engineer-500/50 ring-offset-2 ring-offset-onyx-900;
+    @apply outline-none ring-2 ring-engineer-500/50 ring-offset-2;
+    ring-offset-color: hsl(var(--background));
+  }
+
+  /* Light mode specific overrides for better contrast */
+  .light {
+    /* Improve text contrast in light mode */
+    --text-primary: 220 20% 8%;
+    --text-secondary: 220 12% 30%;
+  }
+
+  /* Smooth transitions for theme switching */
+  .light *,
+  .dark * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: ease;
+    transition-duration: 150ms;
+  }
+
+  /* Disable transitions during theme switch to prevent flash */
+  .light [data-no-transition],
+  .dark [data-no-transition] {
+    transition: none !important;
   }
 }
 
 @layer components {
-  /* Premium Button Styles */
+  /* Premium Button Styles - Theme Adaptive */
   .btn-premium {
     @apply relative px-6 py-3 bg-transparent border border-engineer-500/30
-           text-offwhite-400 text-sm font-medium rounded-lg overflow-hidden
+           text-foreground text-sm font-medium rounded-lg overflow-hidden
            transition-all duration-300 hover:border-engineer-500;
   }
 
@@ -152,28 +270,50 @@
     @apply opacity-100;
   }
 
-  /* Premium Card */
+  /* Premium Card - Theme Adaptive */
   .card-premium {
-    @apply bg-onyx-800/50 backdrop-blur-xl border border-white/5
-           rounded-2xl p-6 transition-all duration-300
-           hover:border-white/10 hover:bg-onyx-800/70;
+    @apply backdrop-blur-xl rounded-2xl p-6 transition-all duration-300;
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
   }
 
-  /* Technical Text */
+  .dark .card-premium {
+    @apply bg-onyx-800/50 border-white/5 hover:border-white/10 hover:bg-onyx-800/70;
+  }
+
+  .light .card-premium {
+    @apply bg-white/80 border-gray-200/50 hover:border-gray-300 hover:bg-white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .light .card-premium:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Technical Text - Theme Adaptive */
   .text-tech {
-    @apply font-mono text-spec-sm text-offwhite-800 uppercase tracking-tech;
+    @apply font-mono text-spec-sm uppercase tracking-tech;
+    color: hsl(var(--text-tertiary));
   }
 
-  /* Hero Title */
+  /* Hero Title - Theme Adaptive */
   .hero-title {
     @apply text-hero-md md:text-hero-lg lg:text-hero-xl font-bold
-           text-offwhite-400 tracking-tight leading-none;
+           tracking-tight leading-none;
+    color: hsl(var(--text-primary));
   }
 
-  /* Gradient Text */
+  /* Gradient Text - Theme Adaptive */
   .gradient-text {
-    @apply bg-clip-text text-transparent
-           bg-gradient-to-r from-offwhite-400 via-offwhite-500 to-offwhite-400;
+    @apply bg-clip-text text-transparent;
+  }
+
+  .dark .gradient-text {
+    @apply bg-gradient-to-r from-offwhite-400 via-offwhite-500 to-offwhite-400;
+  }
+
+  .light .gradient-text {
+    @apply bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900;
   }
 
   /* Orange Accent */
@@ -181,9 +321,17 @@
     @apply text-engineer-500;
   }
 
-  /* Premium Divider */
+  /* Premium Divider - Theme Adaptive */
   .divider-premium {
-    @apply w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    @apply w-full h-px;
+  }
+
+  .dark .divider-premium {
+    @apply bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  .light .divider-premium {
+    @apply bg-gradient-to-r from-transparent via-gray-300 to-transparent;
   }
 
   /* Section Spacing - COMPACT */
@@ -194,6 +342,40 @@
   /* Container */
   .container-premium {
     @apply max-w-7xl mx-auto px-6 lg:px-8;
+  }
+
+  /* Theme-adaptive surface colors */
+  .surface-0 {
+    background-color: hsl(var(--surface-0));
+  }
+
+  .surface-1 {
+    background-color: hsl(var(--surface-1));
+  }
+
+  .surface-2 {
+    background-color: hsl(var(--surface-2));
+  }
+
+  .surface-3 {
+    background-color: hsl(var(--surface-3));
+  }
+
+  /* Theme-adaptive text colors */
+  .text-primary-adaptive {
+    color: hsl(var(--text-primary));
+  }
+
+  .text-secondary-adaptive {
+    color: hsl(var(--text-secondary));
+  }
+
+  .text-tertiary-adaptive {
+    color: hsl(var(--text-tertiary));
+  }
+
+  .text-muted-adaptive {
+    color: hsl(var(--text-muted));
   }
 }
 
@@ -258,31 +440,64 @@
   }
 
   /* ===========================================
-     GLASSMORPHISM - Premium Glass Effects
+     GLASSMORPHISM - Theme Adaptive Glass Effects
   =========================================== */
   .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply backdrop-blur-xl;
+  }
+
+  .dark .glass {
+    @apply bg-white/5 border border-white/10;
+  }
+
+  .light .glass {
+    @apply bg-white/70 border border-gray-200/50;
+    box-shadow: var(--shadow-sm);
   }
 
   .glass-premium {
-    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
+  }
+
+  .dark .glass-premium {
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
+  .light .glass-premium {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+
   .glass-card {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .dark .glass-card {
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.05) 0%,
       rgba(255, 255, 255, 0.02) 100%
     );
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .light .glass-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
   /* ===========================================
@@ -439,11 +654,69 @@
   }
 
   /* ===========================================
-     NOISE TEXTURE OVERLAY
+     NOISE TEXTURE OVERLAY - Theme Adaptive
   =========================================== */
   .noise-overlay {
-    @apply pointer-events-none fixed inset-0 z-50 opacity-[0.015];
+    @apply pointer-events-none fixed inset-0 z-50;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  .dark .noise-overlay {
+    opacity: 0.015;
+  }
+
+  .light .noise-overlay {
+    opacity: 0.025;
+    mix-blend-mode: multiply;
+  }
+
+  /* ===========================================
+     THEME-ADAPTIVE BACKGROUND UTILITIES
+  =========================================== */
+  .bg-page {
+    background-color: hsl(var(--background));
+  }
+
+  .dark .bg-page-gradient {
+    background: linear-gradient(180deg, #050505 0%, #0A0A0A 50%, #050505 100%);
+  }
+
+  .light .bg-page-gradient {
+    background: linear-gradient(180deg, #FCFCFC 0%, #F8F9FA 50%, #FCFCFC 100%);
+  }
+
+  /* Section backgrounds */
+  .dark .bg-section {
+    @apply bg-onyx-900;
+  }
+
+  .light .bg-section {
+    @apply bg-white;
+  }
+
+  .dark .bg-section-alt {
+    @apply bg-onyx-950;
+  }
+
+  .light .bg-section-alt {
+    @apply bg-gray-50;
+  }
+
+  /* Border colors */
+  .dark .border-adaptive {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .light .border-adaptive {
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .border-adaptive-hover:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .light .border-adaptive-hover:hover {
+    border-color: rgba(0, 0, 0, 0.12);
   }
 }
 
@@ -462,12 +735,116 @@
 /* Print styles */
 @media print {
   body {
-    @apply bg-white text-black;
+    @apply bg-white text-black !important;
   }
 
   .no-print {
     display: none !important;
   }
+
+  .noise-overlay {
+    display: none !important;
+  }
+}
+
+/* ===========================================
+   THEME TOGGLE TRANSITIONS
+=========================================== */
+@keyframes theme-switch-fade {
+  0% { opacity: 1; }
+  50% { opacity: 0.95; }
+  100% { opacity: 1; }
+}
+
+.theme-switching {
+  animation: theme-switch-fade 0.3s ease;
+}
+
+/* ===========================================
+   NAVBAR THEME VARIABLES
+=========================================== */
+.dark {
+  --navbar-bg: rgba(15, 15, 15, 0.85);
+  --navbar-border: rgba(255, 255, 255, 0.08);
+  --navbar-shadow-scrolled: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --navbar-shadow-compact: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.light {
+  --navbar-bg: rgba(255, 255, 255, 0.9);
+  --navbar-border: rgba(0, 0, 0, 0.06);
+  --navbar-shadow-scrolled: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --navbar-shadow-compact: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Navbar text colors */
+.dark .navbar-glass .text-offwhite-500 {
+  color: #F1F5F9;
+}
+
+.light .navbar-glass {
+  color: #1a1a1a;
+}
+
+.light .navbar-glass .text-offwhite-500,
+.light .navbar-glass .text-offwhite-400,
+.light .navbar-glass .text-offwhite-600 {
+  color: #374151;
+}
+
+.light .navbar-glass .text-offwhite-300,
+.light .navbar-glass .text-offwhite-200 {
+  color: #1f2937;
+}
+
+.light .navbar-glass .text-offwhite-700,
+.light .navbar-glass .text-offwhite-800 {
+  color: #6b7280;
+}
+
+.light .navbar-glass .hover\:text-offwhite-300:hover,
+.light .navbar-glass .hover\:text-offwhite-200:hover {
+  color: #111827;
+}
+
+.light .navbar-glass .hover\:bg-white\/5:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Light mode logo inversion */
+.light .navbar-glass .brightness-0.invert {
+  filter: none;
+}
+
+/* Light mode dropdown menus */
+.light .bg-onyx-800\/95 {
+  background-color: rgba(255, 255, 255, 0.98);
+}
+
+.light .bg-onyx-800\/50 {
+  background-color: rgba(249, 250, 251, 0.9);
+}
+
+.light .border-white\/5,
+.light .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light .hover\:border-white\/10:hover {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Mobile menu light mode */
+.light .bg-onyx-950\/98 {
+  background-color: rgba(255, 255, 255, 0.98);
+}
+
+.light .bg-onyx-900 {
+  background-color: #ffffff;
+}
+
+.light .border-l.border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 /* ===========================================

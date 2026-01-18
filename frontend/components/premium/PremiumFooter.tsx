@@ -38,7 +38,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
   };
 
   return (
-    <footer className="bg-onyx-950 border-t border-white/5">
+    <footer className="dark:bg-onyx-950 light:bg-gray-50 border-t dark:border-white/5 light:border-gray-200 transition-colors duration-300">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
@@ -50,10 +50,10 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                 alt="AICO"
                 width={120}
                 height={50}
-                className="h-12 w-auto brightness-0 invert opacity-80"
+                className="h-12 w-auto dark:brightness-0 dark:invert dark:opacity-80 light:opacity-100"
               />
             </Link>
-            <p className="text-offwhite-700 text-sm leading-relaxed mb-6 max-w-xs">
+            <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-xs">
               {t.footer.description}
             </p>
 
@@ -61,19 +61,19 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
             <div className="space-y-3">
               <a
                 href="mailto:info@aicoelektronik.com"
-                className="flex items-center gap-3 text-offwhite-700 hover:text-offwhite-400 transition-colors text-sm"
+                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
                 <Mail size={16} className="text-engineer-500" />
                 <span>info@aicoelektronik.com</span>
               </a>
               <a
                 href="tel:+903125550000"
-                className="flex items-center gap-3 text-offwhite-700 hover:text-offwhite-400 transition-colors text-sm"
+                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
                 <Phone size={16} className="text-engineer-500" />
                 <span>+90 312 555 0000</span>
               </a>
-              <div className="flex items-start gap-3 text-offwhite-700 text-sm">
+              <div className="flex items-start gap-3 text-muted-foreground text-sm">
                 <MapPin size={16} className="text-engineer-500 mt-0.5" />
                 <span>
                   Ankara, Turkiye
@@ -87,7 +87,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {/* Solutions */}
               <div>
-                <h4 className="text-offwhite-400 font-medium text-sm mb-4">
+                <h4 className="text-foreground font-medium text-sm mb-4">
                   {t.footer.solutions}
                 </h4>
                 <ul className="space-y-3">
@@ -95,7 +95,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="group flex items-center gap-1 text-offwhite-700 hover:text-offwhite-400 transition-colors text-sm"
+                        className="group flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
                       >
                         <span>{link.label}</span>
                         <ArrowUpRight
@@ -110,7 +110,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
               {/* Company */}
               <div>
-                <h4 className="text-offwhite-400 font-medium text-sm mb-4">
+                <h4 className="text-foreground font-medium text-sm mb-4">
                   {t.footer.quickLinks}
                 </h4>
                 <ul className="space-y-3">
@@ -118,7 +118,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="group flex items-center gap-1 text-offwhite-700 hover:text-offwhite-400 transition-colors text-sm"
+                        className="group flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
                       >
                         <span>{link.label}</span>
                         <ArrowUpRight
@@ -133,7 +133,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
               {/* Legal */}
               <div>
-                <h4 className="text-offwhite-400 font-medium text-sm mb-4">
+                <h4 className="text-foreground font-medium text-sm mb-4">
                   {t.footer.legal}
                 </h4>
                 <ul className="space-y-3">
@@ -141,7 +141,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="group flex items-center gap-1 text-offwhite-700 hover:text-offwhite-400 transition-colors text-sm"
+                        className="group flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
                       >
                         <span>{link.label}</span>
                         <ArrowUpRight
@@ -159,13 +159,13 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-white/5">
+      <div className="border-t dark:border-white/5 light:border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-offwhite-800 text-xs">
+            <p className="text-muted-foreground text-xs">
               &copy; {currentYear} AICO Elektronik. {t.footer.copyright}
             </p>
-            <div className="flex items-center gap-1 text-offwhite-800 text-xs">
+            <div className="flex items-center gap-1 text-muted-foreground text-xs">
               <span className="font-mono">{t.footer.tagline}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-engineer-500 ml-2" />
             </div>

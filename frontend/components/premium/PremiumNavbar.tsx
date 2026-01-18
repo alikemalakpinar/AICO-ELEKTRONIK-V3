@@ -23,6 +23,7 @@ import {
 import { getTranslations, type Locale } from '@/lib/i18n';
 import Image from 'next/image';
 import SoundToggle from './SoundToggle';
+import ThemeToggle from './ThemeToggle';
 import { useAudio } from './AudioProvider';
 
 interface PremiumNavbarProps {
@@ -229,16 +230,16 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
         >
           {/* Inner navbar container with GPU-accelerated transforms */}
           <motion.div
-            className="w-full h-full flex items-center backdrop-blur-2xl border border-transparent transition-all duration-500 ease-out"
+            className="w-full h-full flex items-center backdrop-blur-2xl border border-transparent transition-all duration-500 ease-out navbar-glass"
             style={{
               maxWidth: scrollState === 'top' ? '100%' : scrollState === 'scrolled' ? '95%' : '900px',
               borderRadius: scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
-              backgroundColor: scrollState === 'top' ? 'transparent' : 'rgba(15, 15, 15, 0.85)',
-              borderColor: scrollState === 'top' ? 'transparent' : 'rgba(255, 255, 255, 0.08)',
+              backgroundColor: scrollState === 'top' ? 'transparent' : 'var(--navbar-bg, rgba(15, 15, 15, 0.85))',
+              borderColor: scrollState === 'top' ? 'transparent' : 'var(--navbar-border, rgba(255, 255, 255, 0.08))',
               boxShadow: scrollState === 'compact'
-                ? `0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05)`
+                ? 'var(--navbar-shadow-compact, 0 8px 32px rgba(0, 0, 0, 0.4))'
                 : scrollState === 'scrolled'
-                  ? '0 4px 24px rgba(0, 0, 0, 0.3)'
+                  ? 'var(--navbar-shadow-scrolled, 0 4px 24px rgba(0, 0, 0, 0.3))'
                   : 'none',
             }}
           >
@@ -460,6 +461,9 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
 
                 {/* Right Side Actions */}
                 <div className="hidden lg:flex items-center gap-2">
+                  {/* Theme Toggle */}
+                  <ThemeToggle size="sm" />
+
                   {/* Sound Toggle */}
                   <SoundToggle />
 

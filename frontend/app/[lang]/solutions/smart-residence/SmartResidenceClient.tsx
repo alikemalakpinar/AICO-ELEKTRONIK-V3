@@ -206,12 +206,12 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
   ];
 
   return (
-    <div className="min-h-screen bg-onyx-900">
+    <div className="min-h-screen bg-background">
       {/* Scrollytelling Section */}
       <ScrollyTellingContainer scenes={scenes} />
 
       {/* 3D Network Globe Showcase */}
-      <section className="py-20 bg-onyx-900 overflow-hidden relative">
+      <section className="py-20 bg-background overflow-hidden relative">
         <div className="absolute inset-0 pointer-events-none opacity-30">
           <NetworkGlobe />
         </div>
@@ -227,10 +227,10 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
               {lang === 'tr' ? 'BAGLI EKOSISTEM' : 'CONNECTED ECOSYSTEM'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Tum Sistemler Tek Platformda' : 'All Systems in One Platform'}
             </h2>
-            <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {lang === 'tr'
                 ? 'Site yonetimi, sakin portali, aidat takibi, misafir girisi - hepsi birbiriyle entegre.'
                 : 'Site management, resident portal, dues tracking, guest entry - all integrated with each other.'}
@@ -240,7 +240,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
       </section>
 
       {/* Platform Modules - Main Features */}
-      <section className="py-32 bg-onyx-950">
+      <section className="py-32 dark:bg-onyx-950 light:bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {/* Section Header */}
           <motion.div
@@ -254,10 +254,10 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
               {lang === 'tr' ? 'PLATFORM MODULLERI' : 'PLATFORM MODULES'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Ana Moduller' : 'Core Modules'}
             </h2>
-            <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {lang === 'tr'
                 ? 'Site yonetiminin tum ihtiyaclarini karsilayan entegre moduller.'
                 : 'Integrated modules meeting all site management needs.'}
@@ -275,17 +275,17 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="group p-8 bg-gradient-to-br from-onyx-800/80 to-onyx-800/40 border border-white/5 rounded-2xl hover:border-engineer-500/30 transition-all duration-300"
+                  className="group p-8 rounded-2xl transition-all duration-300 dark:bg-gradient-to-br dark:from-onyx-800/80 dark:to-onyx-800/40 dark:border dark:border-white/5 dark:hover:border-engineer-500/30 light:bg-white light:border light:border-gray-200 light:hover:border-engineer-500/50 light:shadow-sm light:hover:shadow-lg"
                 >
                   <div className="flex items-start gap-6">
                     <div className="w-16 h-16 rounded-xl bg-engineer-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-engineer-500/20 transition-colors">
                       <Icon size={32} className="text-engineer-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-offwhite-400 mb-3">
+                      <h3 className="text-xl font-bold text-foreground mb-3">
                         {module.title}
                       </h3>
-                      <p className="text-offwhite-700 mb-4">{module.description}</p>
+                      <p className="text-muted-foreground mb-4">{module.description}</p>
                       <div className="flex flex-wrap gap-2">
                         {module.features.map((feature, idx) => (
                           <span
@@ -311,7 +311,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h3 className="text-2xl font-bold text-offwhite-400">
+            <h3 className="text-2xl font-bold text-foreground">
               {lang === 'tr' ? 'Ek Ozellikler' : 'Additional Features'}
             </h3>
           </motion.div>
@@ -326,15 +326,15 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  className="group p-6 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                  className="group p-6 rounded-xl transition-all duration-300 dark:bg-onyx-800/50 dark:border dark:border-white/5 dark:hover:border-engineer-500/30 light:bg-white light:border light:border-gray-200 light:hover:border-engineer-500/50 light:shadow-sm light:hover:shadow-md"
                 >
                   <div className="w-12 h-12 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-4 group-hover:bg-engineer-500/20 transition-colors">
                     <Icon size={24} className="text-engineer-500" />
                   </div>
-                  <h3 className="text-lg font-semibold text-offwhite-400 mb-2">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-offwhite-700">{feature.description}</p>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
                 </motion.div>
               );
             })}
@@ -343,7 +343,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 border-y border-white/5">
+      <section className="py-20 border-y dark:border-white/5 light:border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -372,10 +372,10 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="font-mono text-4xl md:text-5xl font-bold text-offwhite-400 mb-2">
+                <div className="font-mono text-4xl md:text-5xl font-bold text-foreground mb-2">
                   {stat.value}
                 </div>
-                <div className="text-sm text-offwhite-700">{stat.label}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -391,17 +391,17 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
             viewport={{ once: true }}
           >
             <Zap size={48} className="text-engineer-500 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
               {t.smartResidence.cta}
             </h2>
-            <p className="text-lg text-offwhite-700 mb-10">
+            <p className="text-lg text-muted-foreground mb-10">
               {lang === 'tr'
                 ? 'Site yonetiminizi dijitallestirelim. Muhendislik ekibimiz sizinle.'
                 : "Let's digitalize your site management. Our engineering team is with you."}
             </p>
             <Link
               href={`/${lang}/contact`}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all duration-300"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-engineer-500/25"
             >
               <span>{t.nav.engineeringRequest}</span>
               <ArrowRight
