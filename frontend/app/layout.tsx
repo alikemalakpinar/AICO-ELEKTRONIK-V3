@@ -3,6 +3,7 @@ import { fontVariables } from '@/lib/fonts';
 import NoiseOverlay from '@/components/premium/NoiseOverlay';
 import CustomCursor from '@/components/premium/CustomCursor';
 import { AudioProvider } from '@/components/premium/AudioProvider';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import './globals.css';
 
 // Default metadata
@@ -102,17 +103,41 @@ export default function RootLayout({
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Inline script to prevent flash of wrong theme */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var mode = localStorage.getItem('aico-color-mode');
+                  if (!mode) {
+                    var cookie = document.cookie.match(/aico-color-mode=([^;]+)/);
+                    mode = cookie ? cookie[1] : null;
+                  }
+                  if (!mode) {
+                    mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  document.documentElement.classList.remove('light', 'dark');
+                  document.documentElement.classList.add(mode);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
-      <body className="font-sans antialiased bg-onyx-900 text-offwhite-400 min-h-screen overflow-x-hidden">
-        {/* Audio Provider for site-wide sounds */}
-        <AudioProvider>
-          {/* Premium Cinematic Effects */}
-          <NoiseOverlay />
-          <CustomCursor />
+      <body className="font-sans antialiased bg-background text-foreground min-h-screen overflow-x-hidden transition-colors duration-300">
+        {/* Theme Provider for light/dark mode + product themes */}
+        <ThemeProvider>
+          {/* Audio Provider for site-wide sounds */}
+          <AudioProvider>
+            {/* Premium Cinematic Effects */}
+            <NoiseOverlay />
+            <CustomCursor />
 
-          {/* Page Content */}
-          {children}
-        </AudioProvider>
+            {/* Page Content */}
+            {children}
+          </AudioProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,6 +1,14 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+
+// ===========================================
+// AICO Elektronik - Premium Theme System
+// Light/Dark Mode + Product Color Themes
+// ===========================================
+
+// Color mode types
+export type ColorMode = 'light' | 'dark';
 
 // Product theme definitions
 export type ProductTheme = 'default' | 'firelink' | 'mineguard' | 'coldtrack' | 'coffee';
@@ -58,6 +66,11 @@ const productThemes: Record<ProductTheme, ProductColors> = {
 };
 
 interface ThemeContextType {
+  // Color mode (light/dark)
+  mode: ColorMode;
+  setMode: (mode: ColorMode) => void;
+  toggleMode: () => void;
+  // Product theme
   theme: ProductTheme;
   colors: ProductColors;
   setTheme: (theme: ProductTheme) => void;
@@ -66,11 +79,76 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Storage keys
+const MODE_STORAGE_KEY = 'aico-color-mode';
+const MODE_COOKIE_KEY = 'aico-color-mode';
+
+// Helper to set cookie
+function setCookie(name: string, value: string, days: number = 365) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+}
+
+// Helper to get cookie
+function getCookie(name: string): string | null {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ProductTheme>('default');
+  const [mode, setModeState] = useState<ColorMode>('dark');
+  const [mounted, setMounted] = useState(false);
   const colors = productThemes[theme];
 
-  // Apply CSS variables when theme changes
+  // Initialize mode from storage/system preference on mount
+  useEffect(() => {
+    setMounted(true);
+
+    // Check localStorage first
+    const storedMode = localStorage.getItem(MODE_STORAGE_KEY) as ColorMode | null;
+    if (storedMode && (storedMode === 'light' || storedMode === 'dark')) {
+      setModeState(storedMode);
+      return;
+    }
+
+    // Check cookie
+    const cookieMode = getCookie(MODE_COOKIE_KEY) as ColorMode | null;
+    if (cookieMode && (cookieMode === 'light' || cookieMode === 'dark')) {
+      setModeState(cookieMode);
+      localStorage.setItem(MODE_STORAGE_KEY, cookieMode);
+      return;
+    }
+
+    // Fallback to system preference
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialMode = systemPrefersDark ? 'dark' : 'light';
+    setModeState(initialMode);
+    localStorage.setItem(MODE_STORAGE_KEY, initialMode);
+    setCookie(MODE_COOKIE_KEY, initialMode);
+  }, []);
+
+  // Apply dark class to html element and CSS variables when mode changes
+  useEffect(() => {
+    if (!mounted) return;
+
+    const root = document.documentElement;
+
+    if (mode === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
+
+    // Persist to storage
+    localStorage.setItem(MODE_STORAGE_KEY, mode);
+    setCookie(MODE_COOKIE_KEY, mode);
+  }, [mode, mounted]);
+
+  // Apply product theme CSS variables when theme changes
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--product-primary', colors.primary);
@@ -85,11 +163,23 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.style.setProperty('--scrollbar-thumb-hover', `${colors.primary}60`);
   }, [colors]);
 
-  const setTheme = (newTheme: ProductTheme) => {
-    setThemeState(newTheme);
-  };
+  // Set color mode
+  const setMode = useCallback((newMode: ColorMode) => {
+    setModeState(newMode);
+  }, []);
 
-  const setThemeByPath = (path: string) => {
+  // Toggle between light and dark
+  const toggleMode = useCallback(() => {
+    setModeState(prev => prev === 'dark' ? 'light' : 'dark');
+  }, []);
+
+  // Set product theme
+  const setTheme = useCallback((newTheme: ProductTheme) => {
+    setThemeState(newTheme);
+  }, []);
+
+  // Set theme based on URL path
+  const setThemeByPath = useCallback((path: string) => {
     if (path.includes('fire-safety') || path.includes('firelink')) {
       setThemeState('firelink');
     } else if (path.includes('mining-iot') || path.includes('mineguard')) {
@@ -101,10 +191,39 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     } else {
       setThemeState('default');
     }
-  };
+  }, []);
+
+  // Prevent flash on initial render
+  if (!mounted) {
+    return (
+      <ThemeContext.Provider
+        value={{
+          mode: 'dark',
+          setMode: () => {},
+          toggleMode: () => {},
+          theme,
+          colors,
+          setTheme: () => {},
+          setThemeByPath: () => {},
+        }}
+      >
+        {children}
+      </ThemeContext.Provider>
+    );
+  }
 
   return (
-    <ThemeContext.Provider value={{ theme, colors, setTheme, setThemeByPath }}>
+    <ThemeContext.Provider
+      value={{
+        mode,
+        setMode,
+        toggleMode,
+        theme,
+        colors,
+        setTheme,
+        setThemeByPath,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
@@ -118,7 +237,7 @@ export function useTheme() {
   return context;
 }
 
-// Hook to auto-set theme based on current path
+// Hook to auto-set product theme based on current path
 export function useAutoTheme() {
   const { setThemeByPath } = useTheme();
 
@@ -133,4 +252,10 @@ export function useAutoTheme() {
     window.addEventListener('popstate', handleRouteChange);
     return () => window.removeEventListener('popstate', handleRouteChange);
   }, [setThemeByPath]);
+}
+
+// Hook to get current color mode
+export function useColorMode() {
+  const { mode, setMode, toggleMode } = useTheme();
+  return { mode, setMode, toggleMode };
 }
