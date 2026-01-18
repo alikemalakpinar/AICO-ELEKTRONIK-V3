@@ -22,6 +22,7 @@ import {
   Settings,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 import type { Locale } from '@/types';
 
 interface ResidenceMobileDemoProps {
@@ -88,6 +89,9 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
   const { mode } = useTheme();
   const isDark = mode === 'dark';
 
+  // Mobile optimization - lighter animations on mobile/low-end devices
+  const { shouldUseLiteMode, prefersReducedMotion } = useMobileOptimization();
+
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -96,11 +100,15 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Slide to unlock motion values with rubber-band physics
+  // Use lighter spring config on mobile to reduce CPU usage
   const slideX = useMotionValue(0);
-  const slideXSpring = useSpring(slideX, { stiffness: 300, damping: 20, mass: 0.5 });
+  const springConfig = shouldUseLiteMode
+    ? { stiffness: 400, damping: 30, mass: 0.3 } // Snappier, less physics simulation
+    : { stiffness: 300, damping: 20, mass: 0.5 }; // Full physics
+  const slideXSpring = useSpring(slideX, springConfig);
   const slideProgress = useTransform(slideX, [0, 200], [0, 1]);
   const slideOpacity = useTransform(slideProgress, [0, 1], [1, 0]);
-  const slideScale = useTransform(slideProgress, [0, 0.5, 1], [1, 1.05, 1]);
+  const slideScale = useTransform(slideProgress, shouldUseLiteMode ? [0, 1] : [0, 0.5, 1], shouldUseLiteMode ? [1, 1] : [1, 1.05, 1]);
 
   // Update time
   useEffect(() => {
@@ -169,27 +177,31 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
         >
           {/* Screen */}
           <div className={`relative w-full h-full rounded-[35px] overflow-hidden ${isDark ? 'bg-black' : 'bg-white'}`}>
-            {/* Glass Reflection Overlay */}
-            <div
-              className="absolute inset-0 z-30 pointer-events-none rounded-[35px]"
-              style={{
-                background: `linear-gradient(
-                  135deg,
-                  rgba(255, 255, 255, 0.15) 0%,
-                  rgba(255, 255, 255, 0.05) 30%,
-                  transparent 50%,
-                  rgba(255, 255, 255, 0.02) 70%,
-                  rgba(255, 255, 255, 0.08) 100%
-                )`,
-              }}
-            />
-            {/* Secondary light streak */}
-            <div
-              className="absolute -top-20 -left-20 w-40 h-[200%] z-30 pointer-events-none rotate-[30deg]"
-              style={{
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)',
-              }}
-            />
+            {/* Glass Reflection Overlay - Simplified on mobile to reduce GPU load */}
+            {!shouldUseLiteMode && (
+              <>
+                <div
+                  className="absolute inset-0 z-30 pointer-events-none rounded-[35px]"
+                  style={{
+                    background: `linear-gradient(
+                      135deg,
+                      rgba(255, 255, 255, 0.15) 0%,
+                      rgba(255, 255, 255, 0.05) 30%,
+                      transparent 50%,
+                      rgba(255, 255, 255, 0.02) 70%,
+                      rgba(255, 255, 255, 0.08) 100%
+                    )`,
+                  }}
+                />
+                {/* Secondary light streak */}
+                <div
+                  className="absolute -top-20 -left-20 w-40 h-[200%] z-30 pointer-events-none rotate-[30deg]"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)',
+                  }}
+                />
+              </>
+            )}
             {/* Notch */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-2xl z-20" />
 
@@ -330,13 +342,17 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
                   </button>
 
                   <div className="flex-1 flex flex-col items-center justify-center">
-                    {/* Lock Icon */}
+                    {/* Lock Icon - Simplified animation on mobile */}
                     <motion.div
-                      animate={{
-                        scale: isUnlocked ? [1, 1.2, 1] : 1,
-                        rotate: isUnlocked ? [0, -10, 10, 0] : 0,
-                      }}
-                      transition={{ duration: 0.5 }}
+                      animate={
+                        prefersReducedMotion
+                          ? { scale: isUnlocked ? 1.1 : 1 }
+                          : {
+                              scale: isUnlocked ? [1, 1.2, 1] : 1,
+                              rotate: isUnlocked ? [0, -10, 10, 0] : 0,
+                            }
+                      }
+                      transition={{ duration: prefersReducedMotion ? 0.2 : 0.5 }}
                       className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-6 ${
                         isUnlocked ? 'bg-green-500' : isDark ? 'bg-white/10' : 'bg-gray-200'
                       }`}
@@ -374,15 +390,16 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
                           className="absolute inset-y-1 left-1 w-14 h-14 rounded-full bg-engineer-500 flex items-center justify-center cursor-grab active:cursor-grabbing z-10 shadow-lg"
                           drag="x"
                           dragConstraints={{ left: 0, right: 200 }}
-                          dragElastic={0.2}
-                          style={{ x: slideXSpring, scale: slideScale }}
+                          dragElastic={shouldUseLiteMode ? 0.1 : 0.2}
+                          style={{ x: slideXSpring, scale: shouldUseLiteMode ? 1 : slideScale }}
                           onDragEnd={handleSlideDragEnd}
-                          whileTap={{ scale: 0.95 }}
-                          whileHover={{ scale: 1.02 }}
+                          whileTap={shouldUseLiteMode ? {} : { scale: 0.95 }}
+                          whileHover={shouldUseLiteMode ? {} : { scale: 1.02 }}
                         >
+                          {/* Arrow animation - simplified or disabled on mobile */}
                           <motion.div
-                            animate={{ x: [0, 5, 0] }}
-                            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+                            animate={prefersReducedMotion ? {} : { x: [0, 5, 0] }}
+                            transition={prefersReducedMotion ? {} : { repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
                             className="flex items-center"
                           >
                             <ChevronRight size={24} className="text-white" />
@@ -518,7 +535,7 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
                       </div>
                     </div>
 
-                    {/* Incoming Call Animation */}
+                    {/* Incoming Call Animation - respects reduced motion */}
                     {hasIncomingCall && (
                       <motion.div
                         initial={{ opacity: 0 }}
@@ -526,8 +543,8 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
                         className="absolute top-20 left-0 right-0 text-center"
                       >
                         <motion.div
-                          animate={{ scale: [1, 1.1, 1] }}
-                          transition={{ repeat: Infinity, duration: 1 }}
+                          animate={prefersReducedMotion ? {} : { scale: [1, 1.1, 1] }}
+                          transition={prefersReducedMotion ? {} : { repeat: Infinity, duration: 1 }}
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 text-white"
                         >
                           <Phone size={16} />

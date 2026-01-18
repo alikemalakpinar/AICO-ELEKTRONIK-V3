@@ -30,11 +30,24 @@ import {
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
 import dynamic from 'next/dynamic';
+import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
-// Lazy load the Villa Dashboard Demo
+// Lazy load the Villa Dashboard Demo with proper skeleton
 const VillaDashboardDemo = dynamic(
   () => import('@/components/products/villa/VillaDashboardDemo'),
-  { ssr: false, loading: () => <div className="h-[500px] animate-pulse bg-onyx-800/50 rounded-3xl" /> }
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[500px] animate-pulse rounded-3xl bg-gradient-to-br from-onyx-800/50 to-onyx-900/50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-engineer-500/20 flex items-center justify-center">
+            <Home className="w-8 h-8 text-engineer-500 animate-pulse" />
+          </div>
+          <div className="text-sm text-muted-foreground">Loading dashboard...</div>
+        </div>
+      </div>
+    ),
+  }
 );
 
 interface SmartVillaClientProps {
@@ -67,6 +80,9 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
   const t = getTranslations(lang);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Mobile optimization - disable heavy effects on mobile
+  const { shouldUseLiteMode, isMobile, prefersReducedMotion } = useMobileOptimization();
+
   // State for smart home controls
   const [activeMode, setActiveMode] = useState<ControlMode>('home');
   const [ambientColor, setAmbientColor] = useState('#F97316');
@@ -84,14 +100,20 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll animations
+  // Scroll animations - DISABLED on mobile for performance
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
 
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
+  // On mobile, don't animate hero based on scroll (reduces GPU load)
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], shouldUseLiteMode ? [1, 1] : [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.15], shouldUseLiteMode ? [1, 1] : [1, 0.95]);
+
+  // Animation variants for mobile optimization
+  const mobileOptimizedTransition = shouldUseLiteMode
+    ? { duration: 0.15 }
+    : { type: 'spring', stiffness: 300, damping: 25 };
 
   // Rooms data
   const rooms: Room[] = [
@@ -148,13 +170,15 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-onyx-900">
-      {/* Ambient Background Effect */}
-      <div
-        className="fixed inset-0 pointer-events-none transition-colors duration-1000"
-        style={{
-          background: `radial-gradient(ellipse at 50% 30%, ${ambientColor}08 0%, transparent 50%)`,
-        }}
-      />
+      {/* Ambient Background Effect - DISABLED on mobile for GPU performance */}
+      {!shouldUseLiteMode && (
+        <div
+          className="fixed inset-0 pointer-events-none transition-colors duration-1000"
+          style={{
+            background: `radial-gradient(ellipse at 50% 30%, ${ambientColor}08 0%, transparent 50%)`,
+          }}
+        />
+      )}
 
       {/* Hero Section - POV Perspective */}
       <motion.section
@@ -185,17 +209,19 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
             transition={{ duration: 0.5 }}
           />
 
-          {/* Interior light effect */}
-          <motion.div
-            className="absolute inset-0"
-            animate={{
-              background: lightsOn
-                ? `radial-gradient(circle at 30% 40%, ${ambientColor}15 0%, transparent 50%),
-                   radial-gradient(circle at 70% 60%, ${ambientColor}10 0%, transparent 40%)`
-                : 'transparent',
-            }}
-            transition={{ duration: 0.8 }}
-          />
+          {/* Interior light effect - DISABLED on mobile */}
+          {!shouldUseLiteMode && (
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                background: lightsOn
+                  ? `radial-gradient(circle at 30% 40%, ${ambientColor}15 0%, transparent 50%),
+                     radial-gradient(circle at 70% 60%, ${ambientColor}10 0%, transparent 40%)`
+                  : 'transparent',
+              }}
+              transition={{ duration: 0.8 }}
+            />
+          )}
 
           {/* Grid pattern for depth */}
           <div
@@ -331,9 +357,14 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               <div
                 className="relative p-8 rounded-3xl border border-white/10 overflow-hidden"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%)',
-                  backdropFilter: 'blur(20px)',
-                  boxShadow: `0 0 60px ${ambientColor}10, inset 0 1px 0 rgba(255,255,255,0.05)`,
+                  background: shouldUseLiteMode
+                    ? 'rgba(20, 20, 20, 0.98)' // Solid background on mobile - no blur
+                    : 'linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%)',
+                  backdropFilter: shouldUseLiteMode ? 'none' : 'blur(20px)',
+                  WebkitBackdropFilter: shouldUseLiteMode ? 'none' : 'blur(20px)',
+                  boxShadow: shouldUseLiteMode
+                    ? '0 4px 20px rgba(0,0,0,0.3)'
+                    : `0 0 60px ${ambientColor}10, inset 0 1px 0 rgba(255,255,255,0.05)`,
                 }}
               >
                 {/* Status Bar */}
@@ -497,7 +528,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                           <motion.div
                             className="w-6 h-6 rounded-full bg-white shadow-lg"
                             animate={{ x: lightsOn ? 24 : 4 }}
-                            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                            transition={shouldUseLiteMode ? { duration: 0.1 } : { type: 'spring', stiffness: 500, damping: 30 }}
                           />
                         </button>
                       </div>
@@ -703,7 +734,9 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               <div
                 className="relative p-6 rounded-2xl border border-white/10 overflow-hidden"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%)',
+                  background: shouldUseLiteMode
+                    ? 'rgba(20, 20, 20, 0.98)'
+                    : 'linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%)',
                 }}
               >
                 <h3 className="text-sm font-medium text-offwhite-500 mb-4">

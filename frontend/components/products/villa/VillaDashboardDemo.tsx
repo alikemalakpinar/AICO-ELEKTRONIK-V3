@@ -22,6 +22,7 @@ import {
   Wifi,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 import type { Locale } from '@/types';
 
 interface VillaDashboardDemoProps {
@@ -37,22 +38,33 @@ interface RoomState {
   lightBrightness: number;
 }
 
-// Tactile button spring config
+// Tactile button spring config - lighter on mobile
 const tactileSpring = { type: 'spring' as const, stiffness: 400, damping: 17 };
+const lightSpring = { type: 'spring' as const, stiffness: 200, damping: 20 };
 
 export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
   const { mode } = useTheme();
   const isDark = mode === 'dark';
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Parallax tilt effect
+  // Mobile optimization - disable heavy effects on mobile/low-end devices
+  const { shouldUseLiteMode, isMobile, prefersReducedMotion } = useMobileOptimization();
+
+  // Parallax tilt effect - DISABLED on mobile for performance
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [5, -5]), { stiffness: 150, damping: 20 });
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-5, 5]), { stiffness: 150, damping: 20 });
+  const rotateX = useSpring(
+    useTransform(mouseY, [-0.5, 0.5], shouldUseLiteMode ? [0, 0] : [5, -5]),
+    { stiffness: 150, damping: 20 }
+  );
+  const rotateY = useSpring(
+    useTransform(mouseX, [-0.5, 0.5], shouldUseLiteMode ? [0, 0] : [-5, 5]),
+    { stiffness: 150, damping: 20 }
+  );
 
+  // Only track mouse on desktop
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (shouldUseLiteMode || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -61,9 +73,13 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
   };
 
   const handleMouseLeave = () => {
+    if (shouldUseLiteMode) return;
     mouseX.set(0);
     mouseY.set(0);
   };
+
+  // Use lighter spring on mobile
+  const springConfig = shouldUseLiteMode ? lightSpring : tactileSpring;
 
   const [selectedRoom, setSelectedRoom] = useState<RoomType>('living');
   const [gasValveOpen, setGasValveOpen] = useState(true);
@@ -125,18 +141,24 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000 }}
+      style={
+        shouldUseLiteMode
+          ? {} // No 3D transforms on mobile - saves GPU
+          : { rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000 }
+      }
       className={`relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden ${isDark ? 'bg-onyx-900' : 'bg-white'}`}
-      whileHover={{ scale: 1.01 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      whileHover={shouldUseLiteMode ? {} : { scale: 1.01 }}
+      transition={shouldUseLiteMode ? { duration: 0 } : { type: 'spring', stiffness: 300, damping: 20 }}
     >
-      {/* Premium shadow layer */}
+      {/* Premium shadow layer - simplified on mobile */}
       <div
         className="absolute inset-0 rounded-3xl pointer-events-none"
         style={{
-          boxShadow: isDark
-            ? '0 20px 40px -10px rgba(0, 0, 0, 0.35), 0 40px 80px -20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
-            : '0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 40px 80px -20px rgba(0, 0, 0, 0.1)'
+          boxShadow: shouldUseLiteMode
+            ? (isDark ? '0 4px 20px rgba(0, 0, 0, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.1)')
+            : isDark
+              ? '0 20px 40px -10px rgba(0, 0, 0, 0.35), 0 40px 80px -20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+              : '0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 40px 80px -20px rgba(0, 0, 0, 0.1)'
         }}
       />
 
@@ -152,8 +174,8 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
           >
             <motion.div
               initial={{ scale: 0.8 }}
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ repeat: Infinity, duration: 0.5 }}
+              animate={prefersReducedMotion ? { scale: 1 } : { scale: [1, 1.05, 1] }}
+              transition={prefersReducedMotion ? { duration: 0.2 } : { repeat: Infinity, duration: 0.5 }}
               className="text-center text-white p-8"
             >
               <AlertTriangle size={80} className="mx-auto mb-4" />
@@ -166,7 +188,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
               <motion.button
                 onClick={() => setWaterLeakAlert(false)}
                 whileTap={{ scale: 0.96 }}
-                transition={tactileSpring}
+                transition={springConfig}
                 className="px-6 py-3 bg-white text-red-500 font-semibold rounded-xl hover:bg-gray-100 transition-colors"
               >
                 {lang === 'tr' ? 'Uyarıyı Kapat' : 'Dismiss Alert'}
@@ -211,7 +233,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                 key={room.id}
                 onClick={() => setSelectedRoom(room.id)}
                 whileTap={{ scale: 0.96 }}
-                transition={tactileSpring}
+                transition={springConfig}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                   isActive
                     ? 'bg-engineer-500 text-white'
@@ -241,7 +263,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                   key={room.id}
                   onClick={() => setSelectedRoom(room.id)}
                   whileTap={{ scale: 0.96 }}
-                  transition={tactileSpring}
+                  transition={springConfig}
                   className={`w-full flex flex-col items-center gap-1 p-3 transition-all ${
                     isActive
                       ? 'bg-engineer-500 text-white'
@@ -265,10 +287,10 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedRoom}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
+              initial={shouldUseLiteMode ? { opacity: 0 } : { opacity: 0, x: 20 }}
+              animate={shouldUseLiteMode ? { opacity: 1 } : { opacity: 1, x: 0 }}
+              exit={shouldUseLiteMode ? { opacity: 0 } : { opacity: 0, x: -20 }}
+              transition={{ duration: shouldUseLiteMode ? 0.1 : 0.2 }}
               className="space-y-6"
             >
               {/* Room Title */}
@@ -280,7 +302,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                   <motion.button
                     onClick={() => updateRoomState('lightsOn', !currentRoomState.lightsOn)}
                     whileTap={{ scale: 0.96 }}
-                    transition={tactileSpring}
+                    transition={springConfig}
                     className={`p-2 rounded-lg transition-colors ${
                       currentRoomState.lightsOn
                         ? 'bg-amber-500/20 text-amber-500'
@@ -292,7 +314,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                   <motion.button
                     onClick={() => updateRoomState('lightsOn', !currentRoomState.lightsOn)}
                     whileTap={{ scale: 0.96 }}
-                    transition={tactileSpring}
+                    transition={springConfig}
                     className={`p-2 rounded-lg transition-colors ${
                       currentRoomState.lightsOn
                         ? 'bg-green-500/20 text-green-500'
@@ -319,20 +341,20 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                     </span>
                   </div>
 
-                  {/* Visual Curtain Representation */}
+                  {/* Visual Curtain Representation - Simplified animation on mobile */}
                   <div className="relative h-24 mb-4 rounded-lg overflow-hidden bg-gradient-to-b from-sky-200 to-sky-100 dark:from-sky-900/50 dark:to-sky-800/30">
                     {/* Window */}
                     <div className="absolute inset-2 border-4 border-white/50 dark:border-white/20 rounded" />
-                    {/* Curtains */}
+                    {/* Curtains - Use CSS transition on mobile, spring on desktop */}
                     <motion.div
                       className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-amber-800 to-amber-700"
                       animate={{ width: `${(100 - currentRoomState.curtainOpen) / 2}%` }}
-                      transition={{ type: 'spring', stiffness: 100 }}
+                      transition={shouldUseLiteMode ? { duration: 0.2 } : { type: 'spring', stiffness: 100 }}
                     />
                     <motion.div
                       className="absolute top-0 right-0 bottom-0 bg-gradient-to-l from-amber-800 to-amber-700"
                       animate={{ width: `${(100 - currentRoomState.curtainOpen) / 2}%` }}
-                      transition={{ type: 'spring', stiffness: 100 }}
+                      transition={shouldUseLiteMode ? { duration: 0.2 } : { type: 'spring', stiffness: 100 }}
                     />
                   </div>
 
@@ -399,7 +421,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                     <motion.button
                       onClick={() => updateRoomState('temperature', Math.max(16, currentRoomState.temperature - 1))}
                       whileTap={{ scale: 0.96 }}
-                      transition={tactileSpring}
+                      transition={springConfig}
                       className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xl font-bold hover:bg-blue-500/30 transition-colors"
                     >
                       -
@@ -407,7 +429,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                     <motion.button
                       onClick={() => updateRoomState('temperature', Math.min(30, currentRoomState.temperature + 1))}
                       whileTap={{ scale: 0.96 }}
-                      transition={tactileSpring}
+                      transition={springConfig}
                       className="w-10 h-10 rounded-full bg-red-500/20 text-red-500 flex items-center justify-center text-xl font-bold hover:bg-red-500/30 transition-colors"
                     >
                       +
@@ -450,7 +472,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                         <motion.div
                           className="absolute top-1 w-1/2 h-12 rounded-lg bg-white shadow-lg flex items-center justify-center"
                           animate={{ left: gasValveOpen ? 'calc(50% - 4px)' : '4px' }}
-                          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                          transition={shouldUseLiteMode ? { duration: 0.15 } : { type: 'spring', stiffness: 500, damping: 30 }}
                         >
                           <span className={`text-sm font-bold ${gasValveOpen ? 'text-green-500' : 'text-red-500'}`}>
                             {gasValveOpen ? 'ON' : 'OFF'}
@@ -498,7 +520,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                       <motion.button
                         onClick={simulateWaterLeak}
                         whileTap={{ scale: 0.96 }}
-                        transition={tactileSpring}
+                        transition={springConfig}
                         className="w-full py-2 px-4 rounded-lg bg-red-500/10 text-red-500 text-sm font-medium hover:bg-red-500/20 transition-colors"
                       >
                         {lang === 'tr' ? '⚡ Sızıntı Simüle Et' : '⚡ Simulate Leak'}
@@ -560,7 +582,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                           <motion.button
                             onClick={() => setFridgeDoorOpen(!fridgeDoorOpen)}
                             whileTap={{ scale: 0.96 }}
-                            transition={tactileSpring}
+                            transition={springConfig}
                             className={`w-full py-2 rounded-lg text-sm font-medium transition-colors ${
                               fridgeDoorOpen
                                 ? 'bg-yellow-500/20 text-yellow-500'
@@ -599,7 +621,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                       <div className="flex gap-2">
                         <motion.button
                           whileTap={{ scale: 0.96 }}
-                          transition={tactileSpring}
+                          transition={springConfig}
                           className={`p-2 rounded-lg ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-100 hover:bg-gray-200'}`}
                         >
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -608,7 +630,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                         </motion.button>
                         <motion.button
                           whileTap={{ scale: 0.96 }}
-                          transition={tactileSpring}
+                          transition={springConfig}
                           className={`p-2 rounded-lg bg-purple-500 text-white hover:bg-purple-600`}
                         >
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -634,7 +656,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                       </div>
                       <motion.button
                         whileTap={{ scale: 0.96 }}
-                        transition={tactileSpring}
+                        transition={springConfig}
                         className="px-4 py-2 rounded-xl bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition-colors"
                       >
                         {lang === 'tr' ? 'Etkinleştir' : 'Activate'}
@@ -662,7 +684,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                       </div>
                       <motion.button
                         whileTap={{ scale: 0.96 }}
-                        transition={tactileSpring}
+                        transition={springConfig}
                         className="px-4 py-2 rounded-xl bg-green-500 text-white font-medium hover:bg-green-600 transition-colors"
                       >
                         {lang === 'tr' ? 'Şimdi Sula' : 'Water Now'}
