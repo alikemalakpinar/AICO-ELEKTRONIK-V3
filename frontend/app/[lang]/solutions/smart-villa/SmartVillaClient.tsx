@@ -29,6 +29,13 @@ import {
   Bell,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
+import dynamic from 'next/dynamic';
+
+// Lazy load the Villa Dashboard Demo
+const VillaDashboardDemo = dynamic(
+  () => import('@/components/products/villa/VillaDashboardDemo'),
+  { ssr: false, loading: () => <div className="h-[500px] animate-pulse bg-onyx-800/50 rounded-3xl" /> }
+);
 
 interface SmartVillaClientProps {
   lang: Locale;
@@ -792,8 +799,43 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
         </div>
       </section>
 
+      {/* Interactive Dashboard Demo Section */}
+      <section className="py-20 dark:bg-onyx-900 light:bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'İNTERAKTİF DEMO' : 'INTERACTIVE DEMO'}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {lang === 'tr' ? 'Tablet Kontrol Paneli' : 'Tablet Control Panel'}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Odaları seçin, perdeleri kontrol edin, sıcaklığı ayarlayın. Mutfak güvenlik özelliklerini test edin.'
+                : 'Select rooms, control curtains, adjust temperature. Test kitchen safety features.'}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <VillaDashboardDemo lang={lang} />
+          </motion.div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="py-32 bg-onyx-950">
+      <section className="py-32 dark:bg-onyx-950 light:bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

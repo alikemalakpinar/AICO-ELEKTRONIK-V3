@@ -36,6 +36,12 @@ const NetworkGlobe = dynamic(
   }
 );
 
+// Lazy load the Residence Mobile Demo
+const ResidenceMobileDemo = dynamic(
+  () => import('@/components/products/residence/ResidenceMobileDemo'),
+  { ssr: false, loading: () => <div className="h-[600px] animate-pulse bg-onyx-800/50 rounded-3xl" /> }
+);
+
 interface SmartResidenceClientProps {
   lang: Locale;
 }
@@ -339,6 +345,41 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Interactive Mobile App Demo */}
+      <section className="py-20 dark:bg-onyx-900 light:bg-gray-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'MOBİL UYGULAMA' : 'MOBILE APP'}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {lang === 'tr' ? 'Dijital Kapıcı' : 'Digital Concierge'}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Kapıyı açın, misafir QR kodu oluşturun, interkom çağrılarını yanıtlayın - hepsi avucunuzda.'
+                : 'Unlock the door, generate guest QR codes, answer intercom calls - all in your palm.'}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <ResidenceMobileDemo lang={lang} />
+          </motion.div>
         </div>
       </section>
 
