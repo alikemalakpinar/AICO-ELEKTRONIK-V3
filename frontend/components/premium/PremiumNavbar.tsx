@@ -21,9 +21,9 @@ import {
   Snowflake,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
-import Image from 'next/image';
 import SoundToggle from './SoundToggle';
 import ThemeToggle from './ThemeToggle';
+import ThemeLogo from './ThemeLogo';
 import { useAudio } from './AudioProvider';
 
 interface PremiumNavbarProps {
@@ -228,13 +228,15 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
             paddingRight: scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
           }}
         >
-          {/* Inner navbar container with GPU-accelerated transforms */}
+          {/* Inner navbar container with Apple-style vibrancy blur */}
           <motion.div
-            className="w-full h-full flex items-center backdrop-blur-2xl border border-transparent transition-all duration-500 ease-out navbar-glass"
+            className="w-full h-full flex items-center border border-transparent transition-all duration-500 ease-out navbar-glass"
             style={{
               maxWidth: scrollState === 'top' ? '100%' : scrollState === 'scrolled' ? '95%' : '900px',
               borderRadius: scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
-              backgroundColor: scrollState === 'top' ? 'transparent' : 'var(--navbar-bg, rgba(15, 15, 15, 0.85))',
+              backgroundColor: scrollState === 'top' ? 'transparent' : 'var(--vibrancy-bg)',
+              backdropFilter: scrollState === 'top' ? 'none' : 'var(--vibrancy-blur)',
+              WebkitBackdropFilter: scrollState === 'top' ? 'none' : 'var(--vibrancy-blur)',
               borderColor: scrollState === 'top' ? 'transparent' : 'var(--navbar-border, rgba(255, 255, 255, 0.08))',
               boxShadow: scrollState === 'compact'
                 ? 'var(--navbar-shadow-compact, 0 8px 32px rgba(0, 0, 0, 0.4))'
@@ -261,18 +263,18 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
             {/* Navbar content */}
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-14">
-                {/* Logo */}
+                {/* Logo - Theme adaptive with native variants */}
                 <Link href={`/${lang}`} className="flex items-center gap-2 group flex-shrink-0">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
+                    className="opacity-90 group-hover:opacity-100 transition-opacity duration-300"
                   >
-                    <Image
-                      src="/assets/logos/aicoelektroniklogo.png"
-                      alt="AICO"
-                      width={82}
-                      height={34}
-                      className="w-auto h-7 dark:brightness-0 dark:invert opacity-90 group-hover:opacity-100 transition-all duration-300"
+                    <ThemeLogo
+                      width={100}
+                      height={28}
+                      variant="default"
+                      className="h-7 w-auto"
                       priority
                     />
                   </motion.div>
@@ -286,7 +288,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseEnter={handleSolutionsEnter}
                     onMouseLeave={handleSolutionsLeave}
                   >
-                    <button className="flex items-center gap-1.5 px-4 py-2 text-offwhite-500 hover:text-offwhite-300 transition-colors text-sm font-medium rounded-lg hover:bg-white/5">
+                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
                       {lang === 'tr' ? 'Cozumler' : 'Solutions'}
                       <ChevronDown
                         size={14}
@@ -306,13 +308,13 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                           onMouseEnter={handleSolutionsEnter}
                           onMouseLeave={handleSolutionsLeave}
                         >
-                          {/* Glass card */}
-                          <div className="bg-onyx-800/95 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+                          {/* Glass card - theme adaptive */}
+                          <div className="dark:bg-onyx-800/95 light:bg-white/98 backdrop-blur-2xl rounded-2xl border dark:border-white/10 light:border-gray-200 shadow-2xl overflow-hidden">
                             {/* Header */}
-                            <div className="px-6 py-4 border-b border-white/5">
+                            <div className="px-6 py-4 border-b dark:border-white/5 light:border-gray-200">
                               <div className="flex items-center gap-2">
                                 <Zap size={16} className="text-engineer-500" />
-                                <span className="text-xs font-mono text-offwhite-600 uppercase tracking-widest">
+                                <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
                                   {lang === 'tr' ? 'Endustriyel Cozumler' : 'Industrial Solutions'}
                                 </span>
                               </div>
@@ -324,7 +326,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                                 <Link
                                   key={solution.id}
                                   href={solution.href}
-                                  className="group relative flex items-start gap-4 p-4 rounded-xl hover:bg-white/5 transition-all duration-300"
+                                  className="group relative flex items-start gap-4 p-4 rounded-xl dark:hover:bg-white/5 light:hover:bg-gray-100 transition-all duration-300"
                                 >
                                   {/* Icon with gradient background */}
                                   <div
@@ -344,12 +346,12 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                                   {/* Text content */}
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <span className="text-offwhite-300 font-semibold text-sm group-hover:text-white transition-colors">
+                                      <span className="text-foreground font-semibold text-sm group-hover:text-foreground transition-colors">
                                         {solution.title}
                                       </span>
                                       <ArrowRight
                                         size={12}
-                                        className="text-offwhite-700 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all"
+                                        className="text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all"
                                       />
                                     </div>
                                     <div
@@ -358,7 +360,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                                     >
                                       {solution.subtitle}
                                     </div>
-                                    <div className="text-offwhite-700 text-xs leading-relaxed">
+                                    <div className="text-muted-foreground text-xs leading-relaxed">
                                       {solution.description}
                                     </div>
                                   </div>
@@ -367,12 +369,12 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                             </div>
 
                             {/* Footer CTA */}
-                            <div className="px-6 py-4 border-t border-white/5 bg-white/[0.02]">
+                            <div className="px-6 py-4 border-t dark:border-white/5 light:border-gray-200 dark:bg-white/[0.02] light:bg-gray-50">
                               <Link
                                 href={`/${lang}/projects`}
                                 className="group flex items-center justify-between text-sm"
                               >
-                                <span className="text-offwhite-600 group-hover:text-offwhite-400 transition-colors">
+                                <span className="text-muted-foreground group-hover:text-foreground transition-colors">
                                   {lang === 'tr' ? 'Tum projeleri inceleyin' : 'View all projects'}
                                 </span>
                                 <ArrowRight
@@ -393,7 +395,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseEnter={handleSmartLivingEnter}
                     onMouseLeave={handleSmartLivingLeave}
                   >
-                    <button className="flex items-center gap-1.5 px-4 py-2 text-offwhite-500 hover:text-offwhite-300 transition-colors text-sm font-medium rounded-lg hover:bg-white/5">
+                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
                       Smart Living
                       <ChevronDown
                         size={14}
@@ -412,27 +414,27 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                           onMouseEnter={handleSmartLivingEnter}
                           onMouseLeave={handleSmartLivingLeave}
                         >
-                          <div className="bg-onyx-800/95 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden p-2">
+                          <div className="dark:bg-onyx-800/95 light:bg-white/98 backdrop-blur-2xl rounded-2xl border dark:border-white/10 light:border-gray-200 shadow-2xl overflow-hidden p-2">
                             {smartLiving.map((item) => (
                               <Link
                                 key={item.id}
                                 href={item.href}
-                                className="group flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors"
+                                className="group flex items-start gap-3 p-3 rounded-xl dark:hover:bg-white/5 light:hover:bg-gray-100 transition-colors"
                               >
                                 <div className="w-10 h-10 rounded-xl bg-engineer-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-engineer-500/20 transition-colors">
                                   <item.icon size={18} className="text-engineer-500" />
                                 </div>
                                 <div className="flex-1">
-                                  <div className="text-offwhite-300 font-medium text-sm group-hover:text-white transition-colors">
+                                  <div className="text-foreground font-medium text-sm transition-colors">
                                     {item.title}
                                   </div>
-                                  <div className="text-offwhite-700 text-xs mt-0.5">
+                                  <div className="text-muted-foreground text-xs mt-0.5">
                                     {item.description}
                                   </div>
                                 </div>
                                 <ArrowRight
                                   size={14}
-                                  className="text-offwhite-800 group-hover:text-engineer-500 group-hover:translate-x-0.5 transition-all mt-1 flex-shrink-0 opacity-0 group-hover:opacity-100"
+                                  className="text-muted-foreground group-hover:text-engineer-500 group-hover:translate-x-0.5 transition-all mt-1 flex-shrink-0 opacity-0 group-hover:opacity-100"
                                 />
                               </Link>
                             ))}
@@ -445,7 +447,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* Projects */}
                   <Link
                     href={`/${lang}/projects`}
-                    className="px-4 py-2 text-offwhite-500 hover:text-offwhite-300 transition-colors text-sm font-medium rounded-lg hover:bg-white/5"
+                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5"
                   >
                     {t.nav.projects}
                   </Link>
@@ -453,7 +455,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* About */}
                   <Link
                     href={`/${lang}/about`}
-                    className="px-4 py-2 text-offwhite-500 hover:text-offwhite-300 transition-colors text-sm font-medium rounded-lg hover:bg-white/5"
+                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5"
                   >
                     {t.nav.about}
                   </Link>
@@ -470,7 +472,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* Language Switcher */}
                   <button
                     onClick={handleLanguageSwitch}
-                    className="flex items-center gap-1.5 px-3 py-2 text-offwhite-600 hover:text-offwhite-300 transition-colors text-xs font-mono rounded-lg hover:bg-white/5"
+                    className="flex items-center gap-1.5 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors text-xs font-mono rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5"
                   >
                     <Globe size={14} />
                     <span className="uppercase">{t.nav.languageSwitch}</span>
@@ -488,7 +490,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
 
                 {/* Mobile Menu Button */}
                 <motion.button
-                  className="lg:hidden p-2 text-offwhite-400 hover:text-offwhite-200 transition-colors rounded-lg hover:bg-white/5"
+                  className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -526,29 +528,34 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop - Theme adaptive */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-onyx-950/98 backdrop-blur-xl z-40 lg:hidden"
+              className="fixed inset-0 z-40 lg:hidden"
+              style={{
+                backgroundColor: 'var(--overlay-heavy)',
+                backdropFilter: 'var(--vibrancy-blur)',
+                WebkitBackdropFilter: 'var(--vibrancy-blur)',
+              }}
               onClick={() => setMobileMenuOpen(false)}
             />
 
-            {/* Menu Content - Slide from right */}
+            {/* Menu Content - Slide from right, theme adaptive */}
             <motion.div
               initial={{ opacity: 0, x: '100%' }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-onyx-900 border-l border-white/5 z-50 lg:hidden overflow-y-auto"
+              className="fixed top-0 right-0 bottom-0 w-full max-w-sm z-50 lg:hidden overflow-y-auto dark:bg-onyx-900 light:bg-white border-l dark:border-white/5 light:border-gray-200"
             >
               {/* Close button */}
               <div className="flex justify-end p-4">
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 text-offwhite-400 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5"
                 >
                   <X size={24} />
                 </button>
@@ -557,7 +564,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               <div className="px-6 pb-8 space-y-8">
                 {/* Solutions Section */}
                 <div className="space-y-4">
-                  <div className="text-offwhite-700 text-xs font-mono uppercase tracking-widest px-2">
+                  <div className="text-muted-foreground text-xs font-mono uppercase tracking-widest px-2">
                     {lang === 'tr' ? 'Cozumler' : 'Solutions'}
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -566,7 +573,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                         key={solution.id}
                         href={solution.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex flex-col items-center gap-3 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors text-center"
+                        className="flex flex-col items-center gap-3 p-4 rounded-2xl transition-colors text-center dark:bg-white/5 dark:hover:bg-white/10 light:bg-gray-100 light:hover:bg-gray-200"
                       >
                         <div
                           className={`w-14 h-14 rounded-xl bg-gradient-to-br ${solution.gradient} flex items-center justify-center`}
@@ -574,10 +581,10 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                           <solution.icon size={26} style={{ color: solution.color }} />
                         </div>
                         <div>
-                          <div className="text-offwhite-300 font-medium text-sm">
+                          <div className="text-foreground font-medium text-sm">
                             {solution.title}
                           </div>
-                          <div className="text-offwhite-700 text-xs mt-0.5">
+                          <div className="text-muted-foreground text-xs mt-0.5">
                             {solution.subtitle}
                           </div>
                         </div>
@@ -588,7 +595,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
 
                 {/* Smart Living Section */}
                 <div className="space-y-4">
-                  <div className="text-offwhite-700 text-xs font-mono uppercase tracking-widest px-2">
+                  <div className="text-muted-foreground text-xs font-mono uppercase tracking-widest px-2">
                     Smart Living
                   </div>
                   {smartLiving.map((item) => (
@@ -596,49 +603,49 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                       key={item.id}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                      className="flex items-center gap-4 p-4 rounded-xl transition-colors dark:bg-white/5 dark:hover:bg-white/10 light:bg-gray-100 light:hover:bg-gray-200"
                     >
                       <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center">
                         <item.icon size={22} className="text-engineer-500" />
                       </div>
                       <div className="flex-1">
-                        <div className="text-offwhite-300 font-medium">{item.title}</div>
-                        <div className="text-offwhite-700 text-sm">{item.description}</div>
+                        <div className="text-foreground font-medium">{item.title}</div>
+                        <div className="text-muted-foreground text-sm">{item.description}</div>
                       </div>
                     </Link>
                   ))}
                 </div>
 
                 {/* Divider */}
-                <div className="border-t border-white/5" />
+                <div className="border-t dark:border-white/5 light:border-gray-200" />
 
                 {/* Other Links */}
                 <div className="space-y-1">
                   <Link
                     href={`/${lang}/projects`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-3 text-offwhite-400 hover:text-white font-medium transition-colors rounded-lg hover:bg-white/5"
+                    className="block px-4 py-3 text-muted-foreground hover:text-foreground font-medium transition-colors rounded-lg dark:hover:bg-white/5 light:hover:bg-gray-100"
                   >
                     {t.nav.projects}
                   </Link>
                   <Link
                     href={`/${lang}/about`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-3 text-offwhite-400 hover:text-white font-medium transition-colors rounded-lg hover:bg-white/5"
+                    className="block px-4 py-3 text-muted-foreground hover:text-foreground font-medium transition-colors rounded-lg dark:hover:bg-white/5 light:hover:bg-gray-100"
                   >
                     {t.nav.about}
                   </Link>
                   <Link
                     href={`/${lang}/contact`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-3 text-offwhite-400 hover:text-white font-medium transition-colors rounded-lg hover:bg-white/5"
+                    className="block px-4 py-3 text-muted-foreground hover:text-foreground font-medium transition-colors rounded-lg dark:hover:bg-white/5 light:hover:bg-gray-100"
                   >
                     {t.nav.contact}
                   </Link>
                 </div>
 
                 {/* Divider */}
-                <div className="border-t border-white/5" />
+                <div className="border-t dark:border-white/5 light:border-gray-200" />
 
                 {/* Language Switcher */}
                 <button
@@ -646,7 +653,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     handleLanguageSwitch();
                     setMobileMenuOpen(false);
                   }}
-                  className="flex items-center gap-3 px-4 py-3 text-offwhite-500 hover:text-white transition-colors w-full rounded-lg hover:bg-white/5"
+                  className="flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground transition-colors w-full rounded-lg dark:hover:bg-white/5 light:hover:bg-gray-100"
                 >
                   <Globe size={18} />
                   <span className="font-mono">{lang === 'tr' ? 'English' : 'Turkce'}</span>
