@@ -264,8 +264,8 @@ export default function ScrollyTellingContainer({
         activeIndex={activeSceneIndex}
       />
 
-      {/* Content Scenes */}
-      <div className="relative z-10">
+      {/* Content Scenes - z-50 to ensure content stays above all background layers */}
+      <div className="relative z-50">
         {scenes.map((scene, index) => (
           <ScrollyScene
             key={scene.id}
