@@ -51,7 +51,7 @@ function GlitchText({ text, className = '' }: { text: string; className?: string
       </span>
 
       {/* Main text */}
-      <span className="relative text-offwhite-400">{text}</span>
+      <span className="relative text-foreground">{text}</span>
     </div>
   );
 }
@@ -216,7 +216,7 @@ export default function NotFound() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6 relative overflow-hidden">
       {/* Flickering grid background */}
       <FlickeringGrid />
 
@@ -235,7 +235,7 @@ export default function NotFound() {
       />
 
       {/* Vignette overlay */}
-      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/60 pointer-events-none" />
+      <div className="absolute inset-0 dark:bg-gradient-radial dark:from-transparent dark:via-transparent dark:to-black/60 light:bg-gradient-radial light:from-transparent light:via-transparent light:to-slate-200/60 pointer-events-none" />
 
       {/* Content */}
       <motion.div
@@ -272,13 +272,13 @@ export default function NotFound() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <h1 className="text-2xl md:text-3xl font-bold text-offwhite-400 mb-3">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
             Sinyal Kayboldu
           </h1>
-          <p className="text-offwhite-700 mb-2 font-mono text-sm">
+          <p className="text-muted-foreground mb-2 font-mono text-sm">
             [ERROR] Connection_Failed: Page_Not_Found
           </p>
-          <p className="text-offwhite-600 mb-8 text-lg">
+          <p className="text-muted-foreground mb-8 text-lg">
             Aradığınız sayfa mevcut değil veya devre dışı bırakıldı.
           </p>
         </motion.div>
@@ -288,24 +288,24 @@ export default function NotFound() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mb-8 p-4 bg-onyx-900/50 border border-white/5 rounded-xl font-mono text-xs text-left"
+          className="mb-8 p-4 dark:bg-onyx-900/50 light:bg-slate-100/80 border dark:border-white/5 light:border-slate-200 rounded-xl font-mono text-xs text-left"
         >
-          <div className="flex items-center gap-2 mb-2 text-offwhite-600">
+          <div className="flex items-center gap-2 mb-2 text-muted-foreground">
             <Zap size={12} className="text-engineer-500" />
             <span>System Diagnostics</span>
           </div>
-          <div className="space-y-1 text-offwhite-700">
+          <div className="space-y-1 text-muted-foreground">
             <motion.div
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <span className="text-red-500">●</span> Route: <span className="text-offwhite-500">Not Found</span>
+              <span className="text-red-500">●</span> Route: <span className="text-foreground">Not Found</span>
             </motion.div>
             <div>
-              <span className="text-green-500">●</span> System: <span className="text-offwhite-500">Operational</span>
+              <span className="text-green-500">●</span> System: <span className="text-foreground">Operational</span>
             </div>
             <div>
-              <span className="text-yellow-500">●</span> Suggestion: <span className="text-offwhite-500">Return to Home</span>
+              <span className="text-yellow-500">●</span> Suggestion: <span className="text-foreground">Return to Home</span>
             </div>
           </div>
         </motion.div>
@@ -329,7 +329,7 @@ export default function NotFound() {
           {/* Secondary: Go to Home */}
           <MagneticButton
             href="/tr"
-            className="group inline-flex items-center gap-2 px-6 py-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-offwhite-400 font-medium rounded-xl transition-all"
+            className="group inline-flex items-center gap-2 px-6 py-4 dark:bg-white/5 dark:hover:bg-white/10 light:bg-slate-100 light:hover:bg-slate-200 border dark:border-white/10 dark:hover:border-white/20 light:border-slate-200 light:hover:border-slate-300 text-foreground font-medium rounded-xl transition-all"
           >
             <Home size={18} />
             <span>Ana Sayfa</span>
@@ -345,7 +345,7 @@ export default function NotFound() {
 
       {/* Status bar at bottom */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 h-1 bg-onyx-800"
+        className="absolute bottom-0 left-0 right-0 h-1 dark:bg-onyx-800 light:bg-slate-200"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 1, delay: 0.5 }}

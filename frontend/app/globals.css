@@ -18,56 +18,58 @@
   :root {
     /* ===========================================
        LIGHT MODE - Engineering White
+       Technical drawing paper aesthetic
+       Using Slate-50 (#F8FAFC) - NOT pure white
        Clean, high-contrast, professional
     =========================================== */
-    --background: 0 0% 99%;
-    --background-rgb: 252, 252, 252;
-    --foreground: 220 20% 10%;
-    --foreground-rgb: 23, 26, 31;
+    --background: 210 40% 98%;
+    --background-rgb: 248, 250, 252;
+    --foreground: 222 47% 11%;
+    --foreground-rgb: 15, 23, 42;
 
-    /* Surface colors for cards, popovers */
+    /* Surface colors for cards, popovers - subtle gray tones */
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 222 47% 11%;
 
     /* Primary accent (engineer orange) */
     --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary surfaces */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 20% 10%;
+    /* Secondary surfaces - engineering paper gray */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
     /* Muted text and backgrounds */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
     /* Accent for highlights */
-    --accent: 220 14% 96%;
-    --accent-foreground: 220 20% 10%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
 
     /* Destructive states */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs */
-    --border: 220 14% 90%;
-    --input: 220 14% 90%;
+    /* Borders and inputs - sharp technical lines */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
     --ring: 24 95% 53%;
     --radius: 0.5rem;
 
-    /* Surface elevation levels */
-    --surface-0: 0 0% 99%;
+    /* Surface elevation levels - Engineering paper tones */
+    --surface-0: 210 40% 98%;
     --surface-1: 0 0% 100%;
-    --surface-2: 220 14% 97%;
-    --surface-3: 220 14% 95%;
+    --surface-2: 210 40% 96%;
+    --surface-3: 214 32% 94%;
 
-    /* Text hierarchy */
-    --text-primary: 220 20% 10%;
-    --text-secondary: 220 10% 35%;
-    --text-tertiary: 220 8% 55%;
-    --text-muted: 220 8% 65%;
+    /* Text hierarchy - High contrast slate tones */
+    --text-primary: 222 47% 11%;
+    --text-secondary: 215 25% 27%;
+    --text-tertiary: 215 16% 47%;
+    --text-muted: 215 14% 57%;
 
     /* Chart colors - light mode */
     --chart-1: 24 95% 53%;
@@ -81,20 +83,20 @@
     --product-primary-light: #FB923C;
     --product-primary-dark: #EA580C;
     --product-gradient: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
-    --product-glow: rgba(249, 115, 22, 0.15);
-    --product-selection: rgba(249, 115, 22, 0.2);
-    --scrollbar-thumb: rgba(249, 115, 22, 0.3);
-    --scrollbar-thumb-hover: rgba(249, 115, 22, 0.5);
+    --product-glow: rgba(249, 115, 22, 0.12);
+    --product-selection: rgba(249, 115, 22, 0.15);
+    --scrollbar-thumb: rgba(249, 115, 22, 0.25);
+    --scrollbar-thumb-hover: rgba(249, 115, 22, 0.4);
 
     /* Overlay colors */
-    --overlay-light: rgba(255, 255, 255, 0.8);
-    --overlay-heavy: rgba(255, 255, 255, 0.95);
+    --overlay-light: rgba(248, 250, 252, 0.8);
+    --overlay-heavy: rgba(248, 250, 252, 0.95);
 
-    /* Shadows for light mode */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
-    --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.1);
+    /* Shadows for light mode - subtle, technical feel */
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.08);
+    --shadow-xl: 0 24px 48px rgba(15, 23, 42, 0.1);
   }
 
   .dark {
@@ -682,7 +684,7 @@
   }
 
   .light .bg-page-gradient {
-    background: linear-gradient(180deg, #FCFCFC 0%, #F8F9FA 50%, #FCFCFC 100%);
+    background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 50%, #F8FAFC 100%);
   }
 
   /* Section backgrounds */

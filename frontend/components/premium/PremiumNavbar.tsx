@@ -272,7 +272,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                       alt="AICO"
                       width={82}
                       height={34}
-                      className="w-auto h-7 brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
+                      className="w-auto h-7 dark:brightness-0 dark:invert opacity-90 group-hover:opacity-100 transition-all duration-300"
                       priority
                     />
                   </motion.div>
