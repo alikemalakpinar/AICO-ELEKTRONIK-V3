@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, PanInfo } from 'framer-motion';
 import {
   Lock,
   Unlock,
@@ -95,10 +95,12 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
   const [hasIncomingCall, setHasIncomingCall] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Slide to unlock motion values
+  // Slide to unlock motion values with rubber-band physics
   const slideX = useMotionValue(0);
+  const slideXSpring = useSpring(slideX, { stiffness: 300, damping: 20, mass: 0.5 });
   const slideProgress = useTransform(slideX, [0, 200], [0, 1]);
   const slideOpacity = useTransform(slideProgress, [0, 1], [1, 0]);
+  const slideScale = useTransform(slideProgress, [0, 0.5, 1], [1, 1.05, 1]);
 
   // Update time
   useEffect(() => {
@@ -167,6 +169,27 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
         >
           {/* Screen */}
           <div className={`relative w-full h-full rounded-[35px] overflow-hidden ${isDark ? 'bg-black' : 'bg-white'}`}>
+            {/* Glass Reflection Overlay */}
+            <div
+              className="absolute inset-0 z-30 pointer-events-none rounded-[35px]"
+              style={{
+                background: `linear-gradient(
+                  135deg,
+                  rgba(255, 255, 255, 0.15) 0%,
+                  rgba(255, 255, 255, 0.05) 30%,
+                  transparent 50%,
+                  rgba(255, 255, 255, 0.02) 70%,
+                  rgba(255, 255, 255, 0.08) 100%
+                )`,
+              }}
+            />
+            {/* Secondary light streak */}
+            <div
+              className="absolute -top-20 -left-20 w-40 h-[200%] z-30 pointer-events-none rotate-[30deg]"
+              style={{
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)',
+              }}
+            />
             {/* Notch */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-2xl z-20" />
 
@@ -338,20 +361,33 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
                       }
                     </p>
 
-                    {/* Slide to Unlock */}
+                    {/* Slide to Unlock with Rubber-band Physics */}
                     {!isUnlocked && (
                       <div className={`relative w-full h-16 rounded-full overflow-hidden ${isDark ? 'bg-white/10' : 'bg-gray-200'}`}>
+                        {/* Progress fill */}
                         <motion.div
-                          className="absolute inset-y-1 left-1 w-14 h-14 rounded-full bg-engineer-500 flex items-center justify-center cursor-grab active:cursor-grabbing z-10"
+                          className="absolute inset-y-0 left-0 bg-engineer-500/20"
+                          style={{ width: useTransform(slideProgress, [0, 1], ['0%', '100%']) }}
+                        />
+
+                        <motion.div
+                          className="absolute inset-y-1 left-1 w-14 h-14 rounded-full bg-engineer-500 flex items-center justify-center cursor-grab active:cursor-grabbing z-10 shadow-lg"
                           drag="x"
                           dragConstraints={{ left: 0, right: 200 }}
-                          dragElastic={0}
-                          style={{ x: slideX }}
+                          dragElastic={0.2}
+                          style={{ x: slideXSpring, scale: slideScale }}
                           onDragEnd={handleSlideDragEnd}
                           whileTap={{ scale: 0.95 }}
+                          whileHover={{ scale: 1.02 }}
                         >
-                          <ChevronRight size={24} className="text-white" />
-                          <ChevronRight size={24} className="text-white -ml-3" />
+                          <motion.div
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+                            className="flex items-center"
+                          >
+                            <ChevronRight size={24} className="text-white" />
+                            <ChevronRight size={24} className="text-white -ml-3 opacity-60" />
+                          </motion.div>
                         </motion.div>
 
                         <motion.span
