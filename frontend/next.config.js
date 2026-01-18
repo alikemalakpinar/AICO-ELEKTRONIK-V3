@@ -154,31 +154,83 @@ const nextConfig = {
 
   // Headers for security and caching
   async headers() {
+    // Content Security Policy for production
+    // Allows inline styles/scripts for Next.js, external fonts, and API
+    const cspHeader = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://calendly.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com",
+      "font-src 'self' https://fonts.gstatic.com https://cdn.fontshare.com data:",
+      "img-src 'self' data: blob: https: http:",
+      "media-src 'self' data: blob:",
+      "connect-src 'self' https://api.aicoelektronik.com http://localhost:8001 https://calendly.com",
+      "frame-src 'self' https://calendly.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'self'",
+      "upgrade-insecure-requests",
+    ].join('; ');
+
     return [
       {
         source: '/:path*',
         headers: [
+          // DNS prefetch for performance
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
           },
+          // Prevent clickjacking
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
           },
+          // Prevent MIME type sniffing
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
           },
+          // Control referrer information
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
+          },
+          // Prevent XSS attacks
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          // Permissions Policy (formerly Feature Policy)
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          // Content Security Policy
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader,
+          },
+          // HTTP Strict Transport Security (1 year, include subdomains)
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
           },
         ],
       },
       // Cache static assets
       {
         source: '/assets/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      // Cache fonts
+      {
+        source: '/:path*.woff2',
         headers: [
           {
             key: 'Cache-Control',

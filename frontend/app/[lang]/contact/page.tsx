@@ -323,22 +323,61 @@ export default function ContactPage({ params }: ContactPageProps) {
     }
   }, []);
 
-  // Handle form submission
+  const [error, setError] = useState<string | null>(null);
+
+  // Handle form submission - real API integration
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError(lang === 'tr' ? 'Geçerli bir e-posta adresi girin.' : 'Please enter a valid email address.');
+      setIsSubmitting(false);
+      return;
+    }
 
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+      const response = await fetch(`${backendUrl}/api/contact/consultation`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company || null,
+          project_type: formData.subject || 'consultation',
+          message: formData.message,
+        }),
+      });
 
-    // Reset after success animation
-    setTimeout(() => {
-      setIsSuccess(false);
-      setFormData({ name: '', email: '', company: '', subject: '', message: '' });
-    }, 3000);
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error(lang === 'tr'
+            ? 'Çok fazla istek gönderdiniz. Lütfen bir dakika bekleyin.'
+            : 'Too many requests. Please wait a minute.');
+        }
+        throw new Error(lang === 'tr'
+          ? 'Mesaj gönderilemedi. Lütfen tekrar deneyin.'
+          : 'Failed to send message. Please try again.');
+      }
+
+      setIsSubmitting(false);
+      setIsSuccess(true);
+
+      // Reset after success animation
+      setTimeout(() => {
+        setIsSuccess(false);
+        setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+      }, 3000);
+    } catch (err) {
+      setIsSubmitting(false);
+      setError(err instanceof Error ? err.message : (lang === 'tr' ? 'Bir hata oluştu.' : 'An error occurred.'));
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -447,6 +486,17 @@ export default function ContactPage({ params }: ContactPageProps) {
                 value={formData.message}
                 onChange={handleChange}
               />
+
+              {/* Error Message */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm"
+                >
+                  {error}
+                </motion.div>
+              )}
 
               {/* Submit Button */}
               <MagneticSubmitButton
