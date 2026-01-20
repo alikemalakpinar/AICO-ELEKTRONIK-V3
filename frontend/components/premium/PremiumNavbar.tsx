@@ -40,6 +40,8 @@ function getPageAccentColor(pathname: string): string {
 }
 
 export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
+  // Hydration-safe scroll state - start with null to avoid mismatch
+  const [hasMounted, setHasMounted] = useState(false);
   const [scrollState, setScrollState] = useState<'top' | 'scrolled' | 'compact'>('top');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
@@ -57,7 +59,23 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
   // Use Framer Motion's scroll tracking for smoother performance
   const { scrollY } = useScroll();
 
+  // Mark as mounted after hydration completes - this prevents CLS
+  useEffect(() => {
+    setHasMounted(true);
+    // Set initial scroll state based on actual position after mount
+    const currentScroll = window.scrollY;
+    if (currentScroll < 20) {
+      setScrollState('top');
+    } else if (currentScroll < 150) {
+      setScrollState('scrolled');
+    } else {
+      setScrollState('compact');
+    }
+  }, []);
+
   useMotionValueEvent(scrollY, 'change', (latest) => {
+    // Only update after mount to prevent hydration issues
+    if (!hasMounted) return;
     if (latest < 20) {
       setScrollState('top');
     } else if (latest < 150) {
@@ -219,26 +237,28 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
         className={navbarClasses}
         initial={false}
       >
-        {/* Outer container for centering - fixed dimensions */}
+        {/* Outer container for centering - fixed dimensions, hydration-safe */}
         <div
           className="h-20 flex items-center justify-center transition-all duration-500 ease-out"
           style={{
-            paddingTop: scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '8px' : '12px',
-            paddingLeft: scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
-            paddingRight: scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
+            // Use 'top' state styles until mounted to prevent CLS
+            paddingTop: !hasMounted ? '0px' : scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '8px' : '12px',
+            paddingLeft: !hasMounted ? '0px' : scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
+            paddingRight: !hasMounted ? '0px' : scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
           }}
         >
-          {/* Inner navbar container with Apple-style vibrancy blur */}
+          {/* Inner navbar container with Apple-style vibrancy blur - hydration-safe */}
           <motion.div
             className="w-full h-full flex items-center border border-transparent transition-all duration-500 ease-out navbar-glass"
             style={{
-              maxWidth: scrollState === 'top' ? '100%' : scrollState === 'scrolled' ? '95%' : '900px',
-              borderRadius: scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
-              backgroundColor: scrollState === 'top' ? 'transparent' : 'var(--vibrancy-bg)',
-              backdropFilter: scrollState === 'top' ? 'none' : 'var(--vibrancy-blur)',
-              WebkitBackdropFilter: scrollState === 'top' ? 'none' : 'var(--vibrancy-blur)',
-              borderColor: scrollState === 'top' ? 'transparent' : 'var(--navbar-border, rgba(255, 255, 255, 0.08))',
-              boxShadow: scrollState === 'compact'
+              // Apply 'top' state styles until mounted to ensure consistent SSR/CSR
+              maxWidth: !hasMounted || scrollState === 'top' ? '100%' : scrollState === 'scrolled' ? '95%' : '900px',
+              borderRadius: !hasMounted || scrollState === 'top' ? '0px' : scrollState === 'scrolled' ? '16px' : '24px',
+              backgroundColor: !hasMounted || scrollState === 'top' ? 'transparent' : 'var(--vibrancy-bg)',
+              backdropFilter: !hasMounted || scrollState === 'top' ? 'none' : 'var(--vibrancy-blur)',
+              WebkitBackdropFilter: !hasMounted || scrollState === 'top' ? 'none' : 'var(--vibrancy-blur)',
+              borderColor: !hasMounted || scrollState === 'top' ? 'transparent' : 'var(--navbar-border, rgba(255, 255, 255, 0.08))',
+              boxShadow: !hasMounted ? 'none' : scrollState === 'compact'
                 ? 'var(--navbar-shadow-compact, 0 8px 32px rgba(0, 0, 0, 0.4))'
                 : scrollState === 'scrolled'
                   ? 'var(--navbar-shadow-scrolled, 0 4px 24px rgba(0, 0, 0, 0.3))'

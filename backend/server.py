@@ -6,9 +6,11 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import os
+import re
+import html
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
@@ -57,15 +59,62 @@ class InfoRequest(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+# Input sanitization helper
+def sanitize_input(value: str) -> str:
+    """Sanitize input to prevent XSS and injection attacks."""
+    if not value:
+        return value
+    # HTML escape dangerous characters
+    sanitized = html.escape(value, quote=True)
+    # Remove any script tags that might have been encoded
+    sanitized = re.sub(r'(?i)(&lt;|<)\s*script[^>]*(&gt;|>).*?(&lt;|<)\s*/\s*script\s*(&gt;|>)', '', sanitized)
+    # Remove javascript: URLs
+    sanitized = re.sub(r'(?i)javascript\s*:', '', sanitized)
+    # Remove data: URLs (except for images which are safe)
+    sanitized = re.sub(r'(?i)data\s*:\s*(?!image/)', 'data_blocked:', sanitized)
+    # Strip excessive whitespace
+    sanitized = ' '.join(sanitized.split())
+    return sanitized.strip()
+
+
 class InfoRequestCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     email: str = Field(..., min_length=5, max_length=100)
-    phone: Optional[str] = None
-    company: Optional[str] = None
-    project_type: str
-    budget_range: Optional[str] = None
-    timeline: Optional[str] = None
-    message: Optional[str] = None
+    phone: Optional[str] = Field(None, max_length=20)
+    company: Optional[str] = Field(None, max_length=100)
+    project_type: str = Field(..., min_length=1, max_length=50)
+    budget_range: Optional[str] = Field(None, max_length=50)
+    timeline: Optional[str] = Field(None, max_length=50)
+    message: Optional[str] = Field(None, max_length=2000)
+
+    @field_validator('name', 'company', 'project_type', 'message', mode='before')
+    @classmethod
+    def sanitize_text_fields(cls, v):
+        if isinstance(v, str):
+            return sanitize_input(v)
+        return v
+
+    @field_validator('email', mode='before')
+    @classmethod
+    def validate_email(cls, v):
+        if not v:
+            return v
+        # Basic email format validation
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, v):
+            raise ValueError('Invalid email format')
+        return v.lower().strip()
+
+    @field_validator('phone', mode='before')
+    @classmethod
+    def validate_phone(cls, v):
+        if not v:
+            return v
+        # Remove all non-digit characters except + for international prefix
+        cleaned = re.sub(r'[^\d+]', '', v)
+        if len(cleaned) < 7 or len(cleaned) > 20:
+            raise ValueError('Invalid phone number length')
+        return cleaned
 
 
 # ============= Project/Case Study Models =============
@@ -296,12 +345,32 @@ async def get_industries():
 # Include the router in the main app
 app.include_router(api_router)
 
+# CORS Configuration - Security hardened
+# In production, CORS_ORIGINS environment variable MUST be set
+# Default to localhost only for development
+def get_cors_origins():
+    """Get CORS origins with secure defaults."""
+    env_origins = os.environ.get('CORS_ORIGINS', '')
+    if env_origins and env_origins != '*':
+        return [origin.strip() for origin in env_origins.split(',') if origin.strip()]
+    # Secure defaults for development only
+    if os.environ.get('ENVIRONMENT', 'development') == 'production':
+        # In production, require explicit CORS configuration
+        logger.warning("CORS_ORIGINS not configured for production - using empty list")
+        return []
+    # Development defaults
+    return [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+    ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=get_cors_origins(),
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
 )
 
 # Configure logging

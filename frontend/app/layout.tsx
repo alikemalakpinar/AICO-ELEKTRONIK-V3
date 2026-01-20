@@ -3,7 +3,9 @@ import { fontVariables } from '@/lib/fonts';
 import NoiseOverlay from '@/components/premium/NoiseOverlay';
 import CustomCursor from '@/components/premium/CustomCursor';
 import { AudioProvider } from '@/components/premium/AudioProvider';
+import { MotionProvider } from '@/components/premium/MotionProvider';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { OrganizationSchema, WebSiteSchema } from '@/components/seo';
 import './globals.css';
 
 // Default metadata
@@ -98,6 +100,10 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${fontVariables} dark`} suppressHydrationWarning>
       <head>
+        {/* Structured Data for SEO */}
+        <OrganizationSchema lang="tr" />
+        <WebSiteSchema lang="tr" />
+
         {/* Preconnect to external resources */}
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
@@ -130,12 +136,15 @@ export default function RootLayout({
         <ThemeProvider>
           {/* Audio Provider for site-wide sounds */}
           <AudioProvider>
-            {/* Premium Cinematic Effects */}
-            <NoiseOverlay />
-            <CustomCursor />
+            {/* Optimized Framer Motion Provider - reduces bundle by ~30KB */}
+            <MotionProvider features="domMax">
+              {/* Premium Cinematic Effects */}
+              <NoiseOverlay />
+              <CustomCursor />
 
-            {/* Page Content */}
-            {children}
+              {/* Page Content */}
+              {children}
+            </MotionProvider>
           </AudioProvider>
         </ThemeProvider>
       </body>
