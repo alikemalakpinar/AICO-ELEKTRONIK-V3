@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { fontVariables } from '@/lib/fonts';
 import './globals.css';
 
 // Default metadata
@@ -85,12 +86,54 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-// Root layout - delegates html/body to locale layout for proper lang attribute
-// This allows dynamic lang attribute based on the [lang] route segment
+// Root layout with html/body tags
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <html lang="tr" className={`${fontVariables} dark`} suppressHydrationWarning>
+      <head>
+        {/* Preconnect to external resources */}
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Inline script to prevent flash of wrong theme and set lang */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  // Theme detection
+                  var mode = localStorage.getItem('aico-color-mode');
+                  if (!mode) {
+                    var cookie = document.cookie.match(/aico-color-mode=([^;]+)/);
+                    mode = cookie ? cookie[1] : null;
+                  }
+                  if (!mode) {
+                    mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  document.documentElement.classList.remove('light', 'dark');
+                  document.documentElement.classList.add(mode);
+
+                  // Dynamic lang attribute based on URL
+                  var path = window.location.pathname;
+                  if (path.startsWith('/en')) {
+                    document.documentElement.lang = 'en';
+                  } else {
+                    document.documentElement.lang = 'tr';
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="font-sans antialiased bg-background text-foreground min-h-screen overflow-x-hidden transition-colors duration-300">
+        {children}
+      </body>
+    </html>
+  );
 }
