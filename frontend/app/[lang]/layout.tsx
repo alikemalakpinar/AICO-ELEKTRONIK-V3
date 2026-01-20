@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { locales, getTranslations, type Locale } from '@/lib/i18n';
 import { Toaster } from 'sonner';
 import PremiumNavbar from '@/components/premium/PremiumNavbar';
@@ -7,7 +7,22 @@ import PerformanceOptimizedEffects from '@/components/premium/PerformanceOptimiz
 import { AudioProvider } from '@/components/premium/AudioProvider';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { HomePageStructuredData } from '@/components/seo/StructuredData';
+import { fontVariables } from '@/lib/fonts';
 import LangUpdater from '@/components/seo/LangUpdater';
+
+// CSS IMPORT - Dosya yolu iki klasör yukarıda olduğu için ../../ kullanıyoruz
+import '../../globals.css';
+
+// Viewport configuration
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#050505' },
+    { media: '(prefers-color-scheme: dark)', color: '#050505' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 // Generate static params for all locales
 export function generateStaticParams() {
@@ -24,8 +39,19 @@ export async function generateMetadata({
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com';
 
   return {
-    title: t.meta.siteTitle,
+    title: {
+      default: t.meta.siteTitle || 'AICO Elektronik',
+      template: `%s | AICO Elektronik`,
+    },
     description: t.meta.siteDescription,
+    keywords: [
+      'akilli ev', 'smart home', 'otomasyon', 'muhendislik', 'IoT',
+      'akilli villa', 'akilli rezidans', 'bina otomasyonu', 'enerji yonetimi',
+    ],
+    authors: [{ name: 'AICO Elektronik' }],
+    creator: 'AICO Elektronik',
+    publisher: 'AICO Elektronik',
+    metadataBase: new URL(baseUrl),
     alternates: {
       canonical: `${baseUrl}/${params.lang}`,
       languages: {
@@ -33,6 +59,24 @@ export async function generateMetadata({
         en: `${baseUrl}/en`,
       },
     },
+    openGraph: {
+      type: 'website',
+      locale: params.lang === 'tr' ? 'tr_TR' : 'en_US',
+      siteName: 'AICO Elektronik',
+      title: t.meta.siteTitle,
+      description: t.meta.siteDescription,
+      images: [{ url: '/assets/og-image.jpg', width: 1200, height: 630, alt: 'AICO Elektronik' }],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    icons: {
+      icon: '/favicon.ico',
+      shortcut: '/favicon-16x16.png',
+      apple: '/apple-touch-icon.png',
+    },
+    manifest: '/site.webmanifest',
   };
 }
 
@@ -46,47 +90,77 @@ export default function LangLayout({
   const lang = params.lang;
 
   return (
-    <>
-      {/* Update html lang attribute on client side */}
-      <LangUpdater lang={lang} />
+    <html lang={lang} className={`${fontVariables} dark`} suppressHydrationWarning>
+      <head>
+        {/* Preconnect to external resources */}
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-      {/* Structured Data for SEO */}
-      <HomePageStructuredData lang={lang} />
+        {/* Theme Prevention Flash Script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var mode = localStorage.getItem('aico-color-mode');
+                  if (!mode) {
+                    var cookie = document.cookie.match(/aico-color-mode=([^;]+)/);
+                    mode = cookie ? cookie[1] : null;
+                  }
+                  if (!mode) {
+                    mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  document.documentElement.classList.remove('light', 'dark');
+                  document.documentElement.classList.add(mode);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="font-sans antialiased bg-background text-foreground min-h-screen overflow-x-hidden transition-colors duration-300">
+        {/* Update html lang attribute on client side if needed */}
+        <LangUpdater lang={lang} />
 
-      {/* Theme Provider for light/dark mode + product themes */}
-      <ThemeProvider>
-        {/* Audio Provider for site-wide sounds */}
-        <AudioProvider>
-          {/* Premium Cinematic Effects - Performance Optimized */}
-          {/* Respects prefers-reduced-motion, disabled on mobile, lazy loaded */}
-          <PerformanceOptimizedEffects enableNoise={true} enableCursor={true} />
+        {/* Structured Data for SEO */}
+        <HomePageStructuredData lang={lang} />
 
-          {/* Page Content */}
-          <div className="flex min-h-screen flex-col bg-background transition-colors duration-300">
-            {/* Premium Navbar */}
-            <PremiumNavbar lang={lang} />
+        {/* Theme Provider for light/dark mode + product themes */}
+        <ThemeProvider>
+          {/* Audio Provider for site-wide sounds */}
+          <AudioProvider>
+            {/* Premium Cinematic Effects - Performance Optimized */}
+            <PerformanceOptimizedEffects enableNoise={true} enableCursor={true} />
 
-            {/* Main Content */}
-            <main className="flex-1">{children}</main>
+            {/* Page Content */}
+            <div className="flex min-h-screen flex-col bg-background transition-colors duration-300">
+              {/* Premium Navbar */}
+              <PremiumNavbar lang={lang} />
 
-            {/* Premium Footer */}
-            <PremiumFooter lang={lang} />
+              {/* Main Content */}
+              <main className="flex-1">{children}</main>
 
-            {/* Toast Notifications - Theme Adaptive */}
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                className: 'toast-adaptive',
-                style: {
-                  background: 'hsl(var(--card))',
-                  color: 'hsl(var(--foreground))',
-                  border: '1px solid hsl(var(--border))',
-                },
-              }}
-            />
-          </div>
-        </AudioProvider>
-      </ThemeProvider>
-    </>
+              {/* Premium Footer */}
+              <PremiumFooter lang={lang} />
+
+              {/* Toast Notifications */}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  className: 'toast-adaptive',
+                  style: {
+                    background: 'hsl(var(--card))',
+                    color: 'hsl(var(--foreground))',
+                    border: '1px solid hsl(var(--border))',
+                  },
+                }}
+              />
+            </div>
+          </AudioProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
