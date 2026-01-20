@@ -43,6 +43,10 @@ class Settings(BaseSettings):
         default="unsafe-secret-key-change-me-in-production",
         description="Secret key for JWT and encryption"
     )
+    ADMIN_API_KEY: Optional[str] = Field(
+        default=None,
+        description="API key for admin endpoints. Required for production."
+    )
     CORS_ORIGINS: List[str] = Field(
         default=["http://localhost:3000"],
         description="Allowed CORS origins"

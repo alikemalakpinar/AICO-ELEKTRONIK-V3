@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends, Header
+from fastapi.security import APIKeyHeader
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -12,9 +13,13 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+import secrets
 
 # Import seed data for projects
 from seed_data import seed_config
+
+# Import custom rate limiter middleware
+from middleware.rate_limiter import RateLimitMiddleware, RateLimitConfig
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -26,6 +31,37 @@ db = client[os.environ['DB_NAME']]
 
 # Rate limiter setup
 limiter = Limiter(key_func=get_remote_address)
+
+# Admin API key authentication
+API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+ADMIN_API_KEY = os.environ.get('ADMIN_API_KEY', None)
+
+async def verify_admin_key(api_key: str = Depends(API_KEY_HEADER)) -> bool:
+    """
+    Verify admin API key for protected endpoints.
+    Returns True if valid, raises HTTPException otherwise.
+    """
+    if ADMIN_API_KEY is None:
+        logging.warning("ADMIN_API_KEY not set - admin endpoints are disabled")
+        raise HTTPException(
+            status_code=503,
+            detail="Admin endpoints are disabled. Configure ADMIN_API_KEY to enable."
+        )
+
+    if api_key is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Missing API key. Provide X-API-Key header."
+        )
+
+    # Use constant-time comparison to prevent timing attacks
+    if not secrets.compare_digest(api_key, ADMIN_API_KEY):
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid API key"
+        )
+
+    return True
 
 # Create the main app without a prefix
 app = FastAPI(
@@ -242,9 +278,12 @@ async def create_consultation_request(request: Request, info_request: InfoReques
 
 
 @api_router.get("/contact/consultations")
-async def get_consultation_requests(project_type: Optional[str] = None):
+async def get_consultation_requests(
+    project_type: Optional[str] = None,
+    _: bool = Depends(verify_admin_key)
+):
     """
-    Get all consultation requests (admin only - add auth later)
+    Get all consultation requests (admin only - requires X-API-Key header)
     Optionally filter by project type
     """
     query = {}
@@ -296,12 +335,53 @@ async def get_industries():
 # Include the router in the main app
 app.include_router(api_router)
 
+# ============= CORS Configuration =============
+# Production: Require explicit CORS_ORIGINS whitelist
+# Development: Allow localhost origins
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development').lower()
+CORS_ORIGINS_RAW = os.environ.get('CORS_ORIGINS', '')
+
+if ENVIRONMENT == 'production':
+    if not CORS_ORIGINS_RAW or CORS_ORIGINS_RAW == '*':
+        logging.warning(
+            "SECURITY WARNING: CORS_ORIGINS not properly configured for production. "
+            "Set explicit origins (e.g., 'https://aicoelektronik.com,https://www.aicoelektronik.com')"
+        )
+        # Default to main domain in production if not set
+        cors_origins = ['https://aicoelektronik.com', 'https://www.aicoelektronik.com']
+    else:
+        cors_origins = [origin.strip() for origin in CORS_ORIGINS_RAW.split(',') if origin.strip()]
+else:
+    # Development: allow common local origins
+    if CORS_ORIGINS_RAW and CORS_ORIGINS_RAW != '*':
+        cors_origins = [origin.strip() for origin in CORS_ORIGINS_RAW.split(',') if origin.strip()]
+    else:
+        cors_origins = [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'http://localhost:3001',
+        ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
+    allow_origins=cors_origins,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+)
+
+# ============= Global Rate Limiting =============
+# Apply global rate limiting middleware (in addition to per-endpoint limits)
+global_rate_config = RateLimitConfig(
+    requests_per_minute=int(os.environ.get('RATE_LIMIT_REQUESTS_PER_MINUTE', 60)),
+    requests_per_hour=int(os.environ.get('RATE_LIMIT_REQUESTS_PER_HOUR', 500)),
+    burst_limit=15,
+    burst_window_seconds=10,
+)
+app.add_middleware(
+    RateLimitMiddleware,
+    config=global_rate_config,
+    exclude_paths=["/health", "/docs", "/redoc", "/openapi.json", "/api/", "/favicon.ico"]
 )
 
 # Configure logging
