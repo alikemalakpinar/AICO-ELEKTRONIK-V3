@@ -10,8 +10,8 @@ import { HomePageStructuredData } from '@/components/seo/StructuredData';
 import { fontVariables } from '@/lib/fonts';
 import LangUpdater from '@/components/seo/LangUpdater';
 
-// CSS IMPORT - Dosya yolu iki klasör yukarıda olduğu için ../../ kullanıyoruz
-import '../../globals.css';
+// CSS IMPORT - globals.css app klasöründe
+import '../globals.css';
 
 // Viewport configuration
 export const viewport: Viewport = {
