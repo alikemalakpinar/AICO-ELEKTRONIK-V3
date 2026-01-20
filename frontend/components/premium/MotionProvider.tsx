@@ -11,27 +11,25 @@ interface MotionProviderProps {
 /**
  * LazyMotion Provider for optimized Framer Motion bundle
  *
- * This reduces the Framer Motion bundle size by ~30KB by only loading
- * the animation features that are actually needed.
+ * This reduces the Framer Motion bundle size by only loading
+ * the animation features when they are first used.
  *
  * Features:
- * - 'dom': Basic animations (opacity, scale, transform) - ~15KB
- * - 'domMax': Full features including layout animations - ~25KB
+ * - 'dom': Basic animations (opacity, scale, transform) - lighter bundle
+ * - 'domMax': Full features including layout animations - heavier but complete
  *
- * Usage:
- * Wrap your app or sections that use animations with this provider.
- * Use `m` components instead of `motion` for tree-shaking benefits.
+ * Note: We don't use 'strict' mode to allow gradual migration from
+ * `motion` to `m` components. Both work, but `m` provides better tree shaking.
  *
- * Example:
+ * For new components, prefer using `m` from framer-motion:
  * ```tsx
  * import { m } from 'framer-motion';
- *
  * <m.div animate={{ opacity: 1 }}>Content</m.div>
  * ```
  */
 export function MotionProvider({ children, features = 'dom' }: MotionProviderProps) {
   return (
-    <LazyMotion features={features === 'domMax' ? domMax : domAnimation} strict>
+    <LazyMotion features={features === 'domMax' ? domMax : domAnimation}>
       {children}
     </LazyMotion>
   );
@@ -43,7 +41,7 @@ export function MotionProvider({ children, features = 'dom' }: MotionProviderPro
  */
 export function MotionProviderFull({ children }: { children: React.ReactNode }) {
   return (
-    <LazyMotion features={domMax} strict>
+    <LazyMotion features={domMax}>
       {children}
     </LazyMotion>
   );
