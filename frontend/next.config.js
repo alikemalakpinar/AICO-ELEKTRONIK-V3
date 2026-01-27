@@ -76,7 +76,7 @@ function buildCSP() {
     // Media
     "media-src 'self' blob:",
     // Object/embed - none needed
-    "object-src 'none'",
+    "object-src 'none' data:",
     // Frame ancestors - prevent clickjacking
     "frame-ancestors 'none'",
     // Base URI

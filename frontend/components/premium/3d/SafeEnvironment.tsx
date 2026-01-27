@@ -153,7 +153,7 @@ function HDRLoader({ files, background }: HDRLoaderProps) {
   }
 
   // Attempt to render Environment - sync errors will be caught by parent boundary
-  return <Environment files={files} background={background} />;
+  return <Environment files={files} path="/" background={background} />;
 }
 
 /**
