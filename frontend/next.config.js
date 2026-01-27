@@ -325,6 +325,9 @@ const nextConfig = {
     // Enable optimized package imports
     optimizePackageImports: ['lucide-react', 'framer-motion', '@radix-ui/react-icons'],
   },
+
+  // Output standalone for Docker deployment (smaller, self-contained)
+  output: 'standalone',
 };
 
 module.exports = nextConfig;

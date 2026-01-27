@@ -86,27 +86,47 @@ services:
       - aico-network
 
   # ============================================
-  # Frontend (React + Nginx)
+  # Frontend (Next.js 14 Standalone)
   # ============================================
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_SITE_URL=http://localhost:3000
     container_name: aico-frontend
     restart: unless-stopped
     ports:
-      - "3000:80"
+      - "3000:3000"
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:8001
-      - REACT_APP_ENVIRONMENT=development
+      # Runtime env vars for server components
+      - INTERNAL_API_URL=http://backend:8001
+      - NODE_ENV=development
     depends_on:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - aico-network
+
+  # ============================================
+  # Nginx Reverse Proxy (Development)
+  # ============================================
+  nginx:
+    image: nginx:alpine
+    container_name: aico-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
     networks:
       - aico-network
 
