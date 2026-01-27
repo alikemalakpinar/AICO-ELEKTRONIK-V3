@@ -1,7 +1,10 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aico-elektronik.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com';
 const LOCALES = ['tr', 'en'] as const;
+
+// Revalidate sitemap every hour
+export const revalidate = 3600;
 
 // Static pages that exist for all locales
 const STATIC_PAGES = [
@@ -32,23 +35,79 @@ const PRODUCT_PAGES = [
   '/products/coffee',
 ];
 
-// Fetch dynamic project slugs from backend
-async function getProjectSlugs(): Promise<string[]> {
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
-    const response = await fetch(`${apiUrl}/api/projects`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    });
+/**
+ * Fetch with retry and exponential backoff
+ * Ensures build doesn't fail if backend is temporarily unavailable
+ */
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
+  maxRetries = 3,
+  baseDelay = 1000
+): Promise<Response | null> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-    if (!response.ok) {
-      console.error('Failed to fetch projects for sitemap');
-      return [];
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        return response;
+      }
+
+      // Log non-ok responses but don't retry client errors (4xx)
+      if (response.status >= 400 && response.status < 500) {
+        console.warn(`[Sitemap] Backend returned ${response.status} for ${url}`);
+        return null;
+      }
+    } catch (error) {
+      const isLastAttempt = attempt === maxRetries - 1;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      if (isLastAttempt) {
+        console.warn(`[Sitemap] Failed to fetch ${url} after ${maxRetries} attempts: ${errorMessage}`);
+        return null;
+      }
+
+      // Exponential backoff: 1s, 2s, 4s
+      const delay = baseDelay * Math.pow(2, attempt);
+      console.log(`[Sitemap] Retry ${attempt + 1}/${maxRetries} for ${url} in ${delay}ms`);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
+  }
 
+  return null;
+}
+
+/**
+ * Fetch dynamic project slugs from backend with resilience
+ * Returns empty array on failure to ensure build succeeds
+ */
+async function getProjectSlugs(): Promise<string[]> {
+  // Use internal API URL for server-side fetching
+  const apiUrl = process.env.INTERNAL_API_URL || 'http://localhost:8001';
+
+  const response = await fetchWithRetry(
+    `${apiUrl}/api/projects`,
+    { next: { revalidate: 3600 } }
+  );
+
+  if (!response) {
+    console.warn('[Sitemap] Backend unavailable, using static routes only');
+    return [];
+  }
+
+  try {
     const projects = await response.json();
     return projects.map((project: { slug: string }) => project.slug);
   } catch (error) {
-    console.error('Error fetching projects for sitemap:', error);
+    console.warn('[Sitemap] Failed to parse projects response:', error);
     return [];
   }
 }
