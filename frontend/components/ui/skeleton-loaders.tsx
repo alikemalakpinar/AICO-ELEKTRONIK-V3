@@ -10,9 +10,10 @@ import { cn } from '@/lib/utils';
 interface SkeletonProps {
   className?: string;
   variant?: 'default' | 'circular' | 'rounded';
+  style?: React.CSSProperties;
 }
 
-export function Skeleton({ className, variant = 'default' }: SkeletonProps) {
+export function Skeleton({ className, variant = 'default', style }: SkeletonProps) {
   return (
     <div
       className={cn(
@@ -25,6 +26,7 @@ export function Skeleton({ className, variant = 'default' }: SkeletonProps) {
       )}
       style={{
         animation: 'skeleton-shimmer 2s ease-in-out infinite',
+        ...style,
       }}
     />
   );

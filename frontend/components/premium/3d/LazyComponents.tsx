@@ -1,7 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, ComponentType } from 'react';
+import Scene3DErrorBoundary from './Scene3DErrorBoundary';
 
 // Hook to detect reduced motion preference
 function useReducedMotion(): boolean {
@@ -68,52 +69,66 @@ function Scene3DPlaceholder({ className = '' }: { className?: string }) {
 // Lazy loaded 3D components with SSR disabled
 // These components use WebGL/Three.js which requires browser APIs
 
-export const LazyFloatingModules = dynamic(
-  () => import('./FloatingModules').then((mod) => mod.default),
-  {
+/**
+ * Creates a safe lazy-loaded 3D component wrapper with:
+ * - Dynamic import with SSR disabled
+ * - Loading fallback
+ * - Error boundary for graceful degradation
+ */
+function createSafeLazy3D<P extends object>(
+  importFn: () => Promise<{ default: ComponentType<P> }>,
+  sceneName: string,
+  loaderClassName: string
+) {
+  const LazyComponent = dynamic(importFn, {
     ssr: false,
-    loading: () => <Scene3DLoader className="min-h-[400px] rounded-xl" />,
-  }
+    loading: () => <Scene3DLoader className={loaderClassName} />,
+  });
+
+  // Return a wrapper that includes error boundary
+  return function SafeLazy3DComponent(props: P) {
+    return (
+      <Scene3DErrorBoundary sceneName={sceneName} className={loaderClassName}>
+        <LazyComponent {...props} />
+      </Scene3DErrorBoundary>
+    );
+  };
+}
+
+export const LazyFloatingModules = createSafeLazy3D(
+  () => import('./FloatingModules').then((mod) => ({ default: mod.default })),
+  'FloatingModules',
+  'min-h-[400px] rounded-xl'
 );
 
-export const LazyHolographicGrid = dynamic(
-  () => import('./HolographicGrid').then((mod) => mod.default),
-  {
-    ssr: false,
-    loading: () => <Scene3DLoader className="min-h-[300px]" />,
-  }
+export const LazyHolographicGrid = createSafeLazy3D(
+  () => import('./HolographicGrid').then((mod) => ({ default: mod.default })),
+  'HolographicGrid',
+  'min-h-[300px]'
 );
 
-export const LazyInteractiveWireframeHouse = dynamic(
-  () => import('./InteractiveWireframeHouse').then((mod) => mod.default),
-  {
-    ssr: false,
-    loading: () => <Scene3DLoader className="min-h-[500px] rounded-2xl" />,
-  }
+export const LazyInteractiveWireframeHouse = createSafeLazy3D(
+  () => import('./InteractiveWireframeHouse').then((mod) => ({ default: mod.default })),
+  'InteractiveWireframeHouse',
+  'min-h-[500px] rounded-2xl'
 );
 
-export const LazyNetworkGlobe = dynamic(
-  () => import('./NetworkGlobe').then((mod) => mod.default),
-  {
-    ssr: false,
-    loading: () => <Scene3DLoader className="min-h-[400px]" />,
-  }
+export const LazyNetworkGlobe = createSafeLazy3D(
+  () => import('./NetworkGlobe').then((mod) => ({ default: mod.default })),
+  'NetworkGlobe',
+  'min-h-[400px]'
 );
 
-export const LazyResidenceScene = dynamic(
-  () => import('./ResidenceScene').then((mod) => mod.default),
-  {
-    ssr: false,
-    loading: () => <Scene3DLoader className="min-h-[600px] rounded-2xl" />,
-  }
+export const LazyResidenceScene = createSafeLazy3D(
+  () => import('./ResidenceScene').then((mod) => ({ default: mod.default })),
+  'ResidenceScene',
+  'min-h-[600px] rounded-2xl'
 );
 
-export const LazyVillaScene = dynamic(
-  () => import('./VillaScene').then((mod) => mod.default),
-  {
-    ssr: false,
-    loading: () => <Scene3DLoader className="min-h-[600px] rounded-2xl" />,
-  }
+export const LazyVillaScene = createSafeLazy3D(
+  () => import('./VillaScene').then((mod) => ({ default: mod.default })),
+  'VillaScene',
+  'min-h-[600px] rounded-2xl'
 );
 
 // Viewport-aware lazy loading wrapper with Intersection Observer
@@ -171,13 +186,15 @@ export function LazyScene3D({
 
   return (
     <div ref={containerRef} className={className}>
-      {isVisible ? (
-        <Suspense fallback={<Scene3DLoader className="min-h-full" />}>
-          {children}
-        </Suspense>
-      ) : (
-        <Scene3DLoader className="min-h-full" />
-      )}
+      <Scene3DErrorBoundary sceneName="LazyScene3D" className="min-h-full">
+        {isVisible ? (
+          <Suspense fallback={<Scene3DLoader className="min-h-full" />}>
+            {children}
+          </Suspense>
+        ) : (
+          <Scene3DLoader className="min-h-full" />
+        )}
+      </Scene3DErrorBoundary>
     </div>
   );
 }

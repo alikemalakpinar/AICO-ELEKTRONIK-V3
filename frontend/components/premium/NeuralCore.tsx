@@ -2,7 +2,9 @@
 
 import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { MeshDistortMaterial, Sphere, Float, Environment } from '@react-three/drei';
+import { MeshDistortMaterial, Sphere, Float } from '@react-three/drei';
+import SafeEnvironment from './3d/SafeEnvironment';
+import Scene3DErrorBoundary from './3d/Scene3DErrorBoundary';
 import * as THREE from 'three';
 
 // Animated distorting sphere with energy effect
@@ -270,36 +272,38 @@ interface NeuralCoreProps {
 
 export default function NeuralCore({ className = '' }: NeuralCoreProps) {
   return (
-    <div className={`relative ${className}`}>
-      <Suspense fallback={<LoadingFallback />}>
-        <Canvas
-          camera={{ position: [0, 0, 6], fov: 45 }}
-          dpr={[1, 2]}
-          gl={{
-            antialias: true,
-            alpha: true,
-            powerPreference: 'high-performance',
-          }}
-          style={{ background: 'transparent' }}
-        >
-          {/* Ambient lighting */}
-          <ambientLight intensity={0.1} />
+    <Scene3DErrorBoundary sceneName="NeuralCore" className={className}>
+      <div className={`relative ${className}`}>
+        <Suspense fallback={<LoadingFallback />}>
+          <Canvas
+            camera={{ position: [0, 0, 6], fov: 45 }}
+            dpr={[1, 2]}
+            gl={{
+              antialias: true,
+              alpha: true,
+              powerPreference: 'high-performance',
+            }}
+            style={{ background: 'transparent' }}
+          >
+            {/* Ambient lighting */}
+            <ambientLight intensity={0.1} />
 
-          {/* Core elements */}
-          <DistortingSphere />
-          <EnergyVeins />
-          <CoreGlow />
-          <AmbientParticles />
+            {/* Core elements */}
+            <DistortingSphere />
+            <EnergyVeins />
+            <CoreGlow />
+            <AmbientParticles />
 
-          {/* Environment for reflections */}
-          <Environment preset="night" />
-        </Canvas>
-      </Suspense>
+            {/* Safe environment lighting (CSP-compliant, no external HDR fetching) */}
+            <SafeEnvironment preset="night" />
+          </Canvas>
+        </Suspense>
 
-      {/* Overlay gradient for blending */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-onyx-900/80" />
+        {/* Overlay gradient for blending */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-onyx-900/80" />
+        </div>
       </div>
-    </div>
+    </Scene3DErrorBoundary>
   );
 }
