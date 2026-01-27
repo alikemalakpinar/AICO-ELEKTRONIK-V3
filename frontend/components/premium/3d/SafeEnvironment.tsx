@@ -1,7 +1,7 @@
 'use client';
 
 import { Environment } from '@react-three/drei';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 
 /**
  * SafeEnvironment - CSP-compliant, crash-proof environment lighting
@@ -31,6 +31,41 @@ function FallbackLights() {
 }
 
 /**
+ * EnvironmentLoaderBoundary - Internal Error Boundary for HDR Loader
+ * Prevents the entire scene from crashing if HDR file is missing or blocked
+ */
+interface BoundaryState {
+  hasError: boolean;
+}
+
+class EnvironmentLoaderBoundary extends React.Component<
+  { children: React.ReactNode },
+  BoundaryState
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(): BoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    // Log warning but don't crash - scene continues with fallback lights
+    console.warn('[SafeEnvironment] HDR loading failed, using fallback lights:', error.message);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // Return null - FallbackLights outside this boundary will keep scene lit
+      return null;
+    }
+    return this.props.children;
+  }
+}
+
+/**
  * SafeEnvironment - Main component
  *
  * Usage:
@@ -55,13 +90,16 @@ export function SafeEnvironment({
       <FallbackLights />
 
       {/* Load local HDR as enhancement (not replacement) */}
+      {/* Wrapped in error boundary - if HDR fails, fallback lights continue */}
       {!fallbackOnly && (
-        <Suspense fallback={null}>
-          <Environment
-            files={LOCAL_HDR_PATH}
-            background={background}
-          />
-        </Suspense>
+        <EnvironmentLoaderBoundary>
+          <Suspense fallback={null}>
+            <Environment
+              files={LOCAL_HDR_PATH}
+              background={background}
+            />
+          </Suspense>
+        </EnvironmentLoaderBoundary>
       )}
     </>
   );
