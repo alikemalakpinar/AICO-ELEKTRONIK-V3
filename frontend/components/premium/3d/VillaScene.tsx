@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshTransmissionMaterial, Environment } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import {
   useSceneStore,
@@ -10,6 +10,11 @@ import {
   VILLA_SCENE_COLORS,
   type VillaSceneType,
 } from '@/stores/sceneStore';
+import {
+  useMobileOptimization,
+  useOptimizedParticleCount,
+  useOptimizedCanvasProps,
+} from '@/lib/hooks/useMobileOptimization';
 
 // ===========================================
 // VillaScene - Apple-Style Scroll-Reactive 3D Scene
@@ -387,12 +392,13 @@ function ConnectionLines() {
   );
 }
 
-// Ambient Particles
-function AmbientParticles({ color }: { color: string }) {
+// Ambient Particles with mobile optimization
+function AmbientParticles({ color, count }: { color: string; count: number }) {
   const particlesRef = useRef<THREE.Points>(null);
-  const count = 100;
+  const geometryRef = useRef<THREE.BufferGeometry>(null);
 
   const positions = useMemo(() => {
+    if (count === 0) return new Float32Array(0);
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 10;
@@ -400,6 +406,13 @@ function AmbientParticles({ color }: { color: string }) {
       pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
     }
     return pos;
+  }, [count]);
+
+  // Cleanup geometry on unmount
+  useEffect(() => {
+    return () => {
+      geometryRef.current?.dispose();
+    };
   }, []);
 
   useFrame((state) => {
@@ -408,9 +421,11 @@ function AmbientParticles({ color }: { color: string }) {
     }
   });
 
+  if (count === 0) return null;
+
   return (
     <points ref={particlesRef}>
-      <bufferGeometry>
+      <bufferGeometry ref={geometryRef}>
         <bufferAttribute
           attach="attributes-position"
           count={count}
@@ -429,8 +444,8 @@ function AmbientParticles({ color }: { color: string }) {
   );
 }
 
-// Scene Component
-function Scene() {
+// Scene Component with mobile optimization
+function Scene({ particleCount }: { particleCount: number }) {
   const villaScene = useSceneStore((state) => state.villaScene);
   const sceneColor = VILLA_SCENE_COLORS[villaScene];
 
@@ -448,25 +463,41 @@ function Scene() {
 
       <AnimatedCamera />
       <SmartHouse activeScene={villaScene} />
-      <AmbientParticles color={sceneColor} />
+      <AmbientParticles color={sceneColor} count={particleCount} />
     </>
   );
 }
 
-// Main Component
+// Main Component with mobile optimization
 interface VillaSceneProps {
   className?: string;
 }
 
 export default function VillaScene({ className = '' }: VillaSceneProps) {
+  const canvasProps = useOptimizedCanvasProps();
+  const particleCount = useOptimizedParticleCount(100);
+  const { reducedMotion } = useMobileOptimization();
+
+  // Skip rendering entirely if reduced motion and very low-end
+  if (reducedMotion && particleCount === 0) {
+    return (
+      <div className={`absolute inset-0 ${className} bg-gradient-to-br from-onyx-900/50 to-onyx-800/50`}>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-xs text-muted-foreground font-mono">
+            3D Scene (reduced motion enabled)
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
         camera={{ position: [5, 4, 5], fov: 45 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        {...canvasProps}
       >
-        <Scene />
+        <Scene particleCount={particleCount} />
       </Canvas>
     </div>
   );
