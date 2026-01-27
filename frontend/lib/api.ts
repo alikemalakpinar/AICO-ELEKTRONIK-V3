@@ -1,10 +1,15 @@
 /**
  * API client utility for AICO Elektronik
  *
- * Uses relative URLs in production (via nginx reverse proxy) to avoid
- * build-time environment variable freezing issues.
+ * Same-Origin Proxy Architecture:
+ * - All API calls use relative URLs (/api/...)
+ * - nginx proxies /api/ requests to the FastAPI backend
+ * - No NEXT_PUBLIC_* env vars needed for API calls
+ * - Same Docker image works across all environments (staging/prod)
  *
- * In development, falls back to localhost:8001 for direct backend access.
+ * Server-Side Rendering:
+ * - Uses INTERNAL_API_URL env var (Docker internal network)
+ * - Bypasses nginx for faster SSR data fetching
  */
 
 type FetchOptions = RequestInit & {
@@ -13,20 +18,21 @@ type FetchOptions = RequestInit & {
 
 /**
  * Get the API base URL.
- * - Server-side: Uses environment variable or internal Docker network
- * - Client-side in production: Uses relative URL (nginx proxies /api/ to backend)
- * - Client-side in development: Uses localhost:8001
+ * - Server-side (SSR/SSG): Uses INTERNAL_API_URL for Docker internal network
+ * - Client-side: Uses empty string (relative URL) so nginx proxies to backend
+ *
+ * This architecture ensures:
+ * 1. No build-time API URL freezing
+ * 2. Same image works across staging/prod
+ * 3. Proper rate limiting with real client IP (X-Forwarded-For)
  */
 function getApiBaseUrl(): string {
-  // Server-side rendering
+  // Server-side rendering - use internal Docker network
   if (typeof window === 'undefined') {
-    // In Docker, the backend service name resolves via Docker DNS
-    // In development, use localhost
     return process.env.INTERNAL_API_URL || 'http://backend:8001';
   }
 
-  // Client-side - use relative URL so nginx can proxy
-  // This works because nginx.conf proxies /api/ to the backend
+  // Client-side - always use relative URL (nginx proxies to backend)
   return '';
 }
 

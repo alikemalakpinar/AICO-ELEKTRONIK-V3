@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import os
 import re
@@ -26,8 +25,29 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Rate limiter setup
-limiter = Limiter(key_func=get_remote_address)
+
+def get_real_client_ip(request: Request) -> str:
+    """
+    Get the real client IP address behind nginx reverse proxy.
+    nginx sets X-Forwarded-For and X-Real-IP headers.
+    """
+    # First check X-Real-IP (set by nginx)
+    x_real_ip = request.headers.get("X-Real-IP")
+    if x_real_ip:
+        return x_real_ip.strip()
+
+    # Then check X-Forwarded-For (first IP is the original client)
+    x_forwarded_for = request.headers.get("X-Forwarded-For")
+    if x_forwarded_for:
+        # X-Forwarded-For: client, proxy1, proxy2
+        return x_forwarded_for.split(",")[0].strip()
+
+    # Fallback to direct client IP
+    return request.client.host if request.client else "unknown"
+
+
+# Rate limiter setup - uses real client IP behind nginx
+limiter = Limiter(key_func=get_real_client_ip)
 
 # Create the main app without a prefix
 app = FastAPI(
