@@ -63,12 +63,12 @@ function buildCSP() {
     isDev
       ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
       : "script-src 'self' 'unsafe-inline'",
-    // Styles: self + inline for Tailwind/CSS-in-JS
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    // Styles: self + inline for Tailwind/CSS-in-JS + Fontshare CSS
+    "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
     // Images: self + data URIs + allowed domains
     `img-src 'self' data: blob: ${siteUrl} https://*.aicoelektronik.com https://*.aico-elektronik.com`,
-    // Fonts
-    "font-src 'self' https://fonts.gstatic.com https://api.fontshare.com",
+    // Fonts: Fontshare CDN only (no Google Fonts used)
+    "font-src 'self' https://api.fontshare.com https://cdn.fontshare.com",
     // Connect: same-origin for API (via nginx proxy), dev needs localhost for HMR
     isDev
       ? "connect-src 'self' ws://localhost:* http://localhost:*"
