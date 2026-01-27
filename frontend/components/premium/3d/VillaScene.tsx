@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useMemo, useEffect, useCallback } from 'react';
+import React, { useRef, useMemo, useEffect, useCallback, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import * as THREE from 'three';
@@ -15,6 +15,7 @@ import {
   useOptimizedParticleCount,
   useOptimizedCanvasProps,
 } from '@/lib/hooks/useMobileOptimization';
+import Scene3DErrorBoundary from './Scene3DErrorBoundary';
 
 // ===========================================
 // VillaScene - Apple-Style Scroll-Reactive 3D Scene
@@ -468,6 +469,16 @@ function Scene({ particleCount }: { particleCount: number }) {
   );
 }
 
+// Loading fallback for Canvas Suspense
+function CanvasLoadingFallback() {
+  return (
+    <mesh>
+      <boxGeometry args={[0.5, 0.5, 0.5]} />
+      <meshBasicMaterial color="#F97316" wireframe />
+    </mesh>
+  );
+}
+
 // Main Component with mobile optimization
 interface VillaSceneProps {
   className?: string;
@@ -492,13 +503,18 @@ export default function VillaScene({ className = '' }: VillaSceneProps) {
   }
 
   return (
-    <div className={`absolute inset-0 ${className}`}>
-      <Canvas
-        camera={{ position: [5, 4, 5], fov: 45 }}
-        {...canvasProps}
-      >
-        <Scene particleCount={particleCount} />
-      </Canvas>
-    </div>
+    <Scene3DErrorBoundary sceneName="VillaScene" className={`absolute inset-0 ${className}`}>
+      <div className={`absolute inset-0 ${className}`}>
+        <Canvas
+          camera={{ position: [5, 4, 5], fov: 45 }}
+          {...canvasProps}
+        >
+          {/* Suspense inside Canvas catches async 3D asset loading */}
+          <Suspense fallback={<CanvasLoadingFallback />}>
+            <Scene particleCount={particleCount} />
+          </Suspense>
+        </Canvas>
+      </div>
+    </Scene3DErrorBoundary>
   );
 }

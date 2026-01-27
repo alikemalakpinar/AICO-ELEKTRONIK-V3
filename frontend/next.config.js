@@ -57,6 +57,15 @@ function buildCSP() {
   const isDev = process.env.NODE_ENV !== 'production';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com';
 
+  // 3D asset sources for @react-three/drei Environment component fallbacks
+  // These are required because drei may fetch HDR assets from these CDNs as fallback
+  const threeJsAssetSources = [
+    'https://raw.githack.com',
+    'https://rawcdn.githack.com',
+    'https://raw.githubusercontent.com',
+    'https://cdn.jsdelivr.net', // Common Three.js asset CDN
+  ].join(' ');
+
   const directives = [
     "default-src 'self'",
     // Scripts: self + inline for Next.js hydration (unavoidable with App Router)
@@ -65,24 +74,27 @@ function buildCSP() {
       : "script-src 'self' 'unsafe-inline'",
     // Styles: self + inline for Tailwind/CSS-in-JS + Fontshare CSS
     "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
-    // Images: self + data URIs + allowed domains
-    `img-src 'self' data: blob: ${siteUrl} https://*.aicoelektronik.com https://*.aico-elektronik.com`,
+    // Images: self + data URIs + allowed domains + 3D asset sources
+    `img-src 'self' data: blob: ${siteUrl} https://*.aicoelektronik.com https://*.aico-elektronik.com ${threeJsAssetSources}`,
     // Fonts: Fontshare CDN only (no Google Fonts used)
     "font-src 'self' https://api.fontshare.com https://cdn.fontshare.com",
     // Connect: same-origin for API (via nginx proxy), dev needs localhost for HMR
+    // Also allow 3D asset sources for HDR/texture fetching
     isDev
-      ? "connect-src 'self' ws://localhost:* http://localhost:*"
-      : "connect-src 'self'",
+      ? `connect-src 'self' ws://localhost:* http://localhost:* ${threeJsAssetSources}`
+      : `connect-src 'self' ${threeJsAssetSources}`,
     // Media
     "media-src 'self' blob:",
-    // Object/embed - none needed
-    "object-src 'none' data:",
+    // Object/embed - disable completely for security (was invalid: 'none' + data: is not allowed)
+    "object-src 'none'",
     // Frame ancestors - prevent clickjacking
     "frame-ancestors 'none'",
     // Base URI
     "base-uri 'self'",
     // Form actions
     "form-action 'self'",
+    // Worker sources - needed for Three.js Web Workers (Draco decoder, etc.)
+    "worker-src 'self' blob:",
     // Upgrade insecure in production
     ...(isDev ? [] : ["upgrade-insecure-requests"]),
   ];
