@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { appleSpring } from '@/lib/motion';
 
 interface MagneticButtonProps {
   children: React.ReactNode;
@@ -12,6 +13,22 @@ interface MagneticButtonProps {
   onClick?: () => void;
   href?: string;
   disabled?: boolean;
+}
+
+// Hook to detect reduced motion preference
+function useReducedMotion(): boolean {
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mq.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mq.addEventListener('change', handleChange);
+    return () => mq.removeEventListener('change', handleChange);
+  }, []);
+
+  return reducedMotion;
 }
 
 export default function MagneticButton({
@@ -26,9 +43,11 @@ export default function MagneticButton({
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const reducedMotion = useReducedMotion();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current || disabled) return;
+    // Skip magnetic effect if reduced motion is preferred
+    if (!ref.current || disabled || reducedMotion) return;
 
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -58,7 +77,7 @@ export default function MagneticButton({
       ref={ref}
       className={`relative inline-flex items-center justify-center cursor-pointer ${className}`}
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+      transition={appleSpring}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
@@ -69,7 +88,7 @@ export default function MagneticButton({
     >
       {/* Glow effect that follows cursor */}
       <span
-        className="absolute inset-0 rounded-inherit opacity-0 transition-opacity duration-300 pointer-events-none"
+        className="absolute inset-0 rounded-inherit opacity-0 motion-safe:transition-opacity duration-300 pointer-events-none"
         style={{
           background: `radial-gradient(circle at ${50 + position.x}% ${50 + position.y}%, var(--product-glow), transparent 60%)`,
           opacity: Math.abs(position.x) > 0 || Math.abs(position.y) > 0 ? 1 : 0,
@@ -99,10 +118,15 @@ export default function MagneticButton({
 }
 
 // Simplified magnetic wrapper for existing buttons
+// Respects reduced motion preferences
 export function useMagneticEffect(strength = 0.2) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const reducedMotion = useReducedMotion();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    // Skip if reduced motion is preferred
+    if (reducedMotion) return;
+
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -128,7 +152,8 @@ export function useMagneticEffect(strength = 0.2) {
     },
     style: {
       transform: `translate(${position.x}px, ${position.y}px)`,
-      transition: 'transform 0.15s ease-out',
+      // Apple-style spring timing
+      transition: reducedMotion ? 'none' : 'transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0)',
     },
   };
 }

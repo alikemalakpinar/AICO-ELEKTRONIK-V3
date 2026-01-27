@@ -3,16 +3,17 @@
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { appleSpring, hoverScale as hoverScaleConfig, tapScale } from '@/lib/motion';
 
 // ===========================================
 // Glassmorphism Card System
-// Premium glass cards with 3D tilt, glow, and hover effects
+// Premium Apple-style glass cards with 3D tilt, glow, and hover effects
 // ===========================================
 
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'elevated' | 'bordered' | 'gradient' | 'glow';
+  variant?: 'default' | 'elevated' | 'bordered' | 'gradient' | 'glow' | 'frosted';
   tilt?: boolean;
   glow?: boolean;
   glowColor?: string;
@@ -30,33 +31,41 @@ const paddingStyles = {
   xl: 'p-10',
 };
 
+// Apple-style glass effects with saturate and proper blur
 const variantStyles = {
   default: `
     bg-white/[0.02] dark:bg-white/[0.02]
-    backdrop-blur-xl
+    backdrop-blur-xl backdrop-saturate-150
     border border-white/[0.05]
   `,
   elevated: `
     bg-white/[0.03] dark:bg-onyx-800/60
-    backdrop-blur-2xl
+    backdrop-blur-2xl backdrop-saturate-180
     border border-white/[0.08]
     shadow-2xl shadow-black/20
   `,
   bordered: `
     bg-transparent
-    backdrop-blur-sm
+    backdrop-blur-sm backdrop-saturate-150
     border-2 border-white/[0.1]
   `,
   gradient: `
     bg-gradient-to-br from-white/[0.05] to-transparent
-    backdrop-blur-xl
+    backdrop-blur-xl backdrop-saturate-150
     border border-white/[0.08]
   `,
   glow: `
     bg-white/[0.02] dark:bg-onyx-800/40
-    backdrop-blur-xl
+    backdrop-blur-xl backdrop-saturate-150
     border border-white/[0.05]
     shadow-lg
+  `,
+  // Premium frosted glass effect (Apple-style)
+  frosted: `
+    bg-white/[0.04] dark:bg-white/[0.03]
+    backdrop-blur-[20px] backdrop-saturate-[180%]
+    border border-white/[0.1]
+    shadow-[0_8px_32px_rgba(0,0,0,0.12)]
   `,
 };
 
@@ -83,8 +92,8 @@ export function GlassCard({
   const glowX = useMotionValue(50);
   const glowY = useMotionValue(50);
 
-  // Smooth spring for tilt
-  const springConfig = { damping: 20, stiffness: 200 };
+  // Apple-style spring for smooth tilt
+  const springConfig = { damping: appleSpring.damping, stiffness: appleSpring.stiffness };
   const rotateXSpring = useSpring(rotateX, springConfig);
   const rotateYSpring = useSpring(rotateY, springConfig);
 
@@ -143,9 +152,9 @@ export function GlassCard({
         transformStyle: 'preserve-3d',
         perspective: 1000,
       }}
-      whileHover={hoverScale ? { scale: 1.02 } : undefined}
-      whileTap={onClick ? { scale: 0.98 } : undefined}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      whileHover={hoverScale ? hoverScaleConfig : undefined}
+      whileTap={onClick ? tapScale : undefined}
+      transition={appleSpring}
       className={cn(
         'relative rounded-2xl overflow-hidden transition-all duration-300',
         variantStyles[variant],
