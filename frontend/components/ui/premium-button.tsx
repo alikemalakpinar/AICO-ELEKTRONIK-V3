@@ -13,7 +13,13 @@ import { Loader2 } from 'lucide-react';
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger' | 'success';
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
-interface PremiumButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+// Omit animation-related props that conflict with framer-motion's types
+type ButtonHTMLProps = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'onAnimationStart' | 'onAnimationEnd' | 'onDrag' | 'onDragEnd' | 'onDragStart'
+>;
+
+interface PremiumButtonProps extends ButtonHTMLProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   magnetic?: boolean;
