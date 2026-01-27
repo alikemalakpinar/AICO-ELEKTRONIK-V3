@@ -22,6 +22,8 @@ services:
     environment:
       - ENVIRONMENT=production
       - LOG_LEVEL=WARNING
+      # ALLOWED_ORIGINS: Set to your production domain (e.g., https://aicoelektronik.com)
+      # With same-origin proxy, only your domain origin is needed
       - CORS_ORIGINS=${ALLOWED_ORIGINS}
       - SECRET_KEY=${SECRET_KEY}
       - MONGO_URL=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017

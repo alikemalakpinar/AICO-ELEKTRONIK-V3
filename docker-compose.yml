@@ -64,7 +64,9 @@ services:
       - MONGO_URL=mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASSWORD:-adminpassword}@mongodb:27017
       - DB_NAME=aico_db
       - REDIS_URL=redis://redis:6379
-      - CORS_ORIGINS=http://localhost:3000,http://localhost:80,http://frontend:80
+      # CORS: Allow nginx proxy (port 80) and direct frontend access
+      # In production, set to your actual domain only
+      - CORS_ORIGINS=http://localhost:80,http://localhost:3000,http://nginx
       - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
       - ENVIRONMENT=development
       - LOG_LEVEL=INFO

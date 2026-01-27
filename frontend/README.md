@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+# AICO Elektronik Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Next.js 14 App Router application for AICO Elektronik's engineering portfolio.
 
-## Available Scripts
+## Architecture
 
-In the project directory, you can run:
+### Same-Origin API Proxy
 
-### `npm start`
+This app uses a **same-origin proxy architecture** for API calls:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        NGINX (Port 80)                       │
+│                                                              │
+│   /api/*  ──────────▶  Backend (FastAPI :8001)              │
+│   /*      ──────────▶  Frontend (Next.js :3000)             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Benefits:**
+- No `NEXT_PUBLIC_BACKEND_URL` needed - same Docker image works across staging/prod
+- Client-side API calls use relative URLs (`/api/...`)
+- Proper rate limiting with real client IP via `X-Forwarded-For`
+- Simplified CORS configuration (same-origin)
 
-### `npm test`
+### Environment Variables
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Variable | Type | Description |
+|----------|------|-------------|
+| `NEXT_PUBLIC_SITE_URL` | Build-time | Site URL for SEO metadata |
+| `NEXT_PUBLIC_IMAGE_DOMAINS` | Build-time | Allowed domains for `next/image` |
+| `INTERNAL_API_URL` | Runtime | Backend URL for SSR (Docker internal) |
 
-### `npm run build`
+**Note:** API calls do NOT use `NEXT_PUBLIC_*` variables.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Development
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+# Install dependencies
+npm install
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Run development server
+npm run dev
 
-### `npm run eject`
+# Build for production
+npm run build
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Run production build locally
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Docker Deployment
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Development
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+docker-compose up --build
+```
 
-## Learn More
+Access the app at http://localhost:80 (via nginx proxy)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Production
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+# Set environment variables
+export SITE_URL=https://aicoelektronik.com
+export ALLOWED_ORIGINS=https://aicoelektronik.com
+export SECRET_KEY=your-secret-key
+export MONGO_ROOT_USER=admin
+export MONGO_ROOT_PASSWORD=secure-password
+export REDIS_PASSWORD=secure-password
 
-### Code Splitting
+# Deploy
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Key Configuration
 
-### Analyzing the Bundle Size
+1. **CORS**: Set `ALLOWED_ORIGINS` to your production domain only
+2. **Rate Limiting**: nginx passes `X-Real-IP` and `X-Forwarded-For` headers
+3. **Image Domains**: Set `NEXT_PUBLIC_IMAGE_DOMAINS` if using external CDN
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## API Client Usage
 
-### Making a Progressive Web App
+```typescript
+import { api } from '@/lib/api';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+// All API calls use relative URLs automatically
+const projects = await api.getProjects({ featured: true });
+const project = await api.getProject('smart-villa');
+await api.submitConsultation({ name: '...', email: '...', ... });
+```
 
-### Advanced Configuration
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+frontend/
+├── app/                    # Next.js 14 App Router
+│   ├── [lang]/             # Locale-based routing (tr/en)
+│   ├── api/                # API routes
+│   └── layout.tsx          # Root layout
+├── components/
+│   ├── premium/            # Premium UI components
+│   │   └── 3d/             # Three.js 3D scenes
+│   ├── seo/                # JSON-LD structured data
+│   └── ui/                 # Base UI components
+├── lib/
+│   ├── api.ts              # API client (same-origin)
+│   ├── hooks/              # Custom React hooks
+│   ├── i18n.ts             # Translations
+│   └── motion.ts           # Animation constants
+└── nginx.conf              # Nginx reverse proxy config
+```
