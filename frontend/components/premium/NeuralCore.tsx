@@ -294,8 +294,8 @@ export default function NeuralCore({ className = '' }: NeuralCoreProps) {
             <CoreGlow />
             <AmbientParticles />
 
-            {/* Safe environment lighting (CSP-compliant, no external HDR fetching) */}
-            <SafeEnvironment preset="night" />
+            {/* Safe environment lighting (CSP-compliant, loads local HDR only) */}
+            <SafeEnvironment style="night" />
           </Canvas>
         </Suspense>
 
