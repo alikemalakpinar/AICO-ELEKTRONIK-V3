@@ -104,11 +104,9 @@ export default function RootLayout({
         <OrganizationSchema lang="tr" />
         <WebSiteSchema lang="tr" />
 
-        {/* Preconnect to external resources */}
+        {/* Preconnect to Fontshare CDN (Satoshi + General Sans fonts) */}
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* Inline script to prevent flash of wrong theme */}
         <script
           dangerouslySetInnerHTML={{
