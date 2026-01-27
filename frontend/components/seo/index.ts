@@ -6,4 +6,6 @@ export {
   FAQSchema,
   ServiceSchema,
   WebSiteSchema,
+  SoftwareApplicationSchema,
+  LocalBusinessSchema,
 } from './JsonLd';
