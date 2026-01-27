@@ -1,10 +1,11 @@
 # frontend/Dockerfile
-# Multi-stage build for production React application
+# Multi-stage build for production Next.js 14 application
 
 # ============================================
 # Stage 1: Dependencies
 # ============================================
-FROM node:18-alpine as deps
+FROM node:18-alpine AS deps
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
@@ -21,7 +22,7 @@ RUN \
 # ============================================
 # Stage 2: Builder
 # ============================================
-FROM node:18-alpine as builder
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -29,42 +30,60 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Set production environment
+# Set build-time environment variables
+# These are inlined at build time by Next.js
 ENV NODE_ENV=production
-ENV GENERATE_SOURCEMAP=false
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build the application
+# Build arguments for build-time only vars
+# Note: NEXT_PUBLIC_* vars are inlined at build time
+# For runtime config, we use relative URLs + reverse proxy
+ARG NEXT_PUBLIC_SITE_URL=https://aicoelektronik.com
+ARG NEXT_PUBLIC_IMAGE_DOMAINS=
+
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+ENV NEXT_PUBLIC_IMAGE_DOMAINS=${NEXT_PUBLIC_IMAGE_DOMAINS}
+
+# Build the application with standalone output
 RUN npm run build
 
 # ============================================
-# Stage 3: Production - Nginx
+# Stage 3: Production Runner
 # ============================================
-FROM nginx:alpine as production
+FROM node:18-alpine AS runner
 
-# Remove default nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-# Copy custom nginx config for React Router
-COPY nginx.conf /etc/nginx/conf.d/
+# Set production environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy built assets from builder
-COPY --from=builder /app/build /usr/share/nginx/html
+# Add non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Add non-root user
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -S appuser -u 1001 -G appgroup && \
-    chown -R appuser:appgroup /usr/share/nginx/html && \
-    chown -R appuser:appgroup /var/cache/nginx && \
-    chown -R appuser:appgroup /var/log/nginx && \
-    touch /var/run/nginx.pid && \
-    chown -R appuser:appgroup /var/run/nginx.pid
+# Copy only necessary files from builder
+COPY --from=builder /app/public ./public
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Set runtime environment variables
+# These can be overridden at container runtime
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
 
-# Expose port
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start the Next.js server
+CMD ["node", "server.js"]

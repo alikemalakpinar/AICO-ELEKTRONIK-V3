@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aico-elektronik.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com';
 
 // Organization Schema - for company pages
 interface OrganizationSchemaProps {
@@ -298,6 +298,110 @@ export function WebSiteSchema({ lang = 'tr' }: WebSiteSchemaProps) {
       },
       'query-input': 'required name=search_term_string',
     },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+// SoftwareApplication Schema - for IoT/software solution pages
+interface SoftwareApplicationSchemaProps {
+  name: string;
+  description: string;
+  applicationCategory: string;
+  operatingSystem?: string;
+  url: string;
+  screenshot?: string;
+  features?: string[];
+  offers?: {
+    priceCurrency?: string;
+    price?: string;
+  };
+}
+
+export function SoftwareApplicationSchema({
+  name,
+  description,
+  applicationCategory,
+  operatingSystem = 'Cross-platform',
+  url,
+  screenshot,
+  features = [],
+  offers,
+}: SoftwareApplicationSchemaProps) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name,
+    description,
+    applicationCategory,
+    operatingSystem,
+    url,
+    screenshot: screenshot || `${BASE_URL}/assets/og-image.jpg`,
+    publisher: {
+      '@type': 'Organization',
+      name: 'AICO Elektronik',
+      url: BASE_URL,
+    },
+    ...(features.length > 0 && {
+      featureList: features.join(', '),
+    }),
+    ...(offers && {
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: offers.priceCurrency || 'USD',
+        price: offers.price || '0',
+        availability: 'https://schema.org/InStock',
+      },
+    }),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+// LocalBusiness Schema - for contact pages
+interface LocalBusinessSchemaProps {
+  lang?: 'tr' | 'en';
+}
+
+export function LocalBusinessSchema({ lang = 'tr' }: LocalBusinessSchemaProps) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${BASE_URL}/#organization`,
+    name: 'AICO Elektronik',
+    description: lang === 'tr'
+      ? 'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri'
+      : 'Smart living technologies and industrial automation solutions',
+    url: BASE_URL,
+    logo: `${BASE_URL}/assets/logo-dark.svg`,
+    image: `${BASE_URL}/assets/og-image.jpg`,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Istanbul',
+      addressCountry: 'TR',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 41.0082,
+      longitude: 28.9784,
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '09:00',
+      closes: '18:00',
+    },
+    priceRange: '$$',
   };
 
   return (

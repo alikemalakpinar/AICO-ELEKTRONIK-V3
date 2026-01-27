@@ -44,8 +44,13 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - REACT_APP_BACKEND_URL=${BACKEND_URL}
-        - REACT_APP_ENVIRONMENT=production
+        # Build-time vars for metadata/SEO
+        - NEXT_PUBLIC_SITE_URL=${SITE_URL:-https://aicoelektronik.com}
+        - NEXT_PUBLIC_IMAGE_DOMAINS=${IMAGE_DOMAINS:-}
+    environment:
+      # Runtime env vars for server components
+      - INTERNAL_API_URL=http://backend:8001
+      - NODE_ENV=production
     deploy:
       resources:
         limits:

@@ -7,13 +7,13 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import os
 import re
-import html
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+import bleach
 
 # Import seed data for projects
 from seed_data import seed_config
@@ -59,21 +59,28 @@ class InfoRequest(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-# Input sanitization helper
+# Input sanitization helper using bleach for robust XSS prevention
 def sanitize_input(value: str) -> str:
-    """Sanitize input to prevent XSS and injection attacks."""
+    """
+    Sanitize input to prevent XSS and injection attacks using bleach.
+    Strips all HTML tags and attributes for user-provided text fields.
+    """
     if not value:
         return value
-    # HTML escape dangerous characters
-    sanitized = html.escape(value, quote=True)
-    # Remove any script tags that might have been encoded
-    sanitized = re.sub(r'(?i)(&lt;|<)\s*script[^>]*(&gt;|>).*?(&lt;|<)\s*/\s*script\s*(&gt;|>)', '', sanitized)
-    # Remove javascript: URLs
-    sanitized = re.sub(r'(?i)javascript\s*:', '', sanitized)
-    # Remove data: URLs (except for images which are safe)
-    sanitized = re.sub(r'(?i)data\s*:\s*(?!image/)', 'data_blocked:', sanitized)
-    # Strip excessive whitespace
+
+    # Use bleach.clean with strip=True to remove all HTML tags
+    # No tags or attributes are allowed in user input fields
+    sanitized = bleach.clean(
+        value,
+        tags=[],           # No HTML tags allowed
+        attributes={},     # No attributes allowed
+        strip=True,        # Remove tags entirely (don't escape)
+        strip_comments=True
+    )
+
+    # Normalize whitespace
     sanitized = ' '.join(sanitized.split())
+
     return sanitized.strip()
 
 
