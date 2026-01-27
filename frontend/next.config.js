@@ -52,19 +52,10 @@ function getImageRemotePatterns() {
 }
 
 // Build Content-Security-Policy header value
+// Uses same-origin for API calls in production (via nginx proxy)
 function buildCSP() {
   const isDev = process.env.NODE_ENV !== 'production';
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8001';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com';
-
-  // Parse backend URL for CSP
-  let backendHost = '';
-  try {
-    const url = new URL(backendUrl);
-    backendHost = url.origin;
-  } catch {
-    backendHost = isDev ? 'http://localhost:8001' : '';
-  }
 
   const directives = [
     "default-src 'self'",
@@ -72,16 +63,16 @@ function buildCSP() {
     isDev
       ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
       : "script-src 'self' 'unsafe-inline'",
-    // Styles: self + inline for Tailwind/CSS-in-JS
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    // Styles: self + inline for Tailwind/CSS-in-JS + Fontshare CSS
+    "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
     // Images: self + data URIs + allowed domains
-    `img-src 'self' data: blob: ${siteUrl} ${backendHost} https://*.aicoelektronik.com https://*.aico-elektronik.com`,
-    // Fonts
-    "font-src 'self' https://fonts.gstatic.com https://api.fontshare.com",
-    // Connect (API calls, WebSocket for HMR in dev)
+    `img-src 'self' data: blob: ${siteUrl} https://*.aicoelektronik.com https://*.aico-elektronik.com`,
+    // Fonts: Fontshare CDN only (no Google Fonts used)
+    "font-src 'self' https://api.fontshare.com https://cdn.fontshare.com",
+    // Connect: same-origin for API (via nginx proxy), dev needs localhost for HMR
     isDev
-      ? `connect-src 'self' ${backendHost} ws://localhost:* http://localhost:*`
-      : `connect-src 'self' ${backendHost} /api/`,
+      ? "connect-src 'self' ws://localhost:* http://localhost:*"
+      : "connect-src 'self'",
     // Media
     "media-src 'self' blob:",
     // Object/embed - none needed
@@ -135,9 +126,8 @@ const nextConfig = {
   },
 
   // Environment variables
-  env: {
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8001',
-  },
+  // Note: API calls use same-origin via nginx proxy, no NEXT_PUBLIC_BACKEND_URL needed
+  env: {},
 
   // Redirects for old routes (SEO preservation)
   async redirects() {
