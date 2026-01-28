@@ -1,14 +1,32 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshTransmissionMaterial } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 
 // ===========================================
 // FloatingModules - Compact & Elegant
 // Scaled down for better visual balance
+// Uses safe glass materials (no FBO/transmission)
 // ===========================================
+
+// Safe glass-like material that doesn't require WebGL2 FBO
+function SafeGlassMaterial({ color = '#1e293b', opacity = 0.85 }: { color?: string; opacity?: number }) {
+  return (
+    <meshPhysicalMaterial
+      color={color}
+      metalness={0.1}
+      roughness={0.1}
+      transparent
+      opacity={opacity}
+      envMapIntensity={1}
+      clearcoat={1}
+      clearcoatRoughness={0.1}
+      reflectivity={0.9}
+    />
+  );
+}
 
 // Glassmorphism Chip component - SCALED DOWN
 function GlassChip({ position, rotation, scale = 0.7 }: {
@@ -35,22 +53,7 @@ function GlassChip({ position, rotation, scale = 0.7 }: {
         {/* Main chip body - smaller */}
         <mesh ref={meshRef}>
           <boxGeometry args={[0.9, 0.12, 0.6]} />
-          <MeshTransmissionMaterial
-            backside
-            samples={4}
-            thickness={0.4}
-            chromaticAberration={0.15}
-            anisotropy={0.2}
-            distortion={0.08}
-            distortionScale={0.15}
-            temporalDistortion={0.08}
-            iridescence={0.8}
-            iridescenceIOR={1}
-            iridescenceThicknessRange={[0, 1200]}
-            color="#1e293b"
-            transmission={0.92}
-            roughness={0.12}
-          />
+          <SafeGlassMaterial color="#1e293b" opacity={0.9} />
         </mesh>
         {/* Chip pins - fewer */}
         {[-0.3, 0, 0.3].map((x, i) => (
@@ -92,18 +95,7 @@ function GlassCapacitor({ position, rotation }: {
       <group position={position} rotation={rotation} scale={0.7}>
         <mesh ref={meshRef}>
           <cylinderGeometry args={[0.18, 0.18, 0.45, 16]} />
-          <MeshTransmissionMaterial
-            backside
-            samples={4}
-            thickness={0.25}
-            chromaticAberration={0.1}
-            anisotropy={0.15}
-            distortion={0.04}
-            temporalDistortion={0.04}
-            color="#0f172a"
-            transmission={0.88}
-            roughness={0.15}
-          />
+          <SafeGlassMaterial color="#0f172a" opacity={0.88} />
         </mesh>
         {/* Top marking */}
         <mesh position={[0, 0.24, 0]}>
@@ -139,15 +131,7 @@ function GlassResistor({ position, rotation }: {
         {/* Body */}
         <mesh rotation={[0, 0, Math.PI / 2]}>
           <cylinderGeometry args={[0.09, 0.09, 0.38, 12]} />
-          <MeshTransmissionMaterial
-            backside
-            samples={4}
-            thickness={0.15}
-            chromaticAberration={0.08}
-            color="#1e293b"
-            transmission={0.82}
-            roughness={0.2}
-          />
+          <SafeGlassMaterial color="#1e293b" opacity={0.82} />
         </mesh>
         {/* Color bands - fewer */}
         {[
