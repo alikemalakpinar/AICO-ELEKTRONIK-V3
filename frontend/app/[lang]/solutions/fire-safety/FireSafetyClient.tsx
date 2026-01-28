@@ -24,10 +24,10 @@ import type { StoryStep } from '@/components/modules';
 import type { BentoItem } from '@/components/modules';
 import type { Locale } from '@/types';
 
-// Dynamic import for the new FireLink Pro Demo
-const FireLinkProDemo = dynamic(
-  () => import('@/components/products/fire/FireLinkProDemo'),
-  { ssr: false, loading: () => <div className="aspect-[16/10] bg-onyx-800/50 rounded-2xl animate-pulse" /> }
+// Dynamic import for the Industrial Air Quality Demo (Factory Context)
+const IndustrialAirQualityDemo = dynamic(
+  () => import('@/components/products/fire/IndustrialAirQualityDemo'),
+  { ssr: false, loading: () => <div className="aspect-[16/10] bg-gray-100 dark:bg-onyx-800/50 rounded-2xl animate-pulse" /> }
 );
 
 interface FireSafetyClientProps {
@@ -38,15 +38,15 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
   // MAGMA THEME - Deep Obsidian with Burning Amber
   const accentColor = '#FF4500'; // Burning Amber
 
-  // Content based on language
+  // Content based on language - Industrial Air Quality Context
   const content = {
     hero: {
-      badge: 'FIRELINK',
-      title: lang === 'tr' ? 'Gorunmez Tehlikeyi' : 'See the Invisible',
-      titleHighlight: lang === 'tr' ? 'Gorun.' : 'Danger.',
+      badge: 'FIRELINK IAQ',
+      title: lang === 'tr' ? 'Fabrikanizin Havasini' : 'Monitor Your Factory',
+      titleHighlight: lang === 'tr' ? 'Izleyin.' : 'Air Quality.',
       subtitle: lang === 'tr'
-        ? 'PCB seviyesinde termal izleme. Yangin olmadan once mudahale edin.'
-        : 'PCB-level thermal monitoring. Intervene before fire starts.',
+        ? 'CO₂, TVOC ve PM2.5 izleme. Isci sagligi icin gercek zamanli hava kalitesi.'
+        : 'CO₂, TVOC, and PM2.5 monitoring. Real-time air quality for worker safety.',
       cta: lang === 'tr' ? 'Demoyu Inceleyin' : 'Explore Demo',
     },
     story: {
@@ -55,41 +55,41 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           id: 'problem',
           badge: lang === 'tr' ? 'PROBLEM' : 'THE PROBLEM',
           title: lang === 'tr'
-            ? 'Yanginlarin %30\'u elektrik kaynakli'
-            : '30% of fires are electrical',
+            ? 'Kotu hava kalitesi uretkenlik kaybina sebep olur'
+            : 'Poor air quality causes productivity loss',
           description: lang === 'tr'
-            ? 'Geleneksel duman dedektorleri sadece yangin basladiktan sonra calisir. FireLink ile sorunu kaynaginda, daha sicaklik artmaya baslarken tespit edin.'
-            : 'Traditional smoke detectors only work after fire starts. With FireLink, detect the problem at the source, when temperature just begins to rise.',
+            ? 'Fabrikalarda CO₂ seviyesi 1500 ppm\'i astiginda isci performansi %15 duser. TVOC maruziyeti uzun vadeli saglik sorunlarina yol acar.'
+            : 'When CO₂ levels exceed 1500 ppm in factories, worker performance drops by 15%. TVOC exposure leads to long-term health issues.',
         },
         {
           id: 'detection',
           badge: lang === 'tr' ? 'ALGILAMA' : 'DETECTION',
           title: lang === 'tr'
-            ? 'Milisaniyede Termal Haritalama'
-            : 'Thermal Mapping in Milliseconds',
+            ? 'Cok Parametreli Hava Analizi'
+            : 'Multi-Parameter Air Analysis',
           description: lang === 'tr'
-            ? 'Her kritik bilesen uzerinde yerlestirilen sensorler, 100ms aralikla sicaklik okumasi yapar. Anormal isinan bilesenler aninda tespit edilir.'
-            : 'Sensors placed on every critical component take temperature readings every 100ms. Abnormally heating components are detected instantly.',
+            ? 'CO₂, TVOC ve PM2.5 sensorleri her uretim alanini izler. Tehlikeli gazlar aninda tespit edilir ve uyari verilir.'
+            : 'CO₂, TVOC, and PM2.5 sensors monitor every production area. Dangerous gases are instantly detected and alerts are triggered.',
         },
         {
           id: 'alert',
           badge: lang === 'tr' ? 'UYARI' : 'ALERT',
           title: lang === 'tr'
-            ? 'Akilli Bildirim Sistemi'
-            : 'Smart Notification System',
+            ? 'Akilli Havalandirma Sistemi'
+            : 'Smart Ventilation System',
           description: lang === 'tr'
-            ? 'Esik degeri asildigi anda mobil uygulama, SMS ve email ile aninda bildirim. IoT entegrasyonu ile diger sistemleri de tetikleyin.'
-            : 'Instant notification via mobile app, SMS, and email when threshold is exceeded. Trigger other systems with IoT integration.',
+            ? 'Hava kalitesi dusunce otomatik havalandirma devreye girer. TVOC yuksekliginde toksik gaz alarm protokolu baslar.'
+            : 'Automatic ventilation kicks in when air quality drops. Toxic gas alarm protocol starts when TVOC is high.',
         },
         {
           id: 'action',
           badge: lang === 'tr' ? 'AKSIYON' : 'ACTION',
           title: lang === 'tr'
-            ? 'Otomatik Mudahale'
-            : 'Automatic Intervention',
+            ? 'Tahliye Protokolu'
+            : 'Evacuation Protocol',
           description: lang === 'tr'
-            ? 'Kritik durumlarda guc kesme, havalandirma kapatma veya yangin sondurme sistemlerini otomatik tetikleme. Insan mudahalesi beklemeden.'
-            : 'In critical situations, automatic triggering of power cut, ventilation shutdown, or fire suppression systems. Without waiting for human intervention.',
+            ? 'Kritik seviyelerde otomatik tahliye alarmi, kapi kontrolleri ve acil durum aydinlatmasi aktif olur.'
+            : 'At critical levels, automatic evacuation alarm, door controls, and emergency lighting are activated.',
         },
       ] as StoryStep[],
     },
@@ -372,7 +372,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <FireLinkProDemo lang={lang} />
+            <IndustrialAirQualityDemo lang={lang} />
           </motion.div>
         </div>
       </section>
