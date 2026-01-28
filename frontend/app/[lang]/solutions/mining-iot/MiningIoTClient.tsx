@@ -19,8 +19,19 @@ import {
 } from 'lucide-react';
 import { ImmersiveHero, StickyScrollStory, BentoGrid } from '@/components/modules';
 import type { StoryStep, BentoItem } from '@/components/modules';
-import WorkerTrackerDemo from '@/components/products/mining/WorkerTrackerDemo';
+import dynamic from 'next/dynamic';
 import type { Locale } from '@/types';
+
+// Dynamic imports for demo components
+const WorkerTrackerDemo = dynamic(
+  () => import('@/components/products/mining/WorkerTrackerDemo'),
+  { ssr: false, loading: () => <div className="aspect-[4/3] bg-onyx-800/50 rounded-2xl animate-pulse" /> }
+);
+
+const UndergroundDigitalTwin = dynamic(
+  () => import('@/components/products/mining/UndergroundDigitalTwin'),
+  { ssr: false, loading: () => <div className="aspect-[16/10] bg-onyx-800/50 rounded-2xl animate-pulse" /> }
+);
 
 interface MiningIoTClientProps {
   lang: Locale;
@@ -353,8 +364,43 @@ export default function MiningIoTClient({ lang }: MiningIoTClientProps) {
         deviceType="tablet"
       />
 
-      {/* Interactive Demo Section */}
-      <section id="demo" className="py-24 md:py-32 bg-onyx-900">
+      {/* Underground Digital Twin Section */}
+      <section id="demo" className="py-24 md:py-32 bg-[#0A0A0A]">
+        <div className="max-w-6xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase mb-6"
+              style={{ color: accentColor }}>
+              <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
+              {lang === 'tr' ? 'DIJITAL IKIZ' : 'DIGITAL TWIN'}
+              <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+              {lang === 'tr' ? 'Yeralti Kesit Gorunumu' : 'Underground Cross-Section View'}
+            </h2>
+            <p className="text-offwhite-700 max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Maden tunellerinin kesit gorunumunde isci konumlarini ve gaz seviyelerini izleyin. Acil tahliye simule edin.'
+                : 'Monitor worker positions and gas levels in mine tunnel cross-section view. Simulate emergency evacuation.'}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <UndergroundDigitalTwin lang={lang} />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Original Worker Tracker Demo */}
+      <section className="py-24 md:py-32 bg-onyx-900">
         <div className="max-w-5xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

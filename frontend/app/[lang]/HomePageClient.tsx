@@ -1,22 +1,35 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import {
   ArrowRight,
   Flame,
   HardHat,
   Thermometer,
-  Coffee,
+  Activity,
   Home,
   Building,
   Building2,
   Play,
   Zap,
+  Globe,
+  Shield,
+  Cpu,
+  Factory,
+  Gauge,
+  Snowflake,
+  AlertTriangle,
+  Truck,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
+
+// ===========================================
+// HomePageClient - Grandeur Edition
+// Connected World 3D, Bento Grid, Trusted By
+// ===========================================
 
 // Dynamically import NeuralCore to avoid SSR issues with Three.js
 const NeuralCore = dynamic(
@@ -38,19 +51,46 @@ interface HomePageClientProps {
 export default function HomePageClient({ lang }: HomePageClientProps) {
   const t = getTranslations(lang);
 
-  // Product categories
+  // Industrial IoT Solutions (replacing Coffee with VibrationGuard)
   const products = [
     {
       id: 'fire-safety',
       icon: Flame,
-      title: 'FireLink',
-      subtitle: lang === 'tr' ? 'Yangin Guvenlik Karti' : 'Fire Safety Card',
+      title: 'FireLink Pro',
+      subtitle: lang === 'tr' ? 'Yangin Guvenlik Sistemi' : 'Fire Safety System',
       description: lang === 'tr'
-        ? 'Termal izleme ve erken uyari sistemi. Gorunmez tehlikeyi gorun.'
-        : 'Thermal monitoring and early warning system. See the invisible danger.',
+        ? '3D termal izleme ve erken uyari. PCB seviyesinde gorunmez tehlikeyi gorun.'
+        : '3D thermal monitoring and early warning. See invisible danger at PCB level.',
       href: `/${lang}/solutions/fire-safety`,
-      color: '#EF4444',
-      gradient: 'from-red-500/20 to-transparent',
+      color: '#FF4500',
+      gradient: 'from-orange-500/20 to-transparent',
+      stats: { value: '<50ms', label: lang === 'tr' ? 'Tepki Suresi' : 'Response' },
+    },
+    {
+      id: 'predictive-maintenance',
+      icon: Activity,
+      title: 'VibrationGuard',
+      subtitle: lang === 'tr' ? 'Kestirimci Bakim' : 'Predictive Maintenance',
+      description: lang === 'tr'
+        ? 'FFT titresim analizi ve ML ile 2 hafta onceden ariza tahmini.'
+        : 'FFT vibration analysis and ML for 2-week advance fault prediction.',
+      href: `/${lang}/solutions/predictive-maintenance`,
+      color: '#00D4FF',
+      gradient: 'from-cyan-500/20 to-transparent',
+      stats: { value: '14', label: lang === 'tr' ? 'Gun Onceden' : 'Days Ahead' },
+    },
+    {
+      id: 'cold-chain',
+      icon: Thermometer,
+      title: 'ColdTrack',
+      subtitle: lang === 'tr' ? 'Global Soguk Zincir' : 'Global Cold Chain',
+      description: lang === 'tr'
+        ? '3D dunya haritasinda filo takibi. Kesintisiz sicaklik kontrolu.'
+        : '3D globe fleet tracking. Uninterrupted temperature control.',
+      href: `/${lang}/solutions/cold-chain`,
+      color: '#06B6D4',
+      gradient: 'from-teal-500/20 to-transparent',
+      stats: { value: '-40°C', label: lang === 'tr' ? 'Aralik' : 'Range' },
     },
     {
       id: 'mining-iot',
@@ -58,35 +98,12 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       title: 'MineGuard',
       subtitle: lang === 'tr' ? 'Maden Guvenligi' : 'Mining Safety',
       description: lang === 'tr'
-        ? 'Isci takip ve gaz algilama sistemi. Yerin altinda tam kontrol.'
-        : 'Worker tracking and gas detection system. Full control underground.',
+        ? 'Dijital ikiz ile yeralti isci takibi. Gaz algilama ve acil tahliye.'
+        : 'Underground worker tracking with digital twin. Gas detection & evacuation.',
       href: `/${lang}/solutions/mining-iot`,
       color: '#EAB308',
       gradient: 'from-yellow-500/20 to-transparent',
-    },
-    {
-      id: 'cold-chain',
-      icon: Thermometer,
-      title: 'ColdTrack',
-      subtitle: lang === 'tr' ? 'Soguk Zincir' : 'Cold Chain',
-      description: lang === 'tr'
-        ? 'Sicaklik izleme ve lojistik yonetimi. Soguk zinciri kirmayin.'
-        : 'Temperature monitoring and logistics management. Never break the chain.',
-      href: `/${lang}/solutions/cold-chain`,
-      color: '#06B6D4',
-      gradient: 'from-cyan-500/20 to-transparent',
-    },
-    {
-      id: 'coffee',
-      icon: Coffee,
-      title: 'AICO Coffee',
-      subtitle: lang === 'tr' ? 'Akilli Kahve' : 'Smart Coffee',
-      description: lang === 'tr'
-        ? 'IoT baglantili premium kahve deneyimi. Kahveniz, sizin kurallariniz.'
-        : 'IoT-connected premium coffee experience. Your coffee, your rules.',
-      href: `/${lang}/products/coffee`,
-      color: '#A855F7',
-      gradient: 'from-purple-500/20 to-transparent',
+      stats: { value: '1000+', label: lang === 'tr' ? 'Isci' : 'Workers' },
     },
   ];
 
@@ -115,11 +132,23 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
     },
   ];
 
+  // Industrial partners/trusted by logos
+  const trustedBy = [
+    { name: 'Siemens', category: 'industrial' },
+    { name: 'Bosch', category: 'industrial' },
+    { name: 'Schneider Electric', category: 'energy' },
+    { name: 'ABB', category: 'automation' },
+    { name: 'Honeywell', category: 'safety' },
+    { name: 'Rockwell', category: 'automation' },
+    { name: 'Emerson', category: 'industrial' },
+    { name: 'Mitsubishi', category: 'industrial' },
+  ];
+
   return (
     <div className="min-h-screen bg-onyx-950">
-      {/* Hero Section */}
+      {/* Hero Section - Connected World */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background */}
+        {/* Background Effects */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
           <div
@@ -132,9 +161,22 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               backgroundSize: '100px 100px',
             }}
           />
+          {/* Animated gradient orbs */}
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl"
+            style={{ background: 'radial-gradient(circle, rgba(255,69,0,0.1) 0%, transparent 70%)' }}
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl"
+            style={{ background: 'radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 70%)' }}
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
         </div>
 
-        {/* 3D Neural Core */}
+        {/* 3D Neural Core - "Connected World" */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-full h-full max-w-4xl max-h-[80vh] opacity-50">
             <NeuralCore className="w-full h-full" />
@@ -153,7 +195,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-onyx-900/80 backdrop-blur-sm rounded-full border border-white/10">
               <Zap size={14} className="text-engineer-500" />
               <span className="text-offwhite-600 text-sm font-medium">
-                {lang === 'tr' ? 'Teknoloji Ekosistemi' : 'Technology Ecosystem'}
+                {lang === 'tr' ? 'Endustriyel IoT & Akilli Yasam' : 'Industrial IoT & Smart Living'}
               </span>
             </span>
           </motion.div>
@@ -165,10 +207,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-5xl md:text-6xl lg:text-7xl font-bold text-offwhite-400 mb-6 tracking-tight"
           >
-            {lang === 'tr' ? 'Muhendislik,' : 'Engineering,'}
+            {lang === 'tr' ? 'Endüstriyel Mükemmellik,' : 'Industrial Excellence,'}
             <br />
-            <span className="text-engineer-500">
-              {lang === 'tr' ? 'Yeniden Tanimlandi.' : 'Redefined.'}
+            <span className="bg-gradient-to-r from-engineer-500 via-orange-400 to-cyan-400 bg-clip-text text-transparent">
+              {lang === 'tr' ? 'Yeniden Tanımlandı.' : 'Redefined.'}
             </span>
           </motion.h1>
 
@@ -177,11 +219,11 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-xl md:text-2xl text-offwhite-700 max-w-2xl mx-auto mb-12"
+            className="text-xl md:text-2xl text-offwhite-700 max-w-3xl mx-auto mb-12"
           >
             {lang === 'tr'
-              ? 'Endustriyel IoT\'dan akilli yasam sistemlerine. Fikirden uretime, tek adres.'
-              : 'From industrial IoT to smart living systems. From idea to production, one destination.'}
+              ? 'Kestirimci bakim, yangın güvenliği, soğuk zincir ve madencilik IoT. AAA kalitesinde endüstriyel çözümler.'
+              : 'Predictive maintenance, fire safety, cold chain and mining IoT. AAA quality industrial solutions.'}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -192,10 +234,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              href="#products"
-              className="group flex items-center gap-2 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all duration-300"
+              href="#solutions"
+              className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-engineer-500 to-orange-500 hover:from-engineer-600 hover:to-orange-600 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-engineer-500/25"
             >
-              <span>{lang === 'tr' ? 'Urunleri Kesfedin' : 'Explore Products'}</span>
+              <span>{lang === 'tr' ? 'Çözümleri Keşfedin' : 'Explore Solutions'}</span>
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
@@ -203,8 +245,28 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               className="group flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-sm border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-xl transition-all duration-300"
             >
               <Play size={18} />
-              <span>{lang === 'tr' ? 'Demo Izleyin' : 'Watch Demo'}</span>
+              <span>{lang === 'tr' ? 'Demo İzleyin' : 'Watch Demo'}</span>
             </Link>
+          </motion.div>
+
+          {/* Quick Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
+          >
+            {[
+              { value: '50ms', label: lang === 'tr' ? 'Tepki Süresi' : 'Response Time' },
+              { value: '99.9%', label: lang === 'tr' ? 'Çalışma Süresi' : 'Uptime' },
+              { value: '78%', label: lang === 'tr' ? 'Duruş Azalması' : 'Downtime Cut' },
+              { value: '100+', label: lang === 'tr' ? 'Kurulum' : 'Installations' },
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-engineer-500 font-mono">{stat.value}</div>
+                <div className="text-offwhite-700 text-sm mt-1">{stat.label}</div>
+              </div>
+            ))}
           </motion.div>
         </div>
 
@@ -226,8 +288,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
         </motion.div>
       </section>
 
-      {/* Products Section */}
-      <section id="products" className="py-24 md:py-32 bg-onyx-900">
+      {/* Solutions Bento Grid - with Live Previews */}
+      <section id="solutions" className="py-24 md:py-32 bg-onyx-900">
         <div className="max-w-7xl mx-auto px-6">
           {/* Section Header */}
           <motion.div
@@ -238,25 +300,25 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
           >
             <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
               <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'URUNLERIMIZ' : 'OUR PRODUCTS'}
+              {lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
-              {lang === 'tr' ? 'Teknoloji' : 'Technology'}
+              {lang === 'tr' ? 'Yüksek Teknoloji' : 'High-Tech'}
               {' '}
               <span className="text-engineer-500">
-                {lang === 'tr' ? 'Cozumlerimiz' : 'Solutions'}
+                {lang === 'tr' ? 'Çözümler' : 'Solutions'}
               </span>
             </h2>
             <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'Her sektorun ihtiyacina ozel, uctan uca teknoloji cozumleri.'
-                : 'End-to-end technology solutions tailored to the needs of every industry.'}
+                ? 'AAA oyun kalitesinde arayüzler ile endüstriyel IoT sistemleri.'
+                : 'Industrial IoT systems with AAA game quality interfaces.'}
             </p>
           </motion.div>
 
-          {/* Products Grid */}
-          <div className="grid md:grid-cols-2 gap-6">
+          {/* Bento Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
               <motion.div
                 key={product.id}
@@ -264,47 +326,120 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
+                className={index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}
               >
                 <Link
                   href={product.href}
-                  className="group block relative overflow-hidden p-8 bg-onyx-800/50 rounded-3xl border border-white/5 hover:border-white/20 transition-all duration-500"
+                  className="group block relative h-full overflow-hidden rounded-3xl border border-white/5 hover:border-white/20 transition-all duration-500"
+                  style={{ backgroundColor: '#0a0a0a' }}
                 >
                   {/* Background Gradient */}
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${product.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                   />
 
-                  <div className="relative z-10">
-                    {/* Icon */}
-                    <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
-                      style={{ backgroundColor: `${product.color}15` }}
-                    >
-                      <product.icon size={32} style={{ color: product.color }} />
+                  {/* Content */}
+                  <div className={`relative z-10 p-6 ${index === 0 ? 'md:p-8' : ''} h-full flex flex-col`}>
+                    {/* Live Preview Indicator */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div
+                        className={`${index === 0 ? 'w-16 h-16' : 'w-12 h-12'} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                        style={{ backgroundColor: `${product.color}15` }}
+                      >
+                        <product.icon size={index === 0 ? 32 : 24} style={{ color: product.color }} />
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <motion.div
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: product.color }}
+                          animate={{ opacity: [1, 0.5, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                        <span className="text-offwhite-700 text-[10px] font-mono">LIVE</span>
+                      </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="mb-4">
-                      <h3 className="text-2xl font-bold text-offwhite-400 group-hover:text-white transition-colors">
+                    {/* Mini Preview Animation */}
+                    {index === 0 && (
+                      <div className="mb-4 p-3 rounded-xl bg-black/30 border border-white/5">
+                        <MiniFireLinkPreview color={product.color} />
+                      </div>
+                    )}
+
+                    {/* Title & Description */}
+                    <div className="flex-1">
+                      <h3 className={`${index === 0 ? 'text-2xl md:text-3xl' : 'text-xl'} font-bold text-offwhite-400 group-hover:text-white transition-colors`}>
                         {product.title}
                       </h3>
                       <p className="text-offwhite-700 text-sm mt-1">{product.subtitle}</p>
+                      <p className={`text-offwhite-600 ${index === 0 ? 'mt-4' : 'mt-2'} ${index === 0 ? 'text-base' : 'text-sm'}`}>
+                        {product.description}
+                      </p>
                     </div>
 
-                    <p className="text-offwhite-600 mb-6">{product.description}</p>
-
-                    {/* CTA */}
-                    <div
-                      className="flex items-center gap-2 text-sm font-medium transition-colors"
-                      style={{ color: product.color }}
-                    >
-                      <span>{lang === 'tr' ? 'Kesfet' : 'Explore'}</span>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    {/* Stats & CTA */}
+                    <div className="mt-4 flex items-center justify-between">
+                      <div>
+                        <div className="text-2xl font-mono font-bold" style={{ color: product.color }}>
+                          {product.stats.value}
+                        </div>
+                        <div className="text-offwhite-700 text-xs">{product.stats.label}</div>
+                      </div>
+                      <div
+                        className="flex items-center gap-2 text-sm font-medium transition-colors"
+                        style={{ color: product.color }}
+                      >
+                        <span>{lang === 'tr' ? 'Keşfet' : 'Explore'}</span>
+                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
+
+                  {/* Corner accents */}
+                  <div className="absolute top-0 left-0 w-8 h-px" style={{ background: `linear-gradient(to right, ${product.color}, transparent)` }} />
+                  <div className="absolute top-0 left-0 w-px h-8" style={{ background: `linear-gradient(to bottom, ${product.color}, transparent)` }} />
                 </Link>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trusted By Marquee */}
+      <section className="py-16 bg-onyx-950 border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
+            <span className="text-offwhite-700 text-sm uppercase tracking-widest">
+              {lang === 'tr' ? 'Sektör Liderleri Tarafından Tercih Ediliyor' : 'Trusted by Industry Leaders'}
+            </span>
+          </motion.div>
+
+          {/* Marquee Container */}
+          <div className="relative overflow-hidden">
+            {/* Gradient masks */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-onyx-950 to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-onyx-950 to-transparent z-10" />
+
+            {/* Scrolling logos */}
+            <motion.div
+              className="flex gap-16 items-center"
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+            >
+              {[...trustedBy, ...trustedBy].map((company, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 px-6 py-3 rounded-lg border border-white/5 bg-white/[0.02]"
+                >
+                  <span className="text-offwhite-600 font-semibold text-lg whitespace-nowrap">{company.name}</span>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -321,20 +456,20 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
           >
             <span className="inline-flex items-center gap-2 text-purple-400 font-mono text-xs tracking-widest uppercase mb-6">
               <span className="w-8 h-px bg-purple-400" />
-              SMART LIVING
+              LUXURY SMART LIVING
               <span className="w-8 h-px bg-purple-400" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
-              {lang === 'tr' ? 'Akilli' : 'Smart'}
+              {lang === 'tr' ? 'Akıllı' : 'Smart'}
               {' '}
               <span className="text-purple-400">
-                {lang === 'tr' ? 'Yasam Alanlari' : 'Living Spaces'}
+                {lang === 'tr' ? 'Yaşam Alanları' : 'Living Spaces'}
               </span>
             </h2>
             <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'Villa, apartman ve rezidans projeleriniz icin akilli otomasyon cozumleri.'
-                : 'Smart automation solutions for your villa, apartment, and residence projects.'}
+                ? 'Lüks villa, apartman ve rezidans projeleriniz için premium otomasyon çözümleri.'
+                : 'Premium automation solutions for your luxury villa, apartment, and residence projects.'}
             </p>
           </motion.div>
 
@@ -365,7 +500,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
                   {/* CTA */}
                   <div className="flex items-center gap-2 text-purple-400 text-sm font-medium">
-                    <span>{lang === 'tr' ? 'Incele' : 'Explore'}</span>
+                    <span>{lang === 'tr' ? 'İncele' : 'Explore'}</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
@@ -383,35 +518,90 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
+            <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-engineer-500/10 flex items-center justify-center">
+              <Globe size={40} className="text-engineer-500" />
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
               {lang === 'tr'
-                ? 'Projenizi Hayata Gecirelim'
+                ? 'Projenizi Hayata Geçirelim'
                 : "Let's Bring Your Project to Life"}
             </h2>
             <p className="text-lg text-offwhite-700 mb-10">
               {lang === 'tr'
-                ? 'Muhendislik ekibimiz, fikirlerinizi gercege donusturmek icin hazir.'
-                : 'Our engineering team is ready to turn your ideas into reality.'}
+                ? 'Mühendislik ekibimiz, fikirlerinizi endüstriyel gerçekliğe dönüştürmek için hazır.'
+                : 'Our engineering team is ready to turn your ideas into industrial reality.'}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href={`/${lang}/contact`}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all duration-300"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-engineer-500 to-orange-500 hover:from-engineer-600 hover:to-orange-600 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-engineer-500/25"
               >
-                <span>{lang === 'tr' ? 'Iletisime Gecin' : 'Get in Touch'}</span>
+                <span>{lang === 'tr' ? 'İletişime Geçin' : 'Get in Touch'}</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href={`/${lang}/projects`}
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-xl transition-all duration-300"
               >
-                <span>{lang === 'tr' ? 'Projeleri Inceleyin' : 'View Projects'}</span>
+                <span>{lang === 'tr' ? 'Projeleri İnceleyin' : 'View Projects'}</span>
               </Link>
             </div>
           </motion.div>
         </div>
       </section>
+    </div>
+  );
+}
+
+// ===========================================
+// Mini Preview Components for Bento Grid
+// ===========================================
+
+function MiniFireLinkPreview({ color }: { color: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      {/* Mini sensor grid */}
+      <div className="grid grid-cols-4 gap-1">
+        {Array.from({ length: 8 }).map((_, i) => {
+          const isActive = i === 2 || i === 5;
+          return (
+            <motion.div
+              key={i}
+              className="w-4 h-4 rounded"
+              style={{
+                backgroundColor: isActive ? color : 'rgba(255,255,255,0.1)',
+              }}
+              animate={isActive ? { opacity: [1, 0.5, 1] } : undefined}
+              transition={{ duration: 0.5, repeat: Infinity }}
+            />
+          );
+        })}
+      </div>
+
+      {/* Temperature reading */}
+      <div className="flex-1">
+        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ backgroundColor: color }}
+            animate={{ width: ['40%', '70%', '40%'] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+        </div>
+        <div className="flex justify-between mt-1">
+          <span className="text-[8px] text-offwhite-700">20°C</span>
+          <span className="text-[8px] font-mono" style={{ color }}>
+            <motion.span
+              animate={{ opacity: [1, 0.5, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              67.3°C
+            </motion.span>
+          </span>
+          <span className="text-[8px] text-offwhite-700">100°C</span>
+        </div>
+      </div>
     </div>
   );
 }

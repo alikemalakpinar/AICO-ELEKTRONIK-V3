@@ -132,67 +132,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     },
 
     // ============================================
-    // 3. PID KONTROLLU BARISTA OTOMASYONU
-    // ============================================
-    {
-      id: 'barista-automation',
-      slug: 'pid-kontrollu-barista-otomasyonu',
-      title: 'PID Kontrollu Barista Otomasyonu',
-      subtitle: 'Her damlada mukemmel basinc ve isi dengesi.',
-      category: 'consumer',
-      year: '2023',
-      description:
-        'Her damlada mukemmel basinc ve isi dengesi. Profesyonel espresso makineleri icin ±0.1°C hassasiyetinde sicaklik kontrolu.',
-      seoDescription:
-        'Profesyonel espresso makineleri icin PID kontrol sistemi. ±0.1°C hassasiyet, 7" HMI, Wi-Fi IoT baglantisi ve akis olcer entegrasyonu.',
-      fullDetailText: `
-        Kahve yapiminda tutarli tat profili, sicaklik ve basinci hassas kontrol etmeyi gerektirir. Bu projede, profesyonel espresso makineleri icin tam otomatik kontrol sistemi gelistirdik.
-
-        PID algoritmasi ile su sicakligini ±0.1°C hassasiyetle kontrol ediyoruz. Akis olcer entegrasyonu sayesinde su miktari gram bazinda ayarlanabiliyor. 7" kapasitif dokunmatik ekran, kullanici profili ve istatistik takibi sunuyor.
-
-        Wi-Fi uzerinden uzaktan izleme ve OTA firmware guncelleme ozellikleri, sistemin gelecege hazir olmasini sagliyor.
-      `,
-      challenge:
-        'Profesyonel kahve makinelerinde tutarli tat icin hassas sicaklik ve basinc kontrolu.',
-      solution:
-        'PID algoritmalari ile ±0.1°C hassasiyet, akis olcer entegrasyonu, 7" HMI ve IoT baglantisi.',
-      techStack: [
-        { name: 'PID Control', icon: 'sliders', category: 'software' },
-        { name: 'Power Electronics', icon: 'zap', category: 'hardware' },
-        { name: 'HMI 7"', icon: 'monitor', category: 'hardware' },
-        { name: 'ESP32', icon: 'cpu', category: 'hardware' },
-        { name: 'Flow Sensor', icon: 'droplet', category: 'hardware' },
-        { name: 'C++', icon: 'code', category: 'software' },
-      ],
-      stats: [
-        { label: 'Hassasiyet', value: '±0.1°C' },
-        { label: 'Tutarlilik', value: '%98' },
-        { label: 'Tasarruf', value: '%25' },
-        { label: 'Ekran', value: '7" Touch' },
-      ],
-      specs: [
-        { label: 'MCU', value: 'ESP32-WROVER-E' },
-        { label: 'HMI', value: '7" 800x480 Kapasitif' },
-        { label: 'Sicaklik Sensor', value: 'PT1000 Class A' },
-        { label: 'PID Ornekleme', value: '100Hz' },
-        { label: 'Akis Olcer', value: '0.1ml hassasiyet' },
-        { label: 'Basinc Sensor', value: '0-25 bar' },
-        { label: 'Isitici Kontrol', value: 'SSR + ZCD' },
-        { label: 'Baglanti', value: 'Wi-Fi + BLE' },
-      ],
-      tags: ['PID', 'HMI', 'Consumer Electronics', 'ESP32', 'Power'],
-      images: [
-        { src: '/assets/logos/coffee-machine.jpg', alt: 'Kahve Makinesi', caption: 'Kontrol sistemi' },
-      ],
-      featured: true,
-      cta: {
-        text: 'Tuketici elektronigi projesi mi planliyorsunuz?',
-        link: '/tr/contact?subject=consultation',
-      },
-    },
-
-    // ============================================
-    // 4. YUKSEK VERIMLI GUC YONETIM UNITESI
+    // 3. YUKSEK VERIMLI GUC YONETIM UNITESI
     // ============================================
     {
       id: 'high-efficiency-pmu',
@@ -310,36 +250,39 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     },
 
     // ============================================
-    // 6. KESTIRIMCI BAKIM TITRESIM ANALIZORU
+    // 6. VIBRATIONGUARD - KESTIRIMCI BAKIM SISTEMI
     // ============================================
     {
-      id: 'predictive-maintenance',
-      slug: 'kestirimci-bakim-titresim-analizoru',
-      title: 'Kestirimci Bakim & Titresim Analizoru',
+      id: 'vibration-guard',
+      slug: 'vibrationguard-kestirimci-bakim',
+      title: 'VibrationGuard Kestirimci Bakim Sistemi',
       subtitle: 'Makinelerin sesini dinleyerek arizayi 2 hafta onceden duyan yapay kulak.',
       category: 'industrial',
       year: '2024',
       description:
         'Makinelerin sesini dinleyerek arizayi 2 hafta onceden duyan yapay kulak. FFT analizi ve makine ogrenimi ile kestirimci bakim.',
       seoDescription:
-        'Industry 4.0 kestirimci bakim sistemi. FFT titresim analizi, ML tabanli ariza tahmini, OPC-UA SCADA entegrasyonu. 2 hafta onceden ariza uyarisi.',
+        'VibrationGuard Industry 4.0 kestirimci bakim sistemi. FFT titresim analizi, ML tabanli ariza tahmini, 3D motor gorselleştirme, OPC-UA SCADA entegrasyonu. 2 hafta onceden ariza uyarisi.',
       fullDetailText: `
-        Planlanmamis makine duruslari, uretim tesislerinde yillik milyonlarca dolar kayba neden olur. Motor sagligi izleme ve ariza tahmini yapan Industry 4.0 cozumu gelistirdik.
+        Planlanmamis makine duruslari, uretim tesislerinde yillik milyonlarca dolar kayba neden olur. VibrationGuard, motor sagligi izleme ve ariza tahmini yapan Industry 4.0 cozumudur.
 
         MEMS akselerometre sensorleri, saniyede 10.000 ornekleme hizinda titresim verisi topluyor. FFT algoritmasi ile frekans domenine donusturulen veri, makine ogrenimi modeline besleniyor.
 
-        Sistem, rulman ve dengesizlik arizalarini 2 hafta oncesinden tahmin edebiliyor. OPC-UA protokolu ile mevcut SCADA sistemlerine entegre oluyor.
+        3D motor gorselleştirmesi ve gercek zamanli titresim dalga formu analizi ile operatorler motor sagligini aninda gorebiliyor. Sistem, rulman ve dengesizlik arizalarini 2 hafta oncesinden tahmin edebiliyor.
+
+        OPC-UA protokolu ile mevcut SCADA sistemlerine entegre oluyor. RPM takibi, sicaklik izleme ve kritik alarm sistemi ile tam kapsamli kestirimci bakim cozumu.
       `,
       challenge:
         'Sanayi motorlarinda beklenmedik arizalar ve planlanmamis duruslar.',
       solution:
-        'FFT analizi, ML tabanli ariza tahmini, OPC-UA entegrasyonu. 2 hafta onceden uyari.',
+        'FFT analizi, ML tabanli ariza tahmini, 3D gorselleştirme, OPC-UA entegrasyonu. 2 hafta onceden uyari.',
       techStack: [
         { name: 'DSP/FFT', icon: 'activity', category: 'software' },
         { name: 'Python/ML', icon: 'brain', category: 'software' },
         { name: 'MEMS Sensor', icon: 'cpu', category: 'hardware' },
         { name: 'OPC-UA', icon: 'server', category: 'protocol' },
         { name: 'SCADA', icon: 'monitor', category: 'platform' },
+        { name: 'React Three Fiber', icon: 'box', category: 'software' },
       ],
       stats: [
         { label: 'Ornekleme', value: '10kHz' },
@@ -355,16 +298,16 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'ML Model', value: 'Random Forest + LSTM' },
         { label: 'Tahmin Penceresi', value: '14 gun oncesi' },
         { label: 'Entegrasyon', value: 'OPC-UA / Modbus' },
-        { label: 'Dashboard', value: 'Web + Mobil' },
+        { label: 'Dashboard', value: '3D + Web + Mobil' },
       ],
-      tags: ['Predictive', 'FFT', 'ML', 'Industry 4.0', 'SCADA'],
+      tags: ['VibrationGuard', 'Predictive', 'FFT', 'ML', 'Industry 4.0', 'SCADA', '3D'],
       images: [
-        { src: '/assets/logos/vibration-analyzer.jpg', alt: 'Titresim Analizoru', caption: 'Sensor unitesi' },
+        { src: '/assets/logos/vibration-analyzer.jpg', alt: 'VibrationGuard Sensor', caption: 'VibrationGuard sensor unitesi' },
       ],
-      featured: false,
+      featured: true,
       cta: {
-        text: 'Industry 4.0 donusumu icin gorusme talep et',
-        link: '/tr/contact?subject=consultation',
+        text: 'VibrationGuard demo talebi olusturun',
+        link: '/tr/contact?subject=vibrationguard-demo',
       },
     },
 
@@ -605,62 +548,6 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       },
     },
     {
-      id: 'barista-automation',
-      slug: 'pid-controlled-barista-automation',
-      title: 'PID Controlled Barista Automation',
-      subtitle: 'Perfect pressure and temperature balance in every drop.',
-      category: 'consumer',
-      year: '2023',
-      description:
-        'Perfect pressure and temperature balance in every drop. ±0.1°C precision temperature control for professional espresso machines.',
-      seoDescription:
-        'PID control system for professional espresso machines. ±0.1°C precision, 7" HMI, Wi-Fi IoT connectivity and flow meter integration.',
-      fullDetailText: `
-        Consistent taste profile in coffee making requires precise control of temperature and pressure. We developed a fully automatic control system for professional espresso machines.
-
-        PID algorithm controls water temperature with ±0.1°C precision. Flow meter integration allows gram-based water quantity adjustment. 7" capacitive touchscreen offers user profiles and statistics.
-
-        Remote monitoring via Wi-Fi and OTA firmware updates ensure the system is future-ready.
-      `,
-      challenge:
-        'Precise temperature and pressure control for consistent taste in professional coffee machines.',
-      solution:
-        'PID algorithms with ±0.1°C precision, flow meter integration, 7" HMI and IoT connectivity.',
-      techStack: [
-        { name: 'PID Control', icon: 'sliders', category: 'software' },
-        { name: 'Power Electronics', icon: 'zap', category: 'hardware' },
-        { name: 'HMI 7"', icon: 'monitor', category: 'hardware' },
-        { name: 'ESP32', icon: 'cpu', category: 'hardware' },
-        { name: 'Flow Sensor', icon: 'droplet', category: 'hardware' },
-        { name: 'C++', icon: 'code', category: 'software' },
-      ],
-      stats: [
-        { label: 'Precision', value: '±0.1°C' },
-        { label: 'Consistency', value: '98%' },
-        { label: 'Savings', value: '25%' },
-        { label: 'Display', value: '7" Touch' },
-      ],
-      specs: [
-        { label: 'MCU', value: 'ESP32-WROVER-E' },
-        { label: 'HMI', value: '7" 800x480 Capacitive' },
-        { label: 'Temp Sensor', value: 'PT1000 Class A' },
-        { label: 'PID Sampling', value: '100Hz' },
-        { label: 'Flow Meter', value: '0.1ml precision' },
-        { label: 'Pressure Sensor', value: '0-25 bar' },
-        { label: 'Heater Control', value: 'SSR + ZCD' },
-        { label: 'Connectivity', value: 'Wi-Fi + BLE' },
-      ],
-      tags: ['PID', 'HMI', 'Consumer Electronics', 'ESP32', 'Power'],
-      images: [
-        { src: '/assets/logos/coffee-machine.jpg', alt: 'Coffee Machine', caption: 'Control system' },
-      ],
-      featured: true,
-      cta: {
-        text: 'Planning a consumer electronics project?',
-        link: '/en/contact?subject=consultation',
-      },
-    },
-    {
       id: 'high-efficiency-pmu',
       slug: 'high-efficiency-power-management-unit',
       title: 'High Efficiency Power Management Unit (PMU)',
@@ -771,33 +658,36 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       },
     },
     {
-      id: 'predictive-maintenance',
-      slug: 'predictive-maintenance-vibration-analyzer',
-      title: 'Predictive Maintenance & Vibration Analyzer',
+      id: 'vibration-guard',
+      slug: 'vibrationguard-predictive-maintenance',
+      title: 'VibrationGuard Predictive Maintenance System',
       subtitle: 'Artificial ear that hears failures 2 weeks ahead by listening to machines.',
       category: 'industrial',
       year: '2024',
       description:
         'Artificial ear that hears failures 2 weeks ahead by listening to machines. FFT analysis and machine learning for predictive maintenance.',
       seoDescription:
-        'Industry 4.0 predictive maintenance system. FFT vibration analysis, ML-based failure prediction, OPC-UA SCADA integration. 2-week advance failure warning.',
+        'VibrationGuard Industry 4.0 predictive maintenance system. FFT vibration analysis, ML-based failure prediction, 3D motor visualization, OPC-UA SCADA integration. 2-week advance failure warning.',
       fullDetailText: `
-        Unplanned machine downtime causes millions in losses annually. We developed an Industry 4.0 solution for motor health monitoring and failure prediction.
+        Unplanned machine downtime causes millions in losses annually. VibrationGuard is our Industry 4.0 solution for motor health monitoring and failure prediction.
 
         MEMS accelerometer sensors collect vibration data at 10,000 samples per second. Data converted to frequency domain via FFT algorithm feeds into ML model.
 
-        System can predict bearing and imbalance failures 2 weeks in advance. Integrates with existing SCADA systems via OPC-UA protocol.
+        3D motor visualization and real-time vibration waveform analysis enable operators to instantly see motor health status. System can predict bearing and imbalance failures 2 weeks in advance.
+
+        Integrates with existing SCADA systems via OPC-UA protocol. Complete predictive maintenance solution with RPM tracking, temperature monitoring, and critical alert system.
       `,
       challenge:
         'Unexpected failures and unplanned downtime in industrial motors.',
       solution:
-        'FFT analysis, ML-based failure prediction, OPC-UA integration. 2-week advance warning.',
+        'FFT analysis, ML-based failure prediction, 3D visualization, OPC-UA integration. 2-week advance warning.',
       techStack: [
         { name: 'DSP/FFT', icon: 'activity', category: 'software' },
         { name: 'Python/ML', icon: 'brain', category: 'software' },
         { name: 'MEMS Sensor', icon: 'cpu', category: 'hardware' },
         { name: 'OPC-UA', icon: 'server', category: 'protocol' },
         { name: 'SCADA', icon: 'monitor', category: 'platform' },
+        { name: 'React Three Fiber', icon: 'box', category: 'software' },
       ],
       stats: [
         { label: 'Sampling', value: '10kHz' },
@@ -813,16 +703,16 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'ML Model', value: 'Random Forest + LSTM' },
         { label: 'Prediction Window', value: '14 days ahead' },
         { label: 'Integration', value: 'OPC-UA / Modbus' },
-        { label: 'Dashboard', value: 'Web + Mobile' },
+        { label: 'Dashboard', value: '3D + Web + Mobile' },
       ],
-      tags: ['Predictive', 'FFT', 'ML', 'Industry 4.0', 'SCADA'],
+      tags: ['VibrationGuard', 'Predictive', 'FFT', 'ML', 'Industry 4.0', 'SCADA', '3D'],
       images: [
-        { src: '/assets/logos/vibration-analyzer.jpg', alt: 'Vibration Analyzer', caption: 'Sensor unit' },
+        { src: '/assets/logos/vibration-analyzer.jpg', alt: 'VibrationGuard Sensor', caption: 'VibrationGuard sensor unit' },
       ],
-      featured: false,
+      featured: true,
       cta: {
-        text: 'Request a meeting for Industry 4.0 transformation',
-        link: '/en/contact?subject=consultation',
+        text: 'Request a VibrationGuard demo',
+        link: '/en/contact?subject=vibrationguard-demo',
       },
     },
     {
@@ -949,7 +839,6 @@ export const PROJECT_CATEGORIES: LocalizedContent<CategoryFilter[]> = {
     { id: 'embedded', label: 'Gomulu Sistemler' },
     { id: 'industrial', label: 'Endustriyel IoT' },
     { id: 'iot', label: 'IoT & Baglanti' },
-    { id: 'consumer', label: 'Tuketici Elektronigi' },
     { id: 'saas', label: 'Yazilim & SaaS' },
   ],
   en: [
@@ -957,7 +846,6 @@ export const PROJECT_CATEGORIES: LocalizedContent<CategoryFilter[]> = {
     { id: 'embedded', label: 'Embedded Systems' },
     { id: 'industrial', label: 'Industrial IoT' },
     { id: 'iot', label: 'IoT & Connectivity' },
-    { id: 'consumer', label: 'Consumer Electronics' },
     { id: 'saas', label: 'Software & SaaS' },
   ],
 };
