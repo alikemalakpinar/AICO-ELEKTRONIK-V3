@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import {
   Flame,
@@ -16,19 +17,26 @@ import {
   Cpu,
   Battery,
   Radio,
+  AlertTriangle,
 } from 'lucide-react';
 import { ImmersiveHero, StickyScrollStory, BentoGrid } from '@/components/modules';
 import type { StoryStep } from '@/components/modules';
 import type { BentoItem } from '@/components/modules';
-import HeatmapDemo from '@/components/products/fire/HeatmapDemo';
 import type { Locale } from '@/types';
+
+// Dynamic import for the new FireLink Pro Demo
+const FireLinkProDemo = dynamic(
+  () => import('@/components/products/fire/FireLinkProDemo'),
+  { ssr: false, loading: () => <div className="aspect-[16/10] bg-onyx-800/50 rounded-2xl animate-pulse" /> }
+);
 
 interface FireSafetyClientProps {
   lang: Locale;
 }
 
 export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
-  const accentColor = '#EF4444'; // Red for fire safety
+  // MAGMA THEME - Deep Obsidian with Burning Amber
+  const accentColor = '#FF4500'; // Burning Amber
 
   // Content based on language
   const content = {
@@ -205,8 +213,36 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         );
       case 'detection':
         return (
-          <div className="h-full bg-gradient-to-br from-orange-900/50 to-gray-900 p-4">
-            <HeatmapDemo lang={lang} className="h-full" />
+          <div className="h-full bg-gradient-to-br from-orange-900/50 to-gray-900 p-4 flex flex-col items-center justify-center">
+            <div className="text-center mb-4">
+              <Thermometer size={40} className="text-orange-500 mx-auto mb-2" />
+              <span className="text-orange-400 text-sm font-medium">
+                {lang === 'tr' ? 'Termal Haritalama' : 'Thermal Mapping'}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {Array.from({ length: 8 }).map((_, i) => {
+                const temp = 25 + Math.random() * 40;
+                const isHot = temp > 50;
+                return (
+                  <motion.div
+                    key={i}
+                    className="w-12 h-12 rounded-lg flex items-center justify-center text-xs font-mono"
+                    style={{
+                      backgroundColor: isHot ? `rgba(255, 69, 0, ${temp / 100})` : `rgba(34, 197, 94, 0.3)`,
+                      border: `1px solid ${isHot ? '#FF4500' : '#22C55E'}`,
+                    }}
+                    animate={isHot ? { scale: [1, 1.05, 1] } : undefined}
+                    transition={{ repeat: Infinity, duration: 1 }}
+                  >
+                    {temp.toFixed(0)}°
+                  </motion.div>
+                );
+              })}
+            </div>
+            <div className="mt-4 text-[10px] text-gray-400">
+              {lang === 'tr' ? '100ms aralikla guncelleniyor' : 'Updating every 100ms'}
+            </div>
           </div>
         );
       case 'alert':
@@ -307,27 +343,27 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         deviceType="phone"
       />
 
-      {/* Interactive Demo Section */}
-      <section id="demo" className="py-24 md:py-32 bg-onyx-900">
-        <div className="max-w-5xl mx-auto px-6">
+      {/* Interactive Demo Section - FireLink Pro Dashboard */}
+      <section id="demo" className="py-24 md:py-32 bg-[#050505]">
+        <div className="max-w-6xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="inline-flex items-center gap-2 text-red-500 font-mono text-xs tracking-widest uppercase mb-6">
-              <span className="w-8 h-px bg-red-500" />
-              {lang === 'tr' ? 'INTERAKTIF DEMO' : 'INTERACTIVE DEMO'}
-              <span className="w-8 h-px bg-red-500" />
+            <span className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase mb-6" style={{ color: accentColor }}>
+              <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
+              {lang === 'tr' ? 'FIRELINK PRO DASHBOARD' : 'FIRELINK PRO DASHBOARD'}
+              <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
-              {lang === 'tr' ? 'Canli Termal Izleme' : 'Live Thermal Monitoring'}
+              {lang === 'tr' ? '3D Termal Izleme Sistemi' : '3D Thermal Monitoring System'}
             </h2>
             <p className="text-offwhite-700 max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'Simulasyonu baslatarak gercek zamanli sicaklik degisimlerini ve alarm sistemini deneyimleyin.'
-                : 'Start the simulation to experience real-time temperature changes and the alarm system.'}
+                ? 'Gercek zamanli 3D goruntulem, taktik HUD sensor durumu ve akilli alarm sistemi.'
+                : 'Real-time 3D visualization, tactical HUD sensor status and smart alarm system.'}
             </p>
           </motion.div>
 
@@ -336,7 +372,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <HeatmapDemo lang={lang} className="max-w-3xl mx-auto" />
+            <FireLinkProDemo lang={lang} />
           </motion.div>
         </div>
       </section>

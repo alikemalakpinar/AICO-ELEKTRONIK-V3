@@ -22,9 +22,9 @@ import { ImmersiveHero, BentoGrid } from '@/components/modules';
 import type { BentoItem } from '@/components/modules';
 import type { Locale } from '@/types';
 
-// Dynamic import for the map demo to avoid SSR issues
-const FleetMapDemo = dynamic(
-  () => import('@/components/products/coldchain/FleetMapDemo'),
+// Dynamic import for the 3D globe demo to avoid SSR issues
+const ColdChainProDemo = dynamic(
+  () => import('@/components/products/cold-chain/ColdChainProDemo'),
   { ssr: false, loading: () => <div className="aspect-[16/10] bg-onyx-800/50 rounded-2xl animate-pulse" /> }
 );
 
@@ -144,8 +144,8 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
         lang={lang}
       />
 
-      {/* Fleet Tracking Demo */}
-      <section id="demo" className="py-24 md:py-32 bg-onyx-900">
+      {/* Global Fleet Tracking with 3D Globe */}
+      <section id="demo" className="py-24 md:py-32 bg-[#050505]">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -156,24 +156,26 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
             <span className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase mb-6"
               style={{ color: accentColor }}>
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
-              {lang === 'tr' ? 'CANLI DEMO' : 'LIVE DEMO'}
+              {lang === 'tr' ? 'GLOBAL KOMUTA MERKEZI' : 'GLOBAL COMMAND CENTER'}
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
-              {content.demo.title}
+              {lang === 'tr' ? '3D Global Filo Izleme' : '3D Global Fleet Tracking'}
             </h2>
             <p className="text-offwhite-700 max-w-2xl mx-auto">
-              {content.demo.subtitle}
+              {lang === 'tr'
+                ? 'Interaktif 3D dunya uzerinde arac rotalarini ve sicaklik durumunu izleyin. Araca tiklayin detaylari gorun.'
+                : 'Track vehicle routes and temperature status on interactive 3D globe. Click on vehicles to see details.'}
             </p>
           </motion.div>
 
-          {/* Fleet Map Demo */}
+          {/* 3D Globe Fleet Demo */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <FleetMapDemo lang={lang} />
+            <ColdChainProDemo lang={lang} />
           </motion.div>
         </div>
       </section>

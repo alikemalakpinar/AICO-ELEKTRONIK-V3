@@ -50,6 +50,24 @@ const VillaDashboardDemo = dynamic(
   }
 );
 
+// Lazy load the Luxury Smart Living Demo
+const SmartLivingLuxuryDemo = dynamic(
+  () => import('@/components/products/villa/SmartLivingLuxuryDemo'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[600px] animate-pulse rounded-3xl bg-gradient-to-br from-onyx-800/50 to-onyx-900/50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-engineer-500/20 flex items-center justify-center">
+            <Lightbulb className="w-8 h-8 text-engineer-500 animate-pulse" />
+          </div>
+          <div className="text-sm text-muted-foreground">Loading luxury controls...</div>
+        </div>
+      </div>
+    ),
+  }
+);
+
 interface SmartVillaClientProps {
   lang: Locale;
 }
@@ -829,6 +847,47 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Luxury Smart Living Demo */}
+      <section className="py-20 bg-onyx-950 relative overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-engineer-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'LUKS KONTROLLER' : 'LUXURY CONTROLS'}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-4">
+              {lang === 'tr' ? 'Interaktif Kat Plani' : 'Interactive Floor Plan'}
+            </h2>
+            <p className="text-lg text-offwhite-600 max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Isiklari ayarlamak icin odalarin uzerine surukleyin. Senaryo modlarini kesfet.'
+                : 'Drag over rooms to dim lights. Discover scenario modes for every moment.'}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <SmartLivingLuxuryDemo lang={lang} />
+          </motion.div>
         </div>
       </section>
 
