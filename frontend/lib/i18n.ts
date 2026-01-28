@@ -125,8 +125,9 @@ export const translations = {
     },
     // Meta
     meta: {
-      siteTitle: 'AICO Elektronik | Muhendislik Çözümleri',
-      siteDescription: 'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri. Villa, rezidans ve fabrika projeleri icin muhendislik danismanligi.',
+      siteTitle: 'AICO Elektronik | Endüstriyel IoT & Mühendislik Çözümleri',
+      siteDescription: 'Endüstriyel IoT, fabrika yangın algılama, vibrasyon analizi ve akıllı yaşam çözümleri. AICO Elektronik - 20+ yıllık mühendislik deneyimi ile villa, rezidans ve fabrika projeleri.',
+      keywords: 'Endüstriyel IoT, Fabrika Yangın Algılama, Vibrasyon Analizi, AICO Elektronik, Akıllı Villa, Akıllı Rezidans, Kestirimci Bakım, Soğuk Zincir Takip, Maden Güvenliği, Hava Kalitesi İzleme, CO2 Sensör, TVOC Ölçüm, PM2.5 Monitoring',
     },
   },
   en: {
@@ -247,8 +248,9 @@ export const translations = {
     },
     // Meta
     meta: {
-      siteTitle: 'AICO Elektronik | Engineering Solutions',
-      siteDescription: 'Smart living technologies and industrial automation solutions. Engineering consultancy for villa, residence, and factory projects.',
+      siteTitle: 'AICO Elektronik | Industrial IoT & Engineering Solutions',
+      siteDescription: 'Industrial IoT, factory fire detection, vibration analysis and smart living solutions. AICO Elektronik - 20+ years of engineering experience for villa, residence, and factory projects.',
+      keywords: 'Industrial IoT, Factory Fire Detection, Vibration Analysis, AICO Elektronik, Smart Villa, Smart Residence, Predictive Maintenance, Cold Chain Tracking, Mining Safety, Air Quality Monitoring, CO2 Sensor, TVOC Measurement, PM2.5 Monitoring',
     },
   },
 } as const;

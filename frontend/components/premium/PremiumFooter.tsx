@@ -67,16 +67,16 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                 <span>info@aicoelektronik.com</span>
               </a>
               <a
-                href="tel:+903125550000"
+                href="tel:+905326210601"
                 className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
                 <Phone size={16} className="text-engineer-500" />
-                <span>+90 312 555 0000</span>
+                <span>+90 532 621 06 01</span>
               </a>
               <div className="flex items-start gap-3 text-muted-foreground text-sm">
-                <MapPin size={16} className="text-engineer-500 mt-0.5" />
+                <MapPin size={16} className="text-engineer-500 mt-0.5 flex-shrink-0" />
                 <span>
-                  Ankara, Turkiye
+                  Yukari Dudullu Mah, Necip Fazil Blv No:44/38, Umraniye, Istanbul
                 </span>
               </div>
             </div>

@@ -59,10 +59,10 @@ function FloatingInput({
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className={`w-full px-4 pt-6 pb-2 bg-white/5 border rounded-xl text-offwhite-400 placeholder-transparent focus:outline-none transition-all duration-300 resize-none ${
+        className={`w-full px-4 pt-6 pb-2 bg-white dark:bg-white/5 border rounded-xl text-gray-900 dark:text-offwhite-400 placeholder-transparent focus:outline-none transition-all duration-300 resize-none ${
           isFocused
             ? 'border-engineer-500 ring-1 ring-engineer-500/30'
-            : 'border-white/10 hover:border-white/20'
+            : 'border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20'
         } ${isTextarea ? 'h-32' : ''}`}
         placeholder={label}
       />
@@ -71,7 +71,7 @@ function FloatingInput({
         className={`absolute left-4 transition-all duration-300 pointer-events-none ${
           isActive
             ? 'top-2 text-xs text-engineer-500'
-            : 'top-4 text-sm text-offwhite-600'
+            : 'top-4 text-sm text-gray-500 dark:text-offwhite-600'
         }`}
       >
         {label}
@@ -354,7 +354,18 @@ export default function ContactPage({ params }: ContactPageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-onyx-900 pt-32 pb-24">
+    <div className="min-h-screen bg-gray-50 dark:bg-onyx-900 pt-32 pb-24 relative">
+      {/* Subtle industrial grid background */}
+      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="contact-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#contact-grid)" className="text-gray-900 dark:text-white" />
+        </svg>
+      </div>
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-6 mb-20">
         <motion.div
@@ -367,10 +378,10 @@ export default function ContactPage({ params }: ContactPageProps) {
             <span className="w-8 h-px bg-engineer-500" />
             {lang === 'tr' ? 'ILETISIM' : 'CONTACT'}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6 tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-offwhite-400 mb-6 tracking-tight">
             {lang === 'tr' ? 'Konusalim' : "Let's Talk"}
           </h1>
-          <p className="text-xl text-offwhite-600 leading-relaxed">
+          <p className="text-xl text-gray-600 dark:text-offwhite-600 leading-relaxed">
             {lang === 'tr'
               ? 'Projenizi tartismak, demo talep etmek veya sorularinizi sormak icin bizimle iletisime gecin.'
               : 'Get in touch to discuss your project, request a demo, or ask any questions.'}
@@ -417,7 +428,7 @@ export default function ContactPage({ params }: ContactPageProps) {
 
               {/* Subject Selection */}
               <div className="space-y-2">
-                <label className="text-sm text-offwhite-600">
+                <label className="text-sm text-gray-500 dark:text-offwhite-600">
                   {lang === 'tr' ? 'Konu' : 'Subject'}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -429,7 +440,7 @@ export default function ContactPage({ params }: ContactPageProps) {
                       className={`px-4 py-2 rounded-lg text-sm transition-all ${
                         formData.subject === subject.id
                           ? 'bg-engineer-500 text-white'
-                          : 'bg-white/5 text-offwhite-500 hover:bg-white/10 border border-white/5'
+                          : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-offwhite-500 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/5'
                       }`}
                     >
                       {subject.label}
@@ -473,52 +484,59 @@ export default function ContactPage({ params }: ContactPageProps) {
               <GlobalReachMap />
             </div>
 
-            {/* Contact Cards */}
+            {/* Contact Cards - Glassmorphism Style */}
             <div className="grid sm:grid-cols-2 gap-4">
               <motion.a
                 href="mailto:info@aicoelektronik.com"
-                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <Mail size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-offwhite-600 mb-1">E-posta</div>
-                <div className="text-offwhite-400 font-medium">info@aicoelektronik.com</div>
+                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">E-posta</div>
+                <div className="text-gray-900 dark:text-offwhite-400 font-medium">info@aicoelektronik.com</div>
               </motion.a>
 
               <motion.a
-                href="tel:+908508408600"
-                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                href="tel:+905326210601"
+                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <Phone size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-offwhite-600 mb-1">{lang === 'tr' ? 'Telefon' : 'Phone'}</div>
-                <div className="text-offwhite-400 font-medium">+90 850 840 86 00</div>
+                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">{lang === 'tr' ? 'Telefon' : 'Phone'}</div>
+                <div className="text-gray-900 dark:text-offwhite-400 font-medium">+90 532 621 06 01</div>
               </motion.a>
 
               <motion.div
-                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <MapPin size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-offwhite-600 mb-1">{lang === 'tr' ? 'Adres' : 'Address'}</div>
-                <div className="text-offwhite-400 font-medium">Istanbul, Turkiye</div>
+                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">{lang === 'tr' ? 'Adres' : 'Address'}</div>
+                <div className="text-gray-900 dark:text-offwhite-400 font-medium text-xs leading-relaxed">
+                  Yukari Dudullu Mah, Necip Fazil Blv No:44/38, Umraniye, Istanbul
+                </div>
               </motion.div>
 
               <motion.div
-                className="group p-5 bg-onyx-800/50 border border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300"
+                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg sm:col-span-2"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <Clock size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-offwhite-600 mb-1">{lang === 'tr' ? 'Calisma Saatleri' : 'Working Hours'}</div>
-                <div className="text-offwhite-400 font-medium">09:00 - 18:00 GMT+3</div>
+                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">{lang === 'tr' ? 'Calisma Saatleri' : 'Working Hours'}</div>
+                <div className="text-gray-900 dark:text-offwhite-400 font-medium">
+                  {lang === 'tr' ? 'Hafta Ici: 09:00 - 18:00' : 'Weekdays: 09:00 - 18:00'}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-offwhite-700 mt-1">
+                  {lang === 'tr' ? 'Hafta sonu kapali' : 'Closed on weekends'}
+                </div>
               </motion.div>
             </div>
 

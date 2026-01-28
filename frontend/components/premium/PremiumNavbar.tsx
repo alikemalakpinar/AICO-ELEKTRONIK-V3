@@ -13,7 +13,7 @@ import {
   Flame,
   HardHat,
   Thermometer,
-  Coffee,
+  Activity,
   Home,
   Building,
   Building2,
@@ -35,7 +35,7 @@ function getPageAccentColor(pathname: string): string {
   if (pathname.includes('fire-safety') || pathname.includes('firelink')) return '#EF4444';
   if (pathname.includes('mining-iot') || pathname.includes('mineguard')) return '#EAB308';
   if (pathname.includes('cold-chain') || pathname.includes('coldtrack')) return '#06B6D4';
-  if (pathname.includes('coffee')) return '#A855F7';
+  if (pathname.includes('predictive-maintenance') || pathname.includes('vibration')) return '#00D4FF';
   return '#F97316'; // Default engineer orange
 }
 
@@ -176,16 +176,16 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       gradient: 'from-cyan-500/20 to-blue-500/10',
     },
     {
-      id: 'coffee',
-      icon: Coffee,
-      title: 'AICO Coffee',
-      subtitle: lang === 'tr' ? 'Akilli Barista' : 'Smart Barista',
+      id: 'predictive-maintenance',
+      icon: Activity,
+      title: 'VibrationGuard',
+      subtitle: lang === 'tr' ? 'Kestirimci Bakim' : 'Predictive Maintenance',
       description: lang === 'tr'
-        ? 'IoT baglantili kahve deneyimi'
-        : 'IoT-connected coffee experience',
-      href: `/${lang}/products/coffee`,
-      color: '#A855F7',
-      gradient: 'from-purple-500/20 to-pink-500/10',
+        ? 'FFT titresim analizi ve ariza tahmini'
+        : 'FFT vibration analysis and failure prediction',
+      href: `/${lang}/solutions/predictive-maintenance`,
+      color: '#00D4FF',
+      gradient: 'from-cyan-500/20 to-blue-500/10',
     },
   ];
 
