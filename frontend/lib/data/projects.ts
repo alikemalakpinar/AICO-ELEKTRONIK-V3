@@ -17,7 +17,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     {
       id: 'fire-analysis-module',
       slug: 'endustriyel-iot-yangin-analiz-modulu',
-      title: 'Endustriyel IoT Yangin Analiz Modulu',
+      title: 'Endüstriyel IoT Yangın Analiz Modülü',
       subtitle: '50ms tepki suresiyle endustriyel guvenligin noral bekcisi.',
       category: 'embedded',
       year: '2023',
@@ -54,7 +54,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'MCU', value: 'STM32H743 480MHz' },
         { label: 'Bellek', value: '1MB Flash, 1MB SRAM' },
         { label: 'AI Model', value: 'TFLite 128KB' },
-        { label: 'Iletisim', value: 'LoRaWAN Class A' },
+        { label: 'İletişim', value: 'LoRaWAN Class A' },
         { label: 'Batarya', value: '3.6V 19Ah Li-SOCl2' },
         { label: 'Koruma', value: 'IP67, ATEX Zone 1' },
         { label: 'Sicaklik', value: '-40°C ~ +85°C' },
@@ -122,11 +122,11 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       ],
       tags: ['RF Mesh', 'Mining', 'Safety', 'ATEX', 'Zigbee', 'IoT'],
       images: [
-        { src: '/assets/logos/mining-safety.jpg', alt: 'Maden Guvenlik Sistemi', caption: 'Takip unitesi' },
+        { src: '/assets/logos/mining-safety.jpg', alt: 'Maden Güvenlik Sistemi', caption: 'Takip unitesi' },
       ],
       featured: true,
       cta: {
-        text: 'Endustriyel guvenlik cozumu mu ariyorsunuz?',
+        text: 'Endüstriyel güvenlik çözümü mü arıyorsunuz?',
         link: '/tr/contact?subject=new-project',
       },
     },
@@ -137,7 +137,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     {
       id: 'high-efficiency-pmu',
       slug: 'yuksek-verimli-guc-yonetim-unitesi',
-      title: 'Yuksek Verimli Guc Yonetim Unitesi (PMU)',
+      title: 'Yüksek Verimli Güç Yönetim Ünitesi (PMU)',
       subtitle: '%96 verimlilikle enerjiyi yoneten kompakt guc canavari.',
       category: 'embedded',
       year: '2022',
@@ -167,12 +167,12 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'Verimlilik', value: '%96' },
         { label: 'Koruma', value: '4 Katman' },
         { label: 'Sertifika', value: 'CE/EMC' },
-        { label: 'Cikis', value: '150W' },
+        { label: 'Çıkış', value: '150W' },
       ],
       specs: [
-        { label: 'Giris Gerilim', value: '90-264VAC' },
-        { label: 'Cikis Gerilim', value: '24-48VDC ayarli' },
-        { label: 'Cikis Gucu', value: '150W surekli' },
+        { label: 'Giriş Gerilim', value: '90-264VAC' },
+        { label: 'Çıkış Gerilim', value: '24-48VDC ayarli' },
+        { label: 'Çıkış Gücü', value: '150W surekli' },
         { label: 'Verimlilik', value: '>96% @ 75% yuk' },
         { label: 'PFC', value: '>0.98 aktif' },
         { label: 'Koruma', value: 'OVP, OCP, OTP, SCP' },
@@ -233,7 +233,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'Olcum Araligi', value: '-40°C ~ +85°C' },
         { label: 'Veri Loglama', value: '1dk ~ 24 saat ayarli' },
         { label: 'Hafiza', value: '100.000 kayit' },
-        { label: 'Iletisim', value: 'GSM/GPRS + MQTT' },
+        { label: 'İletişim', value: 'GSM/GPRS + MQTT' },
         { label: 'Batarya Yedek', value: '48 saat @ -20°C' },
         { label: 'Sertifika', value: 'FDA 21 CFR Part 11' },
         { label: 'Alarm', value: 'SMS + E-posta + Push' },
@@ -255,12 +255,12 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     {
       id: 'vibration-guard',
       slug: 'vibrationguard-kestirimci-bakim',
-      title: 'VibrationGuard Kestirimci Bakim Sistemi',
-      subtitle: 'Makinelerin sesini dinleyerek arizayi 2 hafta onceden duyan yapay kulak.',
+      title: 'VibrationGuard Kestirimci Bakım Sistemi',
+      subtitle: 'Makinelerin sesini dinleyerek arizayi 2 hafta önceden duyan yapay kulak.',
       category: 'industrial',
       year: '2024',
       description:
-        'Makinelerin sesini dinleyerek arizayi 2 hafta onceden duyan yapay kulak. FFT analizi ve makine ogrenimi ile kestirimci bakim.',
+        'Makinelerin sesini dinleyerek arizayi 2 hafta önceden duyan yapay kulak. FFT analizi ve makine ogrenimi ile kestirimci bakim.',
       seoDescription:
         'VibrationGuard Industry 4.0 kestirimci bakim sistemi. FFT titresim analizi, ML tabanli ariza tahmini, 3D motor gorselleştirme, OPC-UA SCADA entegrasyonu. 2 hafta onceden ariza uyarisi.',
       fullDetailText: `
@@ -318,7 +318,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       id: 'factory-oee-system',
       slug: 'fabrika-oee-verimlilik-sistemi',
       title: 'Fabrika OEE & Verimlilik Takibi',
-      subtitle: 'Uretim hattindaki her saniyenin dijital ikizi.',
+      subtitle: 'Üretim hattındaki her saniyenin dijital ikizi.',
       category: 'industrial',
       year: '2023',
       description:
@@ -355,7 +355,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
         { label: 'Edge Islemci', value: 'Jetson Nano' },
         { label: 'Veritabani', value: 'TimescaleDB' },
         { label: 'Metrikler', value: 'Availability, Performance, Quality' },
-        { label: 'Raporlama', value: 'Gercek zamanli + Gunluk/Haftalik' },
+        { label: 'Raporlama', value: 'Gerçek zamanlı + Günlük/Haftalık' },
         { label: 'Entegrasyon', value: 'OPC-UA, Modbus, S7' },
         { label: 'Kullanicilar', value: 'Rol tabanli erisim' },
       ],
@@ -389,7 +389,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
 
         Mikroservis mimarisi uzerine insa edilen platform, yuz binlerce kullaniciyi es zamanli destekliyor. React Native mobil uygulama, iOS ve Android'de sorunsuz calisiyor.
 
-        AWS altyapisi uzerinde %99.9 uptime garantisi. Gercek zamanli misafir takibi, QR check-in ve anlik raporlama ozellikleri.
+        AWS altyapisi uzerinde %99.9 uptime garantisi. Gerçek zamanlı misafir takibi, QR check-in ve anlık raporlama özellikleri.
       `,
       challenge:
         'Buyuk olcekli organizasyonlar icin uctan uca planlama ve operasyonel takip.',
@@ -836,10 +836,10 @@ export const PROJECTS: LocalizedContent<Project[]> = {
 export const PROJECT_CATEGORIES: LocalizedContent<CategoryFilter[]> = {
   tr: [
     { id: 'all', label: 'Tum Projeler' },
-    { id: 'embedded', label: 'Gomulu Sistemler' },
-    { id: 'industrial', label: 'Endustriyel IoT' },
-    { id: 'iot', label: 'IoT & Baglanti' },
-    { id: 'saas', label: 'Yazilim & SaaS' },
+    { id: 'embedded', label: 'Gömülü Sistemler' },
+    { id: 'industrial', label: 'Endüstriyel IoT' },
+    { id: 'iot', label: 'IoT & Bağlantı' },
+    { id: 'saas', label: 'Yazılım & SaaS' },
   ],
   en: [
     { id: 'all', label: 'All Projects' },

@@ -904,7 +904,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
         </div>
       </section>
 
-      {/* Multi-Floor Interactive Floor Plan */}
+      {/* Cinematic Parallax - Invisible Technology Layers */}
       <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
@@ -915,27 +915,20 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
           >
             <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
               <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'İNTERAKTİF KAT PLANI' : 'INTERACTIVE FLOOR PLAN'}
+              {lang === 'tr' ? 'GÖRÜNMEZ TEKNOLOJİ' : 'INVISIBLE TECHNOLOGY'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {lang === 'tr' ? 'Villanızı Keşfedin' : 'Explore Your Villa'}
+              {lang === 'tr' ? 'Teknoloji Katmanlarını Keşfedin' : 'Discover Technology Layers'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'Katlar arasında geçiş yapın, odaları seçin ve akıllı sistemleri kontrol edin.'
-                : 'Switch between floors, select rooms, and control smart systems.'}
+                ? 'Villanızın görünmeyen mühendislik katmanları. Her biri bağımsız, hepsi entegre.'
+                : 'The unseen engineering layers of your villa. Each independent, all integrated.'}
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <SmartVillaFloorPlan lang={lang} />
-          </motion.div>
+          <SmartVillaFloorPlan lang={lang} />
         </div>
       </section>
 

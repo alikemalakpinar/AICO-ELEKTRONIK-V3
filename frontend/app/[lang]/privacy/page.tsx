@@ -54,7 +54,7 @@ export default function PrivacyPage({ params }: { params: { lang: Locale } }) {
           </p>
 
           <h2 className="text-xl font-semibold text-offwhite-400 mt-8 mb-4">
-            {lang === 'tr' ? '3. Iletisim' : '3. Contact'}
+            {lang === 'tr' ? '3. İletişim' : '3. Contact'}
           </h2>
           <p className="text-offwhite-700 mb-4">
             {lang === 'tr'

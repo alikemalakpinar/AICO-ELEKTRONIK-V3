@@ -16,7 +16,7 @@ export function OrganizationSchema({ lang = 'tr' }: OrganizationSchemaProps) {
     url: BASE_URL,
     logo: `${BASE_URL}/assets/logo-dark.svg`,
     description: lang === 'tr'
-      ? 'Muhendislik ve IoT cozumleri sunan yenilikci teknoloji firmasi. Akilli yasam, yangin guvenligi, soguk zincir ve maden IoT sistemleri.'
+      ? 'Mühendislik ve IoT çözümleri sunan yenilikçi teknoloji firması. Akıllı yaşam, yangın güvenliği, soğuk zincir ve maden IoT sistemleri.'
       : 'Innovative technology company providing engineering and IoT solutions. Smart living, fire safety, cold chain, and mining IoT systems.',
     foundingDate: '2020',
     founders: [{
@@ -287,7 +287,7 @@ export function WebSiteSchema({ lang = 'tr' }: WebSiteSchemaProps) {
     name: 'AICO Elektronik',
     url: BASE_URL,
     description: lang === 'tr'
-      ? 'AICO Elektronik - Muhendislik ve IoT Cozumleri'
+      ? 'AICO Elektronik - Mühendislik ve IoT Çözümleri'
       : 'AICO Elektronik - Engineering and IoT Solutions',
     inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
     potentialAction: {
@@ -380,7 +380,7 @@ export function LocalBusinessSchema({ lang = 'tr' }: LocalBusinessSchemaProps) {
     '@id': `${BASE_URL}/#organization`,
     name: 'AICO Elektronik',
     description: lang === 'tr'
-      ? 'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri'
+      ? 'Akıllı yaşam teknolojileri ve endüstriyel otomasyon çözümleri'
       : 'Smart living technologies and industrial automation solutions',
     url: BASE_URL,
     logo: `${BASE_URL}/assets/logo-dark.svg`,

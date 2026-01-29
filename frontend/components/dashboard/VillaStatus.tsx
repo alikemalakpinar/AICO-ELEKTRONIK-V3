@@ -63,7 +63,7 @@ export default function VillaStatus({ lang }: VillaStatusProps) {
     },
     {
       id: 'lighting',
-      label: lang === 'tr' ? 'Aydinlatma' : 'Lighting',
+      label: lang === 'tr' ? 'Aydınlatma' : 'Lighting',
       value: isNight ? (lang === 'tr' ? 'Gece Modu' : 'Night Mode') : (lang === 'tr' ? 'Otomatik' : 'Auto'),
       icon: isNight ? <Moon size={18} /> : <Sun size={18} />,
       status: 'active',
@@ -163,7 +163,7 @@ export default function VillaStatus({ lang }: VillaStatusProps) {
           <button className="flex-1 py-2 px-3 bg-engineer-500/10 hover:bg-engineer-500/20
                            border border-engineer-500/20 rounded-lg text-xs font-medium
                            text-engineer-500 transition-colors">
-            {lang === 'tr' ? 'Tum Isiklar' : 'All Lights'}
+            {lang === 'tr' ? 'Tüm Işıklar' : 'All Lights'}
           </button>
           <button className="flex-1 py-2 px-3 bg-white/5 hover:bg-white/10
                            border border-white/10 rounded-lg text-xs font-medium

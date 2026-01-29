@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { fontVariables } from '@/lib/fonts';
 import NoiseOverlay from '@/components/premium/NoiseOverlay';
 import CustomCursor from '@/components/premium/CustomCursor';
+import CursorGlow from '@/components/premium/CursorGlow';
 import { AudioProvider } from '@/components/premium/AudioProvider';
 import { MotionProvider } from '@/components/premium/MotionProvider';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -11,21 +12,21 @@ import './globals.css';
 // Default metadata
 export const metadata: Metadata = {
   title: {
-    default: 'AICO Elektronik | Muhendislik Çözümleri',
+    default: 'AICO Elektronik | Mühendislik Çözümleri',
     template: '%s | AICO Elektronik',
   },
   description:
-    'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri. Villa, rezidans ve fabrika projeleri icin muhendislik danismanligi.',
+    'Akıllı yaşam teknolojileri ve endüstriyel otomasyon çözümleri. Villa, rezidans ve fabrika projeleri için mühendislik danışmanlığı.',
   keywords: [
-    'akilli ev',
+    'akıllı ev',
     'smart home',
     'otomasyon',
-    'muhendislik',
+    'mühendislik',
     'IoT',
-    'akilli villa',
-    'akilli rezidans',
+    'akıllı villa',
+    'akıllı rezidans',
     'bina otomasyonu',
-    'enerji yonetimi',
+    'enerji yönetimi',
   ],
   authors: [{ name: 'AICO Elektronik' }],
   creator: 'AICO Elektronik',
@@ -50,23 +51,23 @@ export const metadata: Metadata = {
     locale: 'tr_TR',
     alternateLocale: 'en_US',
     siteName: 'AICO Elektronik',
-    title: 'AICO Elektronik | Muhendislik Çözümleri',
+    title: 'AICO Elektronik | Mühendislik Çözümleri',
     description:
-      'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri.',
+      'Akıllı yaşam teknolojileri ve endüstriyel otomasyon çözümleri.',
     images: [
       {
         url: '/assets/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'AICO Elektronik - Muhendislik Çözümleri',
+        alt: 'AICO Elektronik - Mühendislik Çözümleri',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AICO Elektronik | Muhendislik Çözümleri',
+    title: 'AICO Elektronik | Mühendislik Çözümleri',
     description:
-      'Akilli yasam teknolojileri ve endustriyel otomasyon cozumleri.',
+      'Akıllı yaşam teknolojileri ve endüstriyel otomasyon çözümleri.',
     images: ['/assets/og-image.jpg'],
   },
   robots: {
@@ -146,6 +147,7 @@ export default function RootLayout({
               {/* Premium Cinematic Effects */}
               <NoiseOverlay />
               <CustomCursor />
+              <CursorGlow />
 
               {/* Page Content */}
               {children}

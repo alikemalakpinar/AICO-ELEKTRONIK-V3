@@ -53,8 +53,8 @@ export interface IndustrialAirQualityPacket {
 // Factory zone names
 const FACTORY_ZONES = {
   tr: [
-    'Uretim Hatti A',
-    'Uretim Hatti B',
+    'Üretim Hattı A',
+    'Üretim Hattı B',
     'Boya Bolumu',
     'Kaynak Alani',
     'Kimyasal Depo',

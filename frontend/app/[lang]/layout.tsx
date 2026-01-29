@@ -105,7 +105,7 @@ function generateJsonLd(lang: Locale) {
     name: COMPANY_INFO.name,
     description: isEnglish
       ? 'Industrial IoT, factory fire detection, vibration analysis and smart living solutions provider with 20+ years of engineering experience.'
-      : 'Endustriyel IoT, fabrika yangin algilama, vibrasyon analizi ve akilli yasam cozumleri saglayicisi. 20+ yillik muhendislik deneyimi.',
+      : 'Endüstriyel IoT, fabrika yangın algılama, vibrasyon analizi ve akıllı yaşam çözümleri sağlayıcısı. 20+ yıllık mühendislik deneyimi.',
     url: COMPANY_INFO.url,
     logo: COMPANY_INFO.logo,
     image: COMPANY_INFO.logo,
@@ -145,46 +145,46 @@ function generateJsonLd(lang: Locale) {
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: isEnglish ? 'Industrial IoT Solutions' : 'Endustriyel IoT Cozumleri',
+      name: isEnglish ? 'Industrial IoT Solutions' : 'Endüstriyel IoT Çözümleri',
       itemListElement: [
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Smart Villa Automation' : 'Akilli Villa Otomasyonu',
+            name: isEnglish ? 'Smart Villa Automation' : 'Akıllı Villa Otomasyonu',
             description: isEnglish
               ? 'Complete smart home automation for luxury villas'
-              : 'Luks villalar icin komple akilli ev otomasyonu',
+              : 'Lüks villalar için komple akıllı ev otomasyonu',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Industrial Air Quality Monitoring' : 'Endustriyel Hava Kalitesi Izleme',
+            name: isEnglish ? 'Industrial Air Quality Monitoring' : 'Endüstriyel Hava Kalitesi İzleme',
             description: isEnglish
               ? 'CO2, TVOC, PM2.5 monitoring for factories'
-              : 'Fabrikalar icin CO2, TVOC, PM2.5 izleme',
+              : 'Fabrikalar için CO2, TVOC, PM2.5 izleme',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Predictive Maintenance' : 'Kestirimci Bakim',
+            name: isEnglish ? 'Predictive Maintenance' : 'Kestirimci Bakım',
             description: isEnglish
               ? 'Vibration analysis and machine health monitoring'
-              : 'Vibrasyon analizi ve makine sagligi izleme',
+              : 'Vibrasyon analizi ve makine sağlığı izleme',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Cold Chain Monitoring' : 'Soguk Zincir Izleme',
+            name: isEnglish ? 'Cold Chain Monitoring' : 'Soğuk Zincir İzleme',
             description: isEnglish
               ? 'Real-time temperature tracking for logistics'
-              : 'Lojistik icin gercek zamanli sicaklik takibi',
+              : 'Lojistik için gerçek zamanlı sıcaklık takibi',
           },
         },
       ],

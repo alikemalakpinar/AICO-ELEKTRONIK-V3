@@ -291,7 +291,7 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
           <div className="absolute bottom-3 left-3 flex gap-2">
             {[
               { color: THEME.safe, label: lang === 'tr' ? 'Guvenli' : 'Safe' },
-              { color: THEME.warning, label: lang === 'tr' ? 'Havalandirma' : 'Ventilation' },
+              { color: THEME.warning, label: lang === 'tr' ? 'Havalandırma' : 'Ventilation' },
               { color: THEME.danger, label: lang === 'tr' ? 'Tahliye' : 'Evacuate' },
               { color: THEME.toxic, label: 'TVOC' },
             ].map((item) => (

@@ -77,7 +77,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       href: `/${lang}/solutions/predictive-maintenance`,
       color: '#00D4FF',
       gradient: 'from-cyan-500/20 to-transparent',
-      stats: { value: '14', label: lang === 'tr' ? 'Gun Onceden' : 'Days Ahead' },
+      stats: { value: '14', label: lang === 'tr' ? 'Gün Önceden' : 'Days Ahead' },
     },
     {
       id: 'cold-chain',
@@ -113,7 +113,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       id: 'smart-villa',
       icon: Home,
       title: lang === 'tr' ? 'Akilli Villa' : 'Smart Villa',
-      description: lang === 'tr' ? 'Kisisel luks, gorunmez teknoloji' : 'Personal luxury, invisible technology',
+      description: lang === 'tr' ? 'Kişisel lüks, görünmez teknoloji' : 'Personal luxury, invisible technology',
       href: `/${lang}/solutions/smart-villa`,
     },
     {

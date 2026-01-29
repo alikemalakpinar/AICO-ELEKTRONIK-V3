@@ -242,6 +242,177 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
         </div>
       </section>
 
+      {/* Community & Security Bento Grid */}
+      <section className="py-32 bg-secondary/20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'TOPLULUK & GÜVENLİK' : 'COMMUNITY & SECURITY'}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+              {lang === 'tr' ? 'Güvenilir Yaşam Alanı' : 'Trusted Living Space'}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Modern apartman yaşamında güvenlik ve topluluk iç içe. Her detay güven için tasarlandı.'
+                : 'In modern apartment living, security and community are intertwined. Every detail designed for trust.'}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+            {/* Trust Score - Large card */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, rotateX: 2, rotateY: -2 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="md:col-span-2 lg:col-span-2 p-8 rounded-2xl bg-card border border-border shadow-sm hover:shadow-xl transition-shadow duration-500 overflow-hidden relative"
+              style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent" />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      {lang === 'tr' ? 'Topluluk Güven Skoru' : 'Community Trust Score'}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {lang === 'tr' ? 'Sakin memnuniyeti ve güvenlik metrikleri' : 'Resident satisfaction and security metrics'}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-mono text-5xl font-bold text-emerald-500">96</div>
+                    <div className="text-xs text-muted-foreground">/100</div>
+                  </div>
+                </div>
+
+                {/* Trust metrics bar */}
+                <div className="space-y-3">
+                  {[
+                    { label: lang === 'tr' ? 'Giriş Güvenliği' : 'Entry Security', value: 98, color: '#10B981' },
+                    { label: lang === 'tr' ? 'Sakin Memnuniyeti' : 'Resident Satisfaction', value: 94, color: '#F97316' },
+                    { label: lang === 'tr' ? 'Yanıt Süresi' : 'Response Time', value: 97, color: '#3B82F6' },
+                    { label: lang === 'tr' ? 'Sistem Güvenilirliği' : 'System Reliability', value: 99, color: '#8B5CF6' },
+                  ].map((metric, i) => (
+                    <div key={i}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-muted-foreground">{metric.label}</span>
+                        <span className="font-mono text-foreground">{metric.value}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ backgroundColor: metric.color }}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${metric.value}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.3 + i * 0.15, ease: 'easeOut' }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Access methods card */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="row-span-2 p-6 rounded-2xl bg-card border border-border shadow-sm hover:shadow-xl transition-shadow duration-500"
+              style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
+            >
+              <Shield size={28} className="text-engineer-500 mb-4" />
+              <h3 className="text-lg font-bold text-foreground mb-4">
+                {lang === 'tr' ? 'Erişim Yöntemleri' : 'Access Methods'}
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { icon: Lock, label: lang === 'tr' ? 'Mobil Uygulama' : 'Mobile App', desc: lang === 'tr' ? 'Bluetooth + NFC' : 'Bluetooth + NFC' },
+                  { icon: Camera, label: lang === 'tr' ? 'Yüz Tanıma' : 'Face Recognition', desc: lang === 'tr' ? 'AI destekli' : 'AI-powered' },
+                  { icon: Car, label: lang === 'tr' ? 'Plaka Okuma' : 'Plate Reading', desc: lang === 'tr' ? 'Otomatik bariyer' : 'Auto barrier' },
+                  { icon: Users, label: 'QR Code', desc: lang === 'tr' ? 'Misafir girişi' : 'Guest entry' },
+                  { icon: Wifi, label: 'NFC Card', desc: lang === 'tr' ? 'Temassız giriş' : 'Contactless' },
+                ].map((method, i) => (
+                  <motion.div
+                    key={i}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 border border-border hover:border-engineer-500/30 transition-all"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-engineer-500/10 flex items-center justify-center flex-shrink-0">
+                      <method.icon size={16} className="text-engineer-500" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-foreground">{method.label}</div>
+                      <div className="text-xs text-muted-foreground">{method.desc}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* 24/7 monitoring card */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, rotateX: 2 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 shadow-sm hover:shadow-xl transition-shadow duration-500"
+              style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
+            >
+              <Camera size={28} className="text-blue-500 mb-3" />
+              <h3 className="text-lg font-bold text-foreground mb-1">
+                {lang === 'tr' ? '7/24 İzleme' : '24/7 Monitoring'}
+              </h3>
+              <div className="font-mono text-3xl font-bold text-blue-500 mb-1">
+                <motion.span
+                  animate={{ opacity: [1, 0.4, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >●</motion.span> LIVE
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {lang === 'tr' ? 'HD kamera, hareket algılama, kayıt arşivi' : 'HD camera, motion detection, recording archive'}
+              </p>
+            </motion.div>
+
+            {/* Emergency response card */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, rotateY: -2 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="p-6 rounded-2xl bg-card border border-border shadow-sm hover:shadow-xl transition-shadow duration-500"
+              style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
+            >
+              <Bell size={28} className="text-red-500 mb-3" />
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                {lang === 'tr' ? 'Acil Durum Yanıtı' : 'Emergency Response'}
+              </h3>
+              <div className="font-mono text-3xl font-bold text-foreground"><span className="text-red-500">&lt;30</span>s</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {lang === 'tr' ? 'Ortalama müdahale süresi' : 'Average response time'}
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Core Features Section */}
       <section className="py-32 bg-background">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">

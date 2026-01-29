@@ -33,14 +33,14 @@ export default function ProjectsClient({ lang }: ProjectsClientProps) {
   const text = {
     tr: {
       badge: 'MUHENDISLIK PORTFOLYOSU',
-      heroTitle: 'Gercek Projeler,',
+      heroTitle: 'Gerçek Projeler,',
       heroHighlight: 'Olculebilir Sonuclar',
-      heroSubtitle: 'Gomulu sistemlerden endustriyel IoT cozumlerine kadar tamamladigimiz muhendislik projelerini inceleyin.',
+      heroSubtitle: 'Gömülü sistemlerden endüstriyel IoT çözümlerine kadar tamamladığımız mühendislik projelerini inceleyin.',
       featured: 'One Cikan Projeler',
       allProjects: 'Tum Projeler',
-      viewProject: 'Detaylari Incele',
+      viewProject: 'Detayları İncele',
       challenge: 'Problem',
-      solution: 'Cozum',
+      solution: 'Çözüm',
       impact: 'Etki',
       ctaTitle: 'Projenizi birlikte tasarlayalim',
       ctaSubtitle: 'Muhendislik ekibimiz, ihtiyaclariniza ozel bir cozum tasarlamak icin hazir.',

@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { lang } = await params;
 
   const title = lang === 'tr'
-    ? 'ColdTrack - Soguk Zincir Yonetimi | AICO Elektronik'
+    ? 'ColdTrack - Soğuk Zincir Yönetimi | AICO Elektronik'
     : 'ColdTrack - Cold Chain Management | AICO Elektronik';
 
   const description = lang === 'tr'
