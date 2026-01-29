@@ -3,6 +3,7 @@
 import React, { useRef, useMemo, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // Globe made of points
 function Globe() {
@@ -281,12 +282,23 @@ interface NetworkGlobeProps {
 }
 
 export default function NetworkGlobe({ className = '' }: NetworkGlobeProps) {
+  const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+
+  if (shouldShowStatic) {
+    return (
+      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
+        <div className="text-xs text-muted-foreground font-mono">Network Globe</div>
+      </div>
+    );
+  }
+
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
         camera={{ position: [0, 0, 7], fov: 45 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={dpr}
+        frameloop={frameloop as 'always' | 'never' | 'demand'}
+        gl={{ ...gl, alpha: true }}
       >
         <Scene />
       </Canvas>

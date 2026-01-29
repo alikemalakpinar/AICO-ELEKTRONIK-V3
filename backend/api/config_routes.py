@@ -13,7 +13,7 @@ from models.schemas import (
 )
 
 
-router = APIRouter(prefix="/api/config", tags=["Configuration"])
+router = APIRouter(prefix="/api/v1/config", tags=["Configuration"])
 
 
 # =====================================================

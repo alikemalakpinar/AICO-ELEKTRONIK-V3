@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-
 /**
  * NoiseOverlay - Cinematic Film Grain Effect
  *

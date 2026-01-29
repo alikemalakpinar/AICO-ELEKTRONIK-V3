@@ -10,6 +10,7 @@ import {
   RESIDENCE_SCENE_COLORS,
   type ResidenceSceneType,
 } from '@/stores/sceneStore';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
 // ResidenceScene - Smart Building Management 3D Scene
@@ -485,12 +486,23 @@ interface ResidenceSceneProps {
 }
 
 export default function ResidenceScene({ className = '' }: ResidenceSceneProps) {
+  const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+
+  if (shouldShowStatic) {
+    return (
+      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
+        <div className="text-xs text-muted-foreground font-mono">Smart Residence</div>
+      </div>
+    );
+  }
+
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
         camera={{ position: [0, 0, 12], fov: 45 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={dpr}
+        frameloop={frameloop as 'always' | 'never' | 'demand'}
+        gl={{ ...gl, alpha: true }}
       >
         <Scene />
       </Canvas>

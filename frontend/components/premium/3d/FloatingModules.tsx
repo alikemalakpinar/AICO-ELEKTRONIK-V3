@@ -4,6 +4,7 @@ import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import * as THREE from 'three';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
 // FloatingModules - Compact & Elegant
@@ -250,12 +251,23 @@ interface FloatingModulesProps {
 }
 
 export default function FloatingModules({ className = '' }: FloatingModulesProps) {
+  const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+
+  if (shouldShowStatic) {
+    return (
+      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
+        <div className="text-xs text-muted-foreground font-mono">Floating Modules</div>
+      </div>
+    );
+  }
+
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
-        camera={{ position: [0, 0, 6], fov: 45 }} // Pulled back
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        camera={{ position: [0, 0, 6], fov: 45 }}
+        dpr={dpr}
+        frameloop={frameloop as 'always' | 'never' | 'demand'}
+        gl={{ ...gl, alpha: true }}
       >
         <Scene />
       </Canvas>
