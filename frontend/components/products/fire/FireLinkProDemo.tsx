@@ -1,22 +1,23 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Flame,
   Thermometer,
-  Bell,
-  Wifi,
   AlertTriangle,
-  CheckCircle2,
   Activity,
   Droplets,
-  Battery,
-  Radio,
   Power,
   Volume2,
   VolumeX,
+  Wind,
+  Gauge,
+  Zap,
+  CloudRain,
+  ShieldAlert,
+  BarChart3,
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
 import {
@@ -24,6 +25,7 @@ import {
   generateSimulatedPacket,
   getWarningLevel,
   getSensorColor,
+  enrichPacketWithEnvironmental,
   type FireLinkPacket,
   type FireLinkSensor,
 } from '@/lib/utils/firelink-parser';
@@ -32,7 +34,7 @@ import type { Locale } from '@/types';
 // Dynamically import the 3D component
 const HeatStressHouse = dynamic(
   () => import('./HeatStressHouse'),
-  { ssr: false, loading: () => <div className="w-full h-full bg-[#0A0A0A] animate-pulse rounded-lg" /> }
+  { ssr: false, loading: () => <div className="w-full h-full bg-card animate-pulse rounded-lg" /> }
 );
 
 // ===========================================
@@ -45,15 +47,12 @@ interface FireLinkProDemoProps {
   className?: string;
 }
 
-// Magma theme colors
+// Magma theme colors (kept for accent-specific inline styles only)
 const MAGMA = {
-  background: '#050505',
-  accent: '#FF4500', // Burning Amber
+  accent: '#FF4500',
   warning: '#FF6B00',
   danger: '#FF0000',
   safe: '#22C55E',
-  text: '#E5E5E5',
-  muted: '#666666',
 };
 
 export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDemoProps) {
@@ -84,13 +83,11 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
       const parsed = parseFireLinkPacket(newPacket, lang);
       setPacket(parsed);
 
-      // Update history
       setHistory(prev => [
         { time: new Date(), level: getWarningLevel(parsed) },
         ...prev.slice(0, 49),
       ]);
 
-      // Play alarm sound if critical
       if (parsed.hasAnyFire && soundEnabled && audioRef.current) {
         audioRef.current.play().catch(() => {});
       }
@@ -103,18 +100,24 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
 
   const warningLevel = packet ? getWarningLevel(packet) : 'offline';
 
+  // Enrich packet with environmental demo data
+  const richPacket = useMemo(
+    () => (packet ? enrichPacketWithEnvironmental(packet) : null),
+    [packet]
+  );
+
   const systemStatuses = useMemo(() => {
     if (!packet) return [];
     return [
       {
         label: lang === 'tr' ? 'Durum' : 'Status',
-        value: warningLevel === 'critical' ? (lang === 'tr' ? 'KRITIK' : 'CRITICAL') :
+        value: warningLevel === 'critical' ? (lang === 'tr' ? 'KRİTİK' : 'CRITICAL') :
                warningLevel === 'warning' ? (lang === 'tr' ? 'UYARI' : 'WARNING') :
                (lang === 'tr' ? 'NORMAL' : 'NORMAL'),
         status: warningLevel as 'normal' | 'warning' | 'critical' | 'offline',
       },
       {
-        label: lang === 'tr' ? 'Aktif Sensor' : 'Active Sensors',
+        label: lang === 'tr' ? 'Aktif Sensör' : 'Active Sensors',
         value: `${packet.sensors.length}/8`,
         status: 'normal' as const,
       },
@@ -139,22 +142,54 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
     ];
   }, [packet, warningLevel, lang]);
 
+  // Build metrics array from enriched packet
+  const metrics = useMemo(() => {
+    if (!richPacket) return [];
+    const avgSensor = richPacket.sensors.length > 0
+      ? richPacket.sensors.reduce(
+          (acc, s) => ({
+            temp: acc.temp + s.temperature,
+            surface: acc.surface + s.surfaceTemp,
+            gas: acc.gas + s.gasResistance,
+            aqi: acc.aqi + s.airQualityScore,
+          }),
+          { temp: 0, surface: 0, gas: 0, aqi: 0 }
+        )
+      : { temp: 0, surface: 0, gas: 0, aqi: 0 };
+    const n = richPacket.sensors.length || 1;
+
+    return [
+      { icon: Wind, label: lang === 'tr' ? 'Gaz Direnci' : 'Gas Resistance', value: (avgSensor.gas / n).toFixed(1), unit: 'kΩ' },
+      { icon: Droplets, label: lang === 'tr' ? 'Nem' : 'Humidity', value: richPacket.humidity.toFixed(1), unit: '%' },
+      { icon: Thermometer, label: lang === 'tr' ? 'Sıcaklık' : 'Temperature', value: (avgSensor.temp / n).toFixed(1), unit: '°C' },
+      { icon: ShieldAlert, label: lang === 'tr' ? 'Hava Kalitesi' : 'Air Quality', value: Math.round(avgSensor.aqi / n).toString(), unit: 'AQI' },
+      { icon: Flame, label: lang === 'tr' ? 'Yüzey Sıcaklığı' : 'Surface Temp', value: (avgSensor.surface / n).toFixed(1), unit: '°C' },
+      { icon: CloudRain, label: 'TVOC', value: richPacket.tvoc.toString(), unit: 'ppb' },
+      { icon: BarChart3, label: 'eCO₂', value: richPacket.eco2.toString(), unit: 'ppm' },
+      { icon: Activity, label: 'NO₂', value: richPacket.no2.toFixed(2), unit: 'ppm' },
+      { icon: AlertTriangle, label: 'CO', value: richPacket.co.toFixed(2), unit: 'ppm' },
+      { icon: Gauge, label: lang === 'tr' ? 'Basınç' : 'Pressure', value: richPacket.pressure.toFixed(1), unit: 'hPa' },
+      { icon: Zap, label: lang === 'tr' ? 'Akım' : 'Current', value: richPacket.systemCurrent.toFixed(1), unit: 'mA' },
+    ];
+  }, [richPacket, lang]);
+
   const headerRight = (
     <button
       onClick={() => setSoundEnabled(!soundEnabled)}
-      className={`p-2 rounded-lg transition-colors ${
-        soundEnabled ? 'bg-red-500/20 text-red-400' : 'bg-white/5 text-offwhite-600'
+      className={`p-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors ${
+        soundEnabled ? 'bg-red-500/20 text-red-400' : 'bg-muted text-muted-foreground'
       }`}
+      aria-label={soundEnabled ? 'Mute alarm' : 'Enable alarm'}
     >
-      {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+      {soundEnabled ? <Volume2 size={16} aria-hidden /> : <VolumeX size={16} aria-hidden />}
     </button>
   );
 
   return (
     <DashboardShell
       lang={lang}
-      title={lang === 'tr' ? 'YANGIN IZLEME SISTEMI' : 'FIRE MONITORING SYSTEM'}
-      subtitle={lang === 'tr' ? 'Gercek Zamanli Termal Analiz' : 'Real-Time Thermal Analysis'}
+      title={lang === 'tr' ? 'YANGIN İZLEME SİSTEMİ' : 'FIRE MONITORING SYSTEM'}
+      subtitle={lang === 'tr' ? 'Gerçek Zamanlı Termal Analiz' : 'Real-Time Thermal Analysis'}
       brandName="FIRELINK"
       brandVersion="3.0"
       accentColor={MAGMA.accent}
@@ -163,9 +198,9 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
       headerRight={headerRight}
       className={className}
     >
-      <div className="grid lg:grid-cols-2 gap-4 p-4">
+      <div className="grid lg:grid-cols-2 gap-4 p-4 overflow-x-hidden">
         {/* Left: 3D Visualization */}
-        <div className="relative aspect-square lg:aspect-auto lg:h-[500px] rounded-xl overflow-hidden border border-white/5 bg-[#0A0A0A]">
+        <div className="relative aspect-square lg:aspect-auto min-h-[300px] lg:h-[500px] rounded-xl overflow-hidden border border-border bg-card">
           {packet && (
             <HeatStressHouse
               sensors={packet.sensors}
@@ -177,21 +212,21 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
 
           {/* 3D View Overlay */}
           <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
-            <div className="text-[10px] text-offwhite-700 font-mono">
-              {lang === 'tr' ? '3D TERMAL GORUNTULEME' : '3D THERMAL VISUALIZATION'}
+            <div className="text-[10px] text-muted-foreground font-mono">
+              {lang === 'tr' ? '3D TERMAL GÖRÜNTÜLEME' : '3D THERMAL VISUALIZATION'}
             </div>
             <div className="flex gap-2">
-              <div className="flex items-center gap-1.5 px-2 py-1 bg-black/50 rounded text-[10px]">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-offwhite-600">{lang === 'tr' ? 'Normal' : 'Normal'}</span>
+              <div className="flex items-center gap-1.5 px-2 py-1 bg-background/70 backdrop-blur-sm rounded text-[10px]">
+                <div className="w-2 h-2 rounded-full bg-green-500" aria-hidden />
+                <span className="text-muted-foreground">{lang === 'tr' ? 'Normal' : 'Normal'}</span>
               </div>
-              <div className="flex items-center gap-1.5 px-2 py-1 bg-black/50 rounded text-[10px]">
-                <div className="w-2 h-2 rounded-full bg-orange-500" />
-                <span className="text-offwhite-600">{lang === 'tr' ? 'Uyari' : 'Warning'}</span>
+              <div className="flex items-center gap-1.5 px-2 py-1 bg-background/70 backdrop-blur-sm rounded text-[10px]">
+                <div className="w-2 h-2 rounded-full bg-orange-500" aria-hidden />
+                <span className="text-muted-foreground">{lang === 'tr' ? 'Uyarı' : 'Warning'}</span>
               </div>
-              <div className="flex items-center gap-1.5 px-2 py-1 bg-black/50 rounded text-[10px]">
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-offwhite-600">{lang === 'tr' ? 'Kritik' : 'Critical'}</span>
+              <div className="flex items-center gap-1.5 px-2 py-1 bg-background/70 backdrop-blur-sm rounded text-[10px]">
+                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden />
+                <span className="text-muted-foreground">{lang === 'tr' ? 'Kritik' : 'Critical'}</span>
               </div>
             </div>
           </div>
@@ -215,22 +250,22 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
           </div>
 
           {/* Alert History */}
-          <div className="p-3 rounded-xl bg-[#0A0A0A] border border-white/5">
+          <div className="p-3 rounded-xl bg-card border border-border">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-offwhite-600 text-xs font-mono uppercase">
-                {lang === 'tr' ? 'Olay Gecmisi' : 'Event History'}
-              </span>
-              <Activity size={12} className="text-offwhite-700" />
+              <h2 className="text-muted-foreground text-xs font-mono uppercase">
+                {lang === 'tr' ? 'Olay Geçmişi' : 'Event History'}
+              </h2>
+              <Activity size={12} className="text-muted-foreground" aria-hidden />
             </div>
             <div className="space-y-1 max-h-24 overflow-y-auto">
               {history.length === 0 ? (
-                <p className="text-offwhite-800 text-xs">
-                  {lang === 'tr' ? 'Simulasyonu baslatin...' : 'Start simulation...'}
+                <p className="text-muted-foreground text-xs">
+                  {lang === 'tr' ? 'Simülasyonu başlatın...' : 'Start simulation...'}
                 </p>
               ) : (
                 history.slice(0, 5).map((event, i) => (
                   <div key={i} className="flex items-center justify-between text-xs">
-                    <span className="text-offwhite-700 font-mono">
+                    <span className="text-muted-foreground font-mono">
                       {event.time.toLocaleTimeString()}
                     </span>
                     <span
@@ -250,15 +285,16 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
           </div>
 
           {/* Control Panel */}
-          <div className="p-4 rounded-xl bg-[#0A0A0A] border border-white/5">
+          <div className="p-4 rounded-xl bg-card border border-border">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-offwhite-600 text-xs font-mono uppercase">
-                {lang === 'tr' ? 'Simulasyon Kontrolu' : 'Simulation Control'}
-              </span>
+              <h2 className="text-muted-foreground text-xs font-mono uppercase">
+                {lang === 'tr' ? 'Simülasyon Kontrolü' : 'Simulation Control'}
+              </h2>
               <div
                 className={`w-2 h-2 rounded-full ${
                   isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-600'
                 }`}
+                aria-hidden
               />
             </div>
 
@@ -277,7 +313,7 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
                 accentColor={MAGMA.warning}
                 size="sm"
               >
-                {lang === 'tr' ? 'Uyari' : 'Warning'}
+                {lang === 'tr' ? 'Uyarı' : 'Warning'}
               </TacticalButton>
               <TacticalButton
                 onClick={() => setScenario('critical')}
@@ -294,20 +330,48 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
               variant={isSimulating ? 'danger' : 'primary'}
               accentColor={MAGMA.accent}
               size="md"
-              className="w-full"
+              className="w-full min-h-[44px]"
             >
               <div className="flex items-center justify-center gap-2">
-                <Power size={14} />
+                <Power size={14} aria-hidden />
                 <span>
                   {isSimulating
                     ? (lang === 'tr' ? 'DURDUR' : 'STOP')
-                    : (lang === 'tr' ? 'BASLAT' : 'START')}
+                    : (lang === 'tr' ? 'BAŞLAT' : 'START')}
                 </span>
               </div>
             </TacticalButton>
           </div>
         </div>
       </div>
+
+      {/* Premium Metrics Grid */}
+      {richPacket && (
+        <div className="px-4 pb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-muted-foreground text-xs font-mono uppercase">
+              {lang === 'tr' ? 'Çevresel Metrikler' : 'Environmental Metrics'}
+            </h2>
+            <span className="text-xs text-muted-foreground font-mono">
+              {lang === 'tr' ? 'Son güncelleme' : 'Last updated'}: {richPacket.timestamp.toLocaleTimeString()}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {metrics.map((m) => (
+              <div key={m.label} className="p-3 bg-card border border-border rounded-lg shadow-sm">
+                <div className="flex items-center gap-2 mb-1">
+                  <m.icon size={14} className="text-muted-foreground" aria-hidden />
+                  <span className="text-xs text-muted-foreground">{m.label}</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-foreground font-mono text-lg font-semibold">{m.value}</span>
+                  <span className="text-muted-foreground text-xs">{m.unit}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Critical Alert Overlay */}
       <AnimatePresence>
@@ -331,14 +395,12 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
                 transition={{ repeat: Infinity, duration: 0.5 }}
                 className="flex flex-col items-center gap-2 p-6 bg-red-500/20 border border-red-500 rounded-xl backdrop-blur-sm"
               >
-                <AlertTriangle size={48} className="text-red-500" />
+                <AlertTriangle size={48} className="text-red-500" aria-hidden />
                 <span className="text-red-500 font-mono text-xl font-bold">
                   {lang === 'tr' ? 'YANGIN ALARMI' : 'FIRE ALARM'}
                 </span>
                 <span className="text-red-400 text-sm">
-                  {lang === 'tr'
-                    ? `Sensor ${packet.criticalSensors.join(', ')}: ${packet.sensors.find(s => s.hasFire)?.zone}`
-                    : `Sensor ${packet.criticalSensors.join(', ')}: ${packet.sensors.find(s => s.hasFire)?.zone}`}
+                  Sensor {packet.criticalSensors.join(', ')}: {packet.sensors.find(s => s.hasFire)?.zone}
                 </span>
               </motion.div>
             </div>
@@ -377,12 +439,13 @@ function SensorCard({ sensor, lang, isSelected, onClick }: SensorCardProps) {
     <motion.button
       onClick={onClick}
       className={`
-        relative p-3 rounded-lg border text-left transition-all
+        relative p-3 rounded-lg border text-left transition-all min-h-[44px]
+        bg-card border-border
         ${isSelected ? 'ring-2' : ''}
       `}
       style={{
-        backgroundColor: isCritical ? `${color}15` : isWarning ? `${color}10` : '#0A0A0A',
-        borderColor: isSelected ? color : isCritical ? `${color}50` : 'rgba(255,255,255,0.05)',
+        backgroundColor: isCritical ? `${color}15` : isWarning ? `${color}10` : undefined,
+        borderColor: isSelected ? color : isCritical ? `${color}50` : undefined,
         boxShadow: isCritical ? `0 0 20px ${color}30` : undefined,
       }}
       animate={isCritical ? {
@@ -394,35 +457,36 @@ function SensorCard({ sensor, lang, isSelected, onClick }: SensorCardProps) {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] text-offwhite-700 font-mono">S{sensor.id}</span>
+        <span className="text-[10px] text-muted-foreground font-mono">S{sensor.id}</span>
         <motion.div
           className="w-2 h-2 rounded-full"
           style={{ backgroundColor: color }}
           animate={isCritical ? { scale: [1, 1.3, 1], opacity: [1, 0.7, 1] } : undefined}
           transition={{ repeat: Infinity, duration: 0.5 }}
+          aria-hidden
         />
       </div>
 
       {/* Temperature */}
       <div className="flex items-baseline gap-1 mb-1">
         <span
-          className="text-xl font-mono font-bold"
-          style={{ color: isCritical || isWarning ? color : '#E5E5E5' }}
+          className="text-xl font-mono font-bold text-foreground"
+          style={{ color: isCritical || isWarning ? color : undefined }}
         >
           {sensor.temperature.toFixed(1)}
         </span>
-        <span className="text-offwhite-700 text-xs">°C</span>
+        <span className="text-muted-foreground text-xs">°C</span>
       </div>
 
       {/* Zone */}
-      <div className="text-[10px] text-offwhite-600 truncate">
+      <div className="text-[10px] text-muted-foreground truncate">
         {sensor.zone}
       </div>
 
       {/* Smoke indicator */}
       {sensor.smokeDensity > 50 && (
         <div className="flex items-center gap-1 mt-2">
-          <Droplets size={10} style={{ color }} />
+          <Droplets size={10} style={{ color }} aria-hidden />
           <span className="text-[10px] font-mono" style={{ color }}>
             {sensor.smokeDensity}
           </span>
@@ -440,10 +504,10 @@ function SensorCard({ sensor, lang, isSelected, onClick }: SensorCardProps) {
       )}
 
       {/* Corner accents */}
-      <div className="absolute top-0 left-0 w-2 h-px" style={{ backgroundColor: color }} />
-      <div className="absolute top-0 left-0 w-px h-2" style={{ backgroundColor: color }} />
-      <div className="absolute bottom-0 right-0 w-2 h-px" style={{ backgroundColor: color }} />
-      <div className="absolute bottom-0 right-0 w-px h-2" style={{ backgroundColor: color }} />
+      <div className="absolute top-0 left-0 w-2 h-px" style={{ backgroundColor: color }} aria-hidden />
+      <div className="absolute top-0 left-0 w-px h-2" style={{ backgroundColor: color }} aria-hidden />
+      <div className="absolute bottom-0 right-0 w-2 h-px" style={{ backgroundColor: color }} aria-hidden />
+      <div className="absolute bottom-0 right-0 w-px h-2" style={{ backgroundColor: color }} aria-hidden />
     </motion.button>
   );
 }
