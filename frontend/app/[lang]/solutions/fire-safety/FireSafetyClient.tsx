@@ -23,6 +23,7 @@ import { ImmersiveHero, StickyScrollStory, BentoGrid } from '@/components/module
 import type { StoryStep } from '@/components/modules';
 import type { BentoItem } from '@/components/modules';
 import type { Locale } from '@/types';
+import AnimatedDataFlow from '@/components/premium/AnimatedDataFlow';
 
 // Dynamic import for the Industrial Air Quality Demo (Factory Context)
 const IndustrialAirQualityDemo = dynamic(
@@ -42,12 +43,12 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
   const content = {
     hero: {
       badge: 'FIRELINK IAQ',
-      title: lang === 'tr' ? 'Fabrikanizin Havasini' : 'Monitor Your Factory',
-      titleHighlight: lang === 'tr' ? 'Izleyin.' : 'Air Quality.',
+      title: lang === 'tr' ? 'Fabrikanızın Havasını' : 'Monitor Your Factory',
+      titleHighlight: lang === 'tr' ? 'İzleyin.' : 'Air Quality.',
       subtitle: lang === 'tr'
-        ? 'CO₂, TVOC ve PM2.5 izleme. Isci sagligi icin gercek zamanli hava kalitesi.'
+        ? 'CO₂, TVOC ve PM2.5 izleme. İşçi sağlığı için gerçek zamanlı hava kalitesi.'
         : 'CO₂, TVOC, and PM2.5 monitoring. Real-time air quality for worker safety.',
-      cta: lang === 'tr' ? 'Demoyu Inceleyin' : 'Explore Demo',
+      cta: lang === 'tr' ? 'Demoyu İnceleyin' : 'Explore Demo',
     },
     story: {
       steps: [
@@ -55,20 +56,20 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           id: 'problem',
           badge: lang === 'tr' ? 'PROBLEM' : 'THE PROBLEM',
           title: lang === 'tr'
-            ? 'Kotu hava kalitesi uretkenlik kaybina sebep olur'
+            ? 'Kötü hava kalitesi üretkenlik kaybına sebep olur'
             : 'Poor air quality causes productivity loss',
           description: lang === 'tr'
-            ? 'Fabrikalarda CO₂ seviyesi 1500 ppm\'i astiginda isci performansi %15 duser. TVOC maruziyeti uzun vadeli saglik sorunlarina yol acar.'
+            ? 'Fabrikalarda CO₂ seviyesi 1500 ppm\'i aştığında işçi performansı %15 düşer. TVOC maruziyeti uzun vadeli sağlık sorunlarına yol açar.'
             : 'When CO₂ levels exceed 1500 ppm in factories, worker performance drops by 15%. TVOC exposure leads to long-term health issues.',
         },
         {
           id: 'detection',
           badge: lang === 'tr' ? 'ALGILAMA' : 'DETECTION',
           title: lang === 'tr'
-            ? 'Cok Parametreli Hava Analizi'
+            ? 'Çok Parametreli Hava Analizi'
             : 'Multi-Parameter Air Analysis',
           description: lang === 'tr'
-            ? 'CO₂, TVOC ve PM2.5 sensorleri her uretim alanini izler. Tehlikeli gazlar aninda tespit edilir ve uyari verilir.'
+            ? 'CO₂, TVOC ve PM2.5 sensörleri her üretim alanını izler. Tehlikeli gazlar anında tespit edilir ve uyarı verilir.'
             : 'CO₂, TVOC, and PM2.5 sensors monitor every production area. Dangerous gases are instantly detected and alerts are triggered.',
         },
         {
@@ -78,35 +79,35 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             ? 'Akıllı Havalandırma Sistemi'
             : 'Smart Ventilation System',
           description: lang === 'tr'
-            ? 'Hava kalitesi dusunce otomatik havalandirma devreye girer. TVOC yuksekliginde toksik gaz alarm protokolu baslar.'
+            ? 'Hava kalitesi düşünce otomatik havalandırma devreye girer. TVOC yüksekliğinde toksik gaz alarm protokolü başlar.'
             : 'Automatic ventilation kicks in when air quality drops. Toxic gas alarm protocol starts when TVOC is high.',
         },
         {
           id: 'action',
           badge: lang === 'tr' ? 'AKSIYON' : 'ACTION',
           title: lang === 'tr'
-            ? 'Tahliye Protokolu'
+            ? 'Tahliye Protokolü'
             : 'Evacuation Protocol',
           description: lang === 'tr'
-            ? 'Kritik seviyelerde otomatik tahliye alarmi, kapi kontrolleri ve acil durum aydinlatmasi aktif olur.'
+            ? 'Kritik seviyelerde otomatik tahliye alarmı, kapı kontrolleri ve acil durum aydınlatması aktif olur.'
             : 'At critical levels, automatic evacuation alarm, door controls, and emergency lighting are activated.',
         },
       ] as StoryStep[],
     },
     features: {
-      badge: lang === 'tr' ? 'OZELLIKLER' : 'FEATURES',
+      badge: lang === 'tr' ? 'ÖZELLİKLER' : 'FEATURES',
       title: lang === 'tr' ? 'Teknik' : 'Technical',
       titleHighlight: lang === 'tr' ? 'Üstünlükler' : 'Excellence',
       items: [
         {
           id: 'sensors',
           icon: Thermometer,
-          title: lang === 'tr' ? 'Coklu Sensor' : 'Multi-Sensor',
+          title: lang === 'tr' ? 'Çoklu Sensör' : 'Multi-Sensor',
           description: lang === 'tr'
-            ? 'Tek kart uzerinde 8 bagimsiz sicaklik sensoru'
+            ? 'Tek kart üzerinde 8 bağımsız sıcaklık sensörü'
             : '8 independent temperature sensors on a single board',
           value: '8',
-          unit: lang === 'tr' ? 'Sensor' : 'Sensors',
+          unit: lang === 'tr' ? 'Sensör' : 'Sensors',
           size: 'medium' as const,
         },
         {
@@ -114,7 +115,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           icon: Cpu,
           title: lang === 'tr' ? 'Hassasiyet' : 'Accuracy',
           description: lang === 'tr'
-            ? 'Endustriyel kalite sicaklik olcumu'
+            ? 'Endüstriyel kalite sıcaklık ölçümü'
             : 'Industrial-grade temperature measurement',
           value: '±0.5',
           unit: '°C',
@@ -123,9 +124,9 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         {
           id: 'response',
           icon: Zap,
-          title: lang === 'tr' ? 'Tepki Suresi' : 'Response Time',
+          title: lang === 'tr' ? 'Tepki Süresi' : 'Response Time',
           description: lang === 'tr'
-            ? 'Uyari suresinde milisaniye hassasiyeti'
+            ? 'Uyarı süresinde milisaniye hassasiyeti'
             : 'Millisecond precision in alert timing',
           value: '<100',
           unit: 'ms',
@@ -136,19 +137,19 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           icon: Radio,
           title: lang === 'tr' ? 'Bağlantı' : 'Connectivity',
           description: lang === 'tr'
-            ? 'WiFi, LoRa ve RS485 destegi'
+            ? 'WiFi, LoRa ve RS485 desteği'
             : 'WiFi, LoRa, and RS485 support',
           size: 'medium' as const,
         },
         {
           id: 'battery',
           icon: Battery,
-          title: lang === 'tr' ? 'Pil Omru' : 'Battery Life',
+          title: lang === 'tr' ? 'Pil Ömrü' : 'Battery Life',
           description: lang === 'tr'
-            ? 'Dusuk guc modu ile uzun omur'
+            ? 'Düşük güç modu ile uzun ömür'
             : 'Extended life with low power mode',
           value: '5+',
-          unit: lang === 'tr' ? 'Yil' : 'Years',
+          unit: lang === 'tr' ? 'Yıl' : 'Years',
           size: 'medium' as const,
         },
         {
@@ -163,22 +164,22 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
       ] as BentoItem[],
     },
     specs: {
-      title: lang === 'tr' ? 'Teknik Ozellikler' : 'Technical Specifications',
+      title: lang === 'tr' ? 'Teknik Özellikler' : 'Technical Specifications',
       items: [
-        { label: lang === 'tr' ? 'Olcum Araligi' : 'Measurement Range', value: '-40°C ~ +125°C' },
-        { label: lang === 'tr' ? 'Calisma Gerilimi' : 'Operating Voltage', value: '3.3V ~ 5V DC' },
-        { label: lang === 'tr' ? 'Guc Tuketimi' : 'Power Consumption', value: '<50mA (aktif), <1mA (uyku)' },
+        { label: lang === 'tr' ? 'Ölçüm Aralığı' : 'Measurement Range', value: '-40°C ~ +125°C' },
+        { label: lang === 'tr' ? 'Çalışma Gerilimi' : 'Operating Voltage', value: '3.3V ~ 5V DC' },
+        { label: lang === 'tr' ? 'Güç Tüketimi' : 'Power Consumption', value: '<50mA (aktif), <1mA (uyku)' },
         { label: lang === 'tr' ? 'Boyutlar' : 'Dimensions', value: '45 x 30 x 8 mm' },
-        { label: lang === 'tr' ? 'Koruma Sinifi' : 'Protection Class', value: 'IP65' },
-        { label: lang === 'tr' ? 'Calisma Sicakligi' : 'Operating Temp', value: '-20°C ~ +70°C' },
+        { label: lang === 'tr' ? 'Koruma Sınıfı' : 'Protection Class', value: 'IP65' },
+        { label: lang === 'tr' ? 'Çalışma Sıcaklığı' : 'Operating Temp', value: '-20°C ~ +70°C' },
       ],
     },
     cta: {
       title: lang === 'tr'
-        ? 'FireLink\'i Tesisinizde Gorun'
+        ? 'FireLink\'i Tesisinizde Görün'
         : 'See FireLink in Your Facility',
       subtitle: lang === 'tr'
-        ? 'Ucretsiz teknik danismanlik ve demo icin bizimle iletisime gecin.'
+        ? 'Ücretsiz teknik danışmanlık ve demo için bizimle iletişime geçin.'
         : 'Contact us for free technical consultation and demo.',
       button: lang === 'tr' ? 'Demo Talep Et' : 'Request Demo',
     },
@@ -241,7 +242,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
               })}
             </div>
             <div className="mt-4 text-[10px] text-gray-400">
-              {lang === 'tr' ? '100ms aralikla guncelleniyor' : 'Updating every 100ms'}
+              {lang === 'tr' ? '100ms aralıkla güncelleniyor' : 'Updating every 100ms'}
             </div>
           </div>
         );
@@ -289,10 +290,10 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             </div>
             <div className="flex-1 space-y-3">
               {[
-                { label: lang === 'tr' ? 'Guc Kesme' : 'Power Cut', status: 'ready' },
+                { label: lang === 'tr' ? 'Güç Kesme' : 'Power Cut', status: 'ready' },
                 { label: lang === 'tr' ? 'Havalandırma' : 'Ventilation', status: 'ready' },
-                { label: lang === 'tr' ? 'Yangin Sondurucu' : 'Fire Suppression', status: 'standby' },
-                { label: lang === 'tr' ? 'Acil Durum Isigi' : 'Emergency Lights', status: 'ready' },
+                { label: lang === 'tr' ? 'Yangın Söndürücü' : 'Fire Suppression', status: 'standby' },
+                { label: lang === 'tr' ? 'Acil Durum Işığı' : 'Emergency Lights', status: 'ready' },
               ].map((item, i) => (
                 <div
                   key={i}
@@ -358,11 +359,11 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
-              {lang === 'tr' ? '3D Termal Izleme Sistemi' : '3D Thermal Monitoring System'}
+              {lang === 'tr' ? '3D Termal İzleme Sistemi' : '3D Thermal Monitoring System'}
             </h2>
             <p className="text-offwhite-700 max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'Gercek zamanli 3D goruntulem, taktik HUD sensor durumu ve akilli alarm sistemi.'
+                ? 'Gerçek zamanlı 3D görüntülem, taktik HUD sensör durumu ve akıllı alarm sistemi.'
                 : 'Real-time 3D visualization, tactical HUD sensor status and smart alarm system.'}
             </p>
           </motion.div>
@@ -386,6 +387,23 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         accentColor={accentColor}
         lang={lang}
       />
+
+      {/* Data Pipeline Visualization */}
+      <section className="py-16 bg-onyx-950">
+        <div className="max-w-4xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
+            <span className="font-mono text-xs tracking-widest uppercase text-offwhite-700 mb-4 block">
+              {lang === 'tr' ? 'VERİ AKIŞ MİMARİSİ' : 'DATA FLOW ARCHITECTURE'}
+            </span>
+          </motion.div>
+          <AnimatedDataFlow variant="fire" />
+        </div>
+      </section>
 
       {/* Technical Specifications */}
       <section className="py-24 md:py-32 bg-onyx-900">

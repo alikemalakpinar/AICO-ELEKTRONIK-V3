@@ -109,6 +109,7 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
   const slideProgress = useTransform(slideX, [0, 200], [0, 1]);
   const slideOpacity = useTransform(slideProgress, [0, 1], [1, 0]);
   const slideScale = useTransform(slideProgress, shouldUseLiteMode ? [0, 1] : [0, 0.5, 1], shouldUseLiteMode ? [1, 1] : [1, 1.05, 1]);
+  const slideProgressWidth = useTransform(slideProgress, [0, 1], ['0%', '100%']);
 
   // Update time
   useEffect(() => {
@@ -383,7 +384,7 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
                         {/* Progress fill */}
                         <motion.div
                           className="absolute inset-y-0 left-0 bg-engineer-500/20"
-                          style={{ width: useTransform(slideProgress, [0, 1], ['0%', '100%']) }}
+                          style={{ width: slideProgressWidth }}
                         />
 
                         <motion.div

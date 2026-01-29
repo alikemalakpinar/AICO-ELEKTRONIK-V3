@@ -331,22 +331,41 @@ export default function ContactPage({ params }: ContactPageProps) {
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 relative overflow-x-hidden">
-      {/* Subtle industrial grid background */}
+      {/* Engineering blueprint grid background */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="contact-grid" width="40" height="40" patternUnits="userSpaceOnUse">
               <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
             </pattern>
+            <pattern id="contact-grid-lg" width="200" height="200" patternUnits="userSpaceOnUse">
+              <path d="M 200 0 L 0 0 0 200" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+            </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#contact-grid)" className="text-foreground" />
+          <rect width="100%" height="100%" fill="url(#contact-grid-lg)" className="text-foreground" opacity="0.5" />
         </svg>
       </div>
 
-      {/* Animated mesh gradient */}
+      {/* Animated mesh gradient - blueprint glow zones */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-1/2 -left-1/4 w-[600px] h-[600px] rounded-full bg-engineer-500/[0.03] dark:bg-engineer-500/[0.05] blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="absolute -bottom-1/4 -right-1/4 w-[500px] h-[500px] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.05] blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
+        <motion.div
+          className="absolute -top-1/2 -left-1/4 w-[600px] h-[600px] rounded-full bg-engineer-500/[0.04] dark:bg-engineer-500/[0.06] blur-3xl"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -bottom-1/4 -right-1/4 w-[500px] h-[500px] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.05] blur-3xl"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.7, 0.4] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+        {/* Geometric accent line */}
+        <motion.div
+          className="absolute top-[20%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-engineer-500/10 to-transparent"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 2, delay: 0.5 }}
+        />
       </div>
 
       {/* Hero Section */}
