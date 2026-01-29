@@ -75,25 +75,25 @@ function XRaySphere() {
   );
 }
 
-// Linear data streams — NOT circular rings, but linear dash-array flows
+// Linear data streams — visible pulsing dash-array flows
 function DataStreams() {
   const groupRef = useRef<THREE.Group>(null);
-  const streamCount = 8;
+  const streamCount = 10;
 
   const streams = useMemo(() => {
     return Array.from({ length: streamCount }, (_, i) => ({
       id: i,
-      radius: 1.8 + (i % 4) * 0.2,
-      tiltX: (Math.PI * 0.15) + (i * Math.PI * 2) / streamCount,
-      tiltZ: (i * Math.PI) / streamCount * 0.4,
-      dashScale: 0.6 + Math.random() * 0.4,
-      speed: 0.08 + (i % 3) * 0.03,
+      radius: 1.8 + (i % 5) * 0.15,
+      tiltX: (Math.PI * 0.12) + (i * Math.PI * 2) / streamCount,
+      tiltZ: (i * Math.PI) / streamCount * 0.5,
+      dashScale: 0.5 + (i % 3) * 0.3,
+      speed: 0.06 + (i % 4) * 0.025,
+      baseOpacity: 0.2 + (i % 3) * 0.15, // varied opacity per stream
     }));
   }, []);
 
   useFrame((state) => {
     if (groupRef.current) {
-      // Very slow group rotation — weight
       groupRef.current.rotation.y = state.clock.elapsedTime * 0.02;
     }
   });
@@ -107,19 +107,21 @@ function DataStreams() {
   );
 }
 
-// Individual data stream with dash-array animation
+// Individual data stream with dash-array animation + pulsing opacity
 function DataStreamRing({
   radius,
   tiltX,
   tiltZ,
   dashScale,
   speed,
+  baseOpacity = 0.35,
 }: {
   radius: number;
   tiltX: number;
   tiltZ: number;
   dashScale: number;
   speed: number;
+  baseOpacity?: number;
 }) {
   const lineRef = useRef<THREE.Line>(null);
   const materialRef = useRef<any>(null);
@@ -138,15 +140,34 @@ function DataStreamRing({
       ));
     }
     const geo = new THREE.BufferGeometry().setFromPoints(points);
-    geo.computeBoundingSphere();
-    return geo;
+    // Compute line distances for dashed material to work
+    const lineGeo = geo;
+    const posAttr = lineGeo.getAttribute('position');
+    const distances = new Float32Array(posAttr.count);
+    let totalDist = 0;
+    for (let i = 0; i < posAttr.count; i++) {
+      if (i > 0) {
+        const dx = posAttr.getX(i) - posAttr.getX(i - 1);
+        const dy = posAttr.getY(i) - posAttr.getY(i - 1);
+        const dz = posAttr.getZ(i) - posAttr.getZ(i - 1);
+        totalDist += Math.sqrt(dx * dx + dy * dy + dz * dz);
+      }
+      distances[i] = totalDist;
+    }
+    lineGeo.setAttribute('lineDistance', new THREE.BufferAttribute(distances, 1));
+    lineGeo.computeBoundingSphere();
+    return lineGeo;
   }, [radius]);
 
   useFrame((state) => {
     if (materialRef.current) {
-      // Linear dash offset animation — data flowing along the ring
+      // Linear dash offset — data flowing along the ring
       dashOffsetRef.current -= speed;
       (materialRef.current as any).dashOffset = dashOffsetRef.current;
+
+      // Pulsing opacity — breathing effect per stream
+      const pulse = Math.sin(state.clock.elapsedTime * 1.2 + radius * 3) * 0.15;
+      materialRef.current.opacity = baseOpacity + pulse;
     }
     if (lineRef.current) {
       lineRef.current.rotation.x = tiltX;
@@ -161,9 +182,9 @@ function DataStreamRing({
         ref={materialRef}
         color="#F97316"
         transparent
-        opacity={0.25}
-        dashSize={0.15 * dashScale}
-        gapSize={0.25 * dashScale}
+        opacity={baseOpacity}
+        dashSize={0.2 * dashScale}
+        gapSize={0.12 * dashScale}
         linewidth={1}
       />
     </line>
