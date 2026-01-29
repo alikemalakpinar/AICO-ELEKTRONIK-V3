@@ -150,29 +150,19 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
-          <div
-            className="absolute inset-0 opacity-[0.02]"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: '100px 100px',
-            }}
-          />
-          {/* Animated gradient orbs */}
+          <div className="absolute inset-0 bg-gradient-radial from-engineer-500/3 via-transparent to-transparent" />
+          {/* Animated gradient orbs — subdued, monochrome dominant */}
           <motion.div
             className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl"
-            style={{ background: 'radial-gradient(circle, rgba(255,69,0,0.1) 0%, transparent 70%)' }}
-            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-            transition={{ duration: 8, repeat: Infinity }}
+            style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)' }}
+            animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.35, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity }}
           />
           <motion.div
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl"
-            style={{ background: 'radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 70%)' }}
-            animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
-            transition={{ duration: 8, repeat: Infinity }}
+            className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full blur-3xl"
+            style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.04) 0%, transparent 70%)' }}
+            animate={{ scale: [1.1, 1, 1.1], opacity: [0.15, 0.25, 0.15] }}
+            transition={{ duration: 12, repeat: Infinity }}
           />
         </div>
 
@@ -185,32 +175,34 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
         {/* Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-20">
-          {/* Badge */}
+          {/* Badge — JetBrains Mono overline */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-onyx-900/80 backdrop-blur-sm rounded-full border border-white/10">
-              <Zap size={14} className="text-engineer-500" />
-              <span className="text-offwhite-600 text-sm font-medium">
-                {lang === 'tr' ? 'Endustriyel IoT & Akilli Yasam' : 'Industrial IoT & Smart Living'}
+            <span className="inline-flex items-center gap-3 px-5 py-2.5 bg-onyx-900/80 backdrop-blur-sm rounded-full border border-white/10">
+              <Zap size={12} className="text-engineer-500" />
+              <span className="mono-overline text-offwhite-700">AICO_UNIT_v3.2</span>
+              <span className="w-px h-3 bg-white/10" />
+              <span className="mono-badge text-offwhite-600">
+                {lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}
               </span>
             </span>
           </motion.div>
 
-          {/* Title */}
+          {/* Title — Satoshi 900, tracking-tighter */}
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-offwhite-400 mb-6 tracking-tight"
+            className="heading-display text-5xl md:text-6xl lg:text-8xl text-offwhite-400 mb-6"
           >
-            {lang === 'tr' ? 'Endüstriyel Mükemmellik,' : 'Industrial Excellence,'}
+            {lang === 'tr' ? 'Endüstriyel' : 'Industrial'}
             <br />
-            <span className="bg-gradient-to-r from-engineer-500 via-orange-400 to-cyan-400 bg-clip-text text-transparent">
-              {lang === 'tr' ? 'Yeniden Tanımlandı.' : 'Redefined.'}
+            <span className="text-engineer-500 glow-engineer-intense">
+              {lang === 'tr' ? 'Mükemmellik.' : 'Excellence.'}
             </span>
           </motion.h1>
 
@@ -257,14 +249,15 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
           >
             {[
-              { value: '50ms', label: lang === 'tr' ? 'Tepki Süresi' : 'Response Time' },
-              { value: '99.9%', label: lang === 'tr' ? 'Çalışma Süresi' : 'Uptime' },
-              { value: '78%', label: lang === 'tr' ? 'Duruş Azalması' : 'Downtime Cut' },
-              { value: '100+', label: lang === 'tr' ? 'Kurulum' : 'Installations' },
+              { value: '<50ms', label: lang === 'tr' ? 'Tepki Süresi' : 'Response Time', spec: 'RT_SPEC' },
+              { value: '99.97%', label: lang === 'tr' ? 'Çalışma Süresi' : 'Uptime', spec: 'SLA_TIER' },
+              { value: '78%', label: lang === 'tr' ? 'Duruş Azalması' : 'Downtime Cut', spec: 'EFF_GAIN' },
+              { value: '100+', label: lang === 'tr' ? 'Kurulum' : 'Installations', spec: 'DEPLOY_CT' },
             ].map((stat, i) => (
               <div key={i} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-engineer-500 font-mono">{stat.value}</div>
-                <div className="text-offwhite-700 text-sm mt-1">{stat.label}</div>
+                <div className="mono-badge text-offwhite-800 mb-1">{stat.spec}</div>
+                <div className="text-2xl md:text-3xl font-bold text-engineer-500 mono-data glow-engineer">{stat.value}</div>
+                <div className="text-offwhite-700 text-xs mt-1.5">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -298,10 +291,11 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
-              <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}
-              <span className="w-8 h-px bg-engineer-500" />
+            <span className="inline-flex items-center gap-3 text-engineer-500 mb-6">
+              <span className="w-12 h-px bg-engineer-500/50" />
+              <span className="mono-overline">{lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}</span>
+              <span className="mono-badge text-offwhite-800">SEC::CRITICAL</span>
+              <span className="w-12 h-px bg-engineer-500/50" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
               {lang === 'tr' ? 'Yüksek Teknoloji' : 'High-Tech'}
@@ -330,8 +324,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               >
                 <Link
                   href={product.href}
-                  className="group block relative h-full overflow-hidden rounded-3xl border border-white/5 hover:border-white/20 transition-all duration-500"
-                  style={{ backgroundColor: '#0a0a0a' }}
+                  className="group block relative h-full overflow-hidden rounded-3xl border border-white/5 hover:border-white/20 transition-all duration-500 border-beam"
+                  style={{ backgroundColor: '#050507' }}
                 >
                   {/* Background Gradient */}
                   <div
@@ -355,7 +349,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
                           animate={{ opacity: [1, 0.5, 1] }}
                           transition={{ duration: 2, repeat: Infinity }}
                         />
-                        <span className="text-offwhite-700 text-[10px] font-mono">LIVE</span>
+                        <span className="mono-badge text-offwhite-700">LIVE</span>
                       </div>
                     </div>
 
@@ -380,10 +374,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
                     {/* Stats & CTA */}
                     <div className="mt-4 flex items-center justify-between">
                       <div>
-                        <div className="text-2xl font-mono font-bold" style={{ color: product.color }}>
+                        <div className="text-2xl mono-data font-bold" style={{ color: product.color }}>
                           {product.stats.value}
                         </div>
-                        <div className="text-offwhite-700 text-xs">{product.stats.label}</div>
+                        <div className="text-offwhite-700 text-xs mt-0.5">{product.stats.label}</div>
                       </div>
                       <div
                         className="flex items-center gap-2 text-sm font-medium transition-colors"
@@ -454,10 +448,11 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 text-purple-400 font-mono text-xs tracking-widest uppercase mb-6">
-              <span className="w-8 h-px bg-purple-400" />
-              LUXURY SMART LIVING
-              <span className="w-8 h-px bg-purple-400" />
+            <span className="inline-flex items-center gap-3 text-purple-400 mb-6">
+              <span className="w-12 h-px bg-purple-400/50" />
+              <span className="mono-overline">SMART LIVING</span>
+              <span className="mono-badge text-offwhite-800">RES::PREMIUM</span>
+              <span className="w-12 h-px bg-purple-400/50" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
               {lang === 'tr' ? 'Akıllı' : 'Smart'}
@@ -485,7 +480,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               >
                 <Link
                   href={item.href}
-                  className="group block p-6 bg-onyx-800/50 rounded-2xl border border-white/5 hover:border-purple-500/30 transition-all duration-500"
+                  className="group block p-6 bg-onyx-800/50 rounded-2xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 border-beam"
                 >
                   {/* Icon */}
                   <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-purple-500/20 transition-all duration-300">

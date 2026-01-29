@@ -66,7 +66,7 @@ module.exports = {
                     600: '#0A0A0A',
                     700: '#080808',
                     800: '#060606',
-                    900: '#050505', // Deep Onyx - Ana Zemin
+                    900: '#050507', // Deep Onyx - Cold Blue Undertone
                     950: '#030303',
                 },
 
@@ -401,10 +401,10 @@ module.exports = {
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
                 'gradient-industrial': 'linear-gradient(135deg, var(--tw-gradient-stops))',
-                'gradient-premium': 'linear-gradient(180deg, #050505 0%, #0A0A0A 50%, #050505 100%)',
-                'gradient-hero': 'linear-gradient(180deg, transparent 0%, #050505 100%)',
-                'gradient-fade-up': 'linear-gradient(0deg, #050505 0%, transparent 100%)',
-                'gradient-fade-down': 'linear-gradient(180deg, #050505 0%, transparent 100%)',
+                'gradient-premium': 'linear-gradient(180deg, #050507 0%, #0A0A0F 50%, #050507 100%)',
+                'gradient-hero': 'linear-gradient(180deg, transparent 0%, #050507 100%)',
+                'gradient-fade-up': 'linear-gradient(0deg, #050507 0%, transparent 100%)',
+                'gradient-fade-down': 'linear-gradient(180deg, #050507 0%, transparent 100%)',
                 'gradient-orange-glow': 'radial-gradient(ellipse at center, rgba(249, 115, 22, 0.15) 0%, transparent 70%)',
                 'skeleton-gradient': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)',
                 // Premium Mesh Gradients

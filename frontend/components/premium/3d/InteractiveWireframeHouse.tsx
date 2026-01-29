@@ -2,16 +2,17 @@
 
 import React, { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Edges, Float } from '@react-three/drei';
+import { MeshTransmissionMaterial, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
-// InteractiveWireframeHouse - Compact & Elegant
-// Scaled down for better visual balance
+// InteractiveWireframeHouse v3.2 — X-Ray Mode
+// Translucent frosted glass rooms replacing Edges
+// Heavy, deliberate rotation — industrial weight
 // ===========================================
 
-// Room component with highlight capability
+// Room component with frosted glass translucency
 function Room({
   position,
   size,
@@ -28,36 +29,62 @@ function Room({
   name: string;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const currentColor = useRef(new THREE.Color(color));
-  const targetColor = isHighlighted ? new THREE.Color(highlightColor) : new THREE.Color(color);
+  const edgeRef = useRef<THREE.LineSegments>(null);
+  const currentOpacity = useRef(0.03);
+  const targetOpacity = isHighlighted ? 0.15 : 0.03;
+
+  // Create edge geometry for the box
+  const edgeGeo = useMemo(() => {
+    return new THREE.EdgesGeometry(new THREE.BoxGeometry(...size));
+  }, [size]);
 
   useFrame(() => {
-    currentColor.current.lerp(targetColor, 0.05);
+    currentOpacity.current += (targetOpacity - currentOpacity.current) * 0.04;
     if (meshRef.current) {
-      (meshRef.current.material as THREE.MeshBasicMaterial).color = currentColor.current;
+      const mat = meshRef.current.material as THREE.MeshPhysicalMaterial;
+      mat.opacity = currentOpacity.current;
+    }
+    if (edgeRef.current) {
+      const mat = edgeRef.current.material as THREE.LineBasicMaterial;
+      mat.opacity = isHighlighted ? 0.5 : 0.12;
     }
   });
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <boxGeometry args={size} />
-      <meshBasicMaterial color={color} transparent opacity={isHighlighted ? 0.12 : 0.015} />
-      <Edges
-        scale={1}
-        threshold={15}
-        color={isHighlighted ? highlightColor : color}
-      />
-    </mesh>
+    <group position={position}>
+      {/* Frosted glass volume */}
+      <mesh ref={meshRef}>
+        <boxGeometry args={size} />
+        <meshPhysicalMaterial
+          color={isHighlighted ? highlightColor : '#0a0a12'}
+          transparent
+          opacity={0.03}
+          roughness={0.8}
+          metalness={0.1}
+          transmission={isHighlighted ? 0.6 : 0.3}
+          thickness={0.5}
+          ior={1.3}
+        />
+      </mesh>
+
+      {/* Wireframe edges — subtle structural lines */}
+      <lineSegments ref={edgeRef} geometry={edgeGeo}>
+        <lineBasicMaterial
+          color={isHighlighted ? highlightColor : color}
+          transparent
+          opacity={0.12}
+        />
+      </lineSegments>
+    </group>
   );
 }
 
-// Main house structure - SCALED DOWN
+// Main house structure — HEAVY rotation
 function WireframeHouse({ scale = 0.7 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const [highlightedRoom, setHighlightedRoom] = useState(0);
   const timeRef = useRef(0);
 
-  // Room definitions - smaller sizes
   const rooms = useMemo(() => [
     { name: 'Living Room', position: [-0.5, 0, 0] as [number, number, number], size: [1.4, 0.8, 1.2] as [number, number, number] },
     { name: 'Kitchen', position: [0.6, 0, 0.4] as [number, number, number], size: [0.8, 0.8, 0.6] as [number, number, number] },
@@ -69,23 +96,27 @@ function WireframeHouse({ scale = 0.7 }: { scale?: number }) {
   useFrame((state, delta) => {
     timeRef.current += delta;
 
-    // Rotate house slowly
+    // HEAVY rotation — like rotating a building on a turntable
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.12;
+      groupRef.current.rotation.y += delta * 0.03;
     }
 
-    // Cycle through rooms
-    if (timeRef.current > 2.5) {
+    // Cycle through rooms every 3.5s
+    if (timeRef.current > 3.5) {
       timeRef.current = 0;
       setHighlightedRoom((prev) => (prev + 1) % rooms.length);
     }
   });
 
+  // Edge geometries for roof and foundation
+  const roofEdgeGeo = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(1.2, 0.04, 1.6)), []);
+  const foundationEdgeGeo = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(2.4, 0.08, 1.6)), []);
+
   return (
     <Float
-      speed={0.8}
-      rotationIntensity={0.08}
-      floatIntensity={0.2}
+      speed={0.4}
+      rotationIntensity={0.03}
+      floatIntensity={0.1}
     >
       <group ref={groupRef} scale={scale}>
         {/* Rooms */}
@@ -101,30 +132,61 @@ function WireframeHouse({ scale = 0.7 }: { scale?: number }) {
           />
         ))}
 
-        {/* Roof - smaller */}
+        {/* Roof — frosted glass */}
         <group position={[0, 1.6, 0]}>
-          {/* Roof left */}
-          <mesh position={[-0.4, 0.25, 0]} rotation={[0, 0, Math.PI / 6]}>
-            <boxGeometry args={[1.2, 0.04, 1.6]} />
-            <meshBasicMaterial color="#F97316" transparent opacity={0.015} />
-            <Edges scale={1} threshold={15} color="#F97316" />
-          </mesh>
-          {/* Roof right */}
-          <mesh position={[0.4, 0.25, 0]} rotation={[0, 0, -Math.PI / 6]}>
-            <boxGeometry args={[1.2, 0.04, 1.6]} />
-            <meshBasicMaterial color="#F97316" transparent opacity={0.015} />
-            <Edges scale={1} threshold={15} color="#F97316" />
-          </mesh>
+          <group position={[-0.4, 0.25, 0]} rotation={[0, 0, Math.PI / 6]}>
+            <mesh>
+              <boxGeometry args={[1.2, 0.04, 1.6]} />
+              <meshPhysicalMaterial
+                color="#0a0a12"
+                transparent
+                opacity={0.04}
+                transmission={0.3}
+                roughness={0.9}
+                thickness={0.3}
+              />
+            </mesh>
+            <lineSegments geometry={roofEdgeGeo}>
+              <lineBasicMaterial color="#F97316" transparent opacity={0.15} />
+            </lineSegments>
+          </group>
+          <group position={[0.4, 0.25, 0]} rotation={[0, 0, -Math.PI / 6]}>
+            <mesh>
+              <boxGeometry args={[1.2, 0.04, 1.6]} />
+              <meshPhysicalMaterial
+                color="#0a0a12"
+                transparent
+                opacity={0.04}
+                transmission={0.3}
+                roughness={0.9}
+                thickness={0.3}
+              />
+            </mesh>
+            <lineSegments geometry={roofEdgeGeo}>
+              <lineBasicMaterial color="#F97316" transparent opacity={0.15} />
+            </lineSegments>
+          </group>
         </group>
 
-        {/* Foundation - smaller */}
-        <mesh position={[0, -0.45, 0]}>
-          <boxGeometry args={[2.4, 0.08, 1.6]} />
-          <meshBasicMaterial color="#F97316" transparent opacity={0.015} />
-          <Edges scale={1} threshold={15} color="#F97316" />
-        </mesh>
+        {/* Foundation — frosted glass */}
+        <group position={[0, -0.45, 0]}>
+          <mesh>
+            <boxGeometry args={[2.4, 0.08, 1.6]} />
+            <meshPhysicalMaterial
+              color="#0a0a12"
+              transparent
+              opacity={0.04}
+              transmission={0.3}
+              roughness={0.9}
+              thickness={0.3}
+            />
+          </mesh>
+          <lineSegments geometry={foundationEdgeGeo}>
+            <lineBasicMaterial color="#F97316" transparent opacity={0.15} />
+          </lineSegments>
+        </group>
 
-        {/* Smart home indicators - smaller & fewer */}
+        {/* Smart home indicators */}
         <SmartIndicator position={[-0.5, 0.5, 0.6]} />
         <SmartIndicator position={[0.6, 0.5, 0.3]} />
         <SmartIndicator position={[-0.5, 1.4, 0.5]} />
@@ -133,13 +195,13 @@ function WireframeHouse({ scale = 0.7 }: { scale?: number }) {
   );
 }
 
-// Smart home indicator (glowing point) - smaller
+// Smart home indicator (pulsing point)
 function SmartIndicator({ position }: { position: [number, number, number] }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
-      const scale = 0.7 + Math.sin(state.clock.elapsedTime * 2.5 + position[0]) * 0.2;
+      const scale = 0.7 + Math.sin(state.clock.elapsedTime * 1.5 + position[0]) * 0.2;
       meshRef.current.scale.setScalar(scale);
     }
   });
@@ -152,15 +214,15 @@ function SmartIndicator({ position }: { position: [number, number, number] }) {
   );
 }
 
-// Ambient particles - fewer and smaller spread
+// Ambient particles — fewer, slower
 function Particles() {
   const particlesRef = useRef<THREE.Points>(null);
-  const count = 50; // Reduced from 80
+  const count = 40;
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 5; // Reduced spread
+      pos[i * 3] = (Math.random() - 0.5) * 5;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 4;
       pos[i * 3 + 2] = (Math.random() - 0.5) * 5;
     }
@@ -169,7 +231,7 @@ function Particles() {
 
   useFrame((state) => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.015;
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.006;
     }
   });
 
@@ -185,21 +247,20 @@ function Particles() {
       </bufferGeometry>
       <pointsMaterial
         color="#F97316"
-        size={0.015}
+        size={0.012}
         transparent
-        opacity={0.25}
+        opacity={0.2}
         sizeAttenuation
       />
     </points>
   );
 }
 
-// Responsive camera hook
+// Responsive camera
 function ResponsiveCamera() {
   const { camera, size } = useThree();
 
   useFrame(() => {
-    // Adjust FOV based on screen width for better mobile experience
     const isMobile = size.width < 768;
     const targetFov = isMobile ? 55 : 50;
     if (camera instanceof THREE.PerspectiveCamera) {
@@ -217,9 +278,10 @@ function Scene() {
     <>
       <color attach="background" args={['transparent']} />
 
-      <ambientLight intensity={0.25} />
-      <pointLight position={[4, 4, 4]} color="#F97316" intensity={0.4} />
+      <ambientLight intensity={0.3} />
+      <pointLight position={[4, 4, 4]} color="#F97316" intensity={0.5} />
       <pointLight position={[-4, 2, -4]} color="#0F172A" intensity={0.2} />
+      <directionalLight position={[0, 5, 3]} intensity={0.3} color="#ffffff" />
 
       <ResponsiveCamera />
       <WireframeHouse scale={0.75} />
