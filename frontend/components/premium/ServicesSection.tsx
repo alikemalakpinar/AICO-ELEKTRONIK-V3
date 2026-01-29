@@ -30,23 +30,23 @@ interface ServicesSectionProps {
 // Engineering Services Data - PCB, Firmware, Prototyping
 const engineeringServicesData = {
   tr: {
-    badge: 'MUHENDISLIK HIZMETLERI',
-    title: 'PCB Tasarim &',
-    titleHighlight: 'Gomulu Yazilim Danismanligi',
+    badge: 'MÜHENDİSLİK HİZMETLERİ',
+    title: 'PCB Tasarım &',
+    titleHighlight: 'Gömülü Yazılım Danışmanlığı',
     subtitle:
-      'Sadece urun gelistirmiyoruz; fikrinizi uretime hazir hale getiriyoruz.',
+      'Sadece ürün geliştirmiyoruz; fikrinizi üretime hazır hale getiriyoruz.',
     services: [
       {
         id: 'schematic',
         icon: Layout,
-        title: 'Sematik Cizimi',
+        title: 'Şematik Çizimi',
         description:
-          'Projenizin temelini olusturan profesyonel sematik tasarimlar.',
+          'Projenizin temelini oluşturan profesyonel şematik tasarımlar.',
         features: [
-          'Detayli bilesen secimi',
-          'DFM uyumlu tasarim',
-          'Guc hesaplamalari',
-          'EMC ongoruleri',
+          'Detaylı bileşen seçimi',
+          'DFM uyumlu tasarım',
+          'Güç hesaplamaları',
+          'EMC öngörüleri',
         ],
         color: 'from-blue-500/20 to-transparent',
       },
@@ -55,74 +55,74 @@ const engineeringServicesData = {
         icon: Layers,
         title: 'PCB Layout',
         description:
-          'Yuksek hizli, cok katmanli PCB tasarimlari ve layout optimizasyonu.',
+          'Yüksek hızlı, çok katmanlı PCB tasarımları ve layout optimizasyonu.',
         features: [
-          '4-16 katman tasarim',
-          'Impedans kontrolu',
-          'Termal yonetim',
-          'Sinyal butunlugu',
+          '4-16 katman tasarım',
+          'İmpedans kontrolü',
+          'Termal yönetim',
+          'Sinyal bütünlüğü',
         ],
         color: 'from-engineer-500/20 to-transparent',
       },
       {
         id: 'firmware',
         icon: Code,
-        title: 'Firmware Gelistirme',
+        title: 'Firmware Geliştirme',
         description:
-          'Mikrodenetleyici ve gomulu sistemler icin optimize edilmis yazilimlar.',
+          'Mikrodenetleyici ve gömülü sistemler için optimize edilmiş yazılımlar.',
         features: [
           'Bare-metal & RTOS',
-          'Dusuk guc optimizasyonu',
-          'Bootloader gelistirme',
-          'OTA guncelleme',
+          'Düşük güç optimizasyonu',
+          'Bootloader geliştirme',
+          'OTA güncelleme',
         ],
         color: 'from-purple-500/20 to-transparent',
       },
       {
         id: 'prototype',
         icon: Cog,
-        title: 'Prototip Uretimi',
+        title: 'Prototip Üretimi',
         description:
-          'Fikrinizden fiziksel urune hizli gecis ve test surecleri.',
+          'Fikrinizden fiziksel ürüne hızlı geçiş ve test süreçleri.',
         features: [
-          'Hizli prototipleme',
-          '3D baski entegrasyonu',
+          'Hızlı prototipleme',
+          '3D baskı entegrasyonu',
           'Fonksiyonel testler',
-          'Seri uretime hazirlik',
+          'Seri üretime hazırlık',
         ],
         color: 'from-orange-500/20 to-transparent',
       },
     ],
     process: {
-      title: 'Calisma Surecimiz',
+      title: 'Çalışma Sürecimiz',
       steps: [
         {
           number: '01',
           title: 'Analiz',
-          description: 'Ihtiyaclarinizi anlamak icin detayli teknik gorusme.',
+          description: 'İhtiyaçlarınızı anlamak için detaylı teknik görüşme.',
         },
         {
           number: '02',
-          title: 'Tasarim',
-          description: 'Sematik ve PCB tasarim sureci ile iteratif gelistirme.',
+          title: 'Tasarım',
+          description: 'Şematik ve PCB tasarım süreci ile iteratif geliştirme.',
         },
         {
           number: '03',
           title: 'Prototip',
-          description: 'Ilk prototip uretimi ve kapsamli dogrulama testleri.',
+          description: 'İlk prototip üretimi ve kapsamlı doğrulama testleri.',
         },
         {
           number: '04',
-          title: 'Uretim',
-          description: 'Seri uretim dokumantasyonu ve uretici koordinasyonu.',
+          title: 'Üretim',
+          description: 'Seri üretim dokümantasyonu ve üretici koordinasyonu.',
         },
       ],
     },
     cta: {
-      title: 'Projenizi Konusalim',
+      title: 'Projenizi Konuşalım',
       subtitle:
-        'Muhendislik ekibimiz fikirlerinizi gercege donusturmek icin hazir.',
-      button: 'Ucretsiz Danismanlik',
+        'Mühendislik ekibimiz fikirlerinizi gerçeğe dönüştürmek için hazır.',
+      button: 'Ücretsiz Danışmanlık',
     },
   },
   en: {
@@ -230,22 +230,22 @@ const engineeringServicesData = {
 // Product Solutions Data - Kiosk, POS, Smart Living
 const productSolutionsData = {
   tr: {
-    badge: 'URUN COZUMLERI',
-    title: 'Uctan Uca',
-    titleHighlight: 'Teknoloji Cozumleri',
+    badge: 'ÜRÜN ÇÖZÜMLERİ',
+    title: 'Uçtan Uca',
+    titleHighlight: 'Teknoloji Çözümleri',
     subtitle:
-      'Kiosk, POS ve akilli yasam sistemleri ile isletmenizi dijitalestirin.',
+      'Kiosk, POS ve akıllı yaşam sistemleri ile işletmenizi dijitalleştirin.',
     solutions: [
       {
         id: 'kiosk',
         icon: Monitor,
-        title: 'Kiosk Cozumleri',
+        title: 'Kiosk Çözümleri',
         description:
           'Self-servis terminal ve interaktif kiosk sistemleri.',
         features: [
-          'Ozel donanim tasarimi',
-          'Entegre odeme sistemleri',
-          'Uzaktan yonetim paneli',
+          'Özel donanım tasarımı',
+          'Entegre ödeme sistemleri',
+          'Uzaktan yönetim paneli',
           '7/24 teknik destek',
         ],
         color: 'from-cyan-500/20 to-transparent',
@@ -254,14 +254,14 @@ const productSolutionsData = {
       {
         id: 'pos',
         icon: CreditCard,
-        title: 'POS & Perakende Yonetimi',
+        title: 'POS & Perakende Yönetimi',
         description:
-          'Akilli kasa sistemleri ve perakende otomasyon cozumleri.',
+          'Akıllı kasa sistemleri ve perakende otomasyon çözümleri.',
         features: [
-          'Bulut tabanli satis yonetimi',
+          'Bulut tabanlı satış yönetimi',
           'Stok ve envanter takibi',
-          'Musteri sadakat programlari',
-          'Coklu sube yonetimi',
+          'Müşteri sadakat programları',
+          'Çoklu şube yönetimi',
         ],
         color: 'from-green-500/20 to-transparent',
         href: '/solutions/pos',
@@ -269,14 +269,14 @@ const productSolutionsData = {
       {
         id: 'smart-villa',
         icon: Home,
-        title: 'Akilli Villa',
+        title: 'Akıllı Villa',
         description:
-          'Kisisel luks, gorunmez teknoloji. Yasam alaninizi donusturun.',
+          'Kişisel lüks, görünmez teknoloji. Yaşam alanınızı dönüştürün.',
         features: [
           'Tam ev otomasyonu',
-          'Enerji yonetimi',
-          'Guvenlik sistemleri',
-          'Ses ve aydinlatma kontrolu',
+          'Enerji yönetimi',
+          'Güvenlik sistemleri',
+          'Ses ve aydınlatma kontrolü',
         ],
         color: 'from-amber-500/20 to-transparent',
         href: '/solutions/smart-villa',
@@ -284,9 +284,9 @@ const productSolutionsData = {
       {
         id: 'smart-apartment',
         icon: Building,
-        title: 'Akilli Apartman',
+        title: 'Akıllı Apartman',
         description:
-          'Ortak alan yonetimi ve sakin iletisim sistemleri.',
+          'Ortak alan yönetimi ve sakin iletişim sistemleri.',
         features: [
           'Video diafon sistemi',
           'Aidat takip & tahsilat',
@@ -299,14 +299,14 @@ const productSolutionsData = {
       {
         id: 'smart-residence',
         icon: Building2,
-        title: 'Akilli Rezidans',
+        title: 'Akıllı Rezidans',
         description:
-          'Merkezi yonetim, olceklenebilir guc. 500+ daireyi yonetin.',
+          'Merkezi yönetim, ölçeklenebilir güç. 500+ daireyi yönetin.',
         features: [
           'HVAC merkezi kontrol',
-          'Asansor cagirma sistemi',
-          'Enerji analitigi',
-          'Kestirimci bakim',
+          'Asansör çağırma sistemi',
+          'Enerji analitiği',
+          'Kestirimci bakım',
         ],
         color: 'from-rose-500/20 to-transparent',
         href: '/solutions/smart-residence',

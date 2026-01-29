@@ -162,7 +162,7 @@ function ServiceModal({
             {/* Features */}
             <div>
               <h3 className="text-[10px] font-medium text-offwhite-500 uppercase tracking-wider mb-2.5">
-                {lang === 'tr' ? 'Ozellikler' : 'Features'}
+                {lang === 'tr' ? 'Özellikler' : 'Features'}
               </h3>
               <ul className="space-y-1.5">
                 {service.features.map((feature, idx) => (

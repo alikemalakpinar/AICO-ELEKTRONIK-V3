@@ -10,8 +10,8 @@ const COMPANY_INFO = {
   name: 'AICO Elektronik',
   phone: '+90 532 621 06 01',
   address: {
-    streetAddress: 'Yukari Dudullu Mah, Necip Fazil Blv No:44/38',
-    addressLocality: 'Umraniye',
+    streetAddress: 'Yukarı Dudullu Mah, Necip Fazıl Blv No:44/38',
+    addressLocality: 'Ümraniye',
     addressRegion: 'Istanbul',
     postalCode: '34775',
     addressCountry: 'TR',

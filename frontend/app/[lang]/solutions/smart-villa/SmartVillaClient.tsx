@@ -38,7 +38,7 @@ const VillaDashboardDemo = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-[500px] animate-pulse rounded-3xl bg-gradient-to-br from-onyx-800/50 to-onyx-900/50 flex items-center justify-center">
+      <div className="h-[500px] animate-pulse rounded-3xl bg-gradient-to-br from-card to-card flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-engineer-500/20 flex items-center justify-center">
             <Home className="w-8 h-8 text-engineer-500 animate-pulse" />
@@ -51,12 +51,25 @@ const VillaDashboardDemo = dynamic(
 );
 
 // Lazy load the Luxury Smart Living Demo
+// Lazy load the multi-floor interactive floor plan
+const SmartVillaFloorPlan = dynamic(
+  () => import('@/components/solutions/smart-villa/SmartVillaFloorPlan'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[500px] animate-pulse rounded-3xl bg-card border border-border flex items-center justify-center">
+        <div className="text-sm text-muted-foreground">Yükleniyor...</div>
+      </div>
+    ),
+  }
+);
+
 const SmartLivingLuxuryDemo = dynamic(
   () => import('@/components/products/villa/SmartLivingLuxuryDemo'),
   {
     ssr: false,
     loading: () => (
-      <div className="h-[600px] animate-pulse rounded-3xl bg-gradient-to-br from-onyx-800/50 to-onyx-900/50 flex items-center justify-center">
+      <div className="h-[600px] animate-pulse rounded-3xl bg-gradient-to-br from-card to-card flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-engineer-500/20 flex items-center justify-center">
             <Lightbulb className="w-8 h-8 text-engineer-500 animate-pulse" />
@@ -135,8 +148,8 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
 
   // Rooms data
   const rooms: Room[] = [
-    { id: 'living', name: { tr: 'Oturma Odasi', en: 'Living Room' }, temperature: 22, humidity: 45, lights: 80, occupied: true },
-    { id: 'master', name: { tr: 'Yatak Odasi', en: 'Master Bedroom' }, temperature: 20, humidity: 50, lights: 0, occupied: false },
+    { id: 'living', name: { tr: 'Oturma Odası', en: 'Living Room' }, temperature: 22, humidity: 45, lights: 80, occupied: true },
+    { id: 'master', name: { tr: 'Yatak Odası', en: 'Master Bedroom' }, temperature: 20, humidity: 50, lights: 0, occupied: false },
     { id: 'kitchen', name: { tr: 'Mutfak', en: 'Kitchen' }, temperature: 21, humidity: 55, lights: 100, occupied: true },
     { id: 'office', name: { tr: 'Ofis', en: 'Home Office' }, temperature: 23, humidity: 40, lights: 60, occupied: false },
     { id: 'pool', name: { tr: 'Havuz', en: 'Pool Area' }, temperature: 26, humidity: 65, lights: 30, occupied: false },
@@ -145,10 +158,10 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
 
   // Scene presets
   const scenePresets: ScenePreset[] = [
-    { id: 'morning', name: { tr: 'Sabah', en: 'Morning' }, icon: Sun, color: '#FBBF24', description: { tr: 'Perdeleri ac, isiklari artir', en: 'Open blinds, brighten lights' } },
-    { id: 'focus', name: { tr: 'Odaklanma', en: 'Focus' }, icon: Eye, color: '#3B82F6', description: { tr: 'Dikkat dagitici ogeleri kapat', en: 'Minimize distractions' } },
-    { id: 'movie', name: { tr: 'Film', en: 'Movie' }, icon: Moon, color: '#8B5CF6', description: { tr: 'Isiklari kis, perdeleri kapat', en: 'Dim lights, close blinds' } },
-    { id: 'away', name: { tr: 'Disarida', en: 'Away' }, icon: Shield, color: '#EF4444', description: { tr: 'Guvenligi aktif et', en: 'Activate security' } },
+    { id: 'morning', name: { tr: 'Sabah', en: 'Morning' }, icon: Sun, color: '#FBBF24', description: { tr: 'Perdeleri aç, ışıkları artır', en: 'Open blinds, brighten lights' } },
+    { id: 'focus', name: { tr: 'Odaklanma', en: 'Focus' }, icon: Eye, color: '#3B82F6', description: { tr: 'Dikkat dağıtıcı ögeleri kapat', en: 'Minimize distractions' } },
+    { id: 'movie', name: { tr: 'Film', en: 'Movie' }, icon: Moon, color: '#8B5CF6', description: { tr: 'Işıkları kıs, perdeleri kapat', en: 'Dim lights, close blinds' } },
+    { id: 'away', name: { tr: 'Dışarıda', en: 'Away' }, icon: Shield, color: '#EF4444', description: { tr: 'Güvenliği aktif et', en: 'Activate security' } },
   ];
 
   // Handle scene activation
@@ -172,15 +185,15 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
   // Control panel modes
   const controlModes = [
     { id: 'home' as ControlMode, icon: Home, label: { tr: 'Ana Sayfa', en: 'Home' } },
-    { id: 'lights' as ControlMode, icon: Lightbulb, label: { tr: 'Isiklar', en: 'Lights' } },
-    { id: 'climate' as ControlMode, icon: Thermometer, label: { tr: 'Iklim', en: 'Climate' } },
-    { id: 'security' as ControlMode, icon: Shield, label: { tr: 'Guvenlik', en: 'Security' } },
-    { id: 'entertainment' as ControlMode, icon: Music, label: { tr: 'Eglence', en: 'Media' } },
+    { id: 'lights' as ControlMode, icon: Lightbulb, label: { tr: 'Işıklar', en: 'Lights' } },
+    { id: 'climate' as ControlMode, icon: Thermometer, label: { tr: 'İklim', en: 'Climate' } },
+    { id: 'security' as ControlMode, icon: Shield, label: { tr: 'Güvenlik', en: 'Security' } },
+    { id: 'entertainment' as ControlMode, icon: Music, label: { tr: 'Eğlence', en: 'Media' } },
   ];
 
   // Stats for hero section
   const stats = [
-    { value: '47', label: lang === 'tr' ? 'Sensor' : 'Sensors' },
+    { value: '47', label: lang === 'tr' ? 'Sensör' : 'Sensors' },
     { value: '24', label: lang === 'tr' ? 'Oda' : 'Rooms' },
     { value: '120+', label: lang === 'tr' ? 'Otomasyon' : 'Automations' },
     { value: '<1s', label: lang === 'tr' ? 'Tepki' : 'Response' },
@@ -285,7 +298,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               transition={{ delay: 0.3, duration: 0.7 }}
               className="text-5xl md:text-6xl lg:text-7xl font-bold text-offwhite-400 mb-6 tracking-tight"
             >
-              {lang === 'tr' ? 'Evinizin Icinden' : 'From Inside Your Home'}
+              {lang === 'tr' ? 'Evinizin İçinden' : 'From Inside Your Home'}
             </motion.h1>
 
             {/* Subtitle */}
@@ -296,7 +309,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               className="text-xl md:text-2xl text-offwhite-600 max-w-2xl mx-auto mb-12"
             >
               {lang === 'tr'
-                ? 'Gorunmez teknoloji, sezgisel kontrol. Her dokunuşta eviniz sizinle konusur.'
+                ? 'Görünmez teknoloji, sezgisel kontrol. Her dokunuşta eviniz sizinle konuşur.'
                 : 'Invisible technology, intuitive control. Your home speaks to you with every touch.'}
             </motion.p>
 
@@ -327,7 +340,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               className="flex flex-col items-center gap-2"
             >
               <span className="text-offwhite-700 text-xs uppercase tracking-widest">
-                {lang === 'tr' ? 'Kontrol Panelini Kesfet' : 'Explore Control Panel'}
+                {lang === 'tr' ? 'Kontrol Panelini Keşfet' : 'Explore Control Panel'}
               </span>
               <motion.div
                 animate={{ y: [0, 8, 0] }}
@@ -355,11 +368,11 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               <span className="w-8 h-px bg-engineer-500" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-4">
-              {lang === 'tr' ? 'Tek Bir Dokunusla' : 'With A Single Touch'}
+              {lang === 'tr' ? 'Tek Bir Dokunuşla' : 'With A Single Touch'}
             </h2>
             <p className="text-lg text-offwhite-600 max-w-xl mx-auto">
               {lang === 'tr'
-                ? 'Tum ev sistemlerinizi tek bir arayuzden yonetin.'
+                ? 'Tüm ev sistemlerinizi tek bir arayüzden yönetin.'
                 : 'Manage all your home systems from a single interface.'}
             </p>
           </motion.div>
@@ -449,7 +462,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                       {/* Scene Presets */}
                       <div>
                         <h3 className="text-sm text-offwhite-600 mb-4 font-medium">
-                          {lang === 'tr' ? 'Hizli Sahneler' : 'Quick Scenes'}
+                          {lang === 'tr' ? 'Hızlı Sahneler' : 'Quick Scenes'}
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                           {scenePresets.map((scene) => (
@@ -532,10 +545,10 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                           </div>
                           <div>
                             <div className="text-sm font-medium text-offwhite-400">
-                              {lang === 'tr' ? 'Tum Isiklar' : 'All Lights'}
+                              {lang === 'tr' ? 'Tüm Işıklar' : 'All Lights'}
                             </div>
                             <div className="text-xs text-offwhite-600">
-                              {lightsOn ? (lang === 'tr' ? 'Acik' : 'On') : (lang === 'tr' ? 'Kapali' : 'Off')}
+                              {lightsOn ? (lang === 'tr' ? 'Açık' : 'On') : (lang === 'tr' ? 'Kapalı' : 'Off')}
                             </div>
                           </div>
                         </div>
@@ -616,7 +629,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                             -
                           </button>
                           <div className="text-sm text-offwhite-600">
-                            {lang === 'tr' ? 'Hedef Sicaklik' : 'Target Temperature'}
+                            {lang === 'tr' ? 'Hedef Sıcaklık' : 'Target Temperature'}
                           </div>
                           <button
                             onClick={() => setTemperature(Math.min(30, temperature + 1))}
@@ -660,7 +673,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                       <div className="grid grid-cols-3 gap-4">
                         {[
                           { id: 'home', icon: Unlock, label: { tr: 'Evde', en: 'Home' }, color: '#10B981' },
-                          { id: 'away', icon: Lock, label: { tr: 'Disarida', en: 'Away' }, color: '#EF4444' },
+                          { id: 'away', icon: Lock, label: { tr: 'Dışarıda', en: 'Away' }, color: '#EF4444' },
                           { id: 'night', icon: Moon, label: { tr: 'Gece', en: 'Night' }, color: '#8B5CF6' },
                         ].map((mode) => (
                           <button
@@ -694,7 +707,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                               {lang === 'tr' ? 'Sistem Durumu' : 'System Status'}
                             </div>
                             <div className="text-xs text-success-400">
-                              {lang === 'tr' ? 'Tum sistemler aktif ve calisiyor' : 'All systems active and running'}
+                              {lang === 'tr' ? 'Tüm sistemler aktif ve çalışıyor' : 'All systems active and running'}
                             </div>
                           </div>
                         </div>
@@ -717,7 +730,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                             <Music size={32} className="text-purple-400" />
                           </div>
                           <div>
-                            <div className="text-sm text-offwhite-600">{lang === 'tr' ? 'Simdi Caliniyor' : 'Now Playing'}</div>
+                            <div className="text-sm text-offwhite-600">{lang === 'tr' ? 'Şimdi Çalınıyor' : 'Now Playing'}</div>
                             <div className="text-lg font-medium text-offwhite-400">Ambient Sounds</div>
                             <div className="text-sm text-offwhite-600">Home Playlist</div>
                           </div>
@@ -758,7 +771,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                 }}
               >
                 <h3 className="text-sm font-medium text-offwhite-500 mb-4">
-                  {lang === 'tr' ? 'Kat Plani' : 'Floor Plan'}
+                  {lang === 'tr' ? 'Kat Planı' : 'Floor Plan'}
                 </h3>
 
                 {/* Simplified house wireframe */}
@@ -837,7 +850,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                 <div className="p-4 rounded-xl bg-white/5 border border-white/5">
                   <Power size={18} className="text-success-500 mb-2" />
                   <div className="text-lg font-mono text-offwhite-400">2.4 kW</div>
-                  <div className="text-xs text-offwhite-600">{lang === 'tr' ? 'Tuketim' : 'Usage'}</div>
+                  <div className="text-xs text-offwhite-600">{lang === 'tr' ? 'Tüketim' : 'Usage'}</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white/5 border border-white/5">
                   <Zap size={18} className="text-amber-500 mb-2" />
@@ -867,15 +880,15 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
           >
             <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
               <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'LUKS KONTROLLER' : 'LUXURY CONTROLS'}
+              {lang === 'tr' ? 'LÜKS KONTROLLER' : 'LUXURY CONTROLS'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-4">
-              {lang === 'tr' ? 'Interaktif Kat Plani' : 'Interactive Floor Plan'}
+              {lang === 'tr' ? 'İnteraktif Kat Planı' : 'Interactive Floor Plan'}
             </h2>
             <p className="text-lg text-offwhite-600 max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'Isiklari ayarlamak icin odalarin uzerine surukleyin. Senaryo modlarini kesfet.'
+                ? 'Işıkları ayarlamak için odaların üzerine sürükleyin. Senaryo modlarını keşfet.'
                 : 'Drag over rooms to dim lights. Discover scenario modes for every moment.'}
             </p>
           </motion.div>
@@ -891,8 +904,43 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
         </div>
       </section>
 
+      {/* Multi-Floor Interactive Floor Plan */}
+      <section className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'İNTERAKTİF KAT PLANI' : 'INTERACTIVE FLOOR PLAN'}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {lang === 'tr' ? 'Villanızı Keşfedin' : 'Explore Your Villa'}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Katlar arasında geçiş yapın, odaları seçin ve akıllı sistemleri kontrol edin.'
+                : 'Switch between floors, select rooms, and control smart systems.'}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <SmartVillaFloorPlan lang={lang} />
+          </motion.div>
+        </div>
+      </section>
+
       {/* Interactive Dashboard Demo Section */}
-      <section className="py-20 dark:bg-onyx-900 light:bg-gray-50">
+      <section className="py-20 bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -927,7 +975,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
       </section>
 
       {/* Features Section */}
-      <section className="py-32 dark:bg-onyx-950 light:bg-white">
+      <section className="py-32 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -937,11 +985,11 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
           >
             <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
               <span className="w-8 h-px bg-engineer-500" />
-              {lang === 'tr' ? 'OZELLIKLER' : 'FEATURES'}
+              {lang === 'tr' ? 'ÖZELLİKLER' : 'FEATURES'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-4">
-              {lang === 'tr' ? 'Her Detay Dusunuldu' : 'Every Detail Considered'}
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              {lang === 'tr' ? 'Her Detay Düşünüldü' : 'Every Detail Considered'}
             </h2>
           </motion.div>
 
@@ -949,44 +997,44 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
             {[
               {
                 icon: Sun,
-                title: lang === 'tr' ? 'Akilli Aydinlatma' : 'Smart Lighting',
+                title: lang === 'tr' ? 'Akıllı Aydınlatma' : 'Smart Lighting',
                 description: lang === 'tr'
-                  ? 'Dogal isik takibi, sahne modlari, sirkadyen ritim destegi'
+                  ? 'Doğal ışık takibi, sahne modları, sirkadyen ritim desteği'
                   : 'Natural light tracking, scene modes, circadian rhythm support',
               },
               {
                 icon: Shield,
-                title: lang === 'tr' ? 'Guvenlik Sistemi' : 'Security System',
+                title: lang === 'tr' ? 'Güvenlik Sistemi' : 'Security System',
                 description: lang === 'tr'
-                  ? 'Gorunmez algilama, yuz tanima, anlasilan uyarilar'
+                  ? 'Görünmez algılama, yüz tanıma, anlaşılan uyarılar'
                   : 'Invisible detection, face recognition, intuitive alerts',
               },
               {
                 icon: Thermometer,
-                title: lang === 'tr' ? 'Iklim Kontrolu' : 'Climate Control',
+                title: lang === 'tr' ? 'İklim Kontrolü' : 'Climate Control',
                 description: lang === 'tr'
-                  ? 'Bolge bazli sicaklik, nem kontrolu, hava kalitesi izleme'
+                  ? 'Bölge bazlı sıcaklık, nem kontrolü, hava kalitesi izleme'
                   : 'Zone-based temperature, humidity, air quality monitoring',
               },
               {
                 icon: Eye,
-                title: lang === 'tr' ? 'Gizlilik Yonetimi' : 'Privacy Management',
+                title: lang === 'tr' ? 'Gizlilik Yönetimi' : 'Privacy Management',
                 description: lang === 'tr'
-                  ? 'Akilli perdeler, cam tonlama, ses izolasyonu'
+                  ? 'Akıllı perdeler, cam tonlama, ses izolasyonu'
                   : 'Smart blinds, glass tinting, sound isolation',
               },
               {
                 icon: Wifi,
-                title: lang === 'tr' ? 'Baglanti Altyapisi' : 'Connectivity',
+                title: lang === 'tr' ? 'Bağlantı Altyapısı' : 'Connectivity',
                 description: lang === 'tr'
-                  ? 'Mesh WiFi, yerel islem, bulut yedekleme'
+                  ? 'Mesh WiFi, yerel işlem, bulut yedekleme'
                   : 'Mesh WiFi, local processing, cloud backup',
               },
               {
                 icon: Zap,
-                title: lang === 'tr' ? 'Enerji Yonetimi' : 'Energy Management',
+                title: lang === 'tr' ? 'Enerji Yönetimi' : 'Energy Management',
                 description: lang === 'tr'
-                  ? 'Solar entegrasyon, akilli sarj, tuketim optimizasyonu'
+                  ? 'Solar entegrasyon, akıllı şarj, tüketim optimizasyonu'
                   : 'Solar integration, smart charging, consumption optimization',
               },
             ].map((feature, idx) => (
@@ -996,15 +1044,15 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group p-6 bg-onyx-800/50 border border-white/5 rounded-2xl hover:border-engineer-500/30 transition-all duration-300"
+                className="group p-6 bg-card border border-border rounded-2xl hover:border-engineer-500/30 transition-all duration-300"
               >
                 <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center mb-4 group-hover:bg-engineer-500/20 transition-colors">
                   <feature.icon size={24} className="text-engineer-500" />
                 </div>
-                <h3 className="text-lg font-semibold text-offwhite-400 mb-2">
+                <h3 className="text-lg font-semibold text-foreground mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-offwhite-600">{feature.description}</p>
+                <p className="text-sm text-muted-foreground">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -1012,7 +1060,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 border-t border-white/5">
+      <section className="py-32 border-t border-border">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -1020,12 +1068,12 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
             viewport={{ once: true }}
           >
             <Home size={48} className="text-engineer-500 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
               {t.smartVilla.cta}
             </h2>
-            <p className="text-lg text-offwhite-600 mb-10">
+            <p className="text-lg text-muted-foreground mb-10">
               {lang === 'tr'
-                ? 'Muhendislik ekibimiz villa projeniz icin ozel cozumler tasarlamaya hazir.'
+                ? 'Mühendislik ekibimiz villa projeniz için özel çözümler tasarlamaya hazır.'
                 : 'Our engineering team is ready to design custom solutions for your villa project.'}
             </p>
             <Link

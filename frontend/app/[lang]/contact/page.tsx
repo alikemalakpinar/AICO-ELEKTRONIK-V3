@@ -60,7 +60,7 @@ function FloatingInput({
         onBlur={() => setIsFocused(false)}
         className={`w-full px-4 pt-6 pb-2 bg-card border rounded-xl text-foreground placeholder-transparent focus:outline-none transition-all duration-300 resize-none ${
           isFocused
-            ? 'border-engineer-500 ring-1 ring-ring'
+            ? 'border-engineer-500 ring-2 ring-engineer-500/30'
             : 'border-border hover:border-muted-foreground/30'
         } ${isTextarea ? 'h-32' : ''}`}
         placeholder={label}
@@ -157,7 +157,7 @@ function MagneticSubmitButton({
             >
               <Check size={20} />
             </motion.div>
-            <span>Sent!</span>
+            <span>&#10003;</span>
           </motion.div>
         ) : isSubmitting ? (
           <motion.div
@@ -172,7 +172,6 @@ function MagneticSubmitButton({
               transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
               className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
             />
-            <span>Sending...</span>
           </motion.div>
         ) : (
           <motion.div
@@ -344,6 +343,12 @@ export default function ContactPage({ params }: ContactPageProps) {
         </svg>
       </div>
 
+      {/* Animated mesh gradient */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-1/2 -left-1/4 w-[600px] h-[600px] rounded-full bg-engineer-500/[0.03] dark:bg-engineer-500/[0.05] blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute -bottom-1/4 -right-1/4 w-[500px] h-[500px] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.05] blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
+      </div>
+
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-6 mb-20">
         <motion.div
@@ -462,7 +467,7 @@ export default function ContactPage({ params }: ContactPageProps) {
             <div className="grid sm:grid-cols-2 gap-4">
               <motion.a
                 href="mailto:info@aicoelektronik.com"
-                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/40 hover:shadow-engineer-500/10 hover:shadow-lg transition-all duration-300 shadow-sm"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
@@ -474,7 +479,7 @@ export default function ContactPage({ params }: ContactPageProps) {
 
               <motion.a
                 href="tel:+905326210601"
-                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/40 hover:shadow-engineer-500/10 hover:shadow-lg transition-all duration-300 shadow-sm"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
@@ -485,7 +490,7 @@ export default function ContactPage({ params }: ContactPageProps) {
               </motion.a>
 
               <motion.div
-                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/40 hover:shadow-engineer-500/10 hover:shadow-lg transition-all duration-300 shadow-sm"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
@@ -493,12 +498,12 @@ export default function ContactPage({ params }: ContactPageProps) {
                 </div>
                 <div className="text-sm text-muted-foreground mb-1">{lang === 'tr' ? 'Adres' : 'Address'}</div>
                 <div className="text-foreground font-medium text-xs leading-relaxed">
-                  Yukari Dudullu Mah, Necip Fazil Blv No:44/38, Umraniye, Istanbul
+                  Yukarı Dudullu Mah, Necip Fazıl Blv No:44/38, Ümraniye, Istanbul
                 </div>
               </motion.div>
 
               <motion.div
-                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm sm:col-span-2"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/40 hover:shadow-engineer-500/10 hover:shadow-lg transition-all duration-300 shadow-sm sm:col-span-2"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
