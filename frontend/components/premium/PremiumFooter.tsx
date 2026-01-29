@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Github } from 'lucide-react';
@@ -46,8 +47,16 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
   return (
     <footer className="relative bg-background text-foreground transition-colors duration-300">
-      {/* Gradient top border */}
-      <div className="h-px bg-gradient-to-r from-transparent via-engineer-500/50 to-transparent" />
+      {/* Engineer-orange neon glow lines */}
+      <div className="relative h-px">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-engineer-500/50 to-transparent" />
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-engineer-500/80 to-transparent"
+          animate={{ opacity: [0.3, 0.8, 0.3] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-engineer-500/30 to-transparent blur-sm" />
+      </div>
 
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
@@ -90,16 +99,19 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
             <div className="flex items-center gap-3">
               {socials.map((s) => (
-                <a
+                <motion.a
                   key={s.label}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
                   className="flex items-center justify-center w-9 h-9 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-engineer-500/40 transition-colors"
+                  whileHover={{ scale: 1.15, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 >
                   <s.icon size={16} />
-                </a>
+                </motion.a>
               ))}
             </div>
           </div>
@@ -117,7 +129,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                        className="text-muted-foreground hover:text-foreground transition-colors text-sm line-reveal inline-block"
                       >
                         {link.label}
                       </Link>
@@ -136,7 +148,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                        className="text-muted-foreground hover:text-foreground transition-colors text-sm line-reveal inline-block"
                       >
                         {link.label}
                       </Link>
@@ -155,7 +167,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                        className="text-muted-foreground hover:text-foreground transition-colors text-sm line-reveal inline-block"
                       >
                         {link.label}
                       </Link>

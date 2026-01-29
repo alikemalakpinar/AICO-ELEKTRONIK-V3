@@ -284,7 +284,7 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
   {
     id: 'schematic',
     icon: CircuitBoard,
-    title: lang === 'tr' ? 'Sematik Tasarim' : 'Schematic Design',
+    title: lang === 'tr' ? 'Sematik Tasarım' : 'Schematic Design',
     subtitle: lang === 'tr' ? 'Profesyonel devre tasarimi' : 'Professional circuit design',
     description:
       lang === 'tr'
@@ -344,7 +344,7 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
   {
     id: 'firmware',
     icon: Code,
-    title: lang === 'tr' ? 'Gomulu Yazilim' : 'Embedded Software',
+    title: lang === 'tr' ? 'Gömülü Yazılım' : 'Embedded Software',
     subtitle: lang === 'tr' ? 'Profesyonel firmware' : 'Professional firmware',
     description:
       lang === 'tr'
@@ -404,7 +404,7 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
   {
     id: 'consulting',
     icon: Users,
-    title: lang === 'tr' ? 'Teknik Danismanlik' : 'Technical Consulting',
+    title: lang === 'tr' ? 'Teknik Danışmanlık' : 'Technical Consulting',
     subtitle: lang === 'tr' ? 'Uzman muhendislik destegi' : 'Expert engineering support',
     description:
       lang === 'tr'
@@ -413,7 +413,7 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
     features:
       lang === 'tr'
         ? [
-            'Tasarim inceleme (DFM/DFT)',
+            'Tasarım inceleme (DFM/DFT)',
             'Maliyet optimizasyonu',
             'Sertifikasyon danismanligi',
             'Teknik egitim',
@@ -427,7 +427,7 @@ export const getServicesData = (lang: 'tr' | 'en'): ServiceDetail[] => [
     technologies: ['CE', 'FCC', 'UL', 'ISO', 'IPC'],
     deliverables:
       lang === 'tr'
-        ? ['Inceleme raporu', 'Optimizasyon plani', 'Yol haritasi']
+        ? ['İnceleme raporu', 'Optimizasyon planı', 'Yol haritası']
         : ['Review report', 'Optimization plan', 'Roadmap'],
     color: 'engineer-500',
   },

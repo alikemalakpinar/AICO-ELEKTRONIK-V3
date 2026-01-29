@@ -11,8 +11,8 @@ interface TechStackProps {
 // Technology stack data
 const techStackData = {
   tr: {
-    badge: 'TEKNOLOJI YIGINIMIZ',
-    title: 'Kullandigimiz Teknolojiler',
+    badge: 'TEKNOLOJİ YIĞINIMIZ',
+    title: 'Kullandığımız Teknolojiler',
   },
   en: {
     badge: 'OUR TECH STACK',

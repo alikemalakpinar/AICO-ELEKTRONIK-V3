@@ -238,17 +238,26 @@
     color: #1a1a1a;
   }
 
+  /* Light mode engineering paper grid background */
+  .light body {
+    background-image:
+      linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-attachment: fixed;
+  }
+
   /* Focus visible styling - adapts to theme */
   :focus-visible {
     @apply outline-none ring-2 ring-engineer-500/50 ring-offset-2;
     ring-offset-color: hsl(var(--background));
   }
 
-  /* Light mode specific overrides for better contrast */
+  /* Light mode contrast - Slate-900 primary, Engineer-Orange highlights */
   .light {
-    /* Improve text contrast in light mode */
-    --text-primary: 220 20% 8%;
-    --text-secondary: 220 12% 30%;
+    --text-primary: 222 47% 11%;
+    --text-secondary: 215 25% 27%;
+    --text-tertiary: 215 16% 47%;
   }
 
   /* Smooth transitions for theme switching */
@@ -964,4 +973,71 @@ html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}
+
+/* ===========================================
+   CURSOR FOLLOWER GLOW - Blueprint Flashlight
+=========================================== */
+.cursor-glow {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.06) 0%, rgba(249, 115, 22, 0.02) 30%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  will-change: left, top;
+}
+
+.dark .cursor-glow {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, rgba(249, 115, 22, 0.03) 30%, transparent 70%);
+}
+
+.light .cursor-glow {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.05) 0%, rgba(249, 115, 22, 0.015) 30%, transparent 70%);
+}
+
+/* ===========================================
+   GLASS-PREMIUM - Frosted glass card effect
+=========================================== */
+.glass-premium {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.light .glass-premium {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ===========================================
+   LINE-REVEAL - Hover underline animation
+=========================================== */
+.line-reveal {
+  position: relative;
+}
+
+.line-reveal::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #F97316, #FB923C);
+  transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.line-reveal:hover::after {
+  width: 100%;
 }

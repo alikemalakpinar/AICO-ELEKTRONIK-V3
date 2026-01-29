@@ -41,7 +41,7 @@ export default function PredictiveMaintenanceClient({ lang }: PredictiveMaintena
     hero: {
       badge: 'VIBRATIONGUARD',
       title: lang === 'tr' ? 'Arizayi' : 'Predict Failures',
-      titleHighlight: lang === 'tr' ? 'Onceden Gorun.' : 'Before They Happen.',
+      titleHighlight: lang === 'tr' ? 'Önceden Görün.' : 'Before They Happen.',
       subtitle: lang === 'tr'
         ? 'FFT titresim analizi ve makine ogrenimi ile 2 hafta onceden ariza tahmini.'
         : 'FFT vibration analysis and machine learning for 2-week advance failure prediction.',
@@ -83,7 +83,7 @@ export default function PredictiveMaintenanceClient({ lang }: PredictiveMaintena
           id: 'prediction',
           badge: lang === 'tr' ? 'TAHMIN' : 'PREDICTION',
           title: lang === 'tr'
-            ? 'ML ile 2 Hafta Onceden Uyari'
+            ? 'ML ile 2 Hafta Önceden Uyarı'
             : '2-Week Advance Warning with ML',
           description: lang === 'tr'
             ? 'Random Forest ve LSTM modelleri, frekans oruntulerine bakarak arizayi 14 gun oncesinden tahmin eder. Bakim planlama icin kritik zaman kazandirır.'

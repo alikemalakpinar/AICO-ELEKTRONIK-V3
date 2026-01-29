@@ -687,7 +687,7 @@ export default function ServicesSection({ lang }: ServicesSectionProps) {
 
                   {/* CTA */}
                   <div className="flex items-center gap-2 mt-4 text-purple-400 text-xs font-medium">
-                    <span>{safeLang === 'tr' ? 'Incele' : 'Explore'}</span>
+                    <span>{safeLang === 'tr' ? 'İncele' : 'Explore'}</span>
                     <ArrowRight
                       size={14}
                       className="group-hover:translate-x-1 transition-transform"

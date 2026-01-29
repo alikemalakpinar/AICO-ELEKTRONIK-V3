@@ -85,13 +85,13 @@ const modeConfigs: Record<VillaMode, ModeConfig> = {
   away: {
     icon: <Shield className="w-5 h-5" />,
     label: 'Dis Mekan',
-    description: 'Guvenlik modu aktif',
+    description: 'Güvenlik modu aktif',
     color: '#EF4444',
     lights: { living: false, kitchen: false, dining: false, master: false, office: false, garden: true },
     blinds: { living: 'closed', kitchen: 'closed', dining: 'closed', master: 'closed', office: 'closed', garden: 'open' },
     temperature: 18,
     activeDevices: ['camera'],
-    ambiance: 'Guvenlik Oncelikli',
+    ambiance: 'Güvenlik Öncelikli',
   },
   party: {
     icon: <PartyPopper className="w-5 h-5" />,
@@ -142,7 +142,7 @@ const modeConfigs: Record<VillaMode, ModeConfig> = {
 // Translations
 const translations = {
   tr: {
-    title: 'Akilli Villa Kontrol',
+    title: 'Akıllı Villa Kontrol',
     subtitle: 'Tek tikla tum ev yonetimi',
     selectMode: 'Mod Sec',
     currentMode: 'Aktif Mod',
@@ -150,7 +150,7 @@ const translations = {
     lighting: 'Aydinlatma',
     blinds: 'Perdeler',
     devices: 'Cihazlar',
-    security: 'Guvenlik',
+    security: 'Güvenlik',
     ambiance: 'Atmosfer',
     roomsActive: 'Aktif Oda',
     energySaving: 'Enerji Tasarrufu',

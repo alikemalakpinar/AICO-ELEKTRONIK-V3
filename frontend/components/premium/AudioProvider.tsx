@@ -65,22 +65,32 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     if (ctx.state === 'suspended') ctx.resume();
 
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
+    const now = ctx.currentTime;
+    // Primary click tone
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2200, now);
+    osc.frequency.exponentialRampToValueAtTime(800, now + 0.03);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.05);
 
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-
-    // Metallic click: high frequency sweep, very short
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(1200, ctx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04);
-
-    gainNode.gain.setValueAtTime(0.12, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
-
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.06);
+    // Harmonic for crispness
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(4400, now);
+    osc2.frequency.exponentialRampToValueAtTime(1600, now + 0.02);
+    gain2.gain.setValueAtTime(0.03, now);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now);
+    osc2.stop(now + 0.03);
   }, [isMuted, getAudioContext]);
 
   // Deep whoosh sound - smooth scene transition

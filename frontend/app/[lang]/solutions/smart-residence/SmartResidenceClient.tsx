@@ -245,6 +245,173 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
         </div>
       </section>
 
+      {/* Interactive Bento Grid - BMS Architecture */}
+      <section className="py-32 bg-background">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+              <span className="w-8 h-px bg-engineer-500" />
+              {lang === 'tr' ? 'MİMARİ GENEL BAKIŞ' : 'ARCHITECTURE OVERVIEW'}
+              <span className="w-8 h-px bg-engineer-500" />
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+              {lang === 'tr' ? 'Merkezi BMS Entegrasyonu' : 'Central BMS Integration'}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {lang === 'tr'
+                ? 'Tek bir platformdan 500+ daireyi yönetin. Ölçeklenebilir mimari, modüler yapı.'
+                : 'Manage 500+ units from a single platform. Scalable architecture, modular design.'}
+            </p>
+          </motion.div>
+
+          {/* Bento Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+            {/* Large card: BMS Architecture SVG */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="md:col-span-2 lg:col-span-2 row-span-2 group relative p-8 rounded-2xl bg-card border border-border hover:border-engineer-500/30 transition-all duration-500 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-engineer-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <h3 className="text-xl font-bold text-foreground mb-2 relative z-10">
+                {lang === 'tr' ? 'Sistem Mimarisi' : 'System Architecture'}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-6 relative z-10">
+                {lang === 'tr' ? 'Merkezi kontrol, dağıtık zekâ' : 'Central control, distributed intelligence'}
+              </p>
+              {/* Animated SVG Architecture Diagram */}
+              <div className="relative z-10">
+                <svg viewBox="0 0 500 300" className="w-full h-auto">
+                  {/* Central Hub */}
+                  <motion.rect x="200" y="120" width="100" height="60" rx="8" fill="none" stroke="#F97316" strokeWidth="2"
+                    initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+                    transition={{ duration: 1, delay: 0.2 }} />
+                  <text x="250" y="155" textAnchor="middle" fill="currentColor" fontSize="11" fontWeight="600" className="text-foreground">BMS Hub</text>
+
+                  {/* Floor Controllers */}
+                  {[
+                    { x: 50, y: 30, label: lang === 'tr' ? 'Kat 1' : 'Floor 1' },
+                    { x: 50, y: 130, label: lang === 'tr' ? 'Kat 2' : 'Floor 2' },
+                    { x: 50, y: 230, label: lang === 'tr' ? 'Kat N' : 'Floor N' },
+                    { x: 380, y: 30, label: 'HVAC' },
+                    { x: 380, y: 130, label: lang === 'tr' ? 'Güvenlik' : 'Security' },
+                    { x: 380, y: 230, label: lang === 'tr' ? 'Enerji' : 'Energy' },
+                  ].map((node, i) => (
+                    <g key={i}>
+                      <motion.line
+                        x1={node.x + 50} y1={node.y + 20} x2={200} y2={150}
+                        stroke="#F97316" strokeWidth="1" strokeDasharray="4,4" strokeOpacity="0.4"
+                        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.5 + i * 0.15 }}
+                      />
+                      <motion.rect x={node.x} y={node.y} width="80" height="40" rx="6" fill="none" strokeWidth="1.5"
+                        stroke={i < 3 ? '#3B82F6' : '#10B981'} strokeOpacity="0.6"
+                        initial={{ scale: 0, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.3 + i * 0.1 }}
+                      />
+                      <text x={node.x + 40} y={node.y + 25} textAnchor="middle" fill="currentColor" fontSize="9" className="text-muted-foreground">
+                        {node.label}
+                      </text>
+                    </g>
+                  ))}
+
+                  {/* Data flow dots */}
+                  {[0, 1, 2].map((i) => (
+                    <motion.circle key={`dot-${i}`} r="3" fill="#F97316"
+                      animate={{ cx: [100, 200, 300, 200], cy: [50 + i * 100, 150, 50 + i * 100, 150], opacity: [1, 0.5, 1, 0.5] }}
+                      transition={{ duration: 4, delay: i * 0.5, repeat: Infinity, ease: 'linear' }}
+                    />
+                  ))}
+                </svg>
+              </div>
+            </motion.div>
+
+            {/* Scalability card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="group p-6 rounded-2xl bg-card border border-border hover:border-engineer-500/30 transition-all duration-500 overflow-hidden"
+            >
+              <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Building2 size={24} className="text-engineer-500" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                {lang === 'tr' ? 'Ölçeklenebilirlik' : 'Scalability'}
+              </h3>
+              <div className="font-mono text-4xl font-bold text-engineer-500 mb-2">500+</div>
+              <p className="text-sm text-muted-foreground">
+                {lang === 'tr' ? 'Daire kapasitesi, modüler büyüme' : 'Unit capacity, modular growth'}
+              </p>
+            </motion.div>
+
+            {/* Real-time monitoring card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="group p-6 rounded-2xl bg-card border border-border hover:border-engineer-500/30 transition-all duration-500"
+            >
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <BarChart3 size={24} className="text-cyan-500" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                {lang === 'tr' ? 'Gerçek Zamanlı Veri' : 'Real-time Data'}
+              </h3>
+              <div className="font-mono text-4xl font-bold text-cyan-500 mb-2">10K+</div>
+              <p className="text-sm text-muted-foreground">
+                {lang === 'tr' ? 'Veri noktası / saniye' : 'Data points / second'}
+              </p>
+            </motion.div>
+
+            {/* Uptime card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 }}
+              className="group p-6 rounded-2xl bg-gradient-to-br from-engineer-500/10 to-transparent border border-engineer-500/20 hover:border-engineer-500/40 transition-all duration-500"
+            >
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">
+                {lang === 'tr' ? 'Sistem Çalışma Süresi' : 'System Uptime'}
+              </h3>
+              <div className="font-mono text-5xl font-bold text-foreground">99.9<span className="text-engineer-500">%</span></div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {lang === 'tr' ? 'Yedekli altyapı garantisi' : 'Redundant infrastructure guarantee'}
+              </p>
+            </motion.div>
+
+            {/* Integration protocols card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className="md:col-span-2 group p-6 rounded-2xl bg-card border border-border hover:border-engineer-500/30 transition-all duration-500"
+            >
+              <h3 className="text-lg font-bold text-foreground mb-4">
+                {lang === 'tr' ? 'Entegrasyon Protokolleri' : 'Integration Protocols'}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {['KNX', 'BACnet', 'Modbus', 'MQTT', 'REST API', 'OPC-UA', 'Zigbee', 'LoRaWAN'].map((proto) => (
+                  <span key={proto} className="px-3 py-1.5 rounded-lg bg-muted text-sm font-mono text-muted-foreground border border-border hover:border-engineer-500/30 hover:text-engineer-500 transition-all cursor-default">
+                    {proto}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Platform Modules - Main Features */}
       <section className="py-32 bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">

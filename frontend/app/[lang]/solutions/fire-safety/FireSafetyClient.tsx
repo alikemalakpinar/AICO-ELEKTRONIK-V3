@@ -75,7 +75,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           id: 'alert',
           badge: lang === 'tr' ? 'UYARI' : 'ALERT',
           title: lang === 'tr'
-            ? 'Akilli Havalandirma Sistemi'
+            ? 'Akıllı Havalandırma Sistemi'
             : 'Smart Ventilation System',
           description: lang === 'tr'
             ? 'Hava kalitesi dusunce otomatik havalandirma devreye girer. TVOC yuksekliginde toksik gaz alarm protokolu baslar.'
@@ -96,7 +96,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
     features: {
       badge: lang === 'tr' ? 'OZELLIKLER' : 'FEATURES',
       title: lang === 'tr' ? 'Teknik' : 'Technical',
-      titleHighlight: lang === 'tr' ? 'Ustunlukler' : 'Excellence',
+      titleHighlight: lang === 'tr' ? 'Üstünlükler' : 'Excellence',
       items: [
         {
           id: 'sensors',
@@ -134,7 +134,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         {
           id: 'connectivity',
           icon: Radio,
-          title: lang === 'tr' ? 'Baglanti' : 'Connectivity',
+          title: lang === 'tr' ? 'Bağlantı' : 'Connectivity',
           description: lang === 'tr'
             ? 'WiFi, LoRa ve RS485 destegi'
             : 'WiFi, LoRa, and RS485 support',
@@ -290,7 +290,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             <div className="flex-1 space-y-3">
               {[
                 { label: lang === 'tr' ? 'Guc Kesme' : 'Power Cut', status: 'ready' },
-                { label: lang === 'tr' ? 'Havalandirma' : 'Ventilation', status: 'ready' },
+                { label: lang === 'tr' ? 'Havalandırma' : 'Ventilation', status: 'ready' },
                 { label: lang === 'tr' ? 'Yangin Sondurucu' : 'Fire Suppression', status: 'standby' },
                 { label: lang === 'tr' ? 'Acil Durum Isigi' : 'Emergency Lights', status: 'ready' },
               ].map((item, i) => (

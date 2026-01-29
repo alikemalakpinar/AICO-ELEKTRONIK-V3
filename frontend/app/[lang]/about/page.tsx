@@ -285,11 +285,11 @@ export default function AboutPage({ params }: AboutPageProps) {
     },
     {
       name: 'Muhendislik Ekibi',
-      role: lang === 'tr' ? 'Donanim & Yazilim' : 'Hardware & Software',
+      role: lang === 'tr' ? 'Donanım & Yazılım' : 'Hardware & Software',
       skills: ['PCB Design', 'Firmware', 'Cloud', 'Mobile'],
     },
     {
-      name: 'Proje Yonetimi',
+      name: 'Proje Yönetimi',
       role: lang === 'tr' ? 'Teslimat & Destek' : 'Delivery & Support',
       skills: ['Agile', 'Client Relations', 'Quality Assurance'],
     },

@@ -66,7 +66,7 @@ const sections = {
     { id: 'challenge', label: 'Problem & Cozum' },
     { id: 'specs', label: 'Teknik Ozellikler' },
     { id: 'techstack', label: 'Teknolojiler' },
-    { id: 'results', label: 'Sonuclar' },
+    { id: 'results', label: 'Sonuçlar' },
   ],
   en: [
     { id: 'overview', label: 'Overview' },

@@ -74,8 +74,8 @@ function getAlertLevel(temp: number): AlertLevel {
 
 // Initial factory floor zones
 const initialZones: Zone[] = [
-  { id: 'z1', name: 'Uretim Alani A', x: 5, y: 10, width: 40, height: 35, temperature: 24, status: 'safe', hasDetector: true },
-  { id: 'z2', name: 'Uretim Alani B', x: 50, y: 10, width: 45, height: 35, temperature: 26, status: 'safe', hasDetector: true },
+  { id: 'z1', name: 'Üretim Alanı A', x: 5, y: 10, width: 40, height: 35, temperature: 24, status: 'safe', hasDetector: true },
+  { id: 'z2', name: 'Üretim Alanı B', x: 50, y: 10, width: 45, height: 35, temperature: 26, status: 'safe', hasDetector: true },
   { id: 'z3', name: 'Depo', x: 5, y: 50, width: 30, height: 40, temperature: 22, status: 'safe', hasDetector: true },
   { id: 'z4', name: 'Elektrik Odasi', x: 40, y: 50, width: 25, height: 20, temperature: 28, status: 'monitoring', hasDetector: true },
   { id: 'z5', name: 'Ofis Alani', x: 70, y: 50, width: 25, height: 40, temperature: 23, status: 'safe', hasDetector: true },
@@ -86,7 +86,7 @@ const initialZones: Zone[] = [
 const translations = {
   tr: {
     title: 'FireLink Termal Izleme',
-    subtitle: 'Gercek zamanli sicaklik takibi',
+    subtitle: 'Gerçek zamanlı sıcaklık takibi',
     zone: 'Bolge',
     temperature: 'Sicaklik',
     status: 'Durum',
@@ -95,15 +95,15 @@ const translations = {
     danger: 'Tehlike',
     critical: 'Kritik',
     evacuate: 'Tahliye Baslat',
-    reset: 'Sifirla',
+    reset: 'Sıfırla',
     safe: 'Guvenli',
     monitoring: 'Izleniyor',
     alarm: 'Alarm',
     evacuating: 'Tahliye',
-    clickToHeat: 'Isitmak icin bolgeye tiklayin',
+    clickToHeat: 'Isıtmak için bölgeye tıklayın',
     systemActive: 'Sistem Aktif',
-    sensorsOnline: 'Sensorler Cevrimici',
-    alertsSent: 'Bildirim Gonderildi',
+    sensorsOnline: 'Sensörler Çevrimiçi',
+    alertsSent: 'Bildirim Gönderildi',
     responseTime: 'Tepki Suresi',
   },
   en: {

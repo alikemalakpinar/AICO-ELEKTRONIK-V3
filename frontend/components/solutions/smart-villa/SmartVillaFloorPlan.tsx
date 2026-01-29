@@ -1,322 +1,310 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Lightbulb, Thermometer, ShieldCheck, Home, BedDouble, CookingPot,
-  Car, Trees, Baby, BookOpen, Bath, Sun, X, Plus, Minus, RotateCcw,
-} from 'lucide-react';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { Sun, Speaker, Thermometer, Shield, Waves, Eye, Wind, Lock } from 'lucide-react';
 
 type Lang = 'tr' | 'en';
 
-interface Room {
+interface FeatureSection {
   id: string;
-  name: { tr: string; en: string };
-  icon: React.ReactNode;
-  x: number; y: number; w: number; h: number;
-  temp: string; humidity: string; air: { tr: string; en: string };
+  icon: React.ElementType;
+  secondaryIcon: React.ElementType;
+  badge: { tr: string; en: string };
+  title: { tr: string; en: string };
+  description: { tr: string; en: string };
+  specs: { label: { tr: string; en: string }; value: string }[];
+  visualColor: string;
+  visualGradient: string;
 }
 
-const floors: Record<string, Room[]> = {
-  ground: [
-    { id: 'living', name: { tr: 'Salon', en: 'Living Room' }, icon: <Home size={18} />, x: 130, y: 80, w: 200, h: 140, temp: '22°C', humidity: '%45', air: { tr: 'İyi', en: 'Good' } },
-    { id: 'kitchen', name: { tr: 'Mutfak', en: 'Kitchen' }, icon: <CookingPot size={18} />, x: 350, y: 80, w: 140, h: 140, temp: '24°C', humidity: '%40', air: { tr: 'İyi', en: 'Good' } },
-    { id: 'hall', name: { tr: 'Giriş Holü', en: 'Entrance Hall' }, icon: <Home size={18} />, x: 190, y: 240, w: 180, h: 90, temp: '21°C', humidity: '%42', air: { tr: 'İyi', en: 'Good' } },
-    { id: 'garage', name: { tr: 'Garaj', en: 'Garage' }, icon: <Car size={18} />, x: 20, y: 220, w: 150, h: 110, temp: '18°C', humidity: '%50', air: { tr: 'Normal', en: 'Normal' } },
-    { id: 'garden', name: { tr: 'Bahçe Erişimi', en: 'Garden Access' }, icon: <Trees size={18} />, x: 80, y: 10, w: 360, h: 55, temp: '—', humidity: '—', air: { tr: '—', en: '—' } },
-  ],
-  first: [
-    { id: 'master', name: { tr: 'Ana Yatak Odası', en: 'Master Bedroom' }, icon: <BedDouble size={18} />, x: 20, y: 60, w: 210, h: 150, temp: '22°C', humidity: '%48', air: { tr: 'İyi', en: 'Good' } },
-    { id: 'kids', name: { tr: 'Çocuk Odası', en: "Kid's Room" }, icon: <Baby size={18} />, x: 290, y: 60, w: 170, h: 100, temp: '23°C', humidity: '%44', air: { tr: 'İyi', en: 'Good' } },
-    { id: 'study', name: { tr: 'Çalışma Odası', en: 'Study' }, icon: <BookOpen size={18} />, x: 290, y: 175, w: 170, h: 100, temp: '21°C', humidity: '%43', air: { tr: 'İyi', en: 'Good' } },
-    { id: 'bath', name: { tr: 'Banyo', en: 'Bathroom' }, icon: <Bath size={18} />, x: 140, y: 225, w: 130, h: 85, temp: '25°C', humidity: '%65', air: { tr: 'Normal', en: 'Normal' } },
-    { id: 'balcony', name: { tr: 'Balkon', en: 'Balcony' }, icon: <Sun size={18} />, x: 80, y: 10, w: 340, h: 40, temp: '—', humidity: '—', air: { tr: '—', en: '—' } },
-  ],
-};
+const features: FeatureSection[] = [
+  {
+    id: 'lighting',
+    icon: Sun,
+    secondaryIcon: Eye,
+    badge: { tr: 'ALGORİTMİK AYDINLATMA', en: 'ALGORITHMIC LIGHTING' },
+    title: { tr: 'Işık Sizi Takip Eder', en: 'Light Follows You' },
+    description: {
+      tr: 'Sirkadyen ritminize uyum sağlayan akıllı aydınlatma. Gün doğumunda sıcak tonlar, öğlende doğal beyaz, akşam amber. Her oda bağımsız kontrol edilir ve hareket sensörleriyle otomatik ayarlanır.',
+      en: 'Smart lighting that adapts to your circadian rhythm. Warm tones at sunrise, natural white at noon, amber in the evening. Each room independently controlled and auto-adjusted with motion sensors.',
+    },
+    specs: [
+      { label: { tr: 'Bağımsız Bölge', en: 'Independent Zones' }, value: '24' },
+      { label: { tr: 'Renk Sıcaklığı', en: 'Color Range' }, value: '2700K-6500K' },
+      { label: { tr: 'Tepki Süresi', en: 'Response Time' }, value: '<200ms' },
+    ],
+    visualColor: '#FBBF24',
+    visualGradient: 'from-amber-500/20 via-orange-500/10 to-transparent',
+  },
+  {
+    id: 'audio',
+    icon: Speaker,
+    secondaryIcon: Waves,
+    badge: { tr: 'GÖRÜNMEZ SES', en: 'INVISIBLE AUDIO' },
+    title: { tr: 'Ses, Mimariyle Bir', en: 'Sound Meets Architecture' },
+    description: {
+      tr: 'Duvarlara gömülü hoparlör sistemleri ile müzik sizi takip eder. Bir odadan diğerine geçerken ses kesintisiz akar. Misafirleriniz hoparlör görmez, sadece müziği hisseder.',
+      en: 'Wall-embedded speaker systems let music follow you. Sound flows seamlessly from room to room. Your guests never see speakers—they only feel the music.',
+    },
+    specs: [
+      { label: { tr: 'Ses Bölgesi', en: 'Audio Zones' }, value: '12' },
+      { label: { tr: 'Geçiş Süresi', en: 'Crossfade' }, value: '0.8s' },
+      { label: { tr: 'Kayıp Oranı', en: 'Signal Loss' }, value: '0%' },
+    ],
+    visualColor: '#8B5CF6',
+    visualGradient: 'from-purple-500/20 via-violet-500/10 to-transparent',
+  },
+  {
+    id: 'climate',
+    icon: Thermometer,
+    secondaryIcon: Wind,
+    badge: { tr: 'İKLİM LOJİĞİ', en: 'CLIMATE LOGIC' },
+    title: { tr: 'Hava Sizden Önce Hazır', en: 'Air Prepared Before You' },
+    description: {
+      tr: 'GPS senkronizasyonu ile eve 15 dakika kala iklimlendirme başlar. Her oda farklı sıcaklık, nem ve hava kalitesi hedefine sahip. Mevsimsel öğrenme ile enerji tüketimi sürekli optimize edilir.',
+      en: 'Climate begins 15 minutes before arrival via GPS sync. Each room has individual temperature, humidity, and air quality targets. Seasonal learning continuously optimizes energy consumption.',
+    },
+    specs: [
+      { label: { tr: 'Bağımsız Bölge', en: 'Independent Zones' }, value: '8' },
+      { label: { tr: 'Enerji Tasarrufu', en: 'Energy Savings' }, value: '%35' },
+      { label: { tr: 'Hava Kalitesi', en: 'Air Quality' }, value: 'PM2.5<10' },
+    ],
+    visualColor: '#06B6D4',
+    visualGradient: 'from-cyan-500/20 via-teal-500/10 to-transparent',
+  },
+  {
+    id: 'security',
+    icon: Shield,
+    secondaryIcon: Lock,
+    badge: { tr: 'GÜVENLİK AĞI', en: 'SECURITY MESH' },
+    title: { tr: 'Görünmez Koruma', en: 'Invisible Protection' },
+    description: {
+      tr: 'Çit yok, kamera görünmüyor. Ama 47 sensör her saniye aktif. Algoritmik analiz ile tehdit tespiti, yüz tanıma ile kapı açma, plaka okuma ile garaj kontrolü. Güvenlik görünmez ama her yerde.',
+      en: 'No fences, no visible cameras. But 47 sensors active every second. Threat detection via algorithmic analysis, face recognition for door access, plate reading for garage control. Security is invisible but everywhere.',
+    },
+    specs: [
+      { label: { tr: 'Aktif Sensör', en: 'Active Sensors' }, value: '47' },
+      { label: { tr: 'Algılama Süresi', en: 'Detection Time' }, value: '<0.3s' },
+      { label: { tr: 'Yanlış Alarm', en: 'False Alarms' }, value: '<0.1%' },
+    ],
+    visualColor: '#10B981',
+    visualGradient: 'from-emerald-500/20 via-green-500/10 to-transparent',
+  },
+];
 
-const t = {
-  ground: { tr: 'Zemin Kat', en: 'Ground Floor' },
-  first: { tr: '1. Kat', en: 'First Floor' },
-  lighting: { tr: 'Aydınlatma', en: 'Lighting' },
-  hvac: { tr: 'Klima Modu', en: 'HVAC Mode' },
-  blinds: { tr: 'Panjur', en: 'Blinds' },
-  smoke: { tr: 'Duman Sensörü', en: 'Smoke Sensor' },
-  on: { tr: 'Açık', en: 'On' },
-  off: { tr: 'Kapalı', en: 'Off' },
-  auto: { tr: 'Oto', en: 'Auto' },
-  cool: { tr: 'Soğutma', en: 'Cool' },
-  heat: { tr: 'Isıtma', en: 'Heat' },
-  normal: { tr: 'Normal', en: 'Normal' },
-  temp: { tr: 'Sıcaklık', en: 'Temp' },
-  hum: { tr: 'Nem', en: 'Humidity' },
-  airQ: { tr: 'Hava Kalitesi', en: 'Air Quality' },
-  toggleLight: { tr: 'Aydınlatma Aç/Kapat', en: 'Toggle Lighting' },
-  hvacMode: { tr: 'Klima Modu', en: 'HVAC Mode' },
-  blindsCtrl: { tr: 'Panjur', en: 'Blinds' },
-  sensors: { tr: 'Sensörler & Cihazlar', en: 'Sensors & Devices' },
-  actions: { tr: 'Hızlı İşlemler', en: 'Quick Actions' },
-};
-
-export default function SmartVillaFloorPlan({ lang }: { lang: Lang }) {
-  const [floor, setFloor] = useState<'ground' | 'first'>('ground');
-  const [selected, setSelected] = useState<Room | null>(null);
-  const [zoom, setZoom] = useState(1);
-  const [lightOn, setLightOn] = useState(true);
-  const [hvacMode, setHvacMode] = useState<'auto' | 'cool' | 'heat'>('auto');
-  const [blinds, setBlinds] = useState(70);
-
-  const rooms = floors[floor];
+function FeatureVisual({ feature, progress }: { feature: FeatureSection; progress: number }) {
+  const Icon = feature.icon;
+  const SecondaryIcon = feature.secondaryIcon;
 
   return (
-    <div className="w-full">
-      {/* Floor Toggle */}
-      <div className="flex justify-center mb-6">
-        <div className="relative inline-flex rounded-lg bg-black/40 border border-white/10 p-1">
-          {(['ground', 'first'] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => { setFloor(f); setSelected(null); }}
-              className="relative z-10 px-5 py-2 text-sm font-medium transition-colors duration-200"
-              style={{ color: floor === f ? '#fff' : 'rgba(255,255,255,0.5)' }}
-            >
-              {t[f][lang]}
-              {floor === f && (
-                <motion.div
-                  layoutId="floor-tab"
-                  className="absolute inset-0 rounded-md bg-engineer-500"
-                  style={{ zIndex: -1 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="relative w-full aspect-square max-w-md mx-auto">
+      {/* Background glow */}
+      <motion.div
+        className={`absolute inset-0 rounded-3xl bg-gradient-radial ${feature.visualGradient} blur-3xl`}
+        style={{ opacity: Math.min(progress * 2, 1) }}
+      />
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Floor Plan */}
-        <div className="flex-1 relative">
-          {/* Zoom Controls (mobile-friendly) */}
-          <div className="absolute top-2 right-2 z-20 flex flex-col gap-1 lg:hidden">
-            {[
-              { icon: <Plus size={16} />, fn: () => setZoom((z) => Math.min(z + 0.2, 2)) },
-              { icon: <Minus size={16} />, fn: () => setZoom((z) => Math.max(z - 0.2, 0.6)) },
-              { icon: <RotateCcw size={16} />, fn: () => setZoom(1) },
-            ].map((b, i) => (
-              <button key={i} onClick={b.fn} className="w-8 h-8 flex items-center justify-center rounded-md bg-black/60 border border-white/10 text-white/70 hover:text-white transition-colors">
-                {b.icon}
-              </button>
-            ))}
+      {/* Main visual container */}
+      <motion.div
+        className="relative w-full h-full rounded-3xl border border-border bg-card/80 backdrop-blur-xl overflow-hidden"
+        style={{
+          filter: `blur(${Math.max(0, (1 - progress) * 8)}px)`,
+          transform: `scale(${0.9 + progress * 0.1})`,
+        }}
+      >
+        {/* Grid pattern inside */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <svg className="w-full h-full">
+            <defs>
+              <pattern id={`grid-${feature.id}`} width="30" height="30" patternUnits="userSpaceOnUse">
+                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="currentColor" strokeWidth="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#grid-${feature.id})`} className="text-foreground" />
+          </svg>
+        </div>
+
+        {/* Central icon */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <motion.div
+            className="relative"
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+          >
+            {/* Orbital ring */}
+            <div
+              className="w-48 h-48 rounded-full border border-dashed"
+              style={{ borderColor: `${feature.visualColor}30` }}
+            />
+          </motion.div>
+
+          {/* Center icon */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              className="w-20 h-20 rounded-2xl flex items-center justify-center"
+              style={{ backgroundColor: `${feature.visualColor}15` }}
+            >
+              <Icon size={40} style={{ color: feature.visualColor }} />
+            </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-black/30 backdrop-blur">
-            <AnimatePresence mode="wait">
+          {/* Floating secondary icons */}
+          <motion.div
+            className="absolute top-1/4 right-1/4"
+            animate={{ y: [-5, 5, -5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <div
+              className="w-10 h-10 rounded-lg flex items-center justify-center backdrop-blur-sm"
+              style={{ backgroundColor: `${feature.visualColor}10`, border: `1px solid ${feature.visualColor}20` }}
+            >
+              <SecondaryIcon size={20} style={{ color: feature.visualColor }} />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Spec readouts at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <div className="flex justify-between gap-2">
+            {feature.specs.map((spec, i) => (
               <motion.div
-                key={floor}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
+                key={i}
+                className="flex-1 text-center p-2 rounded-lg bg-background/60 backdrop-blur-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: progress > 0.3 ? 1 : 0, y: progress > 0.3 ? 0 : 10 }}
+                transition={{ delay: i * 0.1 }}
               >
-                <svg
-                  viewBox="0 0 510 350"
-                  className="w-full h-auto"
-                  style={{ transform: `scale(${zoom})`, transformOrigin: 'center', transition: 'transform 0.2s' }}
-                >
-                  {/* Outer wall */}
-                  <rect x="10" y="5" width="490" height="335" rx="12" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
-
-                  {rooms.map((room) => {
-                    const isSelected = selected?.id === room.id;
-                    return (
-                      <g
-                        key={room.id}
-                        onClick={() => setSelected(isSelected ? null : room)}
-                        className="cursor-pointer"
-                        role="button"
-                        tabIndex={0}
-                      >
-                        <rect
-                          x={room.x} y={room.y} width={room.w} height={room.h}
-                          rx="8"
-                          fill={isSelected ? 'rgba(234,124,22,0.15)' : 'rgba(255,255,255,0.04)'}
-                          stroke={isSelected ? '#ea7c16' : 'rgba(255,255,255,0.12)'}
-                          strokeWidth={isSelected ? 2 : 1}
-                          className="transition-all duration-200 hover:fill-[rgba(234,124,22,0.1)] hover:stroke-[#ea7c16]"
-                          style={isSelected ? { filter: 'drop-shadow(0 0 8px rgba(234,124,22,0.4))' } : undefined}
-                        />
-                        <text
-                          x={room.x + room.w / 2}
-                          y={room.y + room.h / 2 - 6}
-                          textAnchor="middle"
-                          fill={isSelected ? '#ea7c16' : 'rgba(255,255,255,0.6)'}
-                          fontSize="11"
-                          fontWeight="500"
-                          className="pointer-events-none select-none"
-                        >
-                          {room.name[lang]}
-                        </text>
-                        <text
-                          x={room.x + room.w / 2}
-                          y={room.y + room.h / 2 + 10}
-                          textAnchor="middle"
-                          fill="rgba(255,255,255,0.3)"
-                          fontSize="9"
-                          className="pointer-events-none select-none"
-                        >
-                          {room.temp !== '—' ? room.temp : ''}
-                        </text>
-                      </g>
-                    );
-                  })}
-                </svg>
+                <div className="font-mono text-sm font-bold" style={{ color: feature.visualColor }}>
+                  {spec.value}
+                </div>
               </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Mobile room list */}
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:hidden">
-            {rooms.map((room) => (
-              <button
-                key={room.id}
-                onClick={() => setSelected(selected?.id === room.id ? null : room)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
-                  selected?.id === room.id
-                    ? 'border-engineer-500 bg-engineer-500/10 text-engineer-400'
-                    : 'border-white/10 bg-black/20 text-white/60 hover:border-white/20'
-                }`}
-              >
-                {room.icon}
-                {room.name[lang]}
-              </button>
             ))}
           </div>
         </div>
+      </motion.div>
+    </div>
+  );
+}
 
-        {/* Detail Panel */}
-        <AnimatePresence mode="wait">
-          {selected && (
+function FeatureBlock({ feature, index, lang }: { feature: FeatureSection; index: number; lang: Lang }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { margin: '-20% 0px -20% 0px' });
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+
+  const progress = useTransform(scrollYProgress, [0.2, 0.5], [0, 1]);
+  const textY = useTransform(scrollYProgress, [0.2, 0.5], [60, 0]);
+  const textOpacity = useTransform(scrollYProgress, [0.15, 0.4], [0, 1]);
+
+  return (
+    <div ref={ref} className="min-h-screen flex items-center py-20">
+      <div className="max-w-7xl mx-auto px-6 w-full">
+        <div className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+          {/* Visual Side */}
+          <motion.div className={index % 2 === 1 ? 'lg:order-2' : ''}>
+            <FeatureVisual feature={feature} progress={isInView ? 1 : 0} />
+          </motion.div>
+
+          {/* Text Side */}
+          <motion.div
+            className={index % 2 === 1 ? 'lg:order-1' : ''}
+            style={{ y: textY, opacity: textOpacity }}
+          >
+            {/* Badge */}
             <motion.div
-              key={selected.id}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 30 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-              className="w-full lg:w-80 shrink-0 rounded-xl border border-white/10 bg-black/40 backdrop-blur-sm p-5 self-start"
+              className="inline-flex items-center gap-2 mb-6"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-lg bg-engineer-500/15 flex items-center justify-center text-engineer-400">
-                    {selected.icon}
-                  </div>
-                  <h3 className="text-white font-semibold text-sm">{selected.name[lang]}</h3>
-                </div>
-                <button onClick={() => setSelected(null)} className="text-white/40 hover:text-white transition-colors">
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* Metrics */}
-              <div className="grid grid-cols-3 gap-2 mb-5">
-                {[
-                  { label: t.temp[lang], value: selected.temp },
-                  { label: t.hum[lang], value: selected.humidity },
-                  { label: t.airQ[lang], value: selected.air[lang] },
-                ].map((m) => (
-                  <div key={m.label} className="rounded-lg bg-white/5 p-2.5 text-center">
-                    <div className="text-[10px] text-white/40 mb-0.5">{m.label}</div>
-                    <div className="text-xs font-semibold text-white/80">{m.value}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Devices */}
-              <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-white/30 mb-3">{t.sensors[lang]}</div>
-                <div className="space-y-2.5">
-                  {/* Lighting */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs text-white/70">
-                      <Lightbulb size={14} className="text-yellow-400/70" />
-                      {t.lighting[lang]}
-                    </div>
-                    <button
-                      onClick={() => setLightOn(!lightOn)}
-                      className={`w-9 h-5 rounded-full transition-colors relative ${lightOn ? 'bg-engineer-500' : 'bg-white/15'}`}
-                    >
-                      <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${lightOn ? 'left-[18px]' : 'left-0.5'}`} />
-                    </button>
-                  </div>
-
-                  {/* HVAC */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs text-white/70">
-                      <Thermometer size={14} className="text-blue-400/70" />
-                      {t.hvac[lang]}
-                    </div>
-                    <div className="flex gap-1">
-                      {(['auto', 'cool', 'heat'] as const).map((m) => (
-                        <button
-                          key={m}
-                          onClick={() => setHvacMode(m)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
-                            hvacMode === m ? 'bg-engineer-500 text-white' : 'bg-white/10 text-white/50'
-                          }`}
-                        >
-                          {t[m][lang]}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Blinds */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-2 text-xs text-white/70">
-                        <Sun size={14} className="text-orange-400/70" />
-                        {t.blinds[lang]}
-                      </div>
-                      <span className="text-[10px] text-white/40">{blinds}%</span>
-                    </div>
-                    <input
-                      type="range" min={0} max={100} value={blinds}
-                      onChange={(e) => setBlinds(Number(e.target.value))}
-                      className="w-full h-1 rounded-full appearance-none bg-white/10 accent-engineer-500"
-                    />
-                  </div>
-
-                  {/* Smoke */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs text-white/70">
-                      <ShieldCheck size={14} className="text-green-400/70" />
-                      {t.smoke[lang]}
-                    </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-medium">
-                      {t.normal[lang]}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div>
-                <div className="text-[10px] uppercase tracking-wider text-white/30 mb-3">{t.actions[lang]}</div>
-                <div className="flex flex-wrap gap-2">
-                  {[t.toggleLight[lang], t.hvacMode[lang], t.blindsCtrl[lang]].map((a) => (
-                    <button
-                      key={a}
-                      className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white/60 hover:bg-engineer-500/10 hover:border-engineer-500/30 hover:text-engineer-400 transition-all"
-                    >
-                      {a}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <span className="w-8 h-px" style={{ backgroundColor: feature.visualColor }} />
+              <span
+                className="font-mono text-xs tracking-widest uppercase"
+                style={{ color: feature.visualColor }}
+              >
+                {feature.badge[lang]}
+              </span>
             </motion.div>
-          )}
-        </AnimatePresence>
+
+            {/* Title */}
+            <motion.h3
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 tracking-tight"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.1 }}
+            >
+              {feature.title[lang]}
+            </motion.h3>
+
+            {/* Description */}
+            <motion.p
+              className="text-lg text-muted-foreground leading-relaxed mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.2 }}
+            >
+              {feature.description[lang]}
+            </motion.p>
+
+            {/* Specs */}
+            <motion.div
+              className="grid grid-cols-3 gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.3 }}
+            >
+              {feature.specs.map((spec, i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-xl bg-card border border-border text-center"
+                >
+                  <div
+                    className="font-mono text-2xl font-bold mb-1"
+                    style={{ color: feature.visualColor }}
+                  >
+                    {spec.value}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {spec.label[lang]}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
+    </div>
+  );
+}
+
+export default function SmartVillaFloorPlan({ lang }: { lang: Lang }) {
+  return (
+    <div className="relative">
+      {/* Section header */}
+      <motion.div
+        className="text-center mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+          {lang === 'tr'
+            ? 'Aşağı kaydırarak villanızın görünmez teknoloji katmanlarını keşfedin.'
+            : 'Scroll down to discover the invisible technology layers of your villa.'}
+        </p>
+      </motion.div>
+
+      {/* Feature sections */}
+      {features.map((feature, index) => (
+        <FeatureBlock key={feature.id} feature={feature} index={index} lang={lang} />
+      ))}
     </div>
   );
 }

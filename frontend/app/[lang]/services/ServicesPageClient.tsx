@@ -38,9 +38,9 @@ export default function ServicesPageClient({ lang }: ServicesPageClientProps) {
       badge: 'HIZMETLER',
       title: 'Muhendislik Hizmetlerimiz',
       subtitle:
-        'Konseptten uretime, tum elektronik gelistirme surecinde yaninizdayiz.',
+        'Konseptten üretime, tüm elektronik geliştirme sürecinde yanınızdayız.',
       schematic: {
-        title: 'Sematik Tasarim',
+        title: 'Sematik Tasarım',
         description:
           'Altium Designer ile profesyonel sematik tasarim. Komponent secimi, guc hesaplamalari ve devre optimizasyonu.',
         features: [
@@ -84,7 +84,7 @@ export default function ServicesPageClient({ lang }: ServicesPageClientProps) {
         ],
       },
       consulting: {
-        title: 'Teknik Danismanlik',
+        title: 'Teknik Danışmanlık',
         description:
           'Mevcut projelerin teknik incelemesi, optimizasyon onerileri ve muhendislik destek hizmetleri.',
         features: [

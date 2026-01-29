@@ -380,8 +380,11 @@ export default function ContactPage({ params }: ContactPageProps) {
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Animated gradient border glow */}
+            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-engineer-500/20 via-engineer-500/5 to-engineer-500/20 blur-sm pointer-events-none" />
+            <form onSubmit={handleSubmit} className="space-y-6 p-8 rounded-2xl glass-premium">
               <div className="grid sm:grid-cols-2 gap-4">
                 <FloatingInput
                   id="name"

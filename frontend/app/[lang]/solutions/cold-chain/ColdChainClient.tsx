@@ -46,7 +46,7 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
       cta: lang === 'tr' ? 'Sistemi Inceleyin' : 'Explore System',
     },
     features: {
-      badge: lang === 'tr' ? 'OZELLIKLER' : 'FEATURES',
+      badge: lang === 'tr' ? 'ÖZELLİKLER' : 'FEATURES',
       title: lang === 'tr' ? 'Akilli Lojistik' : 'Smart Logistics',
       titleHighlight: lang === 'tr' ? 'Cozumleri' : 'Solutions',
       items: [
