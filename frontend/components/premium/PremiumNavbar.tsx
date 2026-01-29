@@ -143,9 +143,9 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'fire-safety',
       icon: Flame,
       title: 'FireLink',
-      subtitle: lang === 'tr' ? 'Yangin Guvenlik Sistemi' : 'Fire Safety System',
+      subtitle: lang === 'tr' ? 'Yangın Güvenlik Sistemi' : 'Fire Safety System',
       description: lang === 'tr'
-        ? 'Termal izleme ve erken uyari'
+        ? 'Termal izleme ve erken uyarı'
         : 'Thermal monitoring and early warning',
       href: `/${lang}/solutions/fire-safety`,
       color: '#EF4444',
@@ -155,9 +155,9 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'mining-iot',
       icon: HardHat,
       title: 'MineGuard',
-      subtitle: lang === 'tr' ? 'Maden Guvenligi' : 'Mining Safety',
+      subtitle: lang === 'tr' ? 'Maden Güvenliği' : 'Mining Safety',
       description: lang === 'tr'
-        ? 'Isci takip ve gaz algilama'
+        ? 'İşçi takip ve gaz algılama'
         : 'Worker tracking and gas detection',
       href: `/${lang}/solutions/mining-iot`,
       color: '#EAB308',
@@ -167,9 +167,9 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'cold-chain',
       icon: Snowflake,
       title: 'ColdTrack',
-      subtitle: lang === 'tr' ? 'Soguk Zincir' : 'Cold Chain',
+      subtitle: lang === 'tr' ? 'Soğuk Zincir' : 'Cold Chain',
       description: lang === 'tr'
-        ? 'Sicaklik izleme ve lojistik'
+        ? 'Sıcaklık izleme ve lojistik'
         : 'Temperature monitoring and logistics',
       href: `/${lang}/solutions/cold-chain`,
       color: '#06B6D4',
@@ -179,9 +179,9 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'predictive-maintenance',
       icon: Activity,
       title: 'VibrationGuard',
-      subtitle: lang === 'tr' ? 'Kestirimci Bakim' : 'Predictive Maintenance',
+      subtitle: lang === 'tr' ? 'Kestirimci Bakım' : 'Predictive Maintenance',
       description: lang === 'tr'
-        ? 'FFT titresim analizi ve ariza tahmini'
+        ? 'FFT titreşim analizi ve arıza tahmini'
         : 'FFT vibration analysis and failure prediction',
       href: `/${lang}/solutions/predictive-maintenance`,
       color: '#00D4FF',
@@ -194,27 +194,27 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
     {
       id: 'smart-villa',
       icon: Home,
-      title: lang === 'tr' ? 'Akilli Villa' : 'Smart Villa',
+      title: lang === 'tr' ? 'Akıllı Villa' : 'Smart Villa',
       description: lang === 'tr'
-        ? 'Kisisel luks, gorunmez teknoloji'
+        ? 'Kişisel lüks, görünmez teknoloji'
         : 'Personal luxury, invisible technology',
       href: `/${lang}/solutions/smart-villa`,
     },
     {
       id: 'smart-apartment',
       icon: Building,
-      title: lang === 'tr' ? 'Akilli Apartman' : 'Smart Apartment',
+      title: lang === 'tr' ? 'Akıllı Apartman' : 'Smart Apartment',
       description: lang === 'tr'
-        ? 'Ortak alan yonetimi ve iletisim'
+        ? 'Ortak alan yönetimi ve iletişim'
         : 'Common area management',
       href: `/${lang}/solutions/smart-apartment`,
     },
     {
       id: 'smart-residence',
       icon: Building2,
-      title: lang === 'tr' ? 'Akilli Rezidans' : 'Smart Residence',
+      title: lang === 'tr' ? 'Akıllı Rezidans' : 'Smart Residence',
       description: lang === 'tr'
-        ? 'Merkezi yonetim platformu'
+        ? 'Merkezi yönetim platformu'
         : 'Central management platform',
       href: `/${lang}/solutions/smart-residence`,
     },
@@ -309,7 +309,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseLeave={handleSolutionsLeave}
                   >
                     <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
-                      {lang === 'tr' ? 'Cozumler' : 'Solutions'}
+                      {lang === 'tr' ? 'Çözümler' : 'Solutions'}
                       <ChevronDown
                         size={14}
                         className={`transition-transform duration-300 ${solutionsOpen ? 'rotate-180' : ''}`}
@@ -335,7 +335,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                               <div className="flex items-center gap-2">
                                 <Zap size={16} className="text-engineer-500" />
                                 <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
-                                  {lang === 'tr' ? 'Endustriyel Cozumler' : 'Industrial Solutions'}
+                                  {lang === 'tr' ? 'Endüstriyel Çözümler' : 'Industrial Solutions'}
                                 </span>
                               </div>
                             </div>
@@ -395,7 +395,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                                 className="group flex items-center justify-between text-sm"
                               >
                                 <span className="text-muted-foreground group-hover:text-foreground transition-colors">
-                                  {lang === 'tr' ? 'Tum projeleri inceleyin' : 'View all projects'}
+                                  {lang === 'tr' ? 'Tüm projeleri inceleyin' : 'View all projects'}
                                 </span>
                                 <ArrowRight
                                   size={14}
@@ -585,7 +585,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                 {/* Solutions Section */}
                 <div className="space-y-4">
                   <div className="text-muted-foreground text-xs font-mono uppercase tracking-widest px-2">
-                    {lang === 'tr' ? 'Cozumler' : 'Solutions'}
+                    {lang === 'tr' ? 'Çözümler' : 'Solutions'}
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {solutions.map((solution) => (
@@ -676,7 +676,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   className="flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground transition-colors w-full rounded-lg dark:hover:bg-white/5 light:hover:bg-gray-100"
                 >
                   <Globe size={18} />
-                  <span className="font-mono">{lang === 'tr' ? 'English' : 'Turkce'}</span>
+                  <span className="font-mono">{lang === 'tr' ? 'English' : 'Türkçe'}</span>
                 </button>
 
                 {/* Demo Request CTA */}
