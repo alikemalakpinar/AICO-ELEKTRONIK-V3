@@ -74,14 +74,14 @@ const ZONE_NAMES = [
 ];
 
 const ZONE_NAMES_TR = [
-  'Oturma Odasi',
+  'Oturma Odası',
   'Mutfak',
-  'Ana Yatak Odasi',
-  'Yatak Odasi 2',
+  'Ana Yatak Odası',
+  'Yatak Odası 2',
   'Banyo',
   'Garaj',
   'Koridor',
-  'Hizmet Odasi',
+  'Hizmet Odası',
 ];
 
 /**
