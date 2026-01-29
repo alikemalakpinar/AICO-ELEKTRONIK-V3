@@ -38,6 +38,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com'
   ),
+  alternates: {
+    canonical: './',
+    languages: {
+      'tr-TR': '/tr',
+      'en-US': '/en',
+    },
+  },
   openGraph: {
     type: 'website',
     locale: 'tr_TR',
@@ -84,7 +91,7 @@ export const metadata: Metadata = {
 // Viewport configuration
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#050505' },
+    { media: '(prefers-color-scheme: light)', color: '#F8FAFC' },
     { media: '(prefers-color-scheme: dark)', color: '#050505' },
   ],
   width: 'device-width',

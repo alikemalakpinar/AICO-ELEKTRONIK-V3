@@ -15,7 +15,6 @@ import {
   Github,
   ArrowRight,
   Zap,
-  Building2,
   Globe,
   Calendar,
   ExternalLink,
@@ -59,10 +58,10 @@ function FloatingInput({
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className={`w-full px-4 pt-6 pb-2 bg-white dark:bg-white/5 border rounded-xl text-gray-900 dark:text-offwhite-400 placeholder-transparent focus:outline-none transition-all duration-300 resize-none ${
+        className={`w-full px-4 pt-6 pb-2 bg-card border rounded-xl text-foreground placeholder-transparent focus:outline-none transition-all duration-300 resize-none ${
           isFocused
-            ? 'border-engineer-500 ring-1 ring-engineer-500/30'
-            : 'border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20'
+            ? 'border-engineer-500 ring-1 ring-ring'
+            : 'border-border hover:border-muted-foreground/30'
         } ${isTextarea ? 'h-32' : ''}`}
         placeholder={label}
       />
@@ -71,7 +70,7 @@ function FloatingInput({
         className={`absolute left-4 transition-all duration-300 pointer-events-none ${
           isActive
             ? 'top-2 text-xs text-engineer-500'
-            : 'top-4 text-sm text-gray-500 dark:text-offwhite-600'
+            : 'top-4 text-sm text-muted-foreground'
         }`}
       >
         {label}
@@ -136,13 +135,12 @@ function MagneticSubmitButton({
       onMouseLeave={handleMouseLeave}
       style={{ x, y }}
       whileTap={{ scale: 0.95 }}
-      className={`relative w-full py-4 rounded-xl font-medium text-white overflow-hidden transition-all duration-500 ${
+      className={`relative w-full py-4 min-h-[44px] rounded-xl font-medium text-white overflow-hidden transition-all duration-500 ${
         isSuccess
           ? 'bg-success-500'
           : 'bg-engineer-500 hover:bg-engineer-600 hover:shadow-lg hover:shadow-engineer-500/25'
       }`}
     >
-      {/* Button content */}
       <AnimatePresence mode="wait">
         {isSuccess ? (
           <motion.div
@@ -190,7 +188,6 @@ function MagneticSubmitButton({
         )}
       </AnimatePresence>
 
-      {/* Ripple effect on hover */}
       <motion.div
         className="absolute inset-0 bg-white/10 rounded-xl"
         initial={{ scale: 0, opacity: 0 }}
@@ -202,7 +199,7 @@ function MagneticSubmitButton({
   );
 }
 
-// Connected Globe Visualization (CSS-based for performance)
+// Connected Globe Visualization
 function GlobalReachMap() {
   const [activeLocation, setActiveLocation] = useState<number | null>(null);
 
@@ -216,19 +213,12 @@ function GlobalReachMap() {
   ];
 
   return (
-    <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-onyx-800/50 border border-white/5">
-      {/* World map outline (simplified) */}
+    <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-card/60 backdrop-blur-xl border border-border">
       <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full opacity-20">
-        {/* Europe */}
         <ellipse cx="48" cy="25" rx="12" ry="8" fill="none" stroke="#F97316" strokeWidth="0.3" />
-        {/* Asia */}
         <ellipse cx="65" cy="28" rx="18" ry="10" fill="none" stroke="#F97316" strokeWidth="0.3" />
-        {/* Africa */}
         <ellipse cx="48" cy="42" rx="8" ry="10" fill="none" stroke="#F97316" strokeWidth="0.3" />
-        {/* Middle East */}
         <ellipse cx="56" cy="35" rx="5" ry="4" fill="none" stroke="#F97316" strokeWidth="0.3" />
-
-        {/* Connection lines from Istanbul */}
         {locations.slice(1).map((loc) => (
           <motion.line
             key={loc.id}
@@ -246,7 +236,6 @@ function GlobalReachMap() {
         ))}
       </svg>
 
-      {/* Location dots */}
       {locations.map((loc) => (
         <motion.div
           key={loc.id}
@@ -262,11 +251,8 @@ function GlobalReachMap() {
             className={`relative ${loc.isPrimary ? 'w-4 h-4' : 'w-2.5 h-2.5'} rounded-full ${
               loc.isPrimary ? 'bg-engineer-500' : 'bg-engineer-500/60'
             }`}
-            animate={{
-              scale: activeLocation === loc.id ? 1.5 : 1,
-            }}
+            animate={{ scale: activeLocation === loc.id ? 1.5 : 1 }}
           >
-            {/* Pulse animation for HQ */}
             {loc.isPrimary && (
               <motion.div
                 className="absolute inset-0 rounded-full bg-engineer-500"
@@ -276,14 +262,13 @@ function GlobalReachMap() {
             )}
           </motion.div>
 
-          {/* Label on hover */}
           <AnimatePresence>
             {activeLocation === loc.id && (
               <motion.div
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 bg-onyx-900 border border-white/10 rounded-md text-xs text-offwhite-400"
+                className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 bg-card border border-border rounded-md text-xs text-foreground"
               >
                 {loc.name}
               </motion.div>
@@ -292,8 +277,7 @@ function GlobalReachMap() {
         </motion.div>
       ))}
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-onyx-900 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
     </div>
   );
 }
@@ -312,7 +296,6 @@ export default function ContactPage({ params }: ContactPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Check for subject in URL params
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
@@ -323,18 +306,12 @@ export default function ContactPage({ params }: ContactPageProps) {
     }
   }, []);
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
-
     setIsSubmitting(false);
     setIsSuccess(true);
-
-    // Reset after success animation
     setTimeout(() => {
       setIsSuccess(false);
       setFormData({ name: '', email: '', company: '', subject: '', message: '' });
@@ -346,15 +323,15 @@ export default function ContactPage({ params }: ContactPageProps) {
   };
 
   const subjects = [
-    { id: 'consultation', label: lang === 'tr' ? 'Proje Danismanligi' : 'Project Consultation' },
+    { id: 'consultation', label: lang === 'tr' ? 'Proje Danışmanlığı' : 'Project Consultation' },
     { id: 'demo', label: lang === 'tr' ? 'Demo Talebi' : 'Demo Request' },
-    { id: 'partnership', label: lang === 'tr' ? 'Is Ortakligi' : 'Partnership' },
+    { id: 'partnership', label: lang === 'tr' ? 'İş Ortaklığı' : 'Partnership' },
     { id: 'support', label: lang === 'tr' ? 'Teknik Destek' : 'Technical Support' },
-    { id: 'other', label: lang === 'tr' ? 'Diger' : 'Other' },
+    { id: 'other', label: lang === 'tr' ? 'Diğer' : 'Other' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-onyx-900 pt-32 pb-24 relative">
+    <div className="min-h-screen bg-background pt-32 pb-24 relative overflow-x-hidden">
       {/* Subtle industrial grid background */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -363,9 +340,10 @@ export default function ContactPage({ params }: ContactPageProps) {
               <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
             </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#contact-grid)" className="text-gray-900 dark:text-white" />
+          <rect width="100%" height="100%" fill="url(#contact-grid)" className="text-foreground" />
         </svg>
       </div>
+
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-6 mb-20">
         <motion.div
@@ -376,14 +354,14 @@ export default function ContactPage({ params }: ContactPageProps) {
         >
           <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
             <span className="w-8 h-px bg-engineer-500" />
-            {lang === 'tr' ? 'ILETISIM' : 'CONTACT'}
+            {lang === 'tr' ? 'İLETİŞİM' : 'CONTACT'}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-offwhite-400 mb-6 tracking-tight">
-            {lang === 'tr' ? 'Konusalim' : "Let's Talk"}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
+            {lang === 'tr' ? 'Konuşalım' : "Let's Talk"}
           </h1>
-          <p className="text-xl text-gray-600 dark:text-offwhite-600 leading-relaxed">
+          <p className="text-xl text-muted-foreground leading-relaxed">
             {lang === 'tr'
-              ? 'Projenizi tartismak, demo talep etmek veya sorularinizi sormak icin bizimle iletisime gecin.'
+              ? 'Projenizi tartışmak, demo talep etmek veya sorularınızı sormak için bizimle iletişime geçin.'
               : 'Get in touch to discuss your project, request a demo, or ask any questions.'}
           </p>
         </motion.div>
@@ -399,11 +377,10 @@ export default function ContactPage({ params }: ContactPageProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name & Email Row */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <FloatingInput
                   id="name"
-                  label={lang === 'tr' ? 'Adiniz' : 'Your Name'}
+                  label={lang === 'tr' ? 'Adınız' : 'Your Name'}
                   required
                   value={formData.name}
                   onChange={handleChange}
@@ -418,17 +395,16 @@ export default function ContactPage({ params }: ContactPageProps) {
                 />
               </div>
 
-              {/* Company */}
               <FloatingInput
                 id="company"
-                label={lang === 'tr' ? 'Sirket (Opsiyonel)' : 'Company (Optional)'}
+                label={lang === 'tr' ? 'Şirket (Opsiyonel)' : 'Company (Optional)'}
                 value={formData.company}
                 onChange={handleChange}
               />
 
               {/* Subject Selection */}
               <div className="space-y-2">
-                <label className="text-sm text-gray-500 dark:text-offwhite-600">
+                <label className="text-sm text-muted-foreground">
                   {lang === 'tr' ? 'Konu' : 'Subject'}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -437,10 +413,10 @@ export default function ContactPage({ params }: ContactPageProps) {
                       key={subject.id}
                       type="button"
                       onClick={() => setFormData({ ...formData, subject: subject.id })}
-                      className={`px-4 py-2 rounded-lg text-sm transition-all ${
+                      className={`px-4 py-2 min-h-[44px] rounded-lg text-sm transition-all ${
                         formData.subject === subject.id
                           ? 'bg-engineer-500 text-white'
-                          : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-offwhite-500 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/5'
+                          : 'bg-muted text-muted-foreground hover:bg-accent border border-border'
                       }`}
                     >
                       {subject.label}
@@ -449,21 +425,19 @@ export default function ContactPage({ params }: ContactPageProps) {
                 </div>
               </div>
 
-              {/* Message */}
               <FloatingInput
                 id="message"
-                label={lang === 'tr' ? 'Mesajiniz' : 'Your Message'}
+                label={lang === 'tr' ? 'Mesajınız' : 'Your Message'}
                 required
                 isTextarea
                 value={formData.message}
                 onChange={handleChange}
               />
 
-              {/* Submit Button */}
               <MagneticSubmitButton
                 isSubmitting={isSubmitting}
                 isSuccess={isSuccess}
-                label={lang === 'tr' ? 'Mesaj Gonder' : 'Send Message'}
+                label={lang === 'tr' ? 'Mesaj Gönder' : 'Send Message'}
               />
             </form>
           </motion.div>
@@ -477,65 +451,65 @@ export default function ContactPage({ params }: ContactPageProps) {
           >
             {/* Global Reach Map */}
             <div>
-              <h3 className="text-sm font-medium text-offwhite-500 mb-4 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-foreground mb-4 flex items-center gap-2">
                 <Globe size={16} className="text-engineer-500" />
-                {lang === 'tr' ? 'Global Erisim' : 'Global Reach'}
+                {lang === 'tr' ? 'Global Erişim' : 'Global Reach'}
               </h3>
               <GlobalReachMap />
             </div>
 
-            {/* Contact Cards - Glassmorphism Style */}
+            {/* Contact Cards */}
             <div className="grid sm:grid-cols-2 gap-4">
               <motion.a
                 href="mailto:info@aicoelektronik.com"
-                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <Mail size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">E-posta</div>
-                <div className="text-gray-900 dark:text-offwhite-400 font-medium">info@aicoelektronik.com</div>
+                <div className="text-sm text-muted-foreground mb-1">E-posta</div>
+                <div className="text-foreground font-medium">info@aicoelektronik.com</div>
               </motion.a>
 
               <motion.a
                 href="tel:+905326210601"
-                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <Phone size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">{lang === 'tr' ? 'Telefon' : 'Phone'}</div>
-                <div className="text-gray-900 dark:text-offwhite-400 font-medium">+90 532 621 06 01</div>
+                <div className="text-sm text-muted-foreground mb-1">{lang === 'tr' ? 'Telefon' : 'Phone'}</div>
+                <div className="text-foreground font-medium">+90 532 621 06 01</div>
               </motion.a>
 
               <motion.div
-                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <MapPin size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">{lang === 'tr' ? 'Adres' : 'Address'}</div>
-                <div className="text-gray-900 dark:text-offwhite-400 font-medium text-xs leading-relaxed">
+                <div className="text-sm text-muted-foreground mb-1">{lang === 'tr' ? 'Adres' : 'Address'}</div>
+                <div className="text-foreground font-medium text-xs leading-relaxed">
                   Yukari Dudullu Mah, Necip Fazil Blv No:44/38, Umraniye, Istanbul
                 </div>
               </motion.div>
 
               <motion.div
-                className="group p-5 bg-white/5 dark:bg-onyx-800/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-lg sm:col-span-2"
+                className="group p-5 bg-card/60 backdrop-blur-xl border border-border rounded-xl hover:border-engineer-500/30 transition-all duration-300 shadow-sm sm:col-span-2"
                 whileHover={{ y: -4 }}
               >
                 <div className="w-10 h-10 rounded-lg bg-engineer-500/10 flex items-center justify-center mb-3 group-hover:bg-engineer-500/20 transition-colors">
                   <Clock size={20} className="text-engineer-500" />
                 </div>
-                <div className="text-sm text-gray-500 dark:text-offwhite-600 mb-1">{lang === 'tr' ? 'Calisma Saatleri' : 'Working Hours'}</div>
-                <div className="text-gray-900 dark:text-offwhite-400 font-medium">
-                  {lang === 'tr' ? 'Hafta Ici: 09:00 - 18:00' : 'Weekdays: 09:00 - 18:00'}
+                <div className="text-sm text-muted-foreground mb-1">{lang === 'tr' ? 'Çalışma Saatleri' : 'Working Hours'}</div>
+                <div className="text-foreground font-medium">
+                  {lang === 'tr' ? 'Hafta İçi: 09:00 - 18:00' : 'Weekdays: 09:00 - 18:00'}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-offwhite-700 mt-1">
-                  {lang === 'tr' ? 'Hafta sonu kapali' : 'Closed on weekends'}
+                <div className="text-xs text-muted-foreground mt-1">
+                  {lang === 'tr' ? 'Hafta sonu kapalı' : 'Closed on weekends'}
                 </div>
               </motion.div>
             </div>
@@ -544,20 +518,20 @@ export default function ContactPage({ params }: ContactPageProps) {
             <div className="p-6 bg-gradient-to-br from-engineer-500/10 to-transparent border border-engineer-500/20 rounded-2xl">
               <div className="flex items-center gap-3 mb-3">
                 <Calendar size={24} className="text-engineer-500" />
-                <h3 className="text-lg font-semibold text-offwhite-400">
-                  {lang === 'tr' ? 'Gorusme Planla' : 'Schedule a Call'}
+                <h3 className="text-lg font-semibold text-foreground">
+                  {lang === 'tr' ? 'Görüşme Planla' : 'Schedule a Call'}
                 </h3>
               </div>
-              <p className="text-sm text-offwhite-600 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 {lang === 'tr'
-                  ? 'Takvimimizden uygun bir saat secin, sizi arayalim.'
+                  ? 'Takvimimizden uygun bir saat seçin, sizi arayalım.'
                   : 'Pick a suitable time from our calendar, and we will call you.'}
               </p>
               <a
                 href="https://calendly.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-lg transition-all"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-lg transition-all"
               >
                 <span>{lang === 'tr' ? 'Calendly ile Randevu Al' : 'Book with Calendly'}</span>
                 <ExternalLink
@@ -568,8 +542,8 @@ export default function ContactPage({ params }: ContactPageProps) {
             </div>
 
             {/* Social Links */}
-            <div className="pt-4 border-t border-white/5">
-              <h3 className="text-sm font-medium text-offwhite-500 mb-4">
+            <div className="pt-4 border-t border-border">
+              <h3 className="text-sm font-medium text-foreground mb-4">
                 {lang === 'tr' ? 'Sosyal Medya' : 'Social Media'}
               </h3>
               <div className="flex gap-4">
@@ -581,9 +555,10 @@ export default function ContactPage({ params }: ContactPageProps) {
                   <motion.a
                     key={social.label}
                     href={social.href}
-                    className="p-3 bg-white/5 rounded-lg text-offwhite-500 hover:text-engineer-500 hover:bg-white/10 transition-all"
+                    className="p-3 min-h-[44px] min-w-[44px] bg-muted rounded-lg text-muted-foreground hover:text-engineer-500 hover:bg-accent transition-all"
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
+                    aria-label={social.label}
                   >
                     <social.icon size={20} />
                   </motion.a>
@@ -600,7 +575,7 @@ export default function ContactPage({ params }: ContactPageProps) {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="p-8 bg-onyx-800/30 border border-white/5 rounded-2xl"
+          className="p-8 bg-card/60 backdrop-blur-xl border border-border rounded-2xl"
         >
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-start gap-4">
@@ -608,19 +583,19 @@ export default function ContactPage({ params }: ContactPageProps) {
                 <Zap size={24} className="text-engineer-500" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-offwhite-400 mb-1">
-                  {lang === 'tr' ? 'Hizli Cevap Almak Ister misiniz?' : 'Want a Quick Response?'}
+                <h3 className="text-lg font-semibold text-foreground mb-1">
+                  {lang === 'tr' ? 'Hızlı Cevap Almak İster misiniz?' : 'Want a Quick Response?'}
                 </h3>
-                <p className="text-sm text-offwhite-600">
+                <p className="text-sm text-muted-foreground">
                   {lang === 'tr'
-                    ? 'Demo talebi icin direkt olarak planlayin. 24 saat icerisinde donus yapariz.'
+                    ? 'Demo talebi için direkt olarak planlayın. 24 saat içerisinde dönüş yaparız.'
                     : 'Schedule directly for demo requests. We respond within 24 hours.'}
                 </p>
               </div>
             </div>
             <motion.a
               href={`/${lang}/contact?subject=demo`}
-              className="group inline-flex items-center gap-2 px-6 py-3 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all flex-shrink-0"
+              className="group inline-flex items-center gap-2 px-6 py-3 min-h-[44px] bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all flex-shrink-0"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

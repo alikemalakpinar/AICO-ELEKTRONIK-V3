@@ -30,6 +30,9 @@ export interface FireLinkSensor {
   hasFire: boolean;
   hasSmoke: boolean;
   zone: string;
+  surfaceTemp: number;
+  gasResistance: number;    // kOhms
+  airQualityScore: number;  // 0-500 AQI
 }
 
 export interface FireLinkPacket {
@@ -45,6 +48,13 @@ export interface FireLinkPacket {
   batteryVoltage: number;
   statusFlags: number;
   timestamp: Date;
+  // Environmental (enriched for demo)
+  pressure: number;       // hPa
+  tvoc: number;           // ppb
+  eco2: number;           // ppm
+  no2: number;            // ppm
+  co: number;             // ppm
+  systemCurrent: number;  // mA
   // Computed
   hasAnyFire: boolean;
   hasAnySmoke: boolean;
@@ -173,6 +183,9 @@ export function parseFireLinkPacket(data: Uint8Array | ArrayBuffer, lang: 'tr' |
       hasFire,
       hasSmoke,
       zone: zoneNames[i],
+      surfaceTemp: 0,
+      gasResistance: 0,
+      airQualityScore: 0,
     });
   }
 
@@ -202,6 +215,12 @@ export function parseFireLinkPacket(data: Uint8Array | ArrayBuffer, lang: 'tr' |
     batteryVoltage,
     statusFlags,
     timestamp: new Date(),
+    pressure: 0,
+    tvoc: 0,
+    eco2: 0,
+    no2: 0,
+    co: 0,
+    systemCurrent: 0,
     hasAnyFire,
     hasAnySmoke,
     criticalSensors,
@@ -225,6 +244,12 @@ function createInvalidPacket(reason: string): FireLinkPacket {
     batteryVoltage: 0,
     statusFlags: 0,
     timestamp: new Date(),
+    pressure: 0,
+    tvoc: 0,
+    eco2: 0,
+    no2: 0,
+    co: 0,
+    systemCurrent: 0,
     hasAnyFire: false,
     hasAnySmoke: false,
     criticalSensors: [],
@@ -329,4 +354,44 @@ export function getSensorColor(sensor: FireLinkSensor): string {
   if (sensor.hasSmoke) return '#F59E0B';
   if (sensor.temperature > 40) return '#F97316';
   return '#22C55E';
+}
+
+/**
+ * Stable pseudo-random number from a seed (simple hash-based).
+ * Returns a value in [0, 1).
+ */
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+/**
+ * Enrich a parsed packet with realistic environmental demo data.
+ * Uses deviceId + packetCounter as seed for stable values that
+ * don't jump aggressively between renders.
+ */
+export function enrichPacketWithEnvironmental(packet: FireLinkPacket): FireLinkPacket {
+  const seed = packet.deviceId * 1000 + packet.packetCounter;
+
+  // Enrich sensors with surface temp, gas resistance, air quality
+  const enrichedSensors = packet.sensors.map((sensor, i) => {
+    const s = seed + i * 137;
+    return {
+      ...sensor,
+      surfaceTemp: sensor.surfaceTemp || Math.round((sensor.temperature - 2 + seededRandom(s) * 4) * 10) / 10,
+      gasResistance: sensor.gasResistance || Math.round((50 + seededRandom(s + 1) * 200) * 10) / 10,
+      airQualityScore: sensor.airQualityScore || Math.round(20 + seededRandom(s + 2) * 80),
+    };
+  });
+
+  return {
+    ...packet,
+    sensors: enrichedSensors,
+    pressure: packet.pressure || Math.round((1013 + seededRandom(seed + 10) * 10 - 5) * 10) / 10,
+    tvoc: packet.tvoc || Math.round(50 + seededRandom(seed + 11) * 200),
+    eco2: packet.eco2 || Math.round(400 + seededRandom(seed + 12) * 400),
+    no2: packet.no2 || Math.round(seededRandom(seed + 13) * 50 * 100) / 100,
+    co: packet.co || Math.round(seededRandom(seed + 14) * 10 * 100) / 100,
+    systemCurrent: packet.systemCurrent || Math.round((120 + seededRandom(seed + 15) * 80) * 10) / 10,
+  };
 }

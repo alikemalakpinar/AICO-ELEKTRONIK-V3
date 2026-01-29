@@ -38,7 +38,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
   };
 
   return (
-    <footer className="dark:bg-onyx-950 light:bg-gray-50 border-t dark:border-white/5 light:border-gray-200 transition-colors duration-300">
+    <footer className="bg-background border-t border-border transition-colors duration-300">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
@@ -159,7 +159,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t dark:border-white/5 light:border-gray-200">
+      <div className="border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-muted-foreground text-xs">
