@@ -18,6 +18,19 @@
 @layer base {
   :root {
     /* ===========================================
+       ENGINEER ORANGE — CSS Variable System
+       Single source of truth for #F97316
+    =========================================== */
+    --engineer-orange: 249, 115, 22;
+    --engineer-orange-hex: #F97316;
+
+    /* Glow Opacity Scale */
+    --glow-subtle: 0.05;
+    --glow-medium: 0.15;
+    --glow-intense: 0.3;
+    --glow-max: 0.5;
+
+    /* ===========================================
        LIGHT MODE - Engineering White
        Technical drawing paper aesthetic
        Using Slate-50 (#F8FAFC) - NOT pure white
@@ -935,6 +948,85 @@ h3 {
   font-weight: 400;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
+}
+
+/* Heading Display Scale — Satoshi 900, tracking-tighter */
+.heading-display-xl {
+  font-family: 'Satoshi', 'General Sans', sans-serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.heading-display-lg {
+  font-family: 'Satoshi', 'General Sans', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+}
+
+.heading-display-md {
+  font-family: 'Satoshi', 'General Sans', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+.heading-display-sm {
+  font-family: 'Satoshi', 'General Sans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/* Haptic button bounce — universal hover feedback */
+.haptic-hover {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.haptic-hover:hover {
+  animation: haptic-bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes haptic-bounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+/* Sinüs dalga animasyonu — Footer enerji hattı */
+@keyframes sine-wave {
+  0% { d: path('M0,1 Q250,0 500,1 T1000,1'); }
+  50% { d: path('M0,1 Q250,2 500,1 T1000,1'); }
+  100% { d: path('M0,1 Q250,0 500,1 T1000,1'); }
+}
+
+/* Glitch text efekti — Boot sequence */
+@keyframes glitch-text {
+  0%, 100% { transform: translate(0); opacity: 1; }
+  10% { transform: translate(-2px, 1px); opacity: 0.8; }
+  20% { transform: translate(2px, -1px); opacity: 0.9; }
+  30% { transform: translate(0); opacity: 1; }
+  40% { transform: translate(-1px, 2px); opacity: 0.7; }
+  50% { transform: translate(1px, -2px); opacity: 1; }
+}
+
+.glitch-text {
+  animation: glitch-text 2s ease-in-out infinite;
+}
+
+/* Signal dropout efekti */
+@keyframes signal-dropout {
+  0% { opacity: 1; filter: blur(0) brightness(1); }
+  15% { opacity: 0.4; filter: blur(1px) brightness(1.3); }
+  30% { opacity: 0.8; filter: blur(0.5px) brightness(1.1); }
+  50% { opacity: 0.3; filter: blur(2px) brightness(0.8); }
+  70% { opacity: 0.9; filter: blur(0) brightness(1.05); }
+  100% { opacity: 1; filter: blur(0) brightness(1); }
 }
 
 /* ===========================================

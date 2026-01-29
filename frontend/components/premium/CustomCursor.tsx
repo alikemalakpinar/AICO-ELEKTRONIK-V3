@@ -3,16 +3,11 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 
-/**
- * CustomCursor - Premium Interactive Cursor
- *
- * Features:
- * - Minimalist dot + ring design
- * - Magnetic hover effect on links/buttons
- * - Expand effect on images with "INCELE" text
- * - Smooth spring animations with framer-motion
- * - Mobile detection (hidden on touch devices)
- */
+// ===========================================
+// CustomCursor v3.2 — HUD Crosshair + Lock-On
+// Crosshair (+) default, corner brackets on link hover
+// Lock-on scale animation on interactive elements
+// ===========================================
 
 type CursorVariant = 'default' | 'link' | 'image' | 'text' | 'hidden';
 
@@ -29,24 +24,19 @@ export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
 
-  // Mouse position with motion values for performance
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Spring config for smooth movement
   const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
-  // Ring follows with more lag
   const ringSpringConfig = { damping: 30, stiffness: 200, mass: 0.8 };
   const ringXSpring = useSpring(cursorX, ringSpringConfig);
   const ringYSpring = useSpring(cursorY, ringSpringConfig);
 
-  // Magnetic effect ref
   const magneticRef = useRef<{ x: number; y: number } | null>(null);
 
-  // Check for mobile/touch device
   useEffect(() => {
     const checkMobile = () => {
       const hasTouchScreen =
@@ -61,12 +51,10 @@ export default function CustomCursor() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Handle mouse move
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       const { clientX, clientY } = e;
 
-      // Apply magnetic effect if active
       if (magneticRef.current) {
         const magnetStrength = 0.3;
         const newX = clientX + (magneticRef.current.x - clientX) * magnetStrength;
@@ -83,11 +71,9 @@ export default function CustomCursor() {
     [cursorX, cursorY]
   );
 
-  // Handle mouse enter/leave viewport
   const handleMouseEnter = useCallback(() => setIsVisible(true), []);
   const handleMouseLeave = useCallback(() => setIsVisible(false), []);
 
-  // Setup event listeners
   useEffect(() => {
     if (isMobile) return;
 
@@ -102,14 +88,12 @@ export default function CustomCursor() {
     };
   }, [isMobile, handleMouseMove, handleMouseEnter, handleMouseLeave]);
 
-  // Setup element detection for cursor variants
   useEffect(() => {
     if (isMobile) return;
 
     const handleElementDetection = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
-      // Check for images
       if (
         target.tagName === 'IMG' ||
         target.closest('[data-cursor="image"]') ||
@@ -119,7 +103,6 @@ export default function CustomCursor() {
         return;
       }
 
-      // Check for links and buttons
       if (
         target.tagName === 'A' ||
         target.tagName === 'BUTTON' ||
@@ -137,7 +120,6 @@ export default function CustomCursor() {
         return;
       }
 
-      // Check for text inputs
       if (
         target.tagName === 'INPUT' ||
         target.tagName === 'TEXTAREA' ||
@@ -147,7 +129,6 @@ export default function CustomCursor() {
         return;
       }
 
-      // Default state
       magneticRef.current = null;
       setCursorState({ variant: 'default', text: '' });
     };
@@ -156,75 +137,11 @@ export default function CustomCursor() {
     return () => window.removeEventListener('mouseover', handleElementDetection);
   }, [isMobile]);
 
-  // Don't render on mobile/touch devices
   if (isMobile) return null;
 
-  // Cursor variants configuration
-  const variants = {
-    default: {
-      width: 8,
-      height: 8,
-      backgroundColor: '#F97316',
-      mixBlendMode: 'difference' as const,
-    },
-    link: {
-      width: 12,
-      height: 12,
-      backgroundColor: '#F97316',
-      mixBlendMode: 'difference' as const,
-    },
-    image: {
-      width: 80,
-      height: 80,
-      backgroundColor: 'rgba(249, 115, 22, 0.9)',
-      mixBlendMode: 'normal' as const,
-    },
-    text: {
-      width: 4,
-      height: 24,
-      backgroundColor: '#F97316',
-      borderRadius: 2,
-      mixBlendMode: 'difference' as const,
-    },
-    hidden: {
-      width: 0,
-      height: 0,
-      backgroundColor: 'transparent',
-    },
-  };
-
-  const ringVariants = {
-    default: {
-      width: 32,
-      height: 32,
-      borderColor: 'rgba(249, 115, 22, 0.5)',
-      borderWidth: 1,
-    },
-    link: {
-      width: 48,
-      height: 48,
-      borderColor: 'rgba(249, 115, 22, 0.8)',
-      borderWidth: 2,
-    },
-    image: {
-      width: 90,
-      height: 90,
-      borderColor: 'rgba(249, 115, 22, 0.3)',
-      borderWidth: 1,
-    },
-    text: {
-      width: 0,
-      height: 0,
-      borderColor: 'transparent',
-      borderWidth: 0,
-    },
-    hidden: {
-      width: 0,
-      height: 0,
-      borderColor: 'transparent',
-      borderWidth: 0,
-    },
-  };
+  const isLink = cursorState.variant === 'link';
+  const isImage = cursorState.variant === 'image';
+  const isText = cursorState.variant === 'text';
 
   return (
     <>
@@ -234,7 +151,6 @@ export default function CustomCursor() {
           cursor: none !important;
         }
 
-        /* Restore cursor for form elements on focus */
         input:focus,
         textarea:focus,
         select:focus {
@@ -242,7 +158,7 @@ export default function CustomCursor() {
         }
       `}</style>
 
-      {/* Main Cursor Dot */}
+      {/* HUD Crosshair Center — the + shape */}
       <motion.div
         className="cursor-dot"
         style={{
@@ -255,14 +171,13 @@ export default function CustomCursor() {
           translateY: '-50%',
           pointerEvents: 'none',
           zIndex: 99999,
-          borderRadius: cursorState.variant === 'text' ? '2px' : '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
         animate={{
-          ...variants[cursorState.variant],
           opacity: isVisible ? 1 : 0,
+          scale: isLink ? 1.5 : isImage ? 0 : 1,
         }}
         transition={{
           type: 'spring',
@@ -271,23 +186,46 @@ export default function CustomCursor() {
           mass: 0.5,
         }}
       >
-        {/* Text inside cursor for image hover */}
-        <AnimatePresence>
-          {cursorState.variant === 'image' && cursorState.text && (
-            <motion.span
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              transition={{ duration: 0.15 }}
-              className="text-[10px] font-mono font-bold text-white tracking-widest uppercase"
-            >
-              {cursorState.text}
-            </motion.span>
-          )}
-        </AnimatePresence>
+        {/* Crosshair + shape */}
+        {!isText && !isImage && (
+          <>
+            {/* Horizontal line */}
+            <div
+              style={{
+                position: 'absolute',
+                width: isLink ? '14px' : '10px',
+                height: '1px',
+                backgroundColor: '#F97316',
+                opacity: 0.9,
+              }}
+            />
+            {/* Vertical line */}
+            <div
+              style={{
+                position: 'absolute',
+                width: '1px',
+                height: isLink ? '14px' : '10px',
+                backgroundColor: '#F97316',
+                opacity: 0.9,
+              }}
+            />
+          </>
+        )}
+
+        {/* Text cursor for inputs */}
+        {isText && (
+          <div
+            style={{
+              width: '2px',
+              height: '20px',
+              backgroundColor: '#F97316',
+              opacity: 0.9,
+            }}
+          />
+        )}
       </motion.div>
 
-      {/* Outer Ring */}
+      {/* Outer Ring — becomes corner brackets on link hover */}
       <motion.div
         className="cursor-ring"
         style={{
@@ -300,13 +238,14 @@ export default function CustomCursor() {
           translateY: '-50%',
           pointerEvents: 'none',
           zIndex: 99998,
-          borderRadius: '50%',
-          borderStyle: 'solid',
-          backgroundColor: 'transparent',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
         animate={{
-          ...ringVariants[cursorState.variant],
-          opacity: isVisible && cursorState.variant !== 'text' ? 1 : 0,
+          width: isLink ? 44 : isImage ? 80 : isText ? 0 : 28,
+          height: isLink ? 44 : isImage ? 80 : isText ? 0 : 28,
+          opacity: isVisible && !isText ? 1 : 0,
         }}
         transition={{
           type: 'spring',
@@ -314,7 +253,58 @@ export default function CustomCursor() {
           stiffness: 250,
           mass: 0.8,
         }}
-      />
+      >
+        {/* Default: circle ring */}
+        {!isLink && !isImage && (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              border: '1px solid rgba(249, 115, 22, 0.35)',
+            }}
+          />
+        )}
+
+        {/* Link hover: corner brackets (lock-on) */}
+        {isLink && (
+          <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: 10, height: 10, borderLeft: '1.5px solid rgba(249, 115, 22, 0.8)', borderTop: '1.5px solid rgba(249, 115, 22, 0.8)' }} />
+            <div style={{ position: 'absolute', top: 0, right: 0, width: 10, height: 10, borderRight: '1.5px solid rgba(249, 115, 22, 0.8)', borderTop: '1.5px solid rgba(249, 115, 22, 0.8)' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: 10, height: 10, borderLeft: '1.5px solid rgba(249, 115, 22, 0.8)', borderBottom: '1.5px solid rgba(249, 115, 22, 0.8)' }} />
+            <div style={{ position: 'absolute', bottom: 0, right: 0, width: 10, height: 10, borderRight: '1.5px solid rgba(249, 115, 22, 0.8)', borderBottom: '1.5px solid rgba(249, 115, 22, 0.8)' }} />
+          </div>
+        )}
+
+        {/* Image hover: expanded circle with text */}
+        {isImage && (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(249, 115, 22, 0.85)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <AnimatePresence>
+              {cursorState.text && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-[9px] font-mono font-bold text-white tracking-[0.2em] uppercase"
+                >
+                  {cursorState.text}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+      </motion.div>
     </>
   );
 }

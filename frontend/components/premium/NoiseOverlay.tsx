@@ -1,13 +1,11 @@
 'use client';
 
-/**
- * NoiseOverlay - Cinematic Film Grain Effect
- *
- * Adds a subtle animated noise texture over the entire site
- * Creates depth and prevents "dead pixel" look on dark backgrounds
- *
- * Performance optimized with CSS animations instead of canvas
- */
+// ===========================================
+// NoiseOverlay v3.2 — 3-Layer Noise System
+// Layer 1: Film grain (feTurbulence)
+// Layer 2: Horizontal scanlines
+// Layer 3: Vignette (radial gradient)
+// ===========================================
 
 export default function NoiseOverlay() {
   return (
@@ -27,7 +25,7 @@ export default function NoiseOverlay() {
         </defs>
       </svg>
 
-      {/* Noise Layer */}
+      {/* Layer 1: Film Grain */}
       <div
         className="noise-overlay"
         aria-hidden="true"
@@ -59,7 +57,29 @@ export default function NoiseOverlay() {
         />
       </div>
 
-      {/* Vignette Effect for cinematic feel */}
+      {/* Layer 2: Horizontal Scanlines */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          pointerEvents: 'none',
+          zIndex: 9998,
+          opacity: 0.015,
+          background: `repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.15) 2px,
+            rgba(0, 0, 0, 0.15) 4px
+          )`,
+        }}
+      />
+
+      {/* Layer 3: Vignette */}
       <div
         className="vignette-overlay"
         aria-hidden="true"
@@ -70,13 +90,13 @@ export default function NoiseOverlay() {
           right: 0,
           bottom: 0,
           pointerEvents: 'none',
-          zIndex: 9998,
+          zIndex: 9997,
           background: `
             radial-gradient(
               ellipse at center,
               transparent 0%,
               transparent 50%,
-              rgba(0, 0, 0, 0.15) 100%
+              rgba(0, 0, 0, 0.2) 100%
             )
           `,
         }}

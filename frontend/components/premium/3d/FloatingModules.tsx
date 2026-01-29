@@ -39,8 +39,8 @@ function GlassChip({ position, rotation, scale = 0.7 }: {
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x += 0.0015;
-      meshRef.current.rotation.y += 0.002;
+      meshRef.current.rotation.x += 0.0005;
+      meshRef.current.rotation.y += 0.0007;
     }
   });
 
@@ -83,7 +83,7 @@ function GlassCapacitor({ position, rotation }: {
 
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.003;
+      meshRef.current.rotation.y += 0.001;
     }
   });
 
@@ -176,7 +176,7 @@ function Particles() {
 
   useFrame((state) => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.015;
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.005;
     }
   });
 

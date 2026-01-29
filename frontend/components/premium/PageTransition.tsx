@@ -4,18 +4,54 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { ReactNode, useState, useEffect } from 'react';
 
-/**
- * PageTransition - Cinematic Page Transitions
- *
- * Features:
- * - Smooth fade + slide transitions between pages
- * - Curtain wipe effect option
- * - No "hard reload" feel
- * - Performance optimized with framer-motion
- */
+// ===========================================
+// PageTransition v3.2 — Boot Sequence + Signal Dropout
+// HUD brackets + SYS::LOADING glitch on entry
+// ===========================================
 
 interface PageTransitionProps {
   children: ReactNode;
+}
+
+// Boot Sequence overlay — HUD brackets + glitch text
+function BootSequence({ isActive }: { isActive: boolean }) {
+  if (!isActive) return null;
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[9990] pointer-events-none flex items-center justify-center"
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 0 }}
+      transition={{ duration: 0.6, delay: 0.35 }}
+    >
+      {/* Corner brackets — HUD frame */}
+      <div className="absolute top-6 left-6 w-8 h-8 border-l border-t border-engineer-500/60" />
+      <div className="absolute top-6 right-6 w-8 h-8 border-r border-t border-engineer-500/60" />
+      <div className="absolute bottom-6 left-6 w-8 h-8 border-l border-b border-engineer-500/60" />
+      <div className="absolute bottom-6 right-6 w-8 h-8 border-r border-b border-engineer-500/60" />
+
+      {/* SYS::LOADING glitch text */}
+      <motion.span
+        className="font-mono text-[10px] tracking-[0.3em] uppercase text-engineer-500/70"
+        style={{ animation: 'glitch-text 0.15s steps(2) 3' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 1, 0] }}
+        transition={{ duration: 0.8, times: [0, 0.1, 0.6, 1] }}
+      >
+        SYS::LOADING
+      </motion.span>
+
+      {/* Top-left spec label */}
+      <motion.span
+        className="absolute top-7 left-16 font-mono text-[8px] text-engineer-500/40 tracking-widest"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.6, 0] }}
+        transition={{ duration: 0.7 }}
+      >
+        AICO_NAV_v3.2
+      </motion.span>
+    </motion.div>
+  );
 }
 
 // Simple Fade Transition
@@ -107,34 +143,46 @@ export function SlideTransition({ children }: PageTransitionProps) {
   );
 }
 
-// Default export - Premium Fade with subtle blur
+// Default export — Boot Sequence + Signal Dropout
 export default function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
+  const [showBoot, setShowBoot] = useState(false);
+
+  useEffect(() => {
+    setShowBoot(true);
+    const timer = setTimeout(() => setShowBoot(false), 900);
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={pathname}
-        initial={{
-          opacity: 0,
-          y: 8,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        exit={{
-          opacity: 0,
-          y: -8,
-        }}
-        transition={{
-          duration: 0.35,
-          ease: 'easeOut',
-        }}
-        className="will-change-[opacity,transform]"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <>
+      {/* Boot sequence overlay */}
+      <BootSequence isActive={showBoot} />
+
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={pathname}
+          initial={{
+            opacity: 0,
+            y: 8,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          exit={{
+            opacity: 0,
+            y: -8,
+          }}
+          transition={{
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
+          }}
+          className="will-change-[opacity,transform]"
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+    </>
   );
 }

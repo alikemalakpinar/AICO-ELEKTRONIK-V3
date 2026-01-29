@@ -265,18 +265,19 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   : 'none',
             }}
           >
-            {/* Accent glow line - GPU accelerated */}
+            {/* Animated energy line — sine-wave pulse */}
             <motion.div
               className="absolute bottom-0 left-1/2 h-px pointer-events-none"
               initial={{ width: 0, x: '-50%' }}
               animate={{
-                width: scrollState === 'compact' ? '50%' : '0%',
+                width: scrollState === 'compact' ? '60%' : '0%',
                 x: '-50%',
               }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
               style={{
                 background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
                 opacity: 0.6,
+                animation: scrollState === 'compact' ? 'sine-wave 3s ease-in-out infinite' : 'none',
               }}
             />
 
@@ -284,7 +285,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-14">
                 {/* Logo - Theme adaptive with native variants */}
-                <Link href={`/${lang}`} className="flex items-center gap-2 group flex-shrink-0">
+                <Link href={`/${lang}`} className="flex items-center gap-3 group flex-shrink-0">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -298,6 +299,9 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                       priority
                     />
                   </motion.div>
+                  <span className="hidden xl:inline-block font-mono text-[8px] tracking-[0.2em] text-engineer-500/50 uppercase border border-engineer-500/20 px-2 py-0.5 rounded">
+                    NAV::HOME
+                  </span>
                 </Link>
 
                 {/* Center Navigation */}
@@ -328,8 +332,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                           onMouseEnter={handleSolutionsEnter}
                           onMouseLeave={handleSolutionsLeave}
                         >
-                          {/* Glass card - theme adaptive */}
-                          <div className="dark:bg-onyx-800/95 light:bg-white/98 backdrop-blur-2xl rounded-2xl border dark:border-white/10 light:border-gray-200 shadow-2xl overflow-hidden">
+                          {/* Glass card - glass-premium */}
+                          <div className="dark:bg-onyx-800/90 light:bg-white/98 backdrop-blur-2xl rounded-2xl border dark:border-engineer-500/10 light:border-gray-200 shadow-2xl overflow-hidden border-beam">
                             {/* Header */}
                             <div className="px-6 py-4 border-b dark:border-white/5 light:border-gray-200">
                               <div className="flex items-center gap-2">
@@ -434,7 +438,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                           onMouseEnter={handleSmartLivingEnter}
                           onMouseLeave={handleSmartLivingLeave}
                         >
-                          <div className="dark:bg-onyx-800/95 light:bg-white/98 backdrop-blur-2xl rounded-2xl border dark:border-white/10 light:border-gray-200 shadow-2xl overflow-hidden p-2">
+                          <div className="dark:bg-onyx-800/90 light:bg-white/98 backdrop-blur-2xl rounded-2xl border dark:border-engineer-500/10 light:border-gray-200 shadow-2xl overflow-hidden p-2 border-beam">
                             {smartLiving.map((item) => (
                               <Link
                                 key={item.id}

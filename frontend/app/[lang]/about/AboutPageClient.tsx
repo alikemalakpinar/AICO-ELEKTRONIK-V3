@@ -119,7 +119,7 @@ function TeamMemberCard({
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="group relative perspective-1000"
     >
-      <div className="relative p-6 bg-onyx-800/50 border border-white/5 rounded-2xl overflow-hidden hover:border-engineer-500/30 transition-all duration-500 hover:-translate-y-1">
+      <div className="relative p-6 bg-onyx-800/50 border border-white/5 rounded-2xl overflow-hidden hover:border-engineer-500/30 transition-all duration-500 hover:-translate-y-1 border-beam">
         {/* Animated background on hover */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-engineer-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -319,11 +319,10 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
-              <span className="w-8 h-px bg-engineer-500" />
+            <span className="mono-overline text-engineer-500/70 mb-6">
               {lang === 'tr' ? 'HAKKIMIZDA' : 'ABOUT US'}
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6 tracking-tight">
+            <h1 className="heading-display-lg text-offwhite-400 mb-6">
               {lang === 'tr' ? 'Genc, Vizyoner, Kararli' : 'Young, Visionary, Determined'}
             </h1>
             <p className="text-xl text-offwhite-600 leading-relaxed max-w-3xl">
@@ -360,7 +359,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
                   initial={{ scale: 0.5 }}
                   whileInView={{ scale: 1 }}
                   viewport={{ once: true }}
-                  className="font-mono text-4xl md:text-5xl font-bold text-engineer-500 mb-2"
+                  className="mono-data text-4xl md:text-5xl font-bold text-engineer-500 glow-engineer mb-2"
                 >
                   {stat.value}
                 </motion.div>
@@ -448,7 +447,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
                   whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="group p-6 bg-onyx-800/50 border border-white/5 rounded-2xl hover:border-white/10 transition-all duration-500"
+                  className="group p-6 bg-onyx-800/50 border border-white/5 rounded-2xl hover:border-engineer-500/20 transition-all duration-500 border-beam"
                   style={{ transformStyle: 'preserve-3d' }}
                 >
                   <div

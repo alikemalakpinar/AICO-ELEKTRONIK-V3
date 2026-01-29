@@ -237,12 +237,12 @@ export default function ServicesPageClient({ lang }: ServicesPageClientProps) {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
+            <span className="mono-overline text-engineer-500/70 mb-6">
               <span className="w-8 h-px bg-engineer-500" />
               {text.badge}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6">
+            <h1 className="heading-display-lg text-offwhite-400 mb-6">
               {text.title}
             </h1>
             <p className="text-xl text-offwhite-700 max-w-2xl mx-auto">

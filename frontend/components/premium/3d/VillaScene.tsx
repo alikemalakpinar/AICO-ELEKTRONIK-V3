@@ -131,8 +131,8 @@ function SmartHouse({ activeScene }: { activeScene: VillaSceneType }) {
   useFrame((state, delta) => {
     timeRef.current += delta;
     if (groupRef.current) {
-      // Subtle rotation based on scene
-      const targetRotation = activeScene === 'integrated' ? timeRef.current * 0.1 : 0;
+      // Heavy slow rotation — industrial weight
+      const targetRotation = activeScene === 'integrated' ? timeRef.current * 0.03 : 0;
       groupRef.current.rotation.y = THREE.MathUtils.lerp(
         groupRef.current.rotation.y,
         targetRotation,
@@ -165,22 +165,30 @@ function SmartHouse({ activeScene }: { activeScene: VillaSceneType }) {
         <group position={[0, 2.3, 0]}>
           <mesh position={[-0.6, 0.35, 0]} rotation={[0, 0, Math.PI / 5]}>
             <boxGeometry args={[1.8, 0.08, 2.2]} />
-            <meshStandardMaterial
+            <meshPhysicalMaterial
               color={sceneColor}
               transparent
               opacity={0.15}
-              metalness={0.5}
-              roughness={0.3}
+              metalness={0.4}
+              roughness={0.15}
+              transmission={0.4}
+              ior={1.5}
+              clearcoat={1}
+              clearcoatRoughness={0.1}
             />
           </mesh>
           <mesh position={[0.6, 0.35, 0]} rotation={[0, 0, -Math.PI / 5]}>
             <boxGeometry args={[1.8, 0.08, 2.2]} />
-            <meshStandardMaterial
+            <meshPhysicalMaterial
               color={sceneColor}
               transparent
               opacity={0.15}
-              metalness={0.5}
-              roughness={0.3}
+              metalness={0.4}
+              roughness={0.15}
+              transmission={0.4}
+              ior={1.5}
+              clearcoat={1}
+              clearcoatRoughness={0.1}
             />
           </mesh>
         </group>
@@ -188,12 +196,14 @@ function SmartHouse({ activeScene }: { activeScene: VillaSceneType }) {
         {/* Foundation */}
         <mesh position={[0, -0.7, 0]}>
           <boxGeometry args={[3.5, 0.15, 2.5]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={sceneColor}
             transparent
             opacity={0.1}
-            metalness={0.8}
-            roughness={0.2}
+            metalness={0.7}
+            roughness={0.15}
+            clearcoat={0.6}
+            clearcoatRoughness={0.2}
           />
         </mesh>
 
@@ -244,12 +254,16 @@ function RoomBox({
   return (
     <group position={position}>
       <mesh ref={meshRef} geometry={geometry}>
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={sceneColor}
           transparent
           opacity={0.02}
-          metalness={0.3}
-          roughness={0.7}
+          metalness={0.2}
+          roughness={0.15}
+          transmission={0.3}
+          ior={1.4}
+          clearcoat={0.8}
+          clearcoatRoughness={0.1}
         />
       </mesh>
       <lineSegments ref={edgesRef} geometry={edgesGeometry}>

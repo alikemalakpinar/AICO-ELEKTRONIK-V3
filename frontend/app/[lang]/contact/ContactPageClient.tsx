@@ -58,7 +58,7 @@ function FloatingInput({
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className={`w-full px-4 pt-6 pb-2 bg-card border rounded-xl text-foreground placeholder-transparent focus:outline-none transition-all duration-300 resize-none ${
+        className={`w-full px-4 pt-6 pb-2 bg-card border rounded-xl text-foreground placeholder-transparent focus:outline-none transition-all duration-300 resize-none border-beam ${
           isFocused
             ? 'border-engineer-500 ring-2 ring-engineer-500/30'
             : 'border-border hover:border-muted-foreground/30'
@@ -374,11 +374,10 @@ export default function ContactPageClient({ lang }: ContactPageClientProps) {
           transition={{ duration: 0.8 }}
           className="max-w-3xl"
         >
-          <span className="inline-flex items-center gap-2 text-engineer-500 font-mono text-xs tracking-widest uppercase mb-6">
-            <span className="w-8 h-px bg-engineer-500" />
-            {lang === 'tr' ? 'İLETİŞİM' : 'CONTACT'}
+          <span className="mono-overline text-engineer-500/70 mb-6">
+            {lang === 'tr' ? 'ILETISIM' : 'CONTACT'}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
+          <h1 className="heading-display-lg text-foreground mb-6">
             {lang === 'tr' ? 'Konuşalım' : "Let's Talk"}
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
@@ -493,7 +492,7 @@ export default function ContactPageClient({ lang }: ContactPageClientProps) {
                   <Mail size={20} className="text-engineer-500" />
                 </div>
                 <div className="text-sm text-muted-foreground mb-1">E-posta</div>
-                <div className="text-foreground font-medium">info@aicoelektronik.com</div>
+                <div className="text-foreground font-medium mono-data">info@aicoelektronik.com</div>
               </motion.a>
 
               <motion.a
@@ -505,7 +504,7 @@ export default function ContactPageClient({ lang }: ContactPageClientProps) {
                   <Phone size={20} className="text-engineer-500" />
                 </div>
                 <div className="text-sm text-muted-foreground mb-1">{lang === 'tr' ? 'Telefon' : 'Phone'}</div>
-                <div className="text-foreground font-medium">+90 532 621 06 01</div>
+                <div className="text-foreground font-medium mono-data">+90 532 621 06 01</div>
               </motion.a>
 
               <motion.div

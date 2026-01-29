@@ -76,11 +76,11 @@ function Globe() {
     const time = state.clock.elapsedTime;
 
     if (pointsRef.current) {
-      pointsRef.current.rotation.y = time * 0.1;
+      pointsRef.current.rotation.y = time * 0.03;
     }
 
     if (linesRef.current) {
-      linesRef.current.rotation.y = time * 0.1;
+      linesRef.current.rotation.y = time * 0.03;
 
       // Animate line visibility
       const colors = linesRef.current.geometry.attributes.color.array as Float32Array;

@@ -48,13 +48,12 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
   return (
     <footer className="relative bg-background text-foreground transition-colors duration-300">
-      {/* Engineer-orange neon glow lines */}
+      {/* Sine-wave energy line */}
       <div className="relative h-px">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-engineer-500/50 to-transparent" />
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-engineer-500/80 to-transparent"
-          animate={{ opacity: [0.3, 0.8, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ animation: 'sine-wave 3s ease-in-out infinite' }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-engineer-500/30 to-transparent blur-sm" />
       </div>
@@ -106,7 +105,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                   href={s.href}
                   strength={0.4}
                   radius={120}
-                  className="flex items-center justify-center w-9 h-9 rounded-lg border border-border text-muted-foreground hover:text-engineer-500 hover:border-engineer-500/40 hover:shadow-[0_0_12px_rgba(249,115,22,0.15)] transition-all duration-300"
+                  className="flex items-center justify-center w-9 h-9 rounded-lg border border-border text-muted-foreground hover:text-engineer-500 hover:border-engineer-500/40 hover:shadow-[0_0_12px_rgba(249,115,22,0.15)] transition-all duration-300 border-beam"
                 >
                   <s.icon size={16} />
                 </MagneticButton>
@@ -119,7 +118,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {/* Solutions */}
               <div>
-                <h4 className="text-foreground font-semibold text-sm tracking-wide mb-5">
+                <h4 className="mono-overline text-engineer-500/60 mb-5">
                   {t.footer.solutions}
                 </h4>
                 <ul className="space-y-3">
@@ -138,8 +137,8 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
               {/* Company */}
               <div>
-                <h4 className="text-foreground font-semibold text-sm tracking-wide mb-5">
-                  {lang === 'tr' ? 'Şirket' : 'Company'}
+                <h4 className="mono-overline text-engineer-500/60 mb-5">
+                  {lang === 'tr' ? 'Sirket' : 'Company'}
                 </h4>
                 <ul className="space-y-3">
                   {company.map((link) => (
@@ -157,7 +156,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
               {/* Resources */}
               <div>
-                <h4 className="text-foreground font-semibold text-sm tracking-wide mb-5">
+                <h4 className="mono-overline text-engineer-500/60 mb-5">
                   {t.footer.resources}
                 </h4>
                 <ul className="space-y-3">
