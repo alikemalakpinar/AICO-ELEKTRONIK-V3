@@ -179,6 +179,7 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
                 { x: 82, y: 33, w: 13, h: 22 },  // Packaging
               ];
               const pos = positions[i];
+              if (!pos) return null; // Guard against out-of-bounds index
               const statusColor = getStatusColor(sensor.status);
               const isSelected = selectedSensor === sensor.id;
 

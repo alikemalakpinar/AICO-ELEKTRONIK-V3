@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Github } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
+import MagneticButton from './MagneticButton';
 
 interface PremiumFooterProps {
   lang: Locale;
@@ -99,19 +100,16 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
             <div className="flex items-center gap-3">
               {socials.map((s) => (
-                <motion.a
+                <MagneticButton
                   key={s.label}
+                  as="a"
                   href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="flex items-center justify-center w-9 h-9 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-engineer-500/40 transition-colors"
-                  whileHover={{ scale: 1.15, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  strength={0.4}
+                  radius={120}
+                  className="flex items-center justify-center w-9 h-9 rounded-lg border border-border text-muted-foreground hover:text-engineer-500 hover:border-engineer-500/40 hover:shadow-[0_0_12px_rgba(249,115,22,0.15)] transition-all duration-300"
                 >
                   <s.icon size={16} />
-                </motion.a>
+                </MagneticButton>
               ))}
             </div>
           </div>

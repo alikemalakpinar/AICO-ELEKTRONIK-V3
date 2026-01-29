@@ -21,6 +21,7 @@ import {
 import { ImmersiveHero, BentoGrid } from '@/components/modules';
 import type { BentoItem } from '@/components/modules';
 import type { Locale } from '@/types';
+import AnimatedDataFlow from '@/components/premium/AnimatedDataFlow';
 
 // Dynamic import for the 3D globe demo to avoid SSR issues
 const ColdChainProDemo = dynamic(
@@ -188,6 +189,23 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
         accentColor={accentColor}
         lang={lang}
       />
+
+      {/* Data Pipeline Visualization */}
+      <section className="py-16 bg-onyx-950">
+        <div className="max-w-4xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
+            <span className="font-mono text-xs tracking-widest uppercase text-offwhite-700 mb-4 block">
+              {lang === 'tr' ? 'VERİ AKIŞ MİMARİSİ' : 'DATA FLOW ARCHITECTURE'}
+            </span>
+          </motion.div>
+          <AnimatedDataFlow variant="cold" />
+        </div>
+      </section>
 
       {/* Final CTA */}
       <section className="py-24 md:py-32 bg-onyx-950 border-t border-white/5">
