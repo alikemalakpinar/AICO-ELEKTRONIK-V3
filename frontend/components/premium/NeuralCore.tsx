@@ -1,167 +1,182 @@
 'use client';
 
 import React, { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { MeshDistortMaterial, Sphere, Float } from '@react-three/drei';
+import { Canvas, useFrame, extend } from '@react-three/fiber';
+import { MeshDistortMaterial, MeshTransmissionMaterial, Sphere, Float } from '@react-three/drei';
 import SafeEnvironment from './3d/SafeEnvironment';
 import Scene3DErrorBoundary from './3d/Scene3DErrorBoundary';
 import * as THREE from 'three';
 
-// Animated distorting sphere with energy effect
-function DistortingSphere() {
+// ===========================================
+// NeuralCore v3.2 — X-Ray Engineering Core
+// Frosted glass translucency + linear data streams
+// Heavy, deliberate rotation (tons of weight)
+// ===========================================
+
+// Frosted glass sphere — X-Ray translucency effect
+function XRaySphere() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<any>(null);
   const timeRef = useRef(0);
 
   useFrame((state, delta) => {
     timeRef.current += delta;
 
     if (meshRef.current) {
-      // Slow, mysterious rotation
-      meshRef.current.rotation.x += delta * 0.05;
-      meshRef.current.rotation.y += delta * 0.08;
-    }
-
-    if (materialRef.current) {
-      // Pulsing distort effect
-      materialRef.current.distort = 0.3 + Math.sin(timeRef.current * 0.5) * 0.1;
+      // HEAVY rotation — like a multi-ton turbine core
+      meshRef.current.rotation.x += delta * 0.012;
+      meshRef.current.rotation.y += delta * 0.018;
     }
   });
 
   return (
     <Float
-      speed={1.5}
-      rotationIntensity={0.2}
-      floatIntensity={0.5}
+      speed={0.6}
+      rotationIntensity={0.05}
+      floatIntensity={0.2}
     >
       <Sphere ref={meshRef} args={[1.5, 128, 128]}>
-        <MeshDistortMaterial
-          ref={materialRef}
-          color="#0a0a0a"
-          attach="material"
-          distort={0.3}
-          speed={1.5}
-          roughness={0.2}
-          metalness={0.9}
+        <MeshTransmissionMaterial
+          backside
+          samples={6}
+          thickness={0.5}
+          chromaticAberration={0.15}
+          anisotropy={0.3}
+          distortion={0.2}
+          distortionScale={0.4}
+          temporalDistortion={0.1}
+          transmission={0.92}
+          roughness={0.3}
+          ior={1.5}
+          color="#0a0a12"
+          attenuationColor="#F97316"
+          attenuationDistance={3}
+        />
+      </Sphere>
+
+      {/* Inner wireframe shell — reveals internal structure */}
+      <Sphere args={[1.2, 24, 24]}>
+        <meshBasicMaterial
+          color="#F97316"
+          wireframe
+          transparent
+          opacity={0.06}
+        />
+      </Sphere>
+
+      {/* Inner core glow */}
+      <Sphere args={[0.4, 16, 16]}>
+        <meshBasicMaterial
+          color="#F97316"
+          transparent
+          opacity={0.15}
         />
       </Sphere>
     </Float>
   );
 }
 
-// Energy veins orbiting the sphere
-function EnergyVeins() {
+// Linear data streams — NOT circular rings, but linear dash-array flows
+function DataStreams() {
   const groupRef = useRef<THREE.Group>(null);
-  const veinsCount = 5;
+  const streamCount = 8;
 
-  const veins = useMemo(() => {
-    return Array.from({ length: veinsCount }, (_, i) => ({
+  const streams = useMemo(() => {
+    return Array.from({ length: streamCount }, (_, i) => ({
       id: i,
-      radius: 1.8 + i * 0.15,
-      speed: 0.3 + i * 0.1,
-      offset: (i * Math.PI * 2) / veinsCount,
-      tilt: Math.random() * Math.PI * 0.5,
+      radius: 1.8 + (i % 4) * 0.2,
+      tiltX: (Math.PI * 0.15) + (i * Math.PI * 2) / streamCount,
+      tiltZ: (i * Math.PI) / streamCount * 0.4,
+      dashScale: 0.6 + Math.random() * 0.4,
+      speed: 0.08 + (i % 3) * 0.03,
     }));
   }, []);
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.1;
+      // Very slow group rotation — weight
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.02;
     }
   });
 
   return (
     <group ref={groupRef}>
-      {veins.map((vein) => (
-        <EnergyRing key={vein.id} {...vein} />
+      {streams.map((stream) => (
+        <DataStreamRing key={stream.id} {...stream} />
       ))}
     </group>
   );
 }
 
-// Individual energy ring
-function EnergyRing({
+// Individual data stream with dash-array animation
+function DataStreamRing({
   radius,
+  tiltX,
+  tiltZ,
+  dashScale,
   speed,
-  offset,
-  tilt,
 }: {
   radius: number;
+  tiltX: number;
+  tiltZ: number;
+  dashScale: number;
   speed: number;
-  offset: number;
-  tilt: number;
 }) {
-  const ringRef = useRef<THREE.Mesh>(null);
-  const particlesRef = useRef<THREE.Points>(null);
+  const lineRef = useRef<THREE.Line>(null);
+  const materialRef = useRef<any>(null);
+  const dashOffsetRef = useRef(0);
 
-  // Create particles along the ring
-  const particlePositions = useMemo(() => {
-    const positions = new Float32Array(60 * 3);
-    for (let i = 0; i < 60; i++) {
-      const angle = (i / 60) * Math.PI * 2;
-      positions[i * 3] = Math.cos(angle) * radius;
-      positions[i * 3 + 1] = 0;
-      positions[i * 3 + 2] = Math.sin(angle) * radius;
+  // Create a circle of points for the ring
+  const geometry = useMemo(() => {
+    const points: THREE.Vector3[] = [];
+    const segments = 128;
+    for (let i = 0; i <= segments; i++) {
+      const angle = (i / segments) * Math.PI * 2;
+      points.push(new THREE.Vector3(
+        Math.cos(angle) * radius,
+        0,
+        Math.sin(angle) * radius
+      ));
     }
-    return positions;
+    const geo = new THREE.BufferGeometry().setFromPoints(points);
+    geo.computeBoundingSphere();
+    return geo;
   }, [radius]);
 
   useFrame((state) => {
-    const time = state.clock.elapsedTime * speed + offset;
-
-    if (ringRef.current) {
-      ringRef.current.rotation.x = tilt;
-      ringRef.current.rotation.z = time;
+    if (materialRef.current) {
+      // Linear dash offset animation — data flowing along the ring
+      dashOffsetRef.current -= speed;
+      (materialRef.current as any).dashOffset = dashOffsetRef.current;
     }
-
-    if (particlesRef.current) {
-      particlesRef.current.rotation.x = tilt;
-      particlesRef.current.rotation.z = time;
+    if (lineRef.current) {
+      lineRef.current.rotation.x = tiltX;
+      lineRef.current.rotation.z = tiltZ;
     }
   });
 
   return (
-    <group>
-      {/* Ring glow */}
-      <mesh ref={ringRef}>
-        <torusGeometry args={[radius, 0.008, 8, 100]} />
-        <meshBasicMaterial
-          color="#F97316"
-          transparent
-          opacity={0.3}
-        />
-      </mesh>
-
-      {/* Particles */}
-      <points ref={particlesRef}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={60}
-            array={particlePositions}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          color="#F97316"
-          size={0.03}
-          transparent
-          opacity={0.8}
-          sizeAttenuation
-        />
-      </points>
-    </group>
+    <line ref={lineRef as any}>
+      <primitive object={geometry} attach="geometry" />
+      <lineDashedMaterial
+        ref={materialRef}
+        color="#F97316"
+        transparent
+        opacity={0.25}
+        dashSize={0.15 * dashScale}
+        gapSize={0.25 * dashScale}
+        linewidth={1}
+      />
+    </line>
   );
 }
 
-// Glowing core light
+// Glowing core light — pulsing subtly
 function CoreGlow() {
   const lightRef = useRef<THREE.PointLight>(null);
 
   useFrame((state) => {
     if (lightRef.current) {
-      // Pulsing light intensity
-      lightRef.current.intensity = 2 + Math.sin(state.clock.elapsedTime * 2) * 0.5;
+      lightRef.current.intensity = 1.5 + Math.sin(state.clock.elapsedTime * 0.8) * 0.3;
     }
   });
 
@@ -171,30 +186,30 @@ function CoreGlow() {
         ref={lightRef}
         position={[0, 0, 0]}
         color="#F97316"
-        intensity={2}
+        intensity={1.5}
         distance={10}
         decay={2}
       />
       <pointLight
         position={[3, 2, 2]}
         color="#F97316"
-        intensity={0.5}
+        intensity={0.3}
         distance={8}
       />
       <pointLight
         position={[-3, -2, -2]}
-        color="#1a1a2e"
-        intensity={0.3}
+        color="#0a0a1a"
+        intensity={0.2}
         distance={8}
       />
     </>
   );
 }
 
-// Ambient particles floating around
+// Ambient particles — sparse, slow, weighty
 function AmbientParticles() {
   const particlesRef = useRef<THREE.Points>(null);
-  const count = 200;
+  const count = 120;
 
   const [positions, colors] = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -203,7 +218,6 @@ function AmbientParticles() {
     const color = new THREE.Color('#F97316');
 
     for (let i = 0; i < count; i++) {
-      // Random positions in a sphere around the core
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       const r = 2.5 + Math.random() * 3;
@@ -212,8 +226,7 @@ function AmbientParticles() {
       positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = r * Math.cos(phi);
 
-      // Vary the color slightly
-      const intensity = 0.3 + Math.random() * 0.7;
+      const intensity = 0.2 + Math.random() * 0.5;
       colors[i * 3] = color.r * intensity;
       colors[i * 3 + 1] = color.g * intensity;
       colors[i * 3 + 2] = color.b * intensity;
@@ -224,8 +237,9 @@ function AmbientParticles() {
 
   useFrame((state) => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02;
-      particlesRef.current.rotation.x = state.clock.elapsedTime * 0.01;
+      // Very slow drift — heavy mass
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.008;
+      particlesRef.current.rotation.x = state.clock.elapsedTime * 0.004;
     }
   });
 
@@ -246,9 +260,9 @@ function AmbientParticles() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.02}
+        size={0.015}
         transparent
-        opacity={0.6}
+        opacity={0.4}
         vertexColors
         sizeAttenuation
       />
@@ -286,15 +300,15 @@ export default function NeuralCore({ className = '' }: NeuralCoreProps) {
             style={{ background: 'transparent' }}
           >
             {/* Ambient lighting */}
-            <ambientLight intensity={0.1} />
+            <ambientLight intensity={0.08} />
 
             {/* Core elements */}
-            <DistortingSphere />
-            <EnergyVeins />
+            <XRaySphere />
+            <DataStreams />
             <CoreGlow />
             <AmbientParticles />
 
-            {/* Safe environment lighting (CSP-compliant, loads local HDR only) */}
+            {/* Safe environment lighting */}
             <SafeEnvironment />
           </Canvas>
         </Suspense>

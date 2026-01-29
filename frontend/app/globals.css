@@ -3,6 +3,7 @@
    Premium Engineering Typography
 =========================================== */
 @import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&f[]=general-sans@400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -105,13 +106,13 @@
 
   .dark {
     /* ===========================================
-       DARK MODE - Premium Rich Dark
-       NO PURE BLACK - Use saturated dark blues/greys
-       Creates depth and distinct elevation planes
-       Inspired by Linear, Vercel, Apple
+       DARK MODE - Deep Onyx with Cold Blue Undertone
+       #050507 base — NOT pure black, NOT neutral gray
+       Military-grade depth with lacivert micro-tint
+       Inspired by Lockheed Martin, Raytheon, SpaceX HUD
     =========================================== */
-    --background: 225 6% 4%;
-    --background-rgb: 11, 12, 16;
+    --background: 240 17% 2%;
+    --background-rgb: 5, 5, 7;
     --foreground: 210 40% 98%;
     --foreground-rgb: 248, 250, 252;
 
@@ -260,12 +261,12 @@
     --text-tertiary: 215 16% 47%;
   }
 
-  /* Smooth transitions for theme switching */
+  /* Smooth transitions for theme switching — 400ms industrial weight */
   .light *,
   .dark * {
     transition-property: background-color, border-color, color, fill, stroke;
-    transition-timing-function: ease;
-    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 400ms;
   }
 
   /* Disable transitions during theme switch to prevent flash */
@@ -700,7 +701,7 @@
   }
 
   .dark .bg-page-gradient {
-    background: linear-gradient(180deg, #050505 0%, #0A0A0A 50%, #050505 100%);
+    background: linear-gradient(180deg, #050507 0%, #0A0A0A 50%, #050507 100%);
   }
 
   .light .bg-page-gradient {
@@ -870,21 +871,28 @@
 }
 
 /* ===========================================
-   PREMIUM TYPOGRAPHY - Satoshi Headings
+   PREMIUM TYPOGRAPHY - Typographic Hardness
+   Satoshi 900 / tighter tracking for headings
+   JetBrains Mono for all data, overlines, badges
 =========================================== */
 h1, h2, h3, h4, h5, h6, .heading {
   font-family: 'Satoshi', 'General Sans', 'Inter', system-ui, sans-serif;
-  letter-spacing: -0.02em;
-  font-weight: 700;
-}
-
-h1 {
   letter-spacing: -0.03em;
   font-weight: 900;
 }
 
+h1 {
+  letter-spacing: -0.04em;
+  font-weight: 900;
+}
+
 h2 {
-  letter-spacing: -0.025em;
+  letter-spacing: -0.035em;
+  font-weight: 900;
+}
+
+h3 {
+  letter-spacing: -0.03em;
   font-weight: 700;
 }
 
@@ -892,16 +900,41 @@ h2 {
 .heading-display {
   font-family: 'Satoshi', 'General Sans', sans-serif;
   font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
 }
 
 .heading-tight {
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
 }
 
 .heading-tighter {
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
+}
+
+/* Mono layer — Technical data, overlines, badges, specs */
+.mono-overline {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.mono-badge {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mono-data {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ===========================================
@@ -946,7 +979,7 @@ h2 {
 .curtain-transition {
   position: fixed;
   inset: 0;
-  background: #050505;
+  background: #050507;
   z-index: 9990;
   pointer-events: none;
 }
@@ -1040,4 +1073,158 @@ html.lenis body {
 
 .line-reveal:hover::after {
   width: 100%;
+}
+
+/* ===========================================
+   BORDER BEAM — 1px light beam orbiting cards
+   Usage: add .border-beam to a position:relative card
+=========================================== */
+.border-beam {
+  position: relative;
+  overflow: hidden;
+}
+
+.border-beam::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--beam-angle, 0deg),
+    transparent 0%,
+    transparent 76%,
+    #F97316 80%,
+    #FB923C 84%,
+    transparent 88%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: border-beam-spin 4s linear infinite;
+  pointer-events: none;
+}
+
+.border-beam:hover::before {
+  opacity: 1;
+}
+
+@keyframes border-beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ===========================================
+   TECHNICAL OVERLAY — Corner brackets & scanlines
+   Military HUD aesthetic
+=========================================== */
+.technical-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* Corner brackets */
+.corner-bracket {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  opacity: 0.15;
+}
+
+.corner-bracket::before,
+.corner-bracket::after {
+  content: '';
+  position: absolute;
+  background: #F97316;
+}
+
+.corner-bracket--tl { top: 16px; left: 16px; }
+.corner-bracket--tl::before { top: 0; left: 0; width: 24px; height: 1px; }
+.corner-bracket--tl::after  { top: 0; left: 0; width: 1px; height: 24px; }
+
+.corner-bracket--tr { top: 16px; right: 16px; }
+.corner-bracket--tr::before { top: 0; right: 0; width: 24px; height: 1px; }
+.corner-bracket--tr::after  { top: 0; right: 0; width: 1px; height: 24px; }
+
+.corner-bracket--bl { bottom: 16px; left: 16px; }
+.corner-bracket--bl::before { bottom: 0; left: 0; width: 24px; height: 1px; }
+.corner-bracket--bl::after  { bottom: 0; left: 0; width: 1px; height: 24px; }
+
+.corner-bracket--br { bottom: 16px; right: 16px; }
+.corner-bracket--br::before { bottom: 0; right: 0; width: 24px; height: 1px; }
+.corner-bracket--br::after  { bottom: 0; right: 0; width: 1px; height: 24px; }
+
+/* Scanlines */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 39;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(5, 5, 7, 0.015) 2px,
+    rgba(5, 5, 7, 0.015) 4px
+  );
+}
+
+.dark .scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.008) 2px,
+    rgba(255, 255, 255, 0.008) 4px
+  );
+}
+
+/* ===========================================
+   BLUEPRINT GRID — Mouse-parallax reactive
+=========================================== */
+.blueprint-grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.3) 1px, transparent 1px);
+  background-size: 80px 80px;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.dark .blueprint-grid {
+  opacity: 0.02;
+}
+
+/* ===========================================
+   ENGINEER ORANGE GLOW — Critical actions only
+=========================================== */
+.glow-engineer {
+  box-shadow:
+    0 0 20px rgba(249, 115, 22, 0.15),
+    0 0 60px rgba(249, 115, 22, 0.05);
+}
+
+.glow-engineer-intense {
+  box-shadow:
+    0 0 20px rgba(249, 115, 22, 0.3),
+    0 0 60px rgba(249, 115, 22, 0.15),
+    0 0 100px rgba(249, 115, 22, 0.05);
+  text-shadow: 0 0 20px rgba(249, 115, 22, 0.5);
 }

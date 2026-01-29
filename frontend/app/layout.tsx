@@ -3,6 +3,8 @@ import { fontVariables } from '@/lib/fonts';
 import NoiseOverlay from '@/components/premium/NoiseOverlay';
 import CustomCursor from '@/components/premium/CustomCursor';
 import CursorGlow from '@/components/premium/CursorGlow';
+import TechnicalOverlay from '@/components/premium/TechnicalOverlay';
+import BlueprintGrid from '@/components/premium/BlueprintGrid';
 import { AudioProvider } from '@/components/premium/AudioProvider';
 import { MotionProvider } from '@/components/premium/MotionProvider';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -93,7 +95,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#F8FAFC' },
-    { media: '(prefers-color-scheme: dark)', color: '#050505' },
+    { media: '(prefers-color-scheme: dark)', color: '#050507' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -115,6 +117,9 @@ export default function RootLayout({
         {/* Preconnect to Fontshare CDN (Satoshi + General Sans fonts) */}
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        {/* Preconnect to Google Fonts (JetBrains Mono) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* Inline script to prevent flash of wrong theme */}
         <script
           dangerouslySetInnerHTML={{
@@ -145,6 +150,8 @@ export default function RootLayout({
             {/* Optimized Framer Motion Provider - reduces bundle by ~30KB */}
             <MotionProvider features="domMax">
               {/* Premium Cinematic Effects */}
+              <BlueprintGrid />
+              <TechnicalOverlay />
               <NoiseOverlay />
               <CustomCursor />
               <CursorGlow />
