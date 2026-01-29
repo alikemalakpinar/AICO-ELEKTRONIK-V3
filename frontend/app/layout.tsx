@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com'
   ),
   alternates: {
-    canonical: './',
+    canonical: '/',
     languages: {
       'tr-TR': '/tr',
       'en-US': '/en',

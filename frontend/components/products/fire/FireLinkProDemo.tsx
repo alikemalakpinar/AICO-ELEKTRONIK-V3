@@ -61,9 +61,16 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
   const [scenario, setScenario] = useState<'normal' | 'warning' | 'critical'>('normal');
   const [selectedSensor, setSelectedSensor] = useState<number | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [alarmAvailable, setAlarmAvailable] = useState(true);
   const [history, setHistory] = useState<{ time: Date; level: string }[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const alarmAudio = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    const a = new Audio('/sounds/alarm.mp3');
+    a.preload = 'auto';
+    a.onerror = () => setAlarmAvailable(false);
+    return a;
+  }, []);
 
   // Parse initial packet
   useEffect(() => {
@@ -88,15 +95,15 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
         ...prev.slice(0, 49),
       ]);
 
-      if (parsed.hasAnyFire && soundEnabled && audioRef.current) {
-        audioRef.current.play().catch(() => {});
+      if (parsed.hasAnyFire && soundEnabled && alarmAvailable && alarmAudio) {
+        alarmAudio.play().catch(() => {});
       }
     }, 1000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isSimulating, scenario, lang, soundEnabled]);
+  }, [isSimulating, scenario, lang, soundEnabled, alarmAvailable, alarmAudio]);
 
   const warningLevel = packet ? getWarningLevel(packet) : 'offline';
 
@@ -408,13 +415,6 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
         )}
       </AnimatePresence>
 
-      {/* Hidden audio element for alarm */}
-      <audio
-        ref={audioRef}
-        src="/sounds/alarm.mp3"
-        preload="auto"
-        style={{ display: 'none' }}
-      />
     </DashboardShell>
   );
 }
