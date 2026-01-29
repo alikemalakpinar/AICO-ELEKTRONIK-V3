@@ -55,13 +55,19 @@ limiter = Limiter(key_func=get_real_client_ip)
 app = FastAPI(
     title="AICO Elektronik Engineering Portfolio API",
     description="Muhendislik ve Ar-Ge Danismanlik Portfolyosu API",
-    version="2.0.0"
+    version="3.0.0"
 )
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
+# Create a router with the /api/v1 prefix
+# All endpoints MUST be versioned to prevent breaking changes on schema evolution.
+# Legacy /api/ routes are maintained via a compatibility router below.
+api_router = APIRouter(prefix="/api/v1")
+
+# Legacy compatibility router: proxies old /api/* to /api/v1/*
+# This ensures existing clients don't break during migration.
+legacy_router = APIRouter(prefix="/api")
 
 
 # ============= Contact/Info Request Model =============
@@ -203,7 +209,7 @@ class StatusCheckCreate(BaseModel):
 async def root():
     return {
         "message": "AICO Elektronik Engineering Portfolio API",
-        "version": "2.0.0",
+        "version": "3.0.0",
         "status": "operational"
     }
 
@@ -371,8 +377,68 @@ async def get_industries():
     return sorted(list(industries))
 
 
-# Include the router in the main app
+# ============= Legacy Compatibility Routes =============
+# These forward old /api/* paths to /api/v1/* handlers.
+# Mark with deprecation headers. Remove after migration window (Q3 2026).
+
+@legacy_router.get("/")
+async def legacy_root():
+    return await root()
+
+@legacy_router.get("/projects")
+async def legacy_get_projects(featured: Optional[bool] = None, industry: Optional[str] = None):
+    return await get_projects(featured, industry)
+
+@legacy_router.get("/projects/{slug}")
+async def legacy_get_project_by_slug(slug: str):
+    return await get_project_by_slug(slug)
+
+@legacy_router.get("/projects/industry/{industry}")
+async def legacy_get_projects_by_industry(industry: str):
+    return await get_projects_by_industry(industry)
+
+@legacy_router.post("/contact/consultation", response_model=InfoRequest)
+@limiter.limit("5/minute")
+async def legacy_create_consultation(request: Request, info_request: InfoRequestCreate):
+    return await create_consultation_request(request, info_request)
+
+@legacy_router.get("/contact/consultations")
+async def legacy_get_consultations(project_type: Optional[str] = None):
+    return await get_consultation_requests(project_type)
+
+@legacy_router.post("/contact/request-info", response_model=InfoRequest)
+@limiter.limit("5/minute")
+async def legacy_create_info_request(request: Request, info_request: InfoRequestCreate):
+    return await create_consultation_request(request, info_request)
+
+@legacy_router.get("/technologies")
+async def legacy_get_technologies():
+    return await get_technologies()
+
+@legacy_router.get("/industries")
+async def legacy_get_industries():
+    return await get_industries()
+
+@legacy_router.post("/status", response_model=StatusCheck)
+async def legacy_create_status(input: StatusCheckCreate):
+    return await create_status_check(input)
+
+@legacy_router.get("/status", response_model=List[StatusCheck])
+async def legacy_get_status():
+    return await get_status_checks()
+
+@legacy_router.get("/config/{key}")
+async def legacy_get_config(key: str):
+    return await get_config(key)
+
+@legacy_router.get("/config")
+async def legacy_get_all_configs():
+    return await get_all_configs()
+
+
+# Include both routers in the main app
 app.include_router(api_router)
+app.include_router(legacy_router)
 
 # CORS Configuration - Security hardened
 # In production, CORS_ORIGINS environment variable MUST be set

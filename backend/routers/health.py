@@ -11,7 +11,7 @@ import os
 
 from config import settings, logger
 
-router = APIRouter(tags=["Health & Monitoring"])
+router = APIRouter(prefix="/api/v1", tags=["Health & Monitoring"])
 
 
 @router.get("/health")

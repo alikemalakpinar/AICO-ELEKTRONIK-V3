@@ -3,6 +3,7 @@
 import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // Infinite neon grid floor with wave animation
 function InfiniteGrid() {
@@ -182,12 +183,23 @@ function Scene() {
 }
 
 export default function HolographicGrid({ className = '' }: HolographicGridProps) {
+  const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+
+  if (shouldShowStatic) {
+    return (
+      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
+        <div className="text-xs text-muted-foreground font-mono">Holographic Grid</div>
+      </div>
+    );
+  }
+
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
         camera={{ position: [0, 3, 8], fov: 60 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={dpr}
+        frameloop={frameloop as 'always' | 'never' | 'demand'}
+        gl={{ ...gl, alpha: true }}
       >
         <Scene />
       </Canvas>

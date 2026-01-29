@@ -1,8 +1,10 @@
 /**
- * API client utility for AICO Elektronik
+ * API client utility for AICO Elektronik v3
+ *
+ * All endpoints target /api/v1/ — versioned for schema evolution.
  *
  * Same-Origin Proxy Architecture:
- * - All API calls use relative URLs (/api/...)
+ * - All API calls use relative URLs (/api/v1/...)
  * - nginx proxies /api/ requests to the FastAPI backend
  * - No NEXT_PUBLIC_* env vars needed for API calls
  * - Same Docker image works across all environments (staging/prod)
@@ -12,32 +14,29 @@
  * - Bypasses nginx for faster SSR data fetching
  */
 
+import type { ApiResult, ApiErrorCode, HttpStatusCode } from '@/types';
+
 type FetchOptions = RequestInit & {
   timeout?: number;
 };
+
+/** API version prefix — single source of truth */
+const API_VERSION = '/api/v1' as const;
 
 /**
  * Get the API base URL.
  * - Server-side (SSR/SSG): Uses INTERNAL_API_URL for Docker internal network
  * - Client-side: Uses empty string (relative URL) so nginx proxies to backend
- *
- * This architecture ensures:
- * 1. No build-time API URL freezing
- * 2. Same image works across staging/prod
- * 3. Proper rate limiting with real client IP (X-Forwarded-For)
  */
 function getApiBaseUrl(): string {
-  // Server-side rendering - use internal Docker network
   if (typeof window === 'undefined') {
     return process.env.INTERNAL_API_URL || 'http://backend:8001';
   }
-
-  // Client-side - always use relative URL (nginx proxies to backend)
   return '';
 }
 
 /**
- * Fetch wrapper with timeout and error handling
+ * Fetch wrapper with timeout, error handling, and v1 prefix enforcement.
  */
 export async function apiFetch<T>(
   endpoint: string,
@@ -46,10 +45,16 @@ export async function apiFetch<T>(
   const { timeout = 30000, ...fetchOptions } = options;
   const baseUrl = getApiBaseUrl();
 
-  // Ensure endpoint starts with /api/
-  const normalizedEndpoint = endpoint.startsWith('/api/')
-    ? endpoint
-    : `/api${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  // Normalize: ensure endpoint uses /api/v1/ prefix
+  let normalizedEndpoint: string;
+  if (endpoint.startsWith('/api/v1/')) {
+    normalizedEndpoint = endpoint;
+  } else if (endpoint.startsWith('/api/')) {
+    // Migrate legacy /api/ calls to /api/v1/
+    normalizedEndpoint = endpoint.replace('/api/', '/api/v1/');
+  } else {
+    normalizedEndpoint = `${API_VERSION}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  }
 
   const url = `${baseUrl}${normalizedEndpoint}`;
 
@@ -71,7 +76,7 @@ export async function apiFetch<T>(
     if (!response.ok) {
       throw new ApiError(
         `API request failed: ${response.statusText}`,
-        response.status
+        response.status as HttpStatusCode
       );
     }
 
@@ -88,20 +93,37 @@ export async function apiFetch<T>(
 }
 
 /**
- * Custom API error class
+ * Custom API error class with typed status codes
  */
 export class ApiError extends Error {
+  public readonly code: ApiErrorCode;
+
   constructor(
     message: string,
     public statusCode: number
   ) {
     super(message);
     this.name = 'ApiError';
+    this.code = statusToErrorCode(statusCode);
+  }
+}
+
+/** Map HTTP status codes to typed error codes */
+function statusToErrorCode(status: number): ApiErrorCode {
+  switch (status) {
+    case 400: return 'VALIDATION_ERROR';
+    case 401: return 'UNAUTHORIZED';
+    case 403: return 'FORBIDDEN';
+    case 404: return 'NOT_FOUND';
+    case 408: return 'TIMEOUT';
+    case 429: return 'RATE_LIMITED';
+    case 503: return 'SERVICE_UNAVAILABLE';
+    default: return 'INTERNAL_ERROR';
   }
 }
 
 /**
- * API endpoints
+ * API endpoints — all routed through /api/v1/
  */
 export const api = {
   // Projects
@@ -133,6 +155,9 @@ export const api = {
   // Config
   getConfig: (key: string) => apiFetch<ConfigItem>(`/config/${key}`),
   getAllConfigs: () => apiFetch<ConfigItem[]>('/config'),
+
+  // Health
+  getHealth: () => apiFetch<HealthResponse>('/health'),
 };
 
 // Types
@@ -156,6 +181,7 @@ export interface Project {
   order: number;
   created_at: string;
   updated_at: string;
+  schema_version?: number;
 }
 
 export interface ProjectPhase {
@@ -186,9 +212,16 @@ export interface ConsultationResponse {
   timeline?: string;
   message?: string;
   created_at: string;
+  schema_version?: number;
 }
 
 export interface ConfigItem {
   key: string;
   value: unknown;
+}
+
+export interface HealthResponse {
+  status: string;
+  timestamp: string;
+  version: string;
 }

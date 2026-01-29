@@ -4,6 +4,7 @@ import React, { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Edges, Float } from '@react-three/drei';
 import * as THREE from 'three';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
 // InteractiveWireframeHouse - Compact & Elegant
@@ -233,12 +234,23 @@ interface InteractiveWireframeHouseProps {
 }
 
 export default function InteractiveWireframeHouse({ className = '' }: InteractiveWireframeHouseProps) {
+  const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+
+  if (shouldShowStatic) {
+    return (
+      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
+        <div className="text-xs text-muted-foreground font-mono">Smart Home Wireframe</div>
+      </div>
+    );
+  }
+
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
-        camera={{ position: [3.5, 2.5, 3.5], fov: 50 }} // Pulled back camera
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        camera={{ position: [3.5, 2.5, 3.5], fov: 50 }}
+        dpr={dpr}
+        frameloop={frameloop as 'always' | 'never' | 'demand'}
+        gl={{ ...gl, alpha: true }}
       >
         <Scene />
       </Canvas>
