@@ -62,6 +62,7 @@ interface SmartResidenceClientProps {
 const SCENE_ID_TO_RESIDENCE: Record<string, ResidenceSceneType> = {
   hero: 'intro',
   morning: 'intro',
+  infrastructure: 'infrastructure',
   noon: 'platform',
   evening: 'mobile',
   night: 'access',
@@ -103,6 +104,18 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
       stats: [
         { label: lang === 'tr' ? 'Enerji Tasarrufu' : 'Energy Savings', value: '%35' },
         { label: lang === 'tr' ? 'Aktif Sistem' : 'Active Systems', value: '12' },
+      ],
+    },
+    {
+      id: 'infrastructure',
+      badge: lang === 'tr' ? 'ALTYAPI' : 'INFRASTRUCTURE',
+      title: lang === 'tr' ? 'Elektrik Panosu & FireLink Zonu' : 'Electrical Cabinet & FireLink Zone',
+      content: lang === 'tr'
+        ? 'Bodrum katında bulunan ana elektrik panolarında ark algılama ve kablo yalıtım izleme sistemi aktif. FireLink, yalıtım bozulmasını termal baskı öncesinde tespit eder ve koruyucu devre kesiciyi devreye sokar.'
+        : 'Arc detection and cable insulation monitoring active in basement electrical cabinets. FireLink detects insulation degradation before thermal buildup and engages preventive circuit breakers.',
+      stats: [
+        { label: lang === 'tr' ? 'Ark Algılama' : 'Arc Detection', value: '<50ms' },
+        { label: lang === 'tr' ? 'Kablo İzleme' : 'Cable Monitor', value: '24/7' },
       ],
     },
     {

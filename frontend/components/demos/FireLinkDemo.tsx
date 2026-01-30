@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import TypewriterText from '@/components/premium/TypewriterText';
 import {
   Zap,
   AlertTriangle,
@@ -294,7 +295,7 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
               {t.systemDirective} — {ACTION_STATE_META[metrics.actionState][lang === 'tr' ? 'labelTr' : 'labelEn']}
             </span>
           </div>
-          <p className="text-sm text-foreground/80 font-mono leading-relaxed">{directive}</p>
+          <TypewriterText text={directive} speed={20} className="text-sm text-foreground/80 leading-relaxed" />
         </div>
 
         {/* Cabinet ID badge */}
