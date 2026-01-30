@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
@@ -24,10 +24,22 @@ import { getTranslations, type Locale } from '@/lib/i18n';
 import ScrollyTellingContainer, {
   type ScrollyScene,
 } from '@/components/premium/ScrollyTellingContainer';
+import { useSceneStore, type ResidenceSceneType } from '@/stores/sceneStore';
 
 // Lazy load 3D component for performance
 const NetworkGlobe = dynamic(
   () => import('@/components/premium/3d/NetworkGlobe'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+    ),
+  }
+);
+
+// Lazy load 3D Residence Scene
+const ResidenceScene = dynamic(
+  () => import('@/components/premium/3d/ResidenceScene'),
   {
     ssr: false,
     loading: () => (
@@ -46,8 +58,31 @@ interface SmartResidenceClientProps {
   lang: Locale;
 }
 
+// Map scrollytelling scene IDs to ResidenceScene camera positions
+const SCENE_ID_TO_RESIDENCE: Record<string, ResidenceSceneType> = {
+  hero: 'intro',
+  morning: 'intro',
+  noon: 'platform',
+  evening: 'mobile',
+  night: 'access',
+  platform: 'platform',
+  mobile: 'mobile',
+  access: 'access',
+  maintenance: 'dashboard',
+};
+
 export default function SmartResidenceClient({ lang }: SmartResidenceClientProps) {
   const t = getTranslations(lang);
+  const setResidenceScene = useSceneStore((s) => s.setResidenceScene);
+
+  // Drive 3D camera from scroll position
+  const handleSceneChange = useCallback(
+    (_index: number, sceneId: string) => {
+      const mapped = SCENE_ID_TO_RESIDENCE[sceneId] || 'intro';
+      setResidenceScene(mapped);
+    },
+    [setResidenceScene]
+  );
 
   // Scrollytelling scenes
   const scenes: ScrollyScene[] = [
@@ -261,8 +296,13 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Scrollytelling Section */}
-      <ScrollyTellingContainer scenes={scenes} />
+      {/* 3D Building Scene - Fixed behind scrollytelling */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <ResidenceScene />
+      </div>
+
+      {/* Scrollytelling Section - drives 3D camera */}
+      <ScrollyTellingContainer scenes={scenes} onSceneChange={handleSceneChange} />
 
       {/* 3D Network Globe Showcase */}
       <section className="py-20 bg-background overflow-hidden relative">
