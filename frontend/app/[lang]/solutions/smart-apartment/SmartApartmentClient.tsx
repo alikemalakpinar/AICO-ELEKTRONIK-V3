@@ -59,6 +59,54 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
         : 'Digital platform designed for modern apartment living, connecting residents and management.',
     },
     {
+      id: 'morning',
+      badge: '07:30',
+      title: lang === 'tr' ? 'Güne Hazır, Kapılar Açık' : 'Ready for the Day, Doors Open',
+      content: lang === 'tr'
+        ? 'Sabah saatlerinde kapılar bakım ve temizlik ekipleri için otomatik olarak açılır. Kargo bildirimleri sakinlere iletilir, ortak alan temizlik programı başlar.'
+        : 'In the morning hours, doors automatically unlock for maintenance and cleaning crews. Package delivery notifications are sent to residents, common area cleaning schedule begins.',
+      stats: [
+        { label: lang === 'tr' ? 'Otomatik Giriş' : 'Auto Entry', value: '6' },
+        { label: lang === 'tr' ? 'Bildirim' : 'Notifications', value: '24+' },
+      ],
+    },
+    {
+      id: 'afternoon',
+      badge: '14:00',
+      title: lang === 'tr' ? 'Ziyaretçi Yönetimi Aktif' : 'Visitor Management Active',
+      content: lang === 'tr'
+        ? 'Öğleden sonra ziyaretçi trafiği artar. Sistem misafir QR kodlarını doğrular, otopark alanlarını otomatik tahsis eder ve güvenlik kameralarını giriş noktalarına odaklar.'
+        : 'Afternoon visitor traffic increases. The system verifies guest QR codes, automatically allocates parking spaces, and focuses security cameras on entry points.',
+      stats: [
+        { label: lang === 'tr' ? 'Misafir Doğrulama' : 'Guest Verification', value: '<2s' },
+        { label: lang === 'tr' ? 'Park Tahsisi' : 'Parking Allocation', value: 'Auto' },
+      ],
+    },
+    {
+      id: 'evening',
+      badge: '20:00',
+      title: lang === 'tr' ? 'Akşam Güvenlik Geçişi' : 'Evening Security Transition',
+      content: lang === 'tr'
+        ? 'Güvenlik kameraları gece moduna geçer, ortak alan aydınlatması otomatik olarak ayarlanır. Otopark giriş-çıkış kayıtları güçlendirilir, lobi interkomu aktif moda alınır.'
+        : 'Security cameras switch to night mode, common area lighting adjusts automatically. Parking entry-exit logs are reinforced, lobby intercom switches to active mode.',
+      stats: [
+        { label: lang === 'tr' ? 'Kamera Modu' : 'Camera Mode', value: 'IR' },
+        { label: lang === 'tr' ? 'Aydınlatma Tasarrufu' : 'Lighting Savings', value: '%45' },
+      ],
+    },
+    {
+      id: 'latenight',
+      badge: '02:00',
+      title: lang === 'tr' ? 'Sessiz Güvenlik Taraması' : 'Silent Security Sweep',
+      content: lang === 'tr'
+        ? 'Gece yarısı acil durum izleme sistemi tam kapasiteyle çalışır. Sensörler anormal hareketleri algılar, yangın ve su baskını dedektörleri sürekli kontrol edilir, sessiz güvenlik taraması yapılır.'
+        : 'Late night emergency monitoring system runs at full capacity. Sensors detect abnormal movements, fire and flood detectors are continuously checked, silent security sweep is performed.',
+      stats: [
+        { label: lang === 'tr' ? 'Aktif Dedektör' : 'Active Detectors', value: '48' },
+        { label: lang === 'tr' ? 'Tarama Döngüsü' : 'Sweep Cycle', value: '15dk' },
+      ],
+    },
+    {
       id: 'communication',
       badge: lang === 'tr' ? 'İLETİŞİM' : 'COMMUNICATION',
       title: lang === 'tr' ? 'Anında Bağlantı' : 'Instant Connection',

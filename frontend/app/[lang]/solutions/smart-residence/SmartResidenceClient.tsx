@@ -59,6 +59,54 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
       content: t.smartResidence.heroSubtitle,
     },
     {
+      id: 'morning',
+      badge: '08:00',
+      title: lang === 'tr' ? 'Günaydın, Enerji Tasarrufu Aktif' : 'Good Morning, Energy Savings Active',
+      content: lang === 'tr'
+        ? 'Sakinler uyanmadan önce sistem gece modundan çıkar. Ortak alan aydınlatması gün ışığına göre ayarlanır, asansörler standby moddan aktif moda geçer.'
+        : 'Before residents wake up, the system exits night mode. Common area lighting adjusts to daylight, elevators switch from standby to active mode.',
+      stats: [
+        { label: lang === 'tr' ? 'Enerji Tasarrufu' : 'Energy Savings', value: '%35' },
+        { label: lang === 'tr' ? 'Aktif Sistem' : 'Active Systems', value: '12' },
+      ],
+    },
+    {
+      id: 'noon',
+      badge: '12:00',
+      title: lang === 'tr' ? 'Yoğun Saat, Akıllı Yük Dengeleme' : 'Peak Hours, Smart Load Balancing',
+      content: lang === 'tr'
+        ? 'Gün ortasında enerji tüketimi zirveye ulaşır. Sistem otomatik olarak yük dengeleme yapar, klimaları optimize eder ve ortak alan aydınlatmasını doğal ışığa göre kısar.'
+        : 'Energy consumption peaks at midday. The system automatically balances loads, optimizes HVAC units, and dims common area lighting based on natural light.',
+      stats: [
+        { label: lang === 'tr' ? 'Yük Optimizasyonu' : 'Load Optimization', value: '%28' },
+        { label: lang === 'tr' ? 'Aktif Sensör' : 'Active Sensors', value: '340+' },
+      ],
+    },
+    {
+      id: 'evening',
+      badge: '18:00',
+      title: lang === 'tr' ? 'Hoş Geldiniz, Otomasyon Aktif' : 'Welcome Home, Automation Active',
+      content: lang === 'tr'
+        ? 'Sakinler eve dönerken sistem otomatik karşılama senaryolarını devreye sokar. Lobi aydınlatması artırılır, asansör öncelikleri ayarlanır, otopark bariyerleri hızlandırılır.'
+        : 'As residents return home, the system activates automated welcome sequences. Lobby lighting increases, elevator priorities adjust, parking barriers speed up.',
+      stats: [
+        { label: lang === 'tr' ? 'Giriş Hızı' : 'Entry Speed', value: '<3s' },
+        { label: lang === 'tr' ? 'Aktif Senaryo' : 'Active Scenarios', value: '8' },
+      ],
+    },
+    {
+      id: 'night',
+      badge: '23:00',
+      title: lang === 'tr' ? 'Gece Güvenlik Modu Aktif' : 'Night Security Mode Active',
+      content: lang === 'tr'
+        ? 'Gece modu devreye girer: güvenlik kameraları yüksek hassasiyete geçer, ortak alan ışıkları minimuma düşer, asansörler enerji tasarruf moduna alınır. Tüm giriş-çıkışlar kayıt altında.'
+        : 'Night mode activates: security cameras switch to high sensitivity, common area lights dim to minimum, elevators enter energy saving mode. All entries and exits are logged.',
+      stats: [
+        { label: lang === 'tr' ? 'Gece Tasarrufu' : 'Night Savings', value: '%55' },
+        { label: lang === 'tr' ? 'Güvenlik Seviyesi' : 'Security Level', value: 'MAX' },
+      ],
+    },
+    {
       id: 'platform',
       badge: lang === 'tr' ? 'PLATFORM' : 'PLATFORM',
       title: t.smartResidence.scene1Title,

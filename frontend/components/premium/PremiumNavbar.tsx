@@ -21,10 +21,8 @@ import {
   Snowflake,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
-import SoundToggle from './SoundToggle';
 import ThemeToggle from './ThemeToggle';
 import ThemeLogo from './ThemeLogo';
-import { useAudio } from './AudioProvider';
 
 interface PremiumNavbarProps {
   lang: Locale;
@@ -49,7 +47,6 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const t = getTranslations(lang);
-  const { playClick } = useAudio();
   const navRef = useRef<HTMLElement>(null);
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -106,7 +103,6 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
 
   // Language switch handler
   const handleLanguageSwitch = () => {
-    playClick();
     const newLang = lang === 'tr' ? 'en' : 'tr';
     const currentPath = pathname.replace(`/${lang}`, '');
     router.push(`/${newLang}${currentPath || ''}`);
@@ -485,9 +481,6 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                 <div className="hidden lg:flex items-center gap-2">
                   {/* Theme Toggle */}
                   <ThemeToggle size="sm" />
-
-                  {/* Sound Toggle */}
-                  <SoundToggle />
 
                   {/* Language Switcher */}
                   <button

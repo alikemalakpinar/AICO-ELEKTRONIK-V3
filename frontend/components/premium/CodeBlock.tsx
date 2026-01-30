@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
 import { Copy, Check, Code2, Terminal } from 'lucide-react';
-import { useAudio } from './AudioProvider';
 
 /**
  * CodeBlock - Premium Syntax Highlighted Code Display
@@ -88,14 +87,10 @@ export default function CodeBlock({
 }: CodeBlockProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { playClick, playSuccess } = useAudio();
-
   const handleCopy = async () => {
-    playClick();
     try {
       await navigator.clipboard.writeText(code);
       setIsCopied(true);
-      playSuccess();
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);

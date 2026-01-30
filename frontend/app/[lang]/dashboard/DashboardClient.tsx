@@ -7,7 +7,6 @@ import { LogOut, Settings, Bell, User, LayoutDashboard } from 'lucide-react';
 import VillaStatus from '@/components/dashboard/VillaStatus';
 import EnergyChart from '@/components/dashboard/EnergyChart';
 import SystemMetrics from '@/components/dashboard/SystemMetrics';
-import { useAudio } from '@/components/premium/AudioProvider';
 
 /**
  * DashboardClient - Engineering Control Dashboard
@@ -32,7 +31,6 @@ interface UserSession {
 
 export default function DashboardClient({ lang }: DashboardClientProps) {
   const router = useRouter();
-  const { playClick } = useAudio();
   const [session, setSession] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,7 +50,6 @@ export default function DashboardClient({ lang }: DashboardClientProps) {
   }, [lang, router]);
 
   const handleLogout = () => {
-    playClick();
     localStorage.removeItem('aico-demo-session');
     router.push(`/${lang}`);
   };

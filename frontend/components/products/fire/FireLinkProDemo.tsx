@@ -8,15 +8,12 @@ import {
   Thermometer,
   AlertTriangle,
   Activity,
-  Droplets,
   Power,
-  Volume2,
-  VolumeX,
   Wind,
   Gauge,
   Zap,
-  CloudRain,
-  ShieldAlert,
+  Cable,
+  ShieldCheck,
   BarChart3,
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
@@ -39,7 +36,7 @@ const HeatStressHouse = dynamic(
 
 // ===========================================
 // FireLink Pro Dashboard - Magma Theme
-// AAA Quality Fire Safety Monitoring
+// AAA Quality Electrical Fire Early Warning
 // ===========================================
 
 interface FireLinkProDemoProps {
@@ -60,17 +57,8 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
   const [isSimulating, setIsSimulating] = useState(false);
   const [scenario, setScenario] = useState<'normal' | 'warning' | 'critical'>('normal');
   const [selectedSensor, setSelectedSensor] = useState<number | null>(null);
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [alarmAvailable, setAlarmAvailable] = useState(true);
   const [history, setHistory] = useState<{ time: Date; level: string }[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const alarmAudio = useMemo(() => {
-    if (typeof window === 'undefined') return null;
-    const a = new Audio('/sounds/alarm.mp3');
-    a.preload = 'auto';
-    a.onerror = () => setAlarmAvailable(false);
-    return a;
-  }, []);
 
   // Parse initial packet
   useEffect(() => {
@@ -94,20 +82,16 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
         { time: new Date(), level: getWarningLevel(parsed) },
         ...prev.slice(0, 49),
       ]);
-
-      if (parsed.hasAnyFire && soundEnabled && alarmAvailable && alarmAudio) {
-        alarmAudio.play().catch(() => {});
-      }
     }, 1000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isSimulating, scenario, lang, soundEnabled, alarmAvailable, alarmAudio]);
+  }, [isSimulating, scenario, lang]);
 
   const warningLevel = packet ? getWarningLevel(packet) : 'offline';
 
-  // Enrich packet with environmental demo data
+  // Enrich packet with electrical demo data
   const richPacket = useMemo(
     () => (packet ? enrichPacketWithEnvironmental(packet) : null),
     [packet]
@@ -155,54 +139,40 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
     const avgSensor = richPacket.sensors.length > 0
       ? richPacket.sensors.reduce(
           (acc, s) => ({
-            temp: acc.temp + s.temperature,
-            surface: acc.surface + s.surfaceTemp,
-            gas: acc.gas + s.gasResistance,
-            aqi: acc.aqi + s.airQualityScore,
+            cableTemp: acc.cableTemp + s.cableTemp,
+            arcActivity: acc.arcActivity + s.arcActivity,
+            smoldering: acc.smoldering + s.smolderingRisk,
           }),
-          { temp: 0, surface: 0, gas: 0, aqi: 0 }
+          { cableTemp: 0, arcActivity: 0, smoldering: 0 }
         )
-      : { temp: 0, surface: 0, gas: 0, aqi: 0 };
+      : { cableTemp: 0, arcActivity: 0, smoldering: 0 };
     const n = richPacket.sensors.length || 1;
 
     return [
-      { icon: Wind, label: lang === 'tr' ? 'Gaz Direnci' : 'Gas Resistance', value: (avgSensor.gas / n).toFixed(1), unit: 'kΩ' },
-      { icon: Droplets, label: lang === 'tr' ? 'Nem' : 'Humidity', value: richPacket.humidity.toFixed(1), unit: '%' },
-      { icon: Thermometer, label: lang === 'tr' ? 'Sıcaklık' : 'Temperature', value: (avgSensor.temp / n).toFixed(1), unit: '°C' },
-      { icon: ShieldAlert, label: lang === 'tr' ? 'Hava Kalitesi' : 'Air Quality', value: Math.round(avgSensor.aqi / n).toString(), unit: 'AQI' },
-      { icon: Flame, label: lang === 'tr' ? 'Yüzey Sıcaklığı' : 'Surface Temp', value: (avgSensor.surface / n).toFixed(1), unit: '°C' },
-      { icon: CloudRain, label: 'TVOC', value: richPacket.tvoc.toString(), unit: 'ppb' },
-      { icon: BarChart3, label: 'eCO₂', value: richPacket.eco2.toString(), unit: 'ppm' },
-      { icon: Activity, label: 'NO₂', value: richPacket.no2.toFixed(2), unit: 'ppm' },
-      { icon: AlertTriangle, label: 'CO', value: richPacket.co.toFixed(2), unit: 'ppm' },
-      { icon: Gauge, label: lang === 'tr' ? 'Basınç' : 'Pressure', value: richPacket.pressure.toFixed(1), unit: 'hPa' },
-      { icon: Zap, label: lang === 'tr' ? 'Akım' : 'Current', value: richPacket.systemCurrent.toFixed(1), unit: 'mA' },
+      { icon: Thermometer, label: lang === 'tr' ? 'Kablo Sıcaklığı' : 'Cable Temp', value: (avgSensor.cableTemp / n).toFixed(1), unit: '°C' },
+      { icon: Zap, label: lang === 'tr' ? 'Ark Aktivitesi' : 'Arc Activity', value: Math.round(avgSensor.arcActivity / n).toString(), unit: '' },
+      { icon: Flame, label: lang === 'tr' ? 'İçten Yanma Riski' : 'Smoldering Risk', value: Math.round(avgSensor.smoldering / n).toString(), unit: '%' },
+      { icon: Activity, label: lang === 'tr' ? 'Yük Akımı' : 'Current Load', value: richPacket.currentLoad.toFixed(1), unit: 'A' },
+      { icon: ShieldCheck, label: lang === 'tr' ? 'Yalıtım Direnci' : 'Insulation Resistance', value: richPacket.insulationResistance.toFixed(1), unit: 'MΩ' },
+      { icon: BarChart3, label: lang === 'tr' ? 'Harmonik Bozulma' : 'Harmonic Distortion', value: richPacket.harmonicDistortion.toFixed(1), unit: '%' },
+      { icon: Gauge, label: lang === 'tr' ? 'Güç Faktörü' : 'Power Factor', value: richPacket.powerFactor.toFixed(2), unit: '' },
+      { icon: Wind, label: lang === 'tr' ? 'Ortam Sıcaklığı' : 'Ambient Temp', value: richPacket.ambientTemperature.toFixed(1), unit: '°C' },
+      { icon: Wind, label: lang === 'tr' ? 'Nem' : 'Humidity', value: richPacket.humidity.toFixed(1), unit: '%' },
+      { icon: Power, label: lang === 'tr' ? 'Pil' : 'Battery', value: (richPacket.batteryVoltage / 1000).toFixed(2), unit: 'V' },
+      { icon: Zap, label: lang === 'tr' ? 'Sistem Akımı' : 'System Current', value: richPacket.systemCurrent.toFixed(1), unit: 'mA' },
     ];
   }, [richPacket, lang]);
-
-  const headerRight = (
-    <button
-      onClick={() => setSoundEnabled(!soundEnabled)}
-      className={`p-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors ${
-        soundEnabled ? 'bg-red-500/20 text-red-400' : 'bg-muted text-muted-foreground'
-      }`}
-      aria-label={soundEnabled ? 'Mute alarm' : 'Enable alarm'}
-    >
-      {soundEnabled ? <Volume2 size={16} aria-hidden /> : <VolumeX size={16} aria-hidden />}
-    </button>
-  );
 
   return (
     <DashboardShell
       lang={lang}
-      title={lang === 'tr' ? 'YANGIN İZLEME SİSTEMİ' : 'FIRE MONITORING SYSTEM'}
-      subtitle={lang === 'tr' ? 'Gerçek Zamanlı Termal Analiz' : 'Real-Time Thermal Analysis'}
+      title={lang === 'tr' ? 'ELEKTRİKSEL YANGIN ERKEN UYARI' : 'ELECTRICAL FIRE EARLY WARNING'}
+      subtitle={lang === 'tr' ? 'Kablo İçi Isınma & Ark Tespiti' : 'In-Cable Heating & Arc Detection'}
       brandName="FIRELINK"
       brandVersion="3.0"
       accentColor={MAGMA.accent}
       systemStatuses={systemStatuses}
       isConnected={isSimulating}
-      headerRight={headerRight}
       className={className}
     >
       <div className="grid lg:grid-cols-2 gap-4 p-4 overflow-x-hidden">
@@ -320,7 +290,7 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
                 accentColor={MAGMA.warning}
                 size="sm"
               >
-                {lang === 'tr' ? 'Uyarı' : 'Warning'}
+                {lang === 'tr' ? 'Ark Tespiti' : 'Arc Detect'}
               </TacticalButton>
               <TacticalButton
                 onClick={() => setScenario('critical')}
@@ -328,7 +298,7 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
                 accentColor={MAGMA.danger}
                 size="sm"
               >
-                {lang === 'tr' ? 'Kritik' : 'Critical'}
+                {lang === 'tr' ? 'İçten Yanma' : 'Smoldering'}
               </TacticalButton>
             </div>
 
@@ -352,12 +322,12 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
         </div>
       </div>
 
-      {/* Premium Metrics Grid */}
+      {/* Electrical Parameters Grid */}
       {richPacket && (
         <div className="px-4 pb-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-muted-foreground text-xs font-mono uppercase">
-              {lang === 'tr' ? 'Çevresel Metrikler' : 'Environmental Metrics'}
+              {lang === 'tr' ? 'Elektriksel Parametreler' : 'Electrical Parameters'}
             </h2>
             <span className="text-xs text-muted-foreground font-mono">
               {lang === 'tr' ? 'Son güncelleme' : 'Last updated'}: {richPacket.timestamp.toLocaleTimeString()}
@@ -404,10 +374,15 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
               >
                 <AlertTriangle size={48} className="text-red-500" aria-hidden />
                 <span className="text-red-500 font-mono text-xl font-bold">
-                  {lang === 'tr' ? 'YANGIN ALARMI' : 'FIRE ALARM'}
+                  {lang === 'tr' ? 'ELEKTRİKSEL YANGIN RİSKİ!' : 'ELECTRICAL FIRE RISK!'}
                 </span>
-                <span className="text-red-400 text-sm">
-                  Sensor {packet.criticalSensors.join(', ')}: {packet.sensors.find(s => s.hasFire)?.zone}
+                <span className="text-red-400 text-sm text-center">
+                  {lang === 'tr'
+                    ? `Pano ${packet.sensors.find(s => s.hasFire)?.zone} - Aşırı ısınma ve ark tespiti`
+                    : `Panel ${packet.sensors.find(s => s.hasFire)?.zone} - Overheating and arc detected`}
+                </span>
+                <span className="text-red-400/70 text-xs">
+                  Sensor {packet.criticalSensors.join(', ')}
                 </span>
               </motion.div>
             </div>
@@ -433,7 +408,7 @@ interface SensorCardProps {
 function SensorCard({ sensor, lang, isSelected, onClick }: SensorCardProps) {
   const color = getSensorColor(sensor);
   const isCritical = sensor.hasFire;
-  const isWarning = sensor.hasSmoke && !sensor.hasFire;
+  const isWarning = sensor.hasArc && !sensor.hasFire;
 
   return (
     <motion.button
@@ -483,12 +458,32 @@ function SensorCard({ sensor, lang, isSelected, onClick }: SensorCardProps) {
         {sensor.zone}
       </div>
 
-      {/* Smoke indicator */}
-      {sensor.smokeDensity > 50 && (
-        <div className="flex items-center gap-1 mt-2">
-          <Droplets size={10} style={{ color }} aria-hidden />
+      {/* Cable Temp */}
+      {sensor.cableTemp > 0 && (
+        <div className="flex items-center gap-1 mt-1">
+          <Thermometer size={10} className="text-muted-foreground" aria-hidden />
+          <span className="text-[10px] font-mono text-muted-foreground">
+            {sensor.cableTemp.toFixed(1)}°C
+          </span>
+        </div>
+      )}
+
+      {/* Arc activity indicator */}
+      {sensor.arcActivity > 50 && (
+        <div className="flex items-center gap-1 mt-1">
+          <Zap size={10} style={{ color }} aria-hidden />
           <span className="text-[10px] font-mono" style={{ color }}>
-            {sensor.smokeDensity}
+            {sensor.arcActivity}
+          </span>
+        </div>
+      )}
+
+      {/* Smoldering risk */}
+      {sensor.smolderingRisk > 20 && (
+        <div className="flex items-center gap-1 mt-1">
+          <Flame size={10} style={{ color }} aria-hidden />
+          <span className="text-[10px] font-mono" style={{ color }}>
+            {sensor.smolderingRisk}%
           </span>
         </div>
       )}
@@ -499,7 +494,7 @@ function SensorCard({ sensor, lang, isSelected, onClick }: SensorCardProps) {
           className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold"
           style={{ backgroundColor: color, color: '#000' }}
         >
-          {isCritical ? 'FIRE' : 'SMOKE'}
+          {isCritical ? 'FIRE' : 'ARC'}
         </div>
       )}
 

@@ -18,6 +18,8 @@ import {
   Globe,
   Calendar,
   ExternalLink,
+  ChevronDown,
+  MessageCircle,
 } from 'lucide-react';
 
 interface ContactPageClientProps {
@@ -281,8 +283,67 @@ function GlobalReachMap() {
   );
 }
 
+// FAQ Accordion Item
+function FAQItem({ question, answer, isOpen, onToggle }: { question: string; answer: string; isOpen: boolean; onToggle: () => void }) {
+  return (
+    <div className="border border-border rounded-xl overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-accent/50 transition-colors"
+      >
+        <span className="font-medium text-foreground text-sm">{question}</span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+          <ChevronDown size={16} className="text-muted-foreground" />
+        </motion.div>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <p className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">{answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function ContactPageClient({ lang }: ContactPageClientProps) {
   const t = getTranslations(lang);
+
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+
+  const faqItems = [
+    {
+      q: lang === 'tr' ? 'Demo nasıl talep edebilirim?' : 'How can I request a demo?',
+      a: lang === 'tr'
+        ? 'İletişim formumuzu "Demo Talebi" konusuyla doldurabilir veya Calendly üzerinden direkt randevu alabilirsiniz. Ekibimiz 24 saat içinde size dönüş yapacaktır.'
+        : 'Fill out our contact form with "Demo Request" as the subject, or book directly via Calendly. Our team will get back to you within 24 hours.',
+    },
+    {
+      q: lang === 'tr' ? 'Projeler için ortalama teslim süresi ne kadar?' : 'What is the average delivery time for projects?',
+      a: lang === 'tr'
+        ? 'Proje kapsamına bağlı olarak 4-12 hafta arasında değişmektedir. İlk görüşmede detaylı bir zaman çizelgesi sunuyoruz.'
+        : 'Depending on the project scope, it ranges from 4-12 weeks. We provide a detailed timeline during the initial meeting.',
+    },
+    {
+      q: lang === 'tr' ? 'Hangi sektörlere hizmet veriyorsunuz?' : 'Which industries do you serve?',
+      a: lang === 'tr'
+        ? 'Sanayi, enerji, inşaat, lojistik, madencilik ve tarım başta olmak üzere birçok sektörde IoT ve otomasyon çözümleri sunuyoruz.'
+        : 'We provide IoT and automation solutions across many sectors including industry, energy, construction, logistics, mining, and agriculture.',
+    },
+    {
+      q: lang === 'tr' ? 'Teknik destek süreci nasıl işliyor?' : 'How does the technical support process work?',
+      a: lang === 'tr'
+        ? '7/24 teknik destek hattımız mevcuttur. Kritik arızalarda 2 saat içinde müdahale garantisi sunuyoruz. Uzaktan ve yerinde destek seçeneklerimiz bulunmaktadır.'
+        : 'We have a 24/7 technical support line. We guarantee intervention within 2 hours for critical failures. We offer both remote and on-site support options.',
+    },
+  ];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -389,6 +450,54 @@ export default function ContactPageClient({ lang }: ContactPageClientProps) {
         </motion.div>
       </section>
 
+      {/* Trusted By Section */}
+      <section className="max-w-7xl mx-auto px-6 mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <p className="text-xs font-mono text-muted-foreground/60 uppercase tracking-widest text-center mb-5">
+            {lang === 'tr' ? 'Güvenilen Sektörler' : 'Trusted Industries'}
+          </p>
+          <div className="relative overflow-hidden">
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            <motion.div
+              className="flex gap-4 w-max"
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+            >
+              {[
+                lang === 'tr' ? 'Sanayi' : 'Industry',
+                lang === 'tr' ? 'Enerji' : 'Energy',
+                lang === 'tr' ? 'İnşaat' : 'Construction',
+                lang === 'tr' ? 'Lojistik' : 'Logistics',
+                lang === 'tr' ? 'Savunma' : 'Defense',
+                lang === 'tr' ? 'Sağlık' : 'Healthcare',
+                lang === 'tr' ? 'Tarım' : 'Agriculture',
+                lang === 'tr' ? 'Madencilik' : 'Mining',
+                lang === 'tr' ? 'Sanayi' : 'Industry',
+                lang === 'tr' ? 'Enerji' : 'Energy',
+                lang === 'tr' ? 'İnşaat' : 'Construction',
+                lang === 'tr' ? 'Lojistik' : 'Logistics',
+                lang === 'tr' ? 'Savunma' : 'Defense',
+                lang === 'tr' ? 'Sağlık' : 'Healthcare',
+                lang === 'tr' ? 'Tarım' : 'Agriculture',
+                lang === 'tr' ? 'Madencilik' : 'Mining',
+              ].map((item, i) => (
+                <span
+                  key={i}
+                  className="px-5 py-2 rounded-full border border-border bg-card/40 backdrop-blur-sm text-sm text-muted-foreground whitespace-nowrap"
+                >
+                  {item}
+                </span>
+              ))}
+            </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
       {/* Main Content */}
       <section className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
@@ -457,6 +566,21 @@ export default function ContactPageClient({ lang }: ContactPageClientProps) {
                 value={formData.message}
                 onChange={handleChange}
               />
+
+              {/* Response Time Indicator */}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <Clock size={14} className="text-engineer-500" />
+                </motion.div>
+                <span>
+                  {lang === 'tr'
+                    ? 'Ortalama yanıt süresi: 2 saat'
+                    : 'Average response time: 2 hours'}
+                </span>
+              </div>
 
               <MagneticSubmitButton
                 isSubmitting={isSubmitting}
@@ -593,42 +717,57 @@ export default function ContactPageClient({ lang }: ContactPageClientProps) {
         </div>
       </section>
 
-      {/* FAQ Quick Links */}
+      {/* FAQ Section */}
       <section className="max-w-7xl mx-auto px-6 mt-24">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="p-8 bg-card/60 backdrop-blur-xl border border-border rounded-2xl"
         >
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-engineer-500/10 flex items-center justify-center flex-shrink-0">
-                <Zap size={24} className="text-engineer-500" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">
-                  {lang === 'tr' ? 'Hızlı Cevap Almak İster misiniz?' : 'Want a Quick Response?'}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {lang === 'tr'
-                    ? 'Demo talebi için direkt olarak planlayın. 24 saat içerisinde dönüş yaparız.'
-                    : 'Schedule directly for demo requests. We respond within 24 hours.'}
-                </p>
-              </div>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-xl bg-engineer-500/10 flex items-center justify-center">
+              <Zap size={20} className="text-engineer-500" />
             </div>
-            <motion.a
-              href={`/${lang}/contact?subject=demo`}
-              className="group inline-flex items-center gap-2 px-6 py-3 min-h-[44px] bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all flex-shrink-0"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span>{lang === 'tr' ? 'Demo Planla' : 'Schedule Demo'}</span>
-              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-            </motion.a>
+            <h2 className="text-2xl font-bold text-foreground">
+              {lang === 'tr' ? 'Sıkça Sorulan Sorular' : 'Frequently Asked Questions'}
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {faqItems.map((item, i) => (
+              <FAQItem
+                key={i}
+                question={item.q}
+                answer={item.a}
+                isOpen={openFAQ === i}
+                onToggle={() => setOpenFAQ(openFAQ === i ? null : i)}
+              />
+            ))}
           </div>
         </motion.div>
       </section>
+
+      {/* Live Chat Indicator (decorative) */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.5, duration: 0.4 }}
+        className="fixed bottom-6 right-6 z-50"
+      >
+        <div className="flex items-center gap-2.5 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl">
+          <span className="relative flex h-2.5 w-2.5">
+            <motion.span
+              className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+              animate={{ scale: [1, 1.5, 1], opacity: [0.75, 0, 0.75] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+          </span>
+          <span className="text-sm font-medium text-foreground">
+            {lang === 'tr' ? 'Canli Destek' : 'Live Support'}
+          </span>
+          <MessageCircle size={16} className="text-engineer-500" />
+        </div>
+      </motion.div>
     </div>
   );
 }

@@ -15,6 +15,10 @@ import {
   Clock,
   Power,
   Snowflake,
+  Zap,
+  Shield,
+  Activity,
+  LogOut,
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
 import type { Locale } from '@/types';
@@ -61,6 +65,24 @@ interface TruckData {
   cargo: string | { tr: string; en: string };
   status: 'normal' | 'warning' | 'critical';
 }
+
+// Fate moment interface — critical events along the route
+interface FateMoment {
+  id: string;
+  truckId: string;
+  type: 'door_open' | 'temp_spike' | 'temp_drop' | 'route_deviation' | 'power_loss';
+  timestamp: Date;
+  description: { tr: string; en: string };
+  severity: 'info' | 'warning' | 'critical';
+  temperatureDelta?: number;
+  duration?: number;
+}
+
+const SEVERITY_COLORS: Record<FateMoment['severity'], string> = {
+  info: '#06B6D4',
+  warning: '#F59E0B',
+  critical: '#EF4444',
+};
 
 // Predefined routes
 const ROUTES = {
@@ -138,6 +160,15 @@ const getLocalizedString = (value: string | { tr: string; en: string }, lang: Lo
 
 export default function ColdChainProDemo({ lang, className = '' }: ColdChainProDemoProps) {
   const [trucks, setTrucks] = useState<TruckData[]>(INITIAL_TRUCKS);
+  const [fateMoments, setFateMoments] = useState<FateMoment[]>([]);
+  const [tempHistory, setTempHistory] = useState<Record<string, number[]>>(() => {
+    const init: Record<string, number[]> = {};
+    INITIAL_TRUCKS.forEach((t) => {
+      init[t.id] = [t.temperature];
+    });
+    return init;
+  });
+  const fateMomentCounter = useRef(0);
 
   // Process trucks with localized strings for the 3D Globe component
   const processedTrucksForGlobe = useMemo(
@@ -164,6 +195,8 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
     }
 
     intervalRef.current = setInterval(() => {
+      const newMoments: FateMoment[] = [];
+
       setTrucks((prev) =>
         prev.map((truck) => {
           // Update position
@@ -173,12 +206,71 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
           // Fluctuate temperature
           const tempDrift = (Math.random() - 0.5) * 0.3;
           const newTemp = truck.temperature + tempDrift;
+          const tempDiff = Math.abs(newTemp - truck.targetTemp);
 
           // Determine status
-          const tempDiff = Math.abs(newTemp - truck.targetTemp);
           let status: TruckData['status'] = 'normal';
           if (tempDiff > 3) status = 'critical';
           else if (tempDiff > 1.5) status = 'warning';
+
+          // Generate fate moments
+          const delta = Math.round((newTemp - truck.temperature) * 10) / 10;
+
+          // Temperature spike/drop events
+          if (tempDiff > 2 && Math.random() < 0.05) {
+            fateMomentCounter.current++;
+            const isSpike = newTemp > truck.targetTemp;
+            newMoments.push({
+              id: `fm-${fateMomentCounter.current}`,
+              truckId: truck.id,
+              type: isSpike ? 'temp_spike' : 'temp_drop',
+              timestamp: new Date(),
+              description: {
+                tr: isSpike
+                  ? `Sıcaklık hedefin ${tempDiff.toFixed(1)}°C üstüne çıktı`
+                  : `Sıcaklık hedefin ${tempDiff.toFixed(1)}°C altına düştü`,
+                en: isSpike
+                  ? `Temperature ${tempDiff.toFixed(1)}°C above target`
+                  : `Temperature ${tempDiff.toFixed(1)}°C below target`,
+              },
+              severity: tempDiff > 3 ? 'critical' : 'warning',
+              temperatureDelta: Math.round(delta * 10) / 10,
+            });
+          }
+
+          // Random door open events
+          if (Math.random() < 0.008) {
+            fateMomentCounter.current++;
+            const doorDuration = Math.floor(Math.random() * 25) + 5;
+            newMoments.push({
+              id: `fm-${fateMomentCounter.current}`,
+              truckId: truck.id,
+              type: 'door_open',
+              timestamp: new Date(),
+              description: {
+                tr: `Kapı ${doorDuration} saniye açık kaldı`,
+                en: `Door open for ${doorDuration} seconds`,
+              },
+              severity: doorDuration > 15 ? 'warning' : 'info',
+              duration: doorDuration,
+            });
+          }
+
+          // Power loss events
+          if (truck.battery < 30 && Math.random() < 0.02) {
+            fateMomentCounter.current++;
+            newMoments.push({
+              id: `fm-${fateMomentCounter.current}`,
+              truckId: truck.id,
+              type: 'power_loss',
+              timestamp: new Date(),
+              description: {
+                tr: `Düşük güç uyarısı — %${truck.battery.toFixed(0)} batarya`,
+                en: `Low power warning — ${truck.battery.toFixed(0)}% battery`,
+              },
+              severity: truck.battery < 20 ? 'critical' : 'warning',
+            });
+          }
 
           return {
             ...truck,
@@ -190,6 +282,32 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
           };
         })
       );
+
+      // Update temperature history
+      setTempHistory((prev) => {
+        const next = { ...prev };
+        INITIAL_TRUCKS.forEach((t) => {
+          // We read from the trucks state via closure — use setTrucks callback instead
+        });
+        return next;
+      });
+
+      // We need trucks for temp history, so use a separate approach
+      setTrucks((current) => {
+        setTempHistory((prev) => {
+          const next = { ...prev };
+          current.forEach((t) => {
+            const arr = [...(next[t.id] || []), t.temperature];
+            next[t.id] = arr.slice(-30);
+          });
+          return next;
+        });
+        return current; // no mutation
+      });
+
+      if (newMoments.length > 0) {
+        setFateMoments((prev) => [...newMoments, ...prev].slice(0, 50));
+      }
     }, 100);
 
     return () => {
@@ -198,6 +316,16 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
   }, [isSimulating]);
 
   const selectedTruckData = trucks.find((t) => t.id === selectedTruck);
+
+  // Chain integrity score based on fate moments severity
+  const chainIntegrity = useMemo(() => {
+    const penalties = fateMoments.reduce((sum, fm) => {
+      if (fm.severity === 'critical') return sum + 5;
+      if (fm.severity === 'warning') return sum + 2;
+      return sum + 0.5;
+    }, 0);
+    return Math.max(0, Math.round(100 - penalties));
+  }, [fateMoments]);
 
   const systemStatuses = useMemo(
     () => [
@@ -223,8 +351,19 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
         unit: '°C',
         status: 'normal' as const,
       },
+      {
+        label: lang === 'tr' ? 'Zincir Bütünlüğü' : 'Chain Integrity',
+        value: `${chainIntegrity}`,
+        unit: '%',
+        status:
+          chainIntegrity < 50
+            ? ('critical' as const)
+            : chainIntegrity < 80
+            ? ('warning' as const)
+            : ('normal' as const),
+      },
     ],
-    [trucks, lang]
+    [trucks, lang, chainIntegrity]
   );
 
   return (
@@ -387,9 +526,23 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
                     </div>
                   </div>
                 </div>
+
+                {/* Temperature History Sparkline */}
+                <TemperatureSparkline
+                  history={tempHistory[selectedTruckData.id] || []}
+                  targetTemp={selectedTruckData.targetTemp}
+                  lang={lang}
+                />
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Fate Moments Timeline */}
+          <FateMomentsTimeline
+            moments={fateMoments}
+            lang={lang}
+            selectedTruckId={selectedTruck}
+          />
 
           {/* Control Panel */}
           <div className="p-4 rounded-xl bg-[#0A0A0A] border border-white/5">
@@ -507,5 +660,184 @@ function TruckCard({ truck, lang, isSelected, onClick, accentColor }: TruckCardP
         </div>
       </div>
     </motion.button>
+  );
+}
+
+// ===========================================
+// TemperatureSparkline — SVG line chart
+// ===========================================
+
+function TemperatureSparkline({
+  history,
+  targetTemp,
+  lang,
+}: {
+  history: number[];
+  targetTemp: number;
+  lang: Locale;
+}) {
+  if (history.length < 2) return null;
+
+  const W = 200;
+  const H = 50;
+  const padding = 4;
+  const min = Math.min(...history, targetTemp) - 1;
+  const max = Math.max(...history, targetTemp) + 1;
+  const range = max - min || 1;
+
+  const points = history.map((val, i) => {
+    const x = padding + (i / (history.length - 1)) * (W - padding * 2);
+    const y = H - padding - ((val - min) / range) * (H - padding * 2);
+    return `${x},${y}`;
+  });
+
+  const targetY = H - padding - ((targetTemp - min) / range) * (H - padding * 2);
+
+  // Color based on latest reading distance from target
+  const latestDiff = Math.abs(history[history.length - 1] - targetTemp);
+  const lineColor = latestDiff > 3 ? '#EF4444' : latestDiff > 1.5 ? '#F59E0B' : '#22C55E';
+
+  return (
+    <div className="mt-3 p-2 bg-white/5 rounded-lg">
+      <div className="text-offwhite-700 text-[10px] mb-1 flex items-center gap-1">
+        <Activity size={10} />
+        {lang === 'tr' ? 'Sıcaklık Geçmişi' : 'Temperature History'}
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-12">
+        {/* Target temp dashed line */}
+        <line
+          x1={padding}
+          y1={targetY}
+          x2={W - padding}
+          y2={targetY}
+          stroke="#06B6D4"
+          strokeWidth="0.5"
+          strokeDasharray="3,3"
+          opacity={0.5}
+        />
+        <text x={W - padding - 1} y={targetY - 2} fill="#06B6D4" fontSize="5" textAnchor="end" opacity={0.6}>
+          {targetTemp}°
+        </text>
+        {/* Temperature line */}
+        <polyline
+          points={points.join(' ')}
+          fill="none"
+          stroke={lineColor}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        {/* Latest point dot */}
+        {history.length > 0 && (
+          <circle
+            cx={padding + ((history.length - 1) / (history.length - 1)) * (W - padding * 2)}
+            cy={H - padding - ((history[history.length - 1] - min) / range) * (H - padding * 2)}
+            r="2"
+            fill={lineColor}
+          />
+        )}
+      </svg>
+    </div>
+  );
+}
+
+// ===========================================
+// FateMomentsTimeline — Critical events list
+// ===========================================
+
+function FateMomentsTimeline({
+  moments,
+  lang,
+  selectedTruckId,
+}: {
+  moments: FateMoment[];
+  lang: Locale;
+  selectedTruckId: string | null;
+}) {
+  // Filter to selected truck if one is selected, otherwise show all
+  const filtered = selectedTruckId
+    ? moments.filter((m) => m.truckId === selectedTruckId)
+    : moments;
+
+  const typeIcon = (type: FateMoment['type']) => {
+    switch (type) {
+      case 'door_open': return <LogOut size={10} />;
+      case 'temp_spike': return <Thermometer size={10} />;
+      case 'temp_drop': return <Snowflake size={10} />;
+      case 'power_loss': return <Zap size={10} />;
+      case 'route_deviation': return <Navigation size={10} />;
+    }
+  };
+
+  return (
+    <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-3 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-offwhite-600 text-xs font-mono uppercase flex items-center gap-1.5">
+          <Shield size={12} className="text-cyan-400" />
+          {lang === 'tr' ? 'Kritik Anlar' : 'Fate Moments'}
+        </span>
+        <span className="text-offwhite-800 text-[10px] font-mono">
+          {filtered.length} {lang === 'tr' ? 'olay' : 'events'}
+        </span>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="text-offwhite-800 text-[10px] text-center py-4 font-mono">
+          {lang === 'tr' ? 'Henüz kritik olay yok' : 'No critical events yet'}
+        </div>
+      ) : (
+        <div className="space-y-1">
+          <AnimatePresence initial={false}>
+            {filtered.slice(0, 20).map((moment) => (
+              <motion.div
+                key={moment.id}
+                initial={{ opacity: 0, x: -20, height: 0 }}
+                animate={{ opacity: 1, x: 0, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-start gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-colors"
+              >
+                {/* Severity dot */}
+                <div className="flex flex-col items-center mt-0.5">
+                  <div
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ backgroundColor: SEVERITY_COLORS[moment.severity] }}
+                  />
+                  <div className="w-px h-full bg-white/10 mt-1" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1 text-[10px] text-offwhite-700 font-mono">
+                    <span style={{ color: SEVERITY_COLORS[moment.severity] }}>
+                      {typeIcon(moment.type)}
+                    </span>
+                    <span>{moment.truckId}</span>
+                    <span className="ml-auto">
+                      {moment.timestamp.toLocaleTimeString(lang === 'tr' ? 'tr-TR' : 'en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                  <div className="text-offwhite-500 text-[11px] leading-tight">
+                    {moment.description[lang]}
+                  </div>
+                  {moment.temperatureDelta !== undefined && (
+                    <span
+                      className="text-[9px] font-mono"
+                      style={{ color: SEVERITY_COLORS[moment.severity] }}
+                    >
+                      {moment.temperatureDelta > 0 ? '+' : ''}
+                      {moment.temperatureDelta}°C
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
   );
 }
