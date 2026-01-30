@@ -290,7 +290,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseEnter={handleSolutionsEnter}
                     onMouseLeave={handleSolutionsLeave}
                   >
-                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
+                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                       {t.nav.solutions}
                       <ChevronDown
                         size={14}
@@ -397,7 +397,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseEnter={handleSmartLivingEnter}
                     onMouseLeave={handleSmartLivingLeave}
                   >
-                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
+                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                       {t.nav.smartLiving}
                       <ChevronDown
                         size={14}
@@ -449,7 +449,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* Projects */}
                   <Link
                     href={`/${lang}/projects`}
-                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5"
+                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     {t.nav.projects}
                   </Link>
@@ -457,7 +457,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* About */}
                   <Link
                     href={`/${lang}/about`}
-                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5"
+                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     {t.nav.about}
                   </Link>
@@ -480,7 +480,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* Demo Request CTA */}
                   <Link
                     href={`/${lang}/contact?subject=demo`}
-                    className="group relative flex items-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-engineer-500/25"
+                    className="group relative flex items-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-engineer-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <span>{t.nav.requestDemo}</span>
                     <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -662,7 +662,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                 <Link
                   href={`/${lang}/contact?subject=demo`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-colors"
+                  className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <span>{t.nav.requestDemo}</span>
                   <ArrowRight size={18} />

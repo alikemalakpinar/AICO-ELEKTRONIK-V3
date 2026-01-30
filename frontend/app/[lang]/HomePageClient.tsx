@@ -16,13 +16,6 @@ import {
   Play,
   Zap,
   Globe,
-  Shield,
-  Cpu,
-  Factory,
-  Gauge,
-  Snowflake,
-  AlertTriangle,
-  Truck,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
 
@@ -51,59 +44,51 @@ interface HomePageClientProps {
 export default function HomePageClient({ lang }: HomePageClientProps) {
   const t = getTranslations(lang);
 
-  // Industrial IoT Solutions (replacing Coffee with VibrationGuard)
+  // Industrial IoT Solutions
   const products = [
     {
       id: 'fire-safety',
       icon: Flame,
       title: 'FireLink Pro',
-      subtitle: lang === 'tr' ? 'Yangin Guvenlik Sistemi' : 'Fire Safety System',
-      description: lang === 'tr'
-        ? '3D termal izleme ve erken uyari. PCB seviyesinde gorunmez tehlikeyi gorun.'
-        : '3D thermal monitoring and early warning. See invisible danger at PCB level.',
+      subtitle: t.nav.fireSafetySubtitle,
+      description: t.home.fireSafetyProductDesc,
       href: `/${lang}/solutions/fire-safety`,
       color: '#FF4500',
       gradient: 'from-orange-500/20 to-transparent',
-      stats: { value: '<50ms', label: lang === 'tr' ? 'Tepki Suresi' : 'Response' },
+      stats: { value: '<50ms', label: t.home.fireSafetyResponse },
     },
     {
       id: 'predictive-maintenance',
       icon: Activity,
       title: 'VibrationGuard',
-      subtitle: lang === 'tr' ? 'Kestirimci Bakim' : 'Predictive Maintenance',
-      description: lang === 'tr'
-        ? 'FFT titresim analizi ve ML ile 2 hafta onceden ariza tahmini.'
-        : 'FFT vibration analysis and ML for 2-week advance fault prediction.',
+      subtitle: t.nav.predictiveMaintenanceSubtitle,
+      description: t.home.predictiveMaintenanceProductDesc,
       href: `/${lang}/solutions/predictive-maintenance`,
       color: '#00D4FF',
       gradient: 'from-cyan-500/20 to-transparent',
-      stats: { value: '14', label: lang === 'tr' ? 'Gün Önceden' : 'Days Ahead' },
+      stats: { value: '14', label: t.home.daysAhead },
     },
     {
       id: 'cold-chain',
       icon: Thermometer,
       title: 'ColdTrack',
-      subtitle: lang === 'tr' ? 'Global Soguk Zincir' : 'Global Cold Chain',
-      description: lang === 'tr'
-        ? '3D dunya haritasinda filo takibi. Kesintisiz sicaklik kontrolu.'
-        : '3D globe fleet tracking. Uninterrupted temperature control.',
+      subtitle: t.nav.coldChainSubtitle,
+      description: t.home.coldChainProductDesc,
       href: `/${lang}/solutions/cold-chain`,
       color: '#06B6D4',
       gradient: 'from-teal-500/20 to-transparent',
-      stats: { value: '-40°C', label: lang === 'tr' ? 'Aralik' : 'Range' },
+      stats: { value: '-40°C', label: t.home.range },
     },
     {
       id: 'mining-iot',
       icon: HardHat,
       title: 'MineGuard',
-      subtitle: lang === 'tr' ? 'Maden Guvenligi' : 'Mining Safety',
-      description: lang === 'tr'
-        ? 'Dijital ikiz ile yeralti isci takibi. Gaz algilama ve acil tahliye.'
-        : 'Underground worker tracking with digital twin. Gas detection & evacuation.',
+      subtitle: t.nav.miningSafetySubtitle,
+      description: t.home.miningProductDesc,
       href: `/${lang}/solutions/mining-iot`,
       color: '#EAB308',
       gradient: 'from-yellow-500/20 to-transparent',
-      stats: { value: '1000+', label: lang === 'tr' ? 'Isci' : 'Workers' },
+      stats: { value: '1000+', label: t.home.workers },
     },
   ];
 
@@ -112,22 +97,22 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
     {
       id: 'smart-villa',
       icon: Home,
-      title: lang === 'tr' ? 'Akilli Villa' : 'Smart Villa',
-      description: lang === 'tr' ? 'Kişisel lüks, görünmez teknoloji' : 'Personal luxury, invisible technology',
+      title: t.nav.smartVilla,
+      description: t.nav.smartVillaDesc,
       href: `/${lang}/solutions/smart-villa`,
     },
     {
       id: 'smart-apartment',
       icon: Building,
-      title: lang === 'tr' ? 'Akilli Apartman' : 'Smart Apartment',
-      description: lang === 'tr' ? 'Ortak alan yonetimi' : 'Common area management',
+      title: t.nav.smartApartment,
+      description: t.nav.smartApartmentDesc,
       href: `/${lang}/solutions/smart-apartment`,
     },
     {
       id: 'smart-residence',
       icon: Building2,
-      title: lang === 'tr' ? 'Akilli Rezidans' : 'Smart Residence',
-      description: lang === 'tr' ? 'Merkezi yonetim, olceklenebilir guc' : 'Central management, scalable power',
+      title: t.nav.smartResidence,
+      description: t.nav.smartResidenceDesc,
       href: `/${lang}/solutions/smart-residence`,
     },
   ];
@@ -187,7 +172,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               <span className="mono-overline text-offwhite-700">AICO_UNIT_v3.2</span>
               <span className="w-px h-3 bg-white/10" />
               <span className="mono-badge text-offwhite-600">
-                {lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}
+                {t.home.heroBadge}
               </span>
             </span>
           </motion.div>
@@ -199,10 +184,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="heading-display text-5xl md:text-6xl lg:text-8xl text-offwhite-400 mb-6"
           >
-            {lang === 'tr' ? 'Endüstriyel' : 'Industrial'}
+            {t.home.heroMainTitle}
             <br />
             <span className="text-engineer-500 glow-engineer-intense">
-              {lang === 'tr' ? 'Mükemmellik.' : 'Excellence.'}
+              {t.home.heroMainHighlight}
             </span>
           </motion.h1>
 
@@ -213,9 +198,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-xl md:text-2xl text-offwhite-700 max-w-3xl mx-auto mb-12"
           >
-            {lang === 'tr'
-              ? 'Kestirimci bakim, yangın güvenliği, soğuk zincir ve madencilik IoT. AAA kalitesinde endüstriyel çözümler.'
-              : 'Predictive maintenance, fire safety, cold chain and mining IoT. AAA quality industrial solutions.'}
+            {t.home.heroMainSubtitle}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -229,7 +212,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               href="#solutions"
               className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-engineer-500 to-orange-500 hover:from-engineer-600 hover:to-orange-600 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-engineer-500/25"
             >
-              <span>{lang === 'tr' ? 'Çözümleri Keşfedin' : 'Explore Solutions'}</span>
+              <span>{t.home.exploreSolutions}</span>
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
@@ -237,7 +220,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               className="group flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-sm border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-xl transition-all duration-300"
             >
               <Play size={18} />
-              <span>{lang === 'tr' ? 'Demo İzleyin' : 'Watch Demo'}</span>
+              <span>{t.home.watchDemo}</span>
             </Link>
           </motion.div>
 
@@ -249,10 +232,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
           >
             {[
-              { value: '<50ms', label: lang === 'tr' ? 'Tepki Süresi' : 'Response Time', spec: 'RT_SPEC' },
-              { value: '99.97%', label: lang === 'tr' ? 'Çalışma Süresi' : 'Uptime', spec: 'SLA_TIER' },
-              { value: '78%', label: lang === 'tr' ? 'Duruş Azalması' : 'Downtime Cut', spec: 'EFF_GAIN' },
-              { value: '100+', label: lang === 'tr' ? 'Kurulum' : 'Installations', spec: 'DEPLOY_CT' },
+              { value: '<50ms', label: t.home.responseTime, spec: 'RT_SPEC' },
+              { value: '99.97%', label: t.home.uptime, spec: 'SLA_TIER' },
+              { value: '78%', label: t.home.downtimeCut, spec: 'EFF_GAIN' },
+              { value: '100+', label: t.home.installations, spec: 'DEPLOY_CT' },
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="mono-badge text-offwhite-800 mb-1">{stat.spec}</div>
@@ -293,21 +276,19 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
           >
             <span className="inline-flex items-center gap-3 text-engineer-500 mb-6">
               <span className="w-12 h-px bg-engineer-500/50" />
-              <span className="mono-overline">{lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}</span>
+              <span className="mono-overline">{t.home.industrialIot}</span>
               <span className="mono-badge text-offwhite-800">SEC::CRITICAL</span>
               <span className="w-12 h-px bg-engineer-500/50" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
-              {lang === 'tr' ? 'Yüksek Teknoloji' : 'High-Tech'}
+              {t.home.highTech}
               {' '}
               <span className="text-engineer-500">
-                {lang === 'tr' ? 'Çözümler' : 'Solutions'}
+                {t.home.solutionsWord}
               </span>
             </h2>
             <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
-              {lang === 'tr'
-                ? 'AAA oyun kalitesinde arayüzler ile endüstriyel IoT sistemleri.'
-                : 'Industrial IoT systems with AAA game quality interfaces.'}
+              {t.home.solutionsSectionDesc}
             </p>
           </motion.div>
 
@@ -383,7 +364,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
                         className="flex items-center gap-2 text-sm font-medium transition-colors"
                         style={{ color: product.color }}
                       >
-                        <span>{lang === 'tr' ? 'Keşfet' : 'Explore'}</span>
+                        <span>{t.home.explore}</span>
                         <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
@@ -409,7 +390,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             className="text-center mb-8"
           >
             <span className="text-offwhite-700 text-sm uppercase tracking-widest">
-              {lang === 'tr' ? 'Sektör Liderleri Tarafından Tercih Ediliyor' : 'Trusted by Industry Leaders'}
+              {t.home.trustedBy}
             </span>
           </motion.div>
 
@@ -455,16 +436,14 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               <span className="w-12 h-px bg-purple-400/50" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
-              {lang === 'tr' ? 'Akıllı' : 'Smart'}
+              {t.home.smartLivingTitle}
               {' '}
               <span className="text-purple-400">
-                {lang === 'tr' ? 'Yaşam Alanları' : 'Living Spaces'}
+                {t.home.smartLivingHighlight}
               </span>
             </h2>
             <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
-              {lang === 'tr'
-                ? 'Lüks villa, apartman ve rezidans projeleriniz için premium otomasyon çözümleri.'
-                : 'Premium automation solutions for your luxury villa, apartment, and residence projects.'}
+              {t.home.smartLivingDesc}
             </p>
           </motion.div>
 
@@ -495,7 +474,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
                   {/* CTA */}
                   <div className="flex items-center gap-2 text-purple-400 text-sm font-medium">
-                    <span>{lang === 'tr' ? 'İncele' : 'Explore'}</span>
+                    <span>{t.home.inspectLink}</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
@@ -517,14 +496,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               <Globe size={40} className="text-engineer-500" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
-              {lang === 'tr'
-                ? 'Projenizi Hayata Geçirelim'
-                : "Let's Bring Your Project to Life"}
+              {t.home.ctaTitle}
             </h2>
             <p className="text-lg text-offwhite-700 mb-10">
-              {lang === 'tr'
-                ? 'Mühendislik ekibimiz, fikirlerinizi endüstriyel gerçekliğe dönüştürmek için hazır.'
-                : 'Our engineering team is ready to turn your ideas into industrial reality.'}
+              {t.home.ctaDesc}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -532,14 +507,14 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
                 href={`/${lang}/contact`}
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-engineer-500 to-orange-500 hover:from-engineer-600 hover:to-orange-600 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-engineer-500/25"
               >
-                <span>{lang === 'tr' ? 'İletişime Geçin' : 'Get in Touch'}</span>
+                <span>{t.home.getInTouch}</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href={`/${lang}/projects`}
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 text-offwhite-400 font-medium rounded-xl transition-all duration-300"
               >
-                <span>{lang === 'tr' ? 'Projeleri İnceleyin' : 'View Projects'}</span>
+                <span>{t.home.viewProjects}</span>
               </Link>
             </div>
           </motion.div>

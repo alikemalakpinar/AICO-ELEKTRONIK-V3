@@ -1,13 +1,16 @@
 import React from 'react';
+import { getTranslations, type Locale } from '@/lib/i18n';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com';
 
 // Organization Schema - for company pages
 interface OrganizationSchemaProps {
-  lang?: 'tr' | 'en';
+  lang?: Locale;
 }
 
 export function OrganizationSchema({ lang = 'tr' }: OrganizationSchemaProps) {
+  const t = getTranslations(lang);
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -15,9 +18,7 @@ export function OrganizationSchema({ lang = 'tr' }: OrganizationSchemaProps) {
     alternateName: 'AICO Engineering Solutions',
     url: BASE_URL,
     logo: `${BASE_URL}/assets/logo-dark.svg`,
-    description: lang === 'tr'
-      ? 'Mühendislik ve IoT çözümleri sunan yenilikçi teknoloji firması. Akıllı yaşam, yangın güvenliği, soğuk zincir ve maden IoT sistemleri.'
-      : 'Innovative technology company providing engineering and IoT solutions. Smart living, fire safety, cold chain, and mining IoT systems.',
+    description: t.meta.jsonLd.companyDescription,
     foundingDate: '2020',
     founders: [{
       '@type': 'Person',
@@ -25,12 +26,14 @@ export function OrganizationSchema({ lang = 'tr' }: OrganizationSchemaProps) {
     }],
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Istanbul',
+      streetAddress: 'Yukarı Dudullu Mah, Necip Fazıl Blv No:44/38',
+      addressLocality: 'Ümraniye, Istanbul',
+      postalCode: '34775',
       addressCountry: 'TR',
     },
     contactPoint: [{
       '@type': 'ContactPoint',
-      telephone: '+90-XXX-XXX-XXXX',
+      telephone: '+90-532-621-0601',
       contactType: 'customer service',
       availableLanguage: ['Turkish', 'English'],
     }],
@@ -277,18 +280,18 @@ export function ServiceSchema({
 
 // WebSite Schema - for site-wide search
 interface WebSiteSchemaProps {
-  lang?: 'tr' | 'en';
+  lang?: Locale;
 }
 
 export function WebSiteSchema({ lang = 'tr' }: WebSiteSchemaProps) {
+  const t = getTranslations(lang);
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'AICO Elektronik',
     url: BASE_URL,
-    description: lang === 'tr'
-      ? 'AICO Elektronik - Mühendislik ve IoT Çözümleri'
-      : 'AICO Elektronik - Engineering and IoT Solutions',
+    description: t.meta.jsonLd.websiteDescription,
     inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
     potentialAction: {
       '@type': 'SearchAction',
@@ -370,18 +373,18 @@ export function SoftwareApplicationSchema({
 
 // LocalBusiness Schema - for contact pages
 interface LocalBusinessSchemaProps {
-  lang?: 'tr' | 'en';
+  lang?: Locale;
 }
 
 export function LocalBusinessSchema({ lang = 'tr' }: LocalBusinessSchemaProps) {
+  const t = getTranslations(lang);
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${BASE_URL}/#organization`,
     name: 'AICO Elektronik',
-    description: lang === 'tr'
-      ? 'Akıllı yaşam teknolojileri ve endüstriyel otomasyon çözümleri'
-      : 'Smart living technologies and industrial automation solutions',
+    description: t.meta.jsonLd.orgDescription,
     url: BASE_URL,
     logo: `${BASE_URL}/assets/logo-dark.svg`,
     image: `${BASE_URL}/assets/og-image.jpg`,

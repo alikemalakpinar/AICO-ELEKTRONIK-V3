@@ -233,7 +233,7 @@ export default function CustomCursor() {
   };
 
   return (
-    <>
+    <div aria-hidden="true">
       {/* Hide default cursor globally */}
       <style jsx global>{`
         * {
@@ -321,6 +321,6 @@ export default function CustomCursor() {
           mass: 0.8,
         }}
       />
-    </>
+    </div>
   );
 }

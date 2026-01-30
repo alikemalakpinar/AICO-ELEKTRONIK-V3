@@ -96,16 +96,14 @@ export async function generateMetadata({
 
 // JSON-LD Structured Data for LocalBusiness
 function generateJsonLd(lang: Locale) {
-  const isEnglish = lang === 'en';
+  const t = getTranslations(lang);
 
   const localBusiness = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${COMPANY_INFO.url}/#organization`,
     name: COMPANY_INFO.name,
-    description: isEnglish
-      ? 'Industrial IoT, factory fire detection, vibration analysis and smart living solutions provider with 20+ years of engineering experience.'
-      : 'Endüstriyel IoT, fabrika yangın algılama, vibrasyon analizi ve akıllı yaşam çözümleri sağlayıcısı. 20+ yıllık mühendislik deneyimi.',
+    description: t.meta.jsonLd.companyDescription,
     url: COMPANY_INFO.url,
     logo: COMPANY_INFO.logo,
     image: COMPANY_INFO.logo,
@@ -145,46 +143,38 @@ function generateJsonLd(lang: Locale) {
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: isEnglish ? 'Industrial IoT Solutions' : 'Endüstriyel IoT Çözümleri',
+      name: t.meta.jsonLd.offerCatalogName,
       itemListElement: [
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Smart Villa Automation' : 'Akıllı Villa Otomasyonu',
-            description: isEnglish
-              ? 'Complete smart home automation for luxury villas'
-              : 'Lüks villalar için komple akıllı ev otomasyonu',
+            name: t.meta.jsonLd.smartVillaService,
+            description: t.meta.jsonLd.smartVillaServiceDesc,
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Electrical Fire Early Warning System' : 'Elektriksel Yangin Erken Uyari Sistemi',
-            description: isEnglish
-              ? 'Arc detection and cable insulation monitoring for industrial cabinets'
-              : 'Endüstriyel panolar için ark tespiti ve kablo izolasyon izleme',
+            name: t.meta.jsonLd.fireWarningService,
+            description: t.meta.jsonLd.fireWarningServiceDesc,
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Predictive Maintenance' : 'Kestirimci Bakım',
-            description: isEnglish
-              ? 'Vibration analysis and machine health monitoring'
-              : 'Vibrasyon analizi ve makine sağlığı izleme',
+            name: t.meta.jsonLd.predictiveService,
+            description: t.meta.jsonLd.predictiveServiceDesc,
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Cold Chain Monitoring' : 'Soğuk Zincir İzleme',
-            description: isEnglish
-              ? 'Real-time temperature tracking for logistics'
-              : 'Lojistik için gerçek zamanlı sıcaklık takibi',
+            name: t.meta.jsonLd.coldChainService,
+            description: t.meta.jsonLd.coldChainServiceDesc,
           },
         },
       ],

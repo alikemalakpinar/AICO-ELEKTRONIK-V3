@@ -241,6 +241,14 @@ function RoomBox({
   const geometry = useMemo(() => new THREE.BoxGeometry(...size), [size]);
   const edgesGeometry = useMemo(() => new THREE.EdgesGeometry(geometry), [geometry]);
 
+  // Dispose geometries on unmount
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      edgesGeometry.dispose();
+    };
+  }, [geometry, edgesGeometry]);
+
   return (
     <group position={position}>
       <mesh ref={meshRef} geometry={geometry}>
@@ -295,6 +303,10 @@ function SmartIndicators({ activeScene }: { activeScene: VillaSceneType }) {
   );
 }
 
+// Shared geometries to avoid per-instance allocations
+const SMART_POINT_GEO = new THREE.SphereGeometry(0.05, 8, 8);
+const SMART_GLOW_GEO = new THREE.SphereGeometry(0.08, 8, 8);
+
 // Glowing Smart Point
 function SmartPoint({
   position,
@@ -323,13 +335,11 @@ function SmartPoint({
 
   return (
     <group position={position}>
-      <mesh ref={meshRef}>
-        <sphereGeometry args={[0.05, 16, 16]} />
+      <mesh ref={meshRef} geometry={SMART_POINT_GEO}>
         <meshBasicMaterial color={isActive ? color : '#666'} />
       </mesh>
       {/* Glow effect */}
-      <mesh ref={glowRef} scale={0}>
-        <sphereGeometry args={[0.08, 16, 16]} />
+      <mesh ref={glowRef} geometry={SMART_GLOW_GEO} scale={0}>
         <meshBasicMaterial color={color} transparent opacity={0.3} />
       </mesh>
     </group>
