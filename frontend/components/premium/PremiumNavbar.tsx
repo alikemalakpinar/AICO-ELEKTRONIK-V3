@@ -185,33 +185,33 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
     },
   ];
 
-  // Smart Living solutions
+  // Integrated Living solutions
   const smartLiving = [
     {
       id: 'smart-villa',
       icon: Home,
-      title: lang === 'tr' ? 'Akıllı Villa' : 'Smart Villa',
+      title: lang === 'tr' ? 'Villa Otomasyon Sistemi' : 'Villa Automation System',
       description: lang === 'tr'
-        ? 'Kişisel lüks, görünmez teknoloji'
-        : 'Personal luxury, invisible technology',
+        ? 'Entegre sensör ağı, otonom kontrol'
+        : 'Integrated sensor network, autonomous control',
       href: `/${lang}/solutions/smart-villa`,
     },
     {
       id: 'smart-apartment',
       icon: Building,
-      title: lang === 'tr' ? 'Akıllı Apartman' : 'Smart Apartment',
+      title: lang === 'tr' ? 'Yüksek Yoğunluklu Konut Güvenliği' : 'High-Density Residential Safety',
       description: lang === 'tr'
-        ? 'Ortak alan yönetimi ve iletişim'
-        : 'Common area management',
+        ? 'Erişim kontrol, altyapı izleme'
+        : 'Access control, infrastructure monitoring',
       href: `/${lang}/solutions/smart-apartment`,
     },
     {
       id: 'smart-residence',
       icon: Building2,
-      title: lang === 'tr' ? 'Akıllı Rezidans' : 'Smart Residence',
+      title: lang === 'tr' ? 'Rezidans BMS Platformu' : 'Residence BMS Platform',
       description: lang === 'tr'
-        ? 'Merkezi yönetim platformu'
-        : 'Central management platform',
+        ? 'Merkezi bina yönetim sistemi'
+        : 'Central building management system',
       href: `/${lang}/solutions/smart-residence`,
     },
   ];
@@ -405,14 +405,14 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     </AnimatePresence>
                   </div>
 
-                  {/* Smart Living Dropdown */}
+                  {/* Integrated Living Dropdown */}
                   <div
                     className="relative"
                     onMouseEnter={handleSmartLivingEnter}
                     onMouseLeave={handleSmartLivingLeave}
                   >
                     <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
-                      Smart Living
+                      Integrated Living
                       <ChevronDown
                         size={14}
                         className={`transition-transform duration-300 ${smartLivingOpen ? 'rotate-180' : ''}`}
@@ -606,10 +606,10 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   </div>
                 </div>
 
-                {/* Smart Living Section */}
+                {/* Integrated Living Section */}
                 <div className="space-y-4">
                   <div className="text-muted-foreground text-xs font-mono uppercase tracking-widest px-2">
-                    Smart Living
+                    Integrated Living
                   </div>
                   {smartLiving.map((item) => (
                     <Link

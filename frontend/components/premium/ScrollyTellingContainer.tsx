@@ -23,6 +23,7 @@ export interface ScrollyScene {
 interface ScrollyTellingContainerProps {
   scenes: ScrollyScene[];
   className?: string;
+  onSceneChange?: (index: number, sceneId: string) => void;
 }
 
 // Individual Scene Component
@@ -252,6 +253,7 @@ function ProgressIndicator({
 export default function ScrollyTellingContainer({
   scenes,
   className = '',
+  onSceneChange,
 }: ScrollyTellingContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSceneIndex, setActiveSceneIndex] = useState(0);
@@ -279,6 +281,13 @@ export default function ScrollyTellingContainer({
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [scenes.length]);
+
+  // Notify parent when active scene changes
+  useEffect(() => {
+    if (onSceneChange && scenes[activeSceneIndex]) {
+      onSceneChange(activeSceneIndex, scenes[activeSceneIndex].id);
+    }
+  }, [activeSceneIndex, onSceneChange, scenes]);
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>

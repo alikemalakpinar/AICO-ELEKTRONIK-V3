@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
@@ -26,6 +26,18 @@ import { getTranslations, type Locale } from '@/lib/i18n';
 import ScrollyTellingContainer, {
   type ScrollyScene,
 } from '@/components/premium/ScrollyTellingContainer';
+import { useSceneStore, type VillaSceneType } from '@/stores/sceneStore';
+
+// Lazy load the 3D Villa Scene (reused for apartment building visualization)
+const VillaScene = dynamic(
+  () => import('@/components/premium/3d/VillaScene'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-radial from-engineer-500/5 via-transparent to-transparent" />
+    ),
+  }
+);
 
 // Lazy load the interactive demo
 const SmartApartmentInteractiveDemo = dynamic(
@@ -44,19 +56,41 @@ interface SmartApartmentClientProps {
   lang: Locale;
 }
 
+// Map scrollytelling scene IDs to VillaScene camera positions
+const SCENE_ID_TO_VILLA: Record<string, VillaSceneType> = {
+  hero: 'intro',
+  morning: 'lighting',
+  afternoon: 'climate',
+  evening: 'security',
+  latenight: 'security',
+  communication: 'integrated',
+  security: 'security',
+  services: 'integrated',
+};
+
 export default function SmartApartmentClient({ lang }: SmartApartmentClientProps) {
   const t = getTranslations(lang);
+  const setVillaScene = useSceneStore((s) => s.setVillaScene);
+
+  // Drive 3D camera from scroll position
+  const handleSceneChange = useCallback(
+    (_index: number, sceneId: string) => {
+      const mapped = SCENE_ID_TO_VILLA[sceneId] || 'intro';
+      setVillaScene(mapped);
+    },
+    [setVillaScene]
+  );
 
   // Scrollytelling scenes
   const scenes: ScrollyScene[] = [
     {
       id: 'hero',
-      badge: lang === 'tr' ? 'AKILLI APARTMAN' : 'SMART APARTMENT',
-      title: lang === 'tr' ? 'Birlikte Daha Akıllı' : 'Smarter Together',
-      subtitle: lang === 'tr' ? 'Ortak Alan Yönetimi' : 'Common Area Management',
+      badge: lang === 'tr' ? 'KONUT GÜVENLİK SİSTEMİ' : 'RESIDENTIAL SAFETY SYSTEM',
+      title: lang === 'tr' ? 'Entegre Altyapı Koruması' : 'Integrated Infrastructure Protection',
+      subtitle: lang === 'tr' ? 'Erişim Kontrol & İzleme' : 'Access Control & Monitoring',
       content: lang === 'tr'
-        ? 'Modern apartman yaşamı için tasarlanmış, sakinleri ve yönetimi bir araya getiren dijital platform.'
-        : 'Digital platform designed for modern apartment living, connecting residents and management.',
+        ? 'Yüksek yoğunluklu konut alanları için tasarlanmış, erişim kontrol, altyapı izleme ve merkezi yönetim platformu.'
+        : 'Centralized management platform designed for high-density residential zones — access control, infrastructure monitoring, and unified operations.',
     },
     {
       id: 'morning',
@@ -252,8 +286,13 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Scrollytelling Section */}
-      <ScrollyTellingContainer scenes={scenes} />
+      {/* 3D Building Scene - Fixed behind scrollytelling */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <VillaScene />
+      </div>
+
+      {/* Scrollytelling Section - drives 3D camera */}
+      <ScrollyTellingContainer scenes={scenes} onSceneChange={handleSceneChange} />
 
       {/* Interactive Demo Section */}
       <section className="py-20 bg-background">
