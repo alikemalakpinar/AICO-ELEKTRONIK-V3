@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
+import TypewriterText from '@/components/premium/TypewriterText';
 import {
   Activity,
   AlertTriangle,
@@ -411,15 +412,17 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
                   ? 'Rulman Asiniasi Tespit Edildi'
                   : 'Bearing Wear Detected'}
               </h4>
-              <p className="text-offwhite-700 text-sm">
-                {motorData.status === 'critical'
+              <TypewriterText
+                text={motorData.status === 'critical'
                   ? lang === 'tr'
                     ? 'Motor dengesizligi ve rulman hasari tespit edildi. Acil bakim oneriliyor.'
                     : 'Motor imbalance and bearing damage detected. Immediate maintenance recommended.'
                   : lang === 'tr'
                   ? 'Erken asinma belirtileri mevcut. 2 hafta icinde bakim planlani.'
                   : 'Early wear signs present. Schedule maintenance within 2 weeks.'}
-              </p>
+                speed={25}
+                className="text-offwhite-700 text-sm"
+              />
               <div className="flex flex-wrap gap-4 mt-3">
                 <div className="text-[10px] text-offwhite-600">
                   <span className="text-offwhite-800">{lang === 'tr' ? 'Ariza Kodu:' : 'Fault Code:'}</span>{' '}

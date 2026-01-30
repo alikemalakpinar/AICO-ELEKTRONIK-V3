@@ -108,6 +108,9 @@ function SmartBuilding({ activeScene }: { activeScene: ResidenceSceneType }) {
           </mesh>
         </group>
 
+        {/* Infrastructure / FireLink Cabinet Visual */}
+        {activeScene === 'infrastructure' && <InfrastructureVisual />}
+
         {/* Platform Layers Visualization */}
         {activeScene === 'platform' && <PlatformLayers />}
 
@@ -141,6 +144,7 @@ function BuildingFloor({
 
   const isActive =
     activeScene === 'platform' ||
+    (activeScene === 'infrastructure' && index === 0) ||
     (activeScene === 'mobile' && index % 2 === 0) ||
     (activeScene === 'access' && index === 0) ||
     activeScene === 'dashboard';
@@ -202,6 +206,60 @@ function BuildingFloor({
         <edgesGeometry args={[new THREE.BoxGeometry(3, 0.7, 2)]} />
         <lineBasicMaterial color={RESIDENCE_SCENE_COLORS[activeScene]} transparent opacity={0.3} />
       </lineSegments>
+    </group>
+  );
+}
+
+// Infrastructure Visual — Basement electrical cabinet with FireLink arc indicators
+function InfrastructureVisual() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (groupRef.current) {
+      // Subtle pulsing glow on the cabinet
+      groupRef.current.children.forEach((child, i) => {
+        if (child instanceof THREE.Mesh) {
+          const mat = child.material as THREE.MeshBasicMaterial;
+          if (mat.opacity !== undefined) {
+            mat.opacity = 0.4 + Math.sin(state.clock.elapsedTime * 3 + i) * 0.2;
+          }
+        }
+      });
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[0, -1.5, 1]}>
+      {/* Electrical cabinet body */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[1.2, 1.8, 0.6]} />
+        <meshStandardMaterial color="#1e293b" metalness={0.7} roughness={0.3} transparent opacity={0.9} />
+      </mesh>
+      {/* Cabinet door panel */}
+      <mesh position={[0, 0, 0.31]}>
+        <planeGeometry args={[1.1, 1.7]} />
+        <meshBasicMaterial color="#334155" transparent opacity={0.7} />
+      </mesh>
+      {/* Arc detection indicator — pulsing red */}
+      <mesh position={[0, 0.5, 0.35]}>
+        <circleGeometry args={[0.12, 16]} />
+        <meshBasicMaterial color="#EF4444" transparent opacity={0.8} />
+      </mesh>
+      {/* Cable bus bars */}
+      {[-0.3, 0, 0.3].map((x, i) => (
+        <mesh key={i} position={[x, -0.2, 0.35]}>
+          <boxGeometry args={[0.08, 0.8, 0.02]} />
+          <meshBasicMaterial color={i === 1 ? '#F97316' : '#64748B'} transparent opacity={0.6} />
+        </mesh>
+      ))}
+      {/* Thermal warning ring */}
+      <mesh position={[0, 0.5, 0.36]}>
+        <ringGeometry args={[0.15, 0.2, 32]} />
+        <meshBasicMaterial color="#EF4444" transparent opacity={0.5} side={THREE.DoubleSide} />
+      </mesh>
+      {/* Ground cables running to building */}
+      <ConnectionLine start={[0.6, -0.5, 0]} end={[1.5, -0.3, -0.5]} color="#EF4444" />
+      <ConnectionLine start={[-0.6, -0.5, 0]} end={[-1.5, -0.3, -0.5]} color="#F97316" />
     </group>
   );
 }

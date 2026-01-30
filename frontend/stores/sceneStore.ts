@@ -13,11 +13,12 @@ export type VillaSceneType =
   | 'integrated'; // All systems working together
 
 export type ResidenceSceneType =
-  | 'intro'       // Building overview
-  | 'platform'    // Platform layers
-  | 'mobile'      // Mobile app showcase
-  | 'access'      // Access control
-  | 'dashboard';  // Management dashboard
+  | 'intro'          // Building overview
+  | 'infrastructure' // Basement / electrical FireLink zone
+  | 'platform'       // Platform layers
+  | 'mobile'         // Mobile app showcase
+  | 'access'         // Access control
+  | 'dashboard';     // Management dashboard
 
 export type ServiceSceneType =
   | 'schematic'   // Schematic design
@@ -115,10 +116,11 @@ export const VILLA_SCENES: { scene: VillaSceneType; threshold: number }[] = [
 
 export const RESIDENCE_SCENES: { scene: ResidenceSceneType; threshold: number }[] = [
   { scene: 'intro', threshold: 0 },
-  { scene: 'platform', threshold: 0.2 },
-  { scene: 'mobile', threshold: 0.4 },
-  { scene: 'access', threshold: 0.6 },
-  { scene: 'dashboard', threshold: 0.8 },
+  { scene: 'infrastructure', threshold: 0.15 },
+  { scene: 'platform', threshold: 0.3 },
+  { scene: 'mobile', threshold: 0.5 },
+  { scene: 'access', threshold: 0.7 },
+  { scene: 'dashboard', threshold: 0.85 },
 ];
 
 // Helper to determine scene from scroll progress
@@ -152,6 +154,7 @@ export const VILLA_CAMERA_POSITIONS: Record<VillaSceneType, [number, number, num
 // Camera positions for each residence scene
 export const RESIDENCE_CAMERA_POSITIONS: Record<ResidenceSceneType, [number, number, number]> = {
   intro: [0, 0, 12],
+  infrastructure: [1, -2, 5],  // Zooms into basement electrical / FireLink cabinet zone
   platform: [3, 5, 10],
   mobile: [-4, 2, 8],
   access: [0, 3, 9],
@@ -168,9 +171,10 @@ export const VILLA_SCENE_COLORS: Record<VillaSceneType, string> = {
 };
 
 export const RESIDENCE_SCENE_COLORS: Record<ResidenceSceneType, string> = {
-  intro: '#F97316',      // Orange - brand color
-  platform: '#8B5CF6',   // Purple - platform
-  mobile: '#06B6D4',     // Cyan - digital
-  access: '#22C55E',     // Green - access
-  dashboard: '#3B82F6',  // Blue - data
+  intro: '#F97316',          // Orange - brand color
+  infrastructure: '#EF4444', // Red - FireLink / electrical
+  platform: '#8B5CF6',      // Purple - platform
+  mobile: '#06B6D4',        // Cyan - digital
+  access: '#22C55E',        // Green - access
+  dashboard: '#3B82F6',     // Blue - data
 };
