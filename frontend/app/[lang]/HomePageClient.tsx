@@ -31,7 +31,7 @@ import { getTranslations, type Locale } from '@/lib/i18n';
 // Connected World 3D, Bento Grid, Trusted By
 // ===========================================
 
-// Dynamically import NeuralCore to avoid SSR issues with Three.js
+// Dynamically import 3D scenes to avoid SSR issues with Three.js
 const NeuralCore = dynamic(
   () => import('@/components/premium/NeuralCore'),
   {
@@ -42,6 +42,16 @@ const NeuralCore = dynamic(
       </div>
     )
   }
+);
+
+const HolographicGrid = dynamic(
+  () => import('@/components/premium/3d/HolographicGrid'),
+  { ssr: false }
+);
+
+const NetworkGlobe = dynamic(
+  () => import('@/components/premium/3d/NetworkGlobe'),
+  { ssr: false }
 );
 
 interface HomePageClientProps {
@@ -164,6 +174,18 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             animate={{ scale: [1.1, 1, 1.1], opacity: [0.15, 0.25, 0.15] }}
             transition={{ duration: 12, repeat: Infinity }}
           />
+        </div>
+
+        {/* Deep Lab Background — HolographicGrid floor + NetworkGlobe */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Holographic grid floor — lower half */}
+          <div className="absolute inset-x-0 bottom-0 h-[60%] opacity-30">
+            <HolographicGrid />
+          </div>
+          {/* NetworkGlobe — upper right, subtle */}
+          <div className="absolute top-[5%] right-[5%] w-[40%] h-[50%] opacity-20">
+            <NetworkGlobe />
+          </div>
         </div>
 
         {/* 3D Neural Core - "Connected World" */}

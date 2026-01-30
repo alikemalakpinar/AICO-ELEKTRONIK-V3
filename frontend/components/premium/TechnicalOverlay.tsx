@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 
 // ===========================================
 // TechnicalOverlay — Defense-Grade HUD
-// Grid-scanner, glassmorphism brackets, monospace spec labels
+// Grid-scanner with framer-motion, glassmorphism brackets, monospace spec labels
 // ===========================================
 
 export default function TechnicalOverlay() {
@@ -35,28 +36,37 @@ export default function TechnicalOverlay() {
       {/* Scanlines */}
       <div className="scanlines" aria-hidden="true" />
 
-      {/* Vertical Grid Scanner — sweeps left to right */}
+      {/* Grid Scanner — framer-motion horizontal sweep */}
       <div
-        className="fixed inset-0 z-[60] pointer-events-none"
+        className="fixed inset-0 z-[60] pointer-events-none overflow-hidden"
         aria-hidden="true"
         style={{ mixBlendMode: 'screen' }}
       >
-        <div
-          className="absolute top-0 bottom-0 w-px opacity-[0.06]"
+        <motion.div
+          className="absolute top-0 bottom-0 w-px"
           style={{
-            background: 'linear-gradient(to bottom, transparent, var(--product-primary, #F97316), transparent)',
-            animation: 'grid-scanner 8s linear infinite',
+            background: 'linear-gradient(to bottom, transparent 0%, var(--product-primary, #F97316) 30%, var(--product-primary, #F97316) 70%, transparent 100%)',
           }}
+          animate={{ left: ['0%', '100%'] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
         />
       </div>
 
-      {/* Inject scanner keyframes */}
-      <style jsx>{`
-        @keyframes grid-scanner {
-          0% { left: 0%; }
-          100% { left: 100%; }
-        }
-      `}</style>
+      {/* Grid Scanner — vertical sweep (top to bottom) — thin green/blue laser */}
+      <div
+        className="fixed inset-0 z-[60] pointer-events-none overflow-hidden"
+        aria-hidden="true"
+        style={{ mixBlendMode: 'screen' }}
+      >
+        <motion.div
+          className="absolute left-0 right-0 h-px"
+          style={{
+            background: 'linear-gradient(to right, transparent 0%, #22d3ee 20%, #22d3ee 80%, transparent 100%)',
+          }}
+          animate={{ top: ['0%', '100%'] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+        />
+      </div>
     </>
   );
 }

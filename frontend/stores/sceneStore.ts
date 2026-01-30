@@ -13,8 +13,10 @@ export type VillaSceneType =
   | 'integrated'; // All systems working together
 
 export type ResidenceSceneType =
-  | 'intro'          // Building overview
+  | 'intro'          // Building overview — Macro exterior
   | 'infrastructure' // Basement / electrical FireLink zone
+  | 'security'       // Parking & perimeter security
+  | 'smartliving'    // Interior smart living detail
   | 'platform'       // Platform layers
   | 'mobile'         // Mobile app showcase
   | 'access'         // Access control
@@ -116,11 +118,13 @@ export const VILLA_SCENES: { scene: VillaSceneType; threshold: number }[] = [
 
 export const RESIDENCE_SCENES: { scene: ResidenceSceneType; threshold: number }[] = [
   { scene: 'intro', threshold: 0 },
-  { scene: 'infrastructure', threshold: 0.15 },
-  { scene: 'platform', threshold: 0.3 },
-  { scene: 'mobile', threshold: 0.5 },
-  { scene: 'access', threshold: 0.7 },
-  { scene: 'dashboard', threshold: 0.85 },
+  { scene: 'infrastructure', threshold: 0.12 },
+  { scene: 'security', threshold: 0.25 },
+  { scene: 'smartliving', threshold: 0.38 },
+  { scene: 'platform', threshold: 0.5 },
+  { scene: 'mobile', threshold: 0.62 },
+  { scene: 'access', threshold: 0.75 },
+  { scene: 'dashboard', threshold: 0.88 },
 ];
 
 // Helper to determine scene from scroll progress
@@ -151,14 +155,16 @@ export const VILLA_CAMERA_POSITIONS: Record<VillaSceneType, [number, number, num
   integrated: [4, 3, 4],
 };
 
-// Camera positions for each residence scene
+// Camera positions for each residence scene — cinematic interpolation targets
 export const RESIDENCE_CAMERA_POSITIONS: Record<ResidenceSceneType, [number, number, number]> = {
-  intro: [0, 0, 12],
-  infrastructure: [1, -2, 5],  // Zooms into basement electrical / FireLink cabinet zone
-  platform: [3, 5, 10],
-  mobile: [-4, 2, 8],
-  access: [0, 3, 9],
-  dashboard: [0, 0, 7],
+  intro: [6, 5, 14],           // Macro — wide exterior establishing shot
+  infrastructure: [0.8, -1.8, 3.5], // Zoom into basement FireLink cabinet
+  security: [2.5, 0.2, 4],    // Parking & perimeter detail
+  smartliving: [-1, 3, 3.5],  // Interior apartment level zoom
+  platform: [3, 5, 10],       // Platform orbit
+  mobile: [-4, 2, 8],         // Mobile floating phone
+  access: [0, 0.5, 5],        // Ground-level access points
+  dashboard: [0, 3.5, 5],     // Dashboard screens close-up
 };
 
 // Color themes for scenes
@@ -173,6 +179,8 @@ export const VILLA_SCENE_COLORS: Record<VillaSceneType, string> = {
 export const RESIDENCE_SCENE_COLORS: Record<ResidenceSceneType, string> = {
   intro: '#F97316',          // Orange - brand color
   infrastructure: '#EF4444', // Red - FireLink / electrical
+  security: '#FBBF24',      // Amber - security / surveillance
+  smartliving: '#06B6D4',   // Cyan - smart living
   platform: '#8B5CF6',      // Purple - platform
   mobile: '#06B6D4',        // Cyan - digital
   access: '#22C55E',        // Green - access

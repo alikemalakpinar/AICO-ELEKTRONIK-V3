@@ -63,6 +63,8 @@ const SCENE_ID_TO_RESIDENCE: Record<string, ResidenceSceneType> = {
   hero: 'intro',
   morning: 'intro',
   infrastructure: 'infrastructure',
+  security: 'security',
+  smartliving: 'smartliving',
   noon: 'platform',
   evening: 'mobile',
   night: 'access',
@@ -116,6 +118,30 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
       stats: [
         { label: lang === 'tr' ? 'Ark Algılama' : 'Arc Detection', value: '<50ms' },
         { label: lang === 'tr' ? 'Kablo İzleme' : 'Cable Monitor', value: '24/7' },
+      ],
+    },
+    {
+      id: 'security',
+      badge: lang === 'tr' ? 'GÜVENLİK' : 'SECURITY',
+      title: lang === 'tr' ? 'Otopark & Çevre Güvenliği' : 'Parking & Perimeter Security',
+      content: lang === 'tr'
+        ? 'Plaka tanıma bariyerleri, yapay zeka destekli güvenlik kameraları ve çevre sensörleri entegre çalışır. Yetkisiz erişim anında tespit edilir ve alarm protokolü devreye girer.'
+        : 'License plate recognition barriers, AI-powered security cameras, and perimeter sensors work in unison. Unauthorized access is instantly detected and alarm protocol engages.',
+      stats: [
+        { label: lang === 'tr' ? 'Kamera Ağı' : 'Camera Network', value: '32+' },
+        { label: lang === 'tr' ? 'Tespit Süresi' : 'Detection Time', value: '<1s' },
+      ],
+    },
+    {
+      id: 'smartliving',
+      badge: lang === 'tr' ? 'AKILLI YAŞAM' : 'SMART LIVING',
+      title: lang === 'tr' ? 'Daire İçi Otomasyon' : 'In-Unit Automation',
+      content: lang === 'tr'
+        ? 'Akıllı aydınlatma, iklim kontrolü ve IoT cihaz yönetimi daire seviyesinde entegre. Sakinler kendi yaşam alanlarını mobil uygulama veya ses komutu ile kontrol eder.'
+        : 'Smart lighting, climate control, and IoT device management integrated at unit level. Residents control their living space via mobile app or voice commands.',
+      stats: [
+        { label: lang === 'tr' ? 'IoT Cihaz' : 'IoT Devices', value: '15+' },
+        { label: lang === 'tr' ? 'Enerji Tasarrufu' : 'Energy Savings', value: '%40' },
       ],
     },
     {
@@ -372,12 +398,13 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
 
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {/* Large card: BMS Architecture SVG */}
+            {/* Large card: Architecture overview — text-based, no SVG */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="md:col-span-2 lg:col-span-2 row-span-2 group relative p-8 rounded-2xl bg-card border border-border hover:border-engineer-500/30 transition-all duration-500 overflow-hidden"
+              className="md:col-span-2 lg:col-span-2 row-span-2 group relative p-8 rounded-2xl glass-card hover:border-engineer-500/30 transition-all duration-500 overflow-hidden"
+              style={{ border: '0.5px solid rgba(255,255,255,0.08)' }}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-engineer-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <h3 className="text-xl font-bold text-foreground mb-2 relative z-10">
@@ -386,50 +413,58 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
               <p className="text-sm text-muted-foreground mb-6 relative z-10">
                 {lang === 'tr' ? 'Merkezi kontrol, dağıtık zekâ' : 'Central control, distributed intelligence'}
               </p>
-              {/* Animated SVG Architecture Diagram */}
-              <div className="relative z-10">
-                <svg viewBox="0 0 500 300" className="w-full h-auto">
-                  {/* Central Hub */}
-                  <motion.rect x="200" y="120" width="100" height="60" rx="8" fill="none" stroke="#F97316" strokeWidth="2"
-                    initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.2 }} />
-                  <text x="250" y="155" textAnchor="middle" fill="currentColor" fontSize="11" fontWeight="600" className="text-foreground">BMS Hub</text>
-
-                  {/* Floor Controllers */}
+              {/* Architecture grid — pure CSS, no SVG */}
+              <div className="relative z-10 grid grid-cols-3 gap-4">
+                <div className="col-span-1 space-y-3">
                   {[
-                    { x: 50, y: 30, label: lang === 'tr' ? 'Kat 1' : 'Floor 1' },
-                    { x: 50, y: 130, label: lang === 'tr' ? 'Kat 2' : 'Floor 2' },
-                    { x: 50, y: 230, label: lang === 'tr' ? 'Kat N' : 'Floor N' },
-                    { x: 380, y: 30, label: 'HVAC' },
-                    { x: 380, y: 130, label: lang === 'tr' ? 'Güvenlik' : 'Security' },
-                    { x: 380, y: 230, label: lang === 'tr' ? 'Enerji' : 'Energy' },
+                    { label: lang === 'tr' ? 'Kat Kontrol' : 'Floor Control', color: '#3B82F6' },
+                    { label: 'HVAC', color: '#10B981' },
+                    { label: 'FireLink', color: '#EF4444' },
                   ].map((node, i) => (
-                    <g key={i}>
-                      <motion.line
-                        x1={node.x + 50} y1={node.y + 20} x2={200} y2={150}
-                        stroke="#F97316" strokeWidth="1" strokeDasharray="4,4" strokeOpacity="0.4"
-                        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.5 + i * 0.15 }}
-                      />
-                      <motion.rect x={node.x} y={node.y} width="80" height="40" rx="6" fill="none" strokeWidth="1.5"
-                        stroke={i < 3 ? '#3B82F6' : '#10B981'} strokeOpacity="0.6"
-                        initial={{ scale: 0, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.3 + i * 0.1 }}
-                      />
-                      <text x={node.x + 40} y={node.y + 25} textAnchor="middle" fill="currentColor" fontSize="9" className="text-muted-foreground">
-                        {node.label}
-                      </text>
-                    </g>
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + i * 0.1 }}
+                      className="px-3 py-2.5 rounded-lg font-mono text-xs text-center"
+                      style={{ border: `0.5px solid ${node.color}40`, color: node.color, background: `${node.color}08` }}
+                    >
+                      {node.label}
+                    </motion.div>
                   ))}
-
-                  {/* Data flow dots */}
-                  {[0, 1, 2].map((i) => (
-                    <motion.circle key={`dot-${i}`} r="3" fill="#F97316"
-                      animate={{ cx: [100, 200, 300, 200], cy: [50 + i * 100, 150, 50 + i * 100, 150], opacity: [1, 0.5, 1, 0.5] }}
-                      transition={{ duration: 4, delay: i * 0.5, repeat: Infinity, ease: 'linear' }}
-                    />
+                </div>
+                <div className="col-span-1 flex items-center justify-center">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                    className="w-full py-6 rounded-xl text-center font-mono text-sm font-bold"
+                    style={{ border: '0.5px solid #F9731660', color: '#F97316', background: '#F9731608' }}
+                  >
+                    BMS HUB
+                  </motion.div>
+                </div>
+                <div className="col-span-1 space-y-3">
+                  {[
+                    { label: lang === 'tr' ? 'Güvenlik' : 'Security', color: '#FBBF24' },
+                    { label: lang === 'tr' ? 'Enerji' : 'Energy', color: '#22C55E' },
+                    { label: lang === 'tr' ? 'Erişim' : 'Access', color: '#8B5CF6' },
+                  ].map((node, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + i * 0.1 }}
+                      className="px-3 py-2.5 rounded-lg font-mono text-xs text-center"
+                      style={{ border: `0.5px solid ${node.color}40`, color: node.color, background: `${node.color}08` }}
+                    >
+                      {node.label}
+                    </motion.div>
                   ))}
-                </svg>
+                </div>
               </div>
             </motion.div>
 

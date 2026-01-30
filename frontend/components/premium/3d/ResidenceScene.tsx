@@ -2,7 +2,7 @@
 
 import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Text } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import {
   useSceneStore,
@@ -13,26 +13,46 @@ import {
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
-// ResidenceScene - Smart Building Management 3D Scene
-// Showcases platform layers and management features
+// ResidenceScene - Cinematic 3D Building Scene
+// Scroll-driven camera with cubic interpolation
+// Scenes: Macro → Infrastructure → Security → Smart Living → Platform → Mobile → Access → Dashboard
 // ===========================================
 
-// Animated Camera that follows scene changes
+// Camera look-at targets per scene for detail-discovery zoom
+const CAMERA_LOOK_AT: Record<ResidenceSceneType, [number, number, number]> = {
+  intro: [0, 3, 0],
+  infrastructure: [0, -1.2, 0.5],
+  security: [1.5, -0.3, 0],
+  smartliving: [0, 3, 0],
+  platform: [0, 3, 0],
+  mobile: [-1, 3, 0],
+  access: [0, 0, 0],
+  dashboard: [0, 3.5, 0],
+};
+
+// Animated Camera — cinematic cubic lerp with look-at interpolation
 function AnimatedCamera() {
   const { camera } = useThree();
   const residenceScene = useSceneStore((state) => state.residenceScene);
   const targetPosition = useRef(new THREE.Vector3(...RESIDENCE_CAMERA_POSITIONS.intro));
   const currentPosition = useRef(new THREE.Vector3(...RESIDENCE_CAMERA_POSITIONS.intro));
+  const targetLookAt = useRef(new THREE.Vector3(...CAMERA_LOOK_AT.intro));
+  const currentLookAt = useRef(new THREE.Vector3(...CAMERA_LOOK_AT.intro));
 
   useEffect(() => {
     const pos = RESIDENCE_CAMERA_POSITIONS[residenceScene];
     targetPosition.current.set(pos[0], pos[1], pos[2]);
+    const look = CAMERA_LOOK_AT[residenceScene];
+    targetLookAt.current.set(look[0], look[1], look[2]);
   }, [residenceScene]);
 
   useFrame(() => {
-    currentPosition.current.lerp(targetPosition.current, 0.02);
+    // Smooth cubic interpolation for cinematic feel
+    const lerpFactor = 0.025;
+    currentPosition.current.lerp(targetPosition.current, lerpFactor);
+    currentLookAt.current.lerp(targetLookAt.current, lerpFactor);
     camera.position.copy(currentPosition.current);
-    camera.lookAt(0, 2, 0);
+    camera.lookAt(currentLookAt.current);
   });
 
   return null;
@@ -42,20 +62,18 @@ function AnimatedCamera() {
 function SmartBuilding({ activeScene }: { activeScene: ResidenceSceneType }) {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Floor definitions
   const floors = useMemo(
     () =>
       Array.from({ length: 8 }, (_, i) => ({
         index: i,
         position: [0, i * 0.8, 0] as [number, number, number],
-        units: 4, // apartments per floor
+        units: 4,
       })),
     []
   );
 
   useFrame((state) => {
     if (groupRef.current) {
-      // Subtle floating
       groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
     }
   });
@@ -63,7 +81,6 @@ function SmartBuilding({ activeScene }: { activeScene: ResidenceSceneType }) {
   return (
     <Float speed={0.3} rotationIntensity={0.02} floatIntensity={0.05}>
       <group ref={groupRef}>
-        {/* Floors */}
         {floors.map((floor) => (
           <BuildingFloor
             key={floor.index}
@@ -97,7 +114,6 @@ function SmartBuilding({ activeScene }: { activeScene: ResidenceSceneType }) {
               metalness={0.5}
             />
           </mesh>
-          {/* Communication antenna */}
           <mesh position={[0, 0.5, 0]}>
             <cylinderGeometry args={[0.03, 0.03, 0.8, 8]} />
             <meshBasicMaterial color="#F97316" />
@@ -108,19 +124,13 @@ function SmartBuilding({ activeScene }: { activeScene: ResidenceSceneType }) {
           </mesh>
         </group>
 
-        {/* Infrastructure / FireLink Cabinet Visual */}
+        {/* Scene-specific visuals */}
         {activeScene === 'infrastructure' && <InfrastructureVisual />}
-
-        {/* Platform Layers Visualization */}
+        {activeScene === 'security' && <SecurityVisual />}
+        {activeScene === 'smartliving' && <SmartLivingVisual />}
         {activeScene === 'platform' && <PlatformLayers />}
-
-        {/* Mobile App Visualization */}
         {activeScene === 'mobile' && <MobileAppVisual />}
-
-        {/* Access Points */}
         {activeScene === 'access' && <AccessPoints />}
-
-        {/* Dashboard Visualization */}
         {activeScene === 'dashboard' && <DashboardVisual />}
       </group>
     </Float>
@@ -144,10 +154,12 @@ function BuildingFloor({
 
   const isActive =
     activeScene === 'platform' ||
+    activeScene === 'dashboard' ||
     (activeScene === 'infrastructure' && index === 0) ||
+    (activeScene === 'security' && index <= 1) ||
+    (activeScene === 'smartliving' && index >= 3 && index <= 5) ||
     (activeScene === 'mobile' && index % 2 === 0) ||
-    (activeScene === 'access' && index === 0) ||
-    activeScene === 'dashboard';
+    (activeScene === 'access' && index === 0);
 
   const sceneColor = new THREE.Color(RESIDENCE_SCENE_COLORS[activeScene]);
 
@@ -172,7 +184,6 @@ function BuildingFloor({
 
   return (
     <group position={position}>
-      {/* Floor slab */}
       <mesh ref={floorRef}>
         <boxGeometry args={[3, 0.7, 2]} />
         <meshStandardMaterial
@@ -184,7 +195,6 @@ function BuildingFloor({
         />
       </mesh>
 
-      {/* Unit windows/indicators */}
       <group ref={unitsRef}>
         {Array.from({ length: units }).map((_, i) => {
           const x = (i - (units - 1) / 2) * 0.7;
@@ -201,7 +211,6 @@ function BuildingFloor({
         })}
       </group>
 
-      {/* Floor edges */}
       <lineSegments>
         <edgesGeometry args={[new THREE.BoxGeometry(3, 0.7, 2)]} />
         <lineBasicMaterial color={RESIDENCE_SCENE_COLORS[activeScene]} transparent opacity={0.3} />
@@ -216,7 +225,6 @@ function InfrastructureVisual() {
 
   useFrame((state) => {
     if (groupRef.current) {
-      // Subtle pulsing glow on the cabinet
       groupRef.current.children.forEach((child, i) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshBasicMaterial;
@@ -230,41 +238,185 @@ function InfrastructureVisual() {
 
   return (
     <group ref={groupRef} position={[0, -1.5, 1]}>
-      {/* Electrical cabinet body */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[1.2, 1.8, 0.6]} />
         <meshStandardMaterial color="#1e293b" metalness={0.7} roughness={0.3} transparent opacity={0.9} />
       </mesh>
-      {/* Cabinet door panel */}
       <mesh position={[0, 0, 0.31]}>
         <planeGeometry args={[1.1, 1.7]} />
         <meshBasicMaterial color="#334155" transparent opacity={0.7} />
       </mesh>
-      {/* Arc detection indicator — pulsing red */}
       <mesh position={[0, 0.5, 0.35]}>
         <circleGeometry args={[0.12, 16]} />
         <meshBasicMaterial color="#EF4444" transparent opacity={0.8} />
       </mesh>
-      {/* Cable bus bars */}
       {[-0.3, 0, 0.3].map((x, i) => (
         <mesh key={i} position={[x, -0.2, 0.35]}>
           <boxGeometry args={[0.08, 0.8, 0.02]} />
           <meshBasicMaterial color={i === 1 ? '#F97316' : '#64748B'} transparent opacity={0.6} />
         </mesh>
       ))}
-      {/* Thermal warning ring */}
       <mesh position={[0, 0.5, 0.36]}>
         <ringGeometry args={[0.15, 0.2, 32]} />
         <meshBasicMaterial color="#EF4444" transparent opacity={0.5} side={THREE.DoubleSide} />
       </mesh>
-      {/* Ground cables running to building */}
       <ConnectionLine start={[0.6, -0.5, 0]} end={[1.5, -0.3, -0.5]} color="#EF4444" />
       <ConnectionLine start={[-0.6, -0.5, 0]} end={[-1.5, -0.3, -0.5]} color="#F97316" />
     </group>
   );
 }
 
-// Platform Layers - Floating Layers around building
+// Security Visual — Parking gates, surveillance cameras, perimeter sensors
+function SecurityVisual() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (groupRef.current) {
+      // Sweep cameras left-right
+      groupRef.current.children.forEach((child, i) => {
+        if (child.userData.isCamera) {
+          child.rotation.y = Math.sin(state.clock.elapsedTime * 0.8 + i * 1.5) * 0.6;
+        }
+      });
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[0, -0.5, 0]}>
+      {/* Parking barrier gate */}
+      <group position={[1.8, 0, 1.2]}>
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[0.15, 0.8, 0.15]} />
+          <meshStandardMaterial color="#FBBF24" metalness={0.6} roughness={0.3} />
+        </mesh>
+        {/* Barrier arm */}
+        <mesh position={[0.5, 0.4, 0]} rotation={[0, 0, -0.3]}>
+          <boxGeometry args={[1, 0.06, 0.06]} />
+          <meshBasicMaterial color="#EF4444" />
+        </mesh>
+      </group>
+
+      {/* Surveillance cameras on poles */}
+      {[
+        { pos: [-1.8, 0.8, 1.3] as [number, number, number] },
+        { pos: [1.8, 0.8, -0.8] as [number, number, number] },
+        { pos: [0, 1.2, 1.5] as [number, number, number] },
+      ].map((cam, i) => (
+        <group key={i} position={cam.pos} userData={{ isCamera: true }}>
+          {/* Camera body */}
+          <mesh>
+            <boxGeometry args={[0.15, 0.1, 0.2]} />
+            <meshStandardMaterial color="#1e293b" metalness={0.8} roughness={0.2} />
+          </mesh>
+          {/* Lens */}
+          <mesh position={[0, 0, 0.12]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.04, 0.04, 0.06, 8]} />
+            <meshBasicMaterial color="#FBBF24" />
+          </mesh>
+          {/* FOV cone */}
+          <mesh position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
+            <coneGeometry args={[0.4, 0.8, 8, 1, true]} />
+            <meshBasicMaterial color="#FBBF24" transparent opacity={0.08} side={THREE.DoubleSide} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Perimeter sensor rings on ground */}
+      {[-1, 0, 1].map((x, i) => (
+        <PulsingRing key={i} position={[x * 1.5, -0.2, 1.5]} color="#FBBF24" />
+      ))}
+    </group>
+  );
+}
+
+// SmartLiving Visual — Interior apartment with smart devices, ambient IoT glow
+function SmartLivingVisual() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.05;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[-0.5, 3.2, 1.5]}>
+      {/* Room outline — transparent wireframe box */}
+      <lineSegments>
+        <edgesGeometry args={[new THREE.BoxGeometry(2.4, 1.2, 1.6)]} />
+        <lineBasicMaterial color="#06B6D4" transparent opacity={0.5} />
+      </lineSegments>
+
+      {/* Smart light bulb spots */}
+      {[[-0.6, 0.5, 0], [0.6, 0.5, 0], [0, 0.5, -0.5]].map((pos, i) => (
+        <SmartLight key={i} position={pos as [number, number, number]} index={i} />
+      ))}
+
+      {/* Smart thermostat on wall */}
+      <mesh position={[1.19, 0, 0]}>
+        <circleGeometry args={[0.15, 32]} />
+        <meshBasicMaterial color="#06B6D4" transparent opacity={0.7} />
+      </mesh>
+      <mesh position={[1.19, 0, 0.01]}>
+        <ringGeometry args={[0.12, 0.15, 32]} />
+        <meshBasicMaterial color="#22C55E" transparent opacity={0.6} side={THREE.DoubleSide} />
+      </mesh>
+
+      {/* Smart speaker */}
+      <mesh position={[0, -0.5, 0.3]}>
+        <cylinderGeometry args={[0.1, 0.12, 0.2, 16]} />
+        <meshStandardMaterial color="#1e293b" metalness={0.7} roughness={0.3} />
+      </mesh>
+
+      {/* Floating data connections between devices */}
+      <ConnectionLine start={[-0.6, 0.5, 0]} end={[1.19, 0, 0]} color="#06B6D4" />
+      <ConnectionLine start={[0.6, 0.5, 0]} end={[0, -0.5, 0.3]} color="#06B6D4" />
+      <ConnectionLine start={[1.19, 0, 0]} end={[0, -0.5, 0.3]} color="#22C55E" />
+    </group>
+  );
+}
+
+// Smart Light — pulsing point light effect
+function SmartLight({ position, index }: { position: [number, number, number]; index: number }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      const mat = meshRef.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 1.5 + index * 2) * 0.3;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[0.06, 16, 16]} />
+      <meshBasicMaterial color="#FCD34D" transparent opacity={0.7} />
+    </mesh>
+  );
+}
+
+// Pulsing Ring — perimeter sensor effect
+function PulsingRing({ position, color }: { position: [number, number, number]; color: string }) {
+  const ringRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (ringRef.current) {
+      const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.3;
+      ringRef.current.scale.setScalar(scale);
+      const mat = ringRef.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = 0.4 - Math.sin(state.clock.elapsedTime * 2) * 0.2;
+    }
+  });
+
+  return (
+    <mesh ref={ringRef} position={position} rotation={[Math.PI / 2, 0, 0]}>
+      <ringGeometry args={[0.2, 0.25, 32]} />
+      <meshBasicMaterial color={color} transparent opacity={0.4} side={THREE.DoubleSide} />
+    </mesh>
+  );
+}
+
+// Platform Layers — Floating concentric rings
 function PlatformLayers() {
   const layersRef = useRef<THREE.Group>(null);
 
@@ -287,13 +439,12 @@ function PlatformLayers() {
 
   return (
     <group ref={layersRef}>
-      {layers.map((layer, i) => (
+      {layers.map((layer) => (
         <group key={layer.name} position={[0, layer.y, 0]}>
           <mesh rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[layer.radius, 0.02, 8, 64]} />
             <meshBasicMaterial color={layer.color} transparent opacity={0.5} />
           </mesh>
-          {/* Data nodes on ring */}
           {Array.from({ length: 8 }).map((_, j) => {
             const angle = (j / 8) * Math.PI * 2;
             const x = Math.cos(angle) * layer.radius;
@@ -311,7 +462,7 @@ function PlatformLayers() {
   );
 }
 
-// Mobile App Visual - Floating Phone
+// Mobile App Visual — Floating Phone
 function MobileAppVisual() {
   const phoneRef = useRef<THREE.Group>(null);
 
@@ -324,17 +475,14 @@ function MobileAppVisual() {
 
   return (
     <group ref={phoneRef} position={[-3, 3, 0]}>
-      {/* Phone body */}
       <mesh>
         <boxGeometry args={[0.8, 1.6, 0.1]} />
         <meshStandardMaterial color="#1e293b" metalness={0.8} roughness={0.2} />
       </mesh>
-      {/* Screen */}
       <mesh position={[0, 0, 0.051]}>
         <boxGeometry args={[0.7, 1.4, 0.01]} />
         <meshBasicMaterial color="#06B6D4" />
       </mesh>
-      {/* Notification dots */}
       {[0.4, 0.1, -0.2, -0.5].map((y, i) => (
         <mesh key={i} position={[-0.2, y, 0.06]}>
           <circleGeometry args={[0.08, 16]} />
@@ -345,7 +493,6 @@ function MobileAppVisual() {
           />
         </mesh>
       ))}
-      {/* Connection lines to building */}
       <ConnectionLine start={[0.4, 0, 0]} end={[2.5, 0, 0]} color="#06B6D4" />
     </group>
   );
@@ -355,11 +502,11 @@ function MobileAppVisual() {
 function AccessPoints() {
   const accessRef = useRef<THREE.Group>(null);
 
-  const accessPoints = useMemo(
+  const accessPointDefs = useMemo(
     () => [
-      { position: [0, -0.1, 1.3] as [number, number, number], type: 'main' },
-      { position: [-1.6, -0.1, 0] as [number, number, number], type: 'side' },
-      { position: [1.6, -0.1, 0] as [number, number, number], type: 'parking' },
+      { position: [0, -0.1, 1.3] as [number, number, number] },
+      { position: [-1.6, -0.1, 0] as [number, number, number] },
+      { position: [1.6, -0.1, 0] as [number, number, number] },
     ],
     []
   );
@@ -375,19 +522,16 @@ function AccessPoints() {
 
   return (
     <group ref={accessRef}>
-      {accessPoints.map((point, i) => (
+      {accessPointDefs.map((point, i) => (
         <group key={i} position={point.position}>
-          {/* Access point indicator */}
           <mesh>
             <cylinderGeometry args={[0.15, 0.15, 0.3, 16]} />
             <meshBasicMaterial color="#22C55E" transparent opacity={0.8} />
           </mesh>
-          {/* QR code symbol */}
           <mesh position={[0, 0.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
             <planeGeometry args={[0.2, 0.2]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
-          {/* Scanning effect */}
           <mesh position={[0, 0.5, 0]}>
             <ringGeometry args={[0.2, 0.25, 32]} />
             <meshBasicMaterial color="#22C55E" transparent opacity={0.5} side={THREE.DoubleSide} />
@@ -398,7 +542,7 @@ function AccessPoints() {
   );
 }
 
-// Dashboard Visual - Floating Screens
+// Dashboard Visual — Floating Screens
 function DashboardVisual() {
   const dashboardRef = useRef<THREE.Group>(null);
 
@@ -410,18 +554,15 @@ function DashboardVisual() {
 
   return (
     <group ref={dashboardRef} position={[0, 3.5, 0]}>
-      {/* Main dashboard screen */}
       <group position={[0, 0, 2]}>
         <mesh>
           <boxGeometry args={[2, 1.2, 0.05]} />
           <meshStandardMaterial color="#1e293b" metalness={0.5} roughness={0.3} />
         </mesh>
-        {/* Screen content */}
         <mesh position={[0, 0, 0.03]}>
           <planeGeometry args={[1.9, 1.1]} />
           <meshBasicMaterial color="#3B82F6" transparent opacity={0.8} />
         </mesh>
-        {/* Data bars */}
         {[-0.6, -0.2, 0.2, 0.6].map((x, i) => (
           <mesh key={i} position={[x, -0.3, 0.04]}>
             <boxGeometry args={[0.15, 0.3 + i * 0.15, 0.01]} />
@@ -430,7 +571,6 @@ function DashboardVisual() {
         ))}
       </group>
 
-      {/* Side screens */}
       {[1, -1].map((side) => (
         <group key={side} position={[side * 1.5, 0, 1.5]} rotation={[0, side * -0.4, 0]}>
           <mesh>
@@ -557,7 +697,7 @@ export default function ResidenceScene({ className = '' }: ResidenceSceneProps) 
   return (
     <div className={`absolute inset-0 ${className}`}>
       <Canvas
-        camera={{ position: [0, 0, 12], fov: 45 }}
+        camera={{ position: [6, 5, 14], fov: 45 }}
         dpr={dpr}
         frameloop={frameloop as 'always' | 'never' | 'demand'}
         gl={{ ...gl, alpha: true }}

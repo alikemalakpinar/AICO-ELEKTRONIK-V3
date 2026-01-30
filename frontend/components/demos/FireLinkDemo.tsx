@@ -336,6 +336,22 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
         </div>
       </div>
 
+      {/* HUD Vignette Warning — red corner glow on elevated+ alert */}
+      <AnimatePresence>
+        {(alertLevel === 'CRITICAL' || alertLevel === 'LOCKOUT') && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            exit={{ opacity: 0 }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="absolute inset-0 z-20 pointer-events-none rounded-3xl"
+            style={{
+              boxShadow: 'inset 0 0 80px 20px rgba(239, 68, 68, 0.15), inset 0 0 200px 40px rgba(239, 68, 68, 0.05)',
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Lockout overlay */}
       <AnimatePresence>
         {alertLevel === 'LOCKOUT' && (

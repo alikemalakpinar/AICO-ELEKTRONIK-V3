@@ -77,7 +77,7 @@ async function fetchWithRetry(
 
       // Exponential backoff: 1s, 2s, 4s
       const delay = baseDelay * Math.pow(2, attempt);
-      console.log(`[Sitemap] Retry ${attempt + 1}/${maxRetries} for ${url} in ${delay}ms`);
+      // Retry with exponential backoff
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }

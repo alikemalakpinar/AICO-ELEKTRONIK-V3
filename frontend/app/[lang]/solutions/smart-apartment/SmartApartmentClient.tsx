@@ -26,11 +26,11 @@ import { getTranslations, type Locale } from '@/lib/i18n';
 import ScrollyTellingContainer, {
   type ScrollyScene,
 } from '@/components/premium/ScrollyTellingContainer';
-import { useSceneStore, type VillaSceneType } from '@/stores/sceneStore';
+import { useSceneStore, type ResidenceSceneType } from '@/stores/sceneStore';
 
-// Lazy load the 3D Villa Scene (reused for apartment building visualization)
-const VillaScene = dynamic(
-  () => import('@/components/premium/3d/VillaScene'),
+// Lazy load the 3D Residence Scene (cinematic building visualization)
+const ResidenceScene = dynamic(
+  () => import('@/components/premium/3d/ResidenceScene'),
   {
     ssr: false,
     loading: () => (
@@ -56,29 +56,29 @@ interface SmartApartmentClientProps {
   lang: Locale;
 }
 
-// Map scrollytelling scene IDs to VillaScene camera positions
-const SCENE_ID_TO_VILLA: Record<string, VillaSceneType> = {
+// Map scrollytelling scene IDs to ResidenceScene camera positions
+const SCENE_ID_TO_RESIDENCE: Record<string, ResidenceSceneType> = {
   hero: 'intro',
-  morning: 'lighting',
-  afternoon: 'climate',
+  morning: 'smartliving',
+  afternoon: 'security',
   evening: 'security',
-  latenight: 'security',
-  communication: 'integrated',
-  security: 'security',
-  services: 'integrated',
+  latenight: 'infrastructure',
+  communication: 'platform',
+  security: 'access',
+  services: 'dashboard',
 };
 
 export default function SmartApartmentClient({ lang }: SmartApartmentClientProps) {
   const t = getTranslations(lang);
-  const setVillaScene = useSceneStore((s) => s.setVillaScene);
+  const setResidenceScene = useSceneStore((s) => s.setResidenceScene);
 
   // Drive 3D camera from scroll position
   const handleSceneChange = useCallback(
     (_index: number, sceneId: string) => {
-      const mapped = SCENE_ID_TO_VILLA[sceneId] || 'intro';
-      setVillaScene(mapped);
+      const mapped = SCENE_ID_TO_RESIDENCE[sceneId] || 'intro';
+      setResidenceScene(mapped);
     },
-    [setVillaScene]
+    [setResidenceScene]
   );
 
   // Scrollytelling scenes
@@ -288,7 +288,7 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
     <div className="min-h-screen bg-background">
       {/* 3D Building Scene - Fixed behind scrollytelling */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <VillaScene />
+        <ResidenceScene />
       </div>
 
       {/* Scrollytelling Section - drives 3D camera */}
