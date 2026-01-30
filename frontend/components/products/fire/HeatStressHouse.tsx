@@ -7,8 +7,9 @@ import * as THREE from 'three';
 import type { FireLinkSensor } from '@/lib/utils/firelink-parser';
 
 // ===========================================
-// HeatStressHouse - 3D Electrical Panel X-Ray with Cable Visualization
-// Rooms pulse with emission when sensors detect fire
+// HeatStressHouse - 3D Electrical Cabinet X-Ray
+// Electrical Stress Monitoring & Thermal Mapping
+// Panels pulse with emission on arc detection or thermal anomaly
 // ===========================================
 
 interface HeatStressHouseProps {
@@ -31,7 +32,7 @@ const ROOM_CONFIG = [
   { name: 'Emergency Panel H', position: [-0.2, 1.1, -0.5] as [number, number, number], size: [0.6, 0.9, 0.5] as [number, number, number], sensorId: 8 },
 ];
 
-// Heat stress room with pulsing emission
+// Electrical panel zone with thermal stress emission
 function HeatStressRoom({
   position,
   size,
@@ -67,7 +68,7 @@ function HeatStressRoom({
 
     timeRef.current += delta;
 
-    // Pulsing emission for fire/smoke detection
+    // Pulsing emission for thermal anomaly / arc detection
     if (sensor.hasFire) {
       const pulse = Math.sin(timeRef.current * 8) * 0.5 + 0.5;
       materialRef.current.emissiveIntensity = 1 + pulse * 2;
@@ -131,20 +132,20 @@ function HeatStressRoom({
         </Text>
       )}
 
-      {/* Fire indicator */}
+      {/* Thermal overload particles */}
       {sensor.hasFire && (
         <FireParticles position={[position[0], position[1] + size[1] / 2, position[2]]} />
       )}
 
-      {/* Arc indicator */}
+      {/* Arc discharge particles */}
       {sensor.hasArc && !sensor.hasFire && (
-        <SmokeParticles position={[position[0], position[1] + size[1] / 2, position[2]]} />
+        <ArcParticles position={[position[0], position[1] + size[1] / 2, position[2]]} />
       )}
     </group>
   );
 }
 
-// Fire particle effect
+// Thermal overload particle effect
 function FireParticles({ position }: { position: [number, number, number] }) {
   const particlesRef = useRef<THREE.Points>(null);
   const count = 30;
@@ -189,8 +190,8 @@ function FireParticles({ position }: { position: [number, number, number] }) {
   );
 }
 
-// Smoke particle effect
-function SmokeParticles({ position }: { position: [number, number, number] }) {
+// Arc discharge particle effect
+function ArcParticles({ position }: { position: [number, number, number] }) {
   const particlesRef = useRef<THREE.Points>(null);
   const count = 20;
 
@@ -286,7 +287,7 @@ function CableWiring({ sensors, accentColor }: { sensors: FireLinkSensor[]; acce
   );
 }
 
-// House structure (roof and foundation)
+// Cabinet enclosure structure (roof and foundation)
 function HouseStructure({ accentColor }: { accentColor: string }) {
   return (
     <group>

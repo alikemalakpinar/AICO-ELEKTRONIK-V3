@@ -216,7 +216,7 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
           // Generate fate moments
           const delta = Math.round((newTemp - truck.temperature) * 10) / 10;
 
-          // Temperature spike/drop events
+          // Temperature spike/drop events with automated intervention
           if (tempDiff > 2 && Math.random() < 0.05) {
             fateMomentCounter.current++;
             const isSpike = newTemp > truck.targetTemp;
@@ -236,6 +236,22 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
               severity: tempDiff > 3 ? 'critical' : 'warning',
               temperatureDelta: Math.round(delta * 10) / 10,
             });
+
+            // Automated intervention log entry
+            if (tempDiff > 3) {
+              fateMomentCounter.current++;
+              newMoments.push({
+                id: `fm-${fateMomentCounter.current}`,
+                truckId: truck.id,
+                type: 'temp_spike',
+                timestamp: new Date(),
+                description: {
+                  tr: `Otomatik müdahale: Kompresör gücü %${Math.min(100, Math.round(tempDiff * 15))} artırıldı. Gözetim kaydı güncellendi.`,
+                  en: `Automated intervention: Compressor power increased by ${Math.min(100, Math.round(tempDiff * 15))}%. Custody log updated.`,
+                },
+                severity: 'info',
+              });
+            }
           }
 
           // Random door open events
@@ -774,7 +790,7 @@ function FateMomentsTimeline({
       <div className="flex items-center justify-between mb-2">
         <span className="text-offwhite-600 text-xs font-mono uppercase flex items-center gap-1.5">
           <Shield size={12} className="text-cyan-400" />
-          {lang === 'tr' ? 'Kritik Anlar' : 'Fate Moments'}
+          {lang === 'tr' ? 'Gözetim Zinciri Kaydı' : 'Chain of Custody Log'}
         </span>
         <span className="text-offwhite-800 text-[10px] font-mono">
           {filtered.length} {lang === 'tr' ? 'olay' : 'events'}
