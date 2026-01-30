@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aico-elektronik.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com';
 
 export default function robots(): MetadataRoute.Robots {
   const isProduction = process.env.NODE_ENV === 'production';

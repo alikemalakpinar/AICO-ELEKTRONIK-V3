@@ -139,10 +139,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'fire-safety',
       icon: Flame,
       title: 'FireLink',
-      subtitle: lang === 'tr' ? 'Yangın Güvenlik Sistemi' : 'Fire Safety System',
-      description: lang === 'tr'
-        ? 'Termal izleme ve erken uyarı'
-        : 'Thermal monitoring and early warning',
+      subtitle: t.nav.fireSafetySubtitle,
+      description: t.nav.fireSafetyDesc,
       href: `/${lang}/solutions/fire-safety`,
       color: '#EF4444',
       gradient: 'from-red-500/20 to-orange-500/10',
@@ -151,10 +149,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'mining-iot',
       icon: HardHat,
       title: 'MineGuard',
-      subtitle: lang === 'tr' ? 'Maden Güvenliği' : 'Mining Safety',
-      description: lang === 'tr'
-        ? 'İşçi takip ve gaz algılama'
-        : 'Worker tracking and gas detection',
+      subtitle: t.nav.miningSafetySubtitle,
+      description: t.nav.miningSafetyDesc,
       href: `/${lang}/solutions/mining-iot`,
       color: '#EAB308',
       gradient: 'from-yellow-500/20 to-amber-500/10',
@@ -163,10 +159,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'cold-chain',
       icon: Snowflake,
       title: 'ColdTrack',
-      subtitle: lang === 'tr' ? 'Soğuk Zincir' : 'Cold Chain',
-      description: lang === 'tr'
-        ? 'Sıcaklık izleme ve lojistik'
-        : 'Temperature monitoring and logistics',
+      subtitle: t.nav.coldChainSubtitle,
+      description: t.nav.coldChainDesc,
       href: `/${lang}/solutions/cold-chain`,
       color: '#06B6D4',
       gradient: 'from-cyan-500/20 to-blue-500/10',
@@ -175,10 +169,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       id: 'predictive-maintenance',
       icon: Activity,
       title: 'VibrationGuard',
-      subtitle: lang === 'tr' ? 'Kestirimci Bakım' : 'Predictive Maintenance',
-      description: lang === 'tr'
-        ? 'FFT titreşim analizi ve arıza tahmini'
-        : 'FFT vibration analysis and failure prediction',
+      subtitle: t.nav.predictiveMaintenanceSubtitle,
+      description: t.nav.predictiveMaintenanceDesc,
       href: `/${lang}/solutions/predictive-maintenance`,
       color: '#00D4FF',
       gradient: 'from-cyan-500/20 to-blue-500/10',
@@ -190,28 +182,22 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
     {
       id: 'smart-villa',
       icon: Home,
-      title: lang === 'tr' ? 'Akıllı Villa' : 'Smart Villa',
-      description: lang === 'tr'
-        ? 'Kişisel lüks, görünmez teknoloji'
-        : 'Personal luxury, invisible technology',
+      title: t.nav.smartVilla,
+      description: t.nav.smartVillaDesc,
       href: `/${lang}/solutions/smart-villa`,
     },
     {
       id: 'smart-apartment',
       icon: Building,
-      title: lang === 'tr' ? 'Akıllı Apartman' : 'Smart Apartment',
-      description: lang === 'tr'
-        ? 'Ortak alan yönetimi ve iletişim'
-        : 'Common area management',
+      title: t.nav.smartApartment,
+      description: t.nav.smartApartmentDesc,
       href: `/${lang}/solutions/smart-apartment`,
     },
     {
       id: 'smart-residence',
       icon: Building2,
-      title: lang === 'tr' ? 'Akıllı Rezidans' : 'Smart Residence',
-      description: lang === 'tr'
-        ? 'Merkezi yönetim platformu'
-        : 'Central management platform',
+      title: t.nav.smartResidence,
+      description: t.nav.smartResidenceDesc,
       href: `/${lang}/solutions/smart-residence`,
     },
   ];
@@ -305,7 +291,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseLeave={handleSolutionsLeave}
                   >
                     <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
-                      {lang === 'tr' ? 'Çözümler' : 'Solutions'}
+                      {t.nav.solutions}
                       <ChevronDown
                         size={14}
                         className={`transition-transform duration-300 ${solutionsOpen ? 'rotate-180' : ''}`}
@@ -331,7 +317,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                               <div className="flex items-center gap-2">
                                 <Zap size={16} className="text-engineer-500" />
                                 <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
-                                  {lang === 'tr' ? 'Endüstriyel Çözümler' : 'Industrial Solutions'}
+                                  {t.nav.industrialSolutions}
                                 </span>
                               </div>
                             </div>
@@ -391,7 +377,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                                 className="group flex items-center justify-between text-sm"
                               >
                                 <span className="text-muted-foreground group-hover:text-foreground transition-colors">
-                                  {lang === 'tr' ? 'Tüm projeleri inceleyin' : 'View all projects'}
+                                  {t.nav.viewAllProjects}
                                 </span>
                                 <ArrowRight
                                   size={14}
@@ -412,7 +398,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseLeave={handleSmartLivingLeave}
                   >
                     <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5">
-                      Smart Living
+                      {t.nav.smartLiving}
                       <ChevronDown
                         size={14}
                         className={`transition-transform duration-300 ${smartLivingOpen ? 'rotate-180' : ''}`}
@@ -496,7 +482,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     href={`/${lang}/contact?subject=demo`}
                     className="group relative flex items-center gap-2 px-5 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-engineer-500/25"
                   >
-                    <span>{lang === 'tr' ? 'Demo Talep Et' : 'Request Demo'}</span>
+                    <span>{t.nav.requestDemo}</span>
                     <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
@@ -578,7 +564,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                 {/* Solutions Section */}
                 <div className="space-y-4">
                   <div className="text-muted-foreground text-xs font-mono uppercase tracking-widest px-2">
-                    {lang === 'tr' ? 'Çözümler' : 'Solutions'}
+                    {t.nav.solutions}
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {solutions.map((solution) => (
@@ -669,7 +655,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   className="flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground transition-colors w-full rounded-lg dark:hover:bg-white/5 light:hover:bg-gray-100"
                 >
                   <Globe size={18} />
-                  <span className="font-mono">{lang === 'tr' ? 'English' : 'Türkçe'}</span>
+                  <span className="font-mono">{t.nav.switchToLanguage}</span>
                 </button>
 
                 {/* Demo Request CTA */}
@@ -678,7 +664,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-colors"
                 >
-                  <span>{lang === 'tr' ? 'Demo Talep Et' : 'Request Demo'}</span>
+                  <span>{t.nav.requestDemo}</span>
                   <ArrowRight size={18} />
                 </Link>
               </div>

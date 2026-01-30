@@ -103,11 +103,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { lang?: string };
 }) {
+  // Derive locale from route segment; default to 'tr' for root
+  const lang = params?.lang === 'en' ? 'en' : 'tr';
+
   return (
-    <html lang="tr" className={`${fontVariables} dark`} suppressHydrationWarning>
+    <html lang={lang} className={`${fontVariables} dark`} suppressHydrationWarning>
       <head>
         {/* Structured Data for SEO */}
         <OrganizationSchema lang="tr" />

@@ -21,8 +21,8 @@ const COMPANY_INFO = {
     longitude: 29.1264,
   },
   openingHours: 'Mo-Fr 09:00-18:00',
-  url: 'https://aico.com.tr',
-  logo: 'https://aico.com.tr/images/logo.png',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com',
+  logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://aicoelektronik.com'}/images/logo.png`,
 };
 
 // Generate static params for all locales
