@@ -15,6 +15,10 @@ import {
   Zap,
   Thermometer,
   Volume2,
+  TrendingUp,
+  Shield,
+  Clock,
+  Wrench,
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
 import type { Locale } from '@/types';
@@ -77,6 +81,7 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
   const [isSimulating, setIsSimulating] = useState(false);
   const [scenario, setScenario] = useState<'normal' | 'warning' | 'critical'>('normal');
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [vibrationHistory, setVibrationHistory] = useState<number[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeRef = useRef(0);
 
@@ -136,9 +141,11 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
             return signal;
           });
 
+        const newVibLevel = baseVibration + (Math.random() - 0.5) * 0.5;
+
         return {
           rpm: baseRPM + (Math.random() - 0.5) * 20,
-          vibrationLevel: baseVibration + (Math.random() - 0.5) * 0.5,
+          vibrationLevel: newVibLevel,
           temperature: baseTemp + (Math.random() - 0.5) * 2,
           bearingCondition: baseBearing + (Math.random() - 0.5) * 2,
           fftData,
@@ -148,8 +155,20 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
       });
     }, 50);
 
+    // Track vibration history at a slower rate (every 500ms)
+    const historyInterval = setInterval(() => {
+      setMotorData((prev) => {
+        setVibrationHistory((hist) => {
+          const next = [...hist, prev.vibrationLevel];
+          return next.slice(-20);
+        });
+        return prev;
+      });
+    }, 500);
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      clearInterval(historyInterval);
     };
   }, [isSimulating, scenario]);
 
@@ -402,11 +421,13 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
                   ? 'Erken asinma belirtileri mevcut. 2 hafta icinde bakim planlani.'
                   : 'Early wear signs present. Schedule maintenance within 2 weeks.'}
               </p>
-              <div className="flex gap-4 mt-3">
+              <div className="flex flex-wrap gap-4 mt-3">
                 <div className="text-[10px] text-offwhite-600">
                   <span className="text-offwhite-800">{lang === 'tr' ? 'Ariza Kodu:' : 'Fault Code:'}</span>{' '}
                   <span className="font-mono">
-                    {motorData.status === 'critical' ? 'BRG-001, UNB-003' : 'BRG-002'}
+                    {motorData.status === 'critical'
+                      ? 'BRG-001 (BPFO), UNB-003 (1X), MSA-007 (Misalignment)'
+                      : 'BRG-002 (BPFI Early Stage)'}
                   </span>
                 </div>
                 <div className="text-[10px] text-offwhite-600">
@@ -415,10 +436,153 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
                     {motorData.status === 'critical' ? '< 24h' : '~14 days'}
                   </span>
                 </div>
+                <div className="text-[10px] text-offwhite-600">
+                  <span className="text-offwhite-800">{lang === 'tr' ? 'Siddet:' : 'Severity:'}</span>{' '}
+                  <span className="font-mono">
+                    {motorData.status === 'critical' ? 'ISO 10816-3 Zone D' : 'ISO 10816-3 Zone C'}
+                  </span>
+                </div>
+              </div>
+              {/* Cost savings estimate */}
+              <div className="mt-3 px-3 py-2 rounded-lg bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2 text-[11px]">
+                  <Wrench size={12} className={motorData.status === 'critical' ? 'text-red-400' : 'text-yellow-400'} />
+                  <span className="text-offwhite-600">
+                    {lang === 'tr'
+                      ? 'Bu arizayi simdi gidermek:'
+                      : 'Fix now:'}
+                  </span>
+                  <span className="text-green-400 font-mono font-bold">~₺2,500</span>
+                  <span className="text-offwhite-800 mx-1">|</span>
+                  <span className="text-offwhite-600">
+                    {lang === 'tr' ? 'Ariza sonrasi:' : 'After failure:'}
+                  </span>
+                  <span className="text-red-400 font-mono font-bold">~₺45,000</span>
+                </div>
               </div>
             </div>
           </div>
         </motion.div>
+      )}
+
+      {/* Predictive Analytics Panel */}
+      {(scenario === 'warning' || scenario === 'critical') && motorData.status !== 'normal' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className={`mx-4 mb-4 p-5 rounded-xl backdrop-blur-xl bg-white/5 border border-white/10 ${
+            scenario === 'critical' ? 'shadow-[0_0_30px_rgba(239,68,68,0.15)]' : ''
+          }`}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Shield size={16} className={scenario === 'critical' ? 'text-red-400' : 'text-yellow-400'} />
+            <span className="text-offwhite-400 text-sm font-mono font-bold uppercase">
+              {lang === 'tr' ? 'Kestirimci Analiz' : 'Predictive Analytics'}
+            </span>
+            {scenario === 'critical' && (
+              <span className="ml-auto flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-red-400 text-[10px] font-mono">
+                  {lang === 'tr' ? 'ACIL' : 'URGENT'}
+                </span>
+              </span>
+            )}
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Prediction */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp size={14} className={scenario === 'critical' ? 'text-red-400' : 'text-yellow-400'} />
+                <span className="text-offwhite-500 text-xs font-mono">
+                  {lang === 'tr' ? 'Ariza Tahmini' : 'Failure Prediction'}
+                </span>
+              </div>
+              <p className="text-offwhite-300 text-sm mb-3">
+                {scenario === 'critical'
+                  ? lang === 'tr'
+                    ? 'Rulman arizasi %96 olasilikla 48 saat icinde gerceklesecek'
+                    : 'Bearing failure 96% likely within 48 hours'
+                  : lang === 'tr'
+                  ? 'Rulman arizasi %87 olasilikla 2 hafta icinde gerceklesecek'
+                  : 'Bearing failure 87% likely within 2 weeks'}
+              </p>
+
+              {/* Probability bar */}
+              <div className="mb-1 flex items-center justify-between text-[10px] font-mono text-offwhite-700">
+                <span>{lang === 'tr' ? 'Olasilik' : 'Probability'}</span>
+                <span>{scenario === 'critical' ? '96%' : '87%'}</span>
+              </div>
+              <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{
+                    backgroundColor: scenario === 'critical' ? THEME.danger : THEME.warning,
+                    boxShadow: `0 0 10px ${scenario === 'critical' ? THEME.danger : THEME.warning}60`,
+                  }}
+                  initial={{ width: 0 }}
+                  animate={{ width: scenario === 'critical' ? '96%' : '87%' }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
+                />
+              </div>
+            </div>
+
+            {/* Recommended Action */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Clock size={14} className="text-cyan-400" />
+                <span className="text-offwhite-500 text-xs font-mono">
+                  {lang === 'tr' ? 'Onerilen Aksiyon' : 'Recommended Action'}
+                </span>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-sm">
+                  <Wrench size={12} className="text-cyan-400 mt-0.5 shrink-0" />
+                  <span className="text-offwhite-400">
+                    {scenario === 'critical'
+                      ? lang === 'tr'
+                        ? 'Motoru derhal durdurun. Rulman degisimi ve saft hizalama gerekli.'
+                        : 'Stop motor immediately. Bearing replacement and shaft alignment required.'
+                      : lang === 'tr'
+                      ? 'Onumuzdeki 2 hafta icinde planlı bakim zamanlayın. Rulman yaglaması ve muayene.'
+                      : 'Schedule planned maintenance within 2 weeks. Bearing lubrication and inspection.'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-mono text-offwhite-700">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${
+                    scenario === 'critical'
+                      ? 'bg-red-500/20 text-red-400'
+                      : 'bg-yellow-500/20 text-yellow-400'
+                  }`}>
+                    <TrendingUp size={10} />
+                    {scenario === 'critical'
+                      ? lang === 'tr' ? 'TREND: HIZLI BOZULMA' : 'TREND: RAPID DEGRADATION'
+                      : lang === 'tr' ? 'TREND: YAVAS BOZULMA' : 'TREND: GRADUAL DEGRADATION'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Vibration Trend Sparkline */}
+      {vibrationHistory.length > 1 && isSimulating && (
+        <div className="mx-4 mb-4 p-3 rounded-xl bg-[#0A0A0A] border border-white/5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <TrendingUp size={12} className="text-cyan-400" />
+              <span className="text-offwhite-700 text-[10px] font-mono uppercase">
+                {lang === 'tr' ? 'Titresim Trendi (Son 20 Olcum)' : 'Vibration Trend (Last 20 Readings)'}
+              </span>
+            </div>
+            <span className="text-offwhite-800 text-[10px] font-mono">
+              {vibrationHistory[vibrationHistory.length - 1]?.toFixed(2)} mm/s
+            </span>
+          </div>
+          <SparklineChart data={vibrationHistory} status={motorData.status} />
+        </div>
       )}
     </DashboardShell>
   );
@@ -474,6 +638,57 @@ interface WaveformChartProps {
   data: number[];
   accentColor: string;
   status: 'normal' | 'warning' | 'critical';
+}
+
+// ===========================================
+// Sparkline Chart Component
+// ===========================================
+
+interface SparklineChartProps {
+  data: number[];
+  status: 'normal' | 'warning' | 'critical';
+}
+
+function SparklineChart({ data, status }: SparklineChartProps) {
+  const width = 400;
+  const height = 40;
+  const minVal = Math.min(...data);
+  const maxVal = Math.max(...data);
+  const range = maxVal - minVal || 1;
+
+  const points = data.map((val, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((val - minVal) / range) * (height - 6) - 3;
+    return `${x},${y}`;
+  });
+
+  const polyline = points.join(' ');
+  // Area fill path
+  const areaPath = `M 0,${height} L ${points.map((p) => p).join(' L ')} L ${width},${height} Z`;
+
+  const color = status === 'critical' ? '#EF4444' : status === 'warning' ? '#F59E0B' : '#00D4FF';
+
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-10" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill="url(#sparkFill)" />
+      <polyline points={polyline} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+      {/* Current value dot */}
+      {data.length > 0 && (
+        <circle
+          cx={(data.length - 1) / (data.length - 1) * width}
+          cy={height - ((data[data.length - 1] - minVal) / range) * (height - 6) - 3}
+          r="3"
+          fill={color}
+        />
+      )}
+    </svg>
+  );
 }
 
 function WaveformChart({ data, accentColor, status }: WaveformChartProps) {

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Lock, ArrowRight, Shield, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useAudio } from './AudioProvider';
 
 /**
  * LoginModal - Premium Customer Portal Login
@@ -30,8 +29,6 @@ const DEMO_CREDENTIALS = {
 
 export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
   const router = useRouter();
-  const { playClick, playSuccess, playError } = useAudio();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -39,7 +36,6 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    playClick();
     setError('');
     setIsLoading(true);
 
@@ -48,7 +44,6 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
 
     // Check demo credentials
     if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
-      playSuccess();
       // Store demo session
       localStorage.setItem('aico-demo-session', JSON.stringify({
         user: 'Demo User',
@@ -59,7 +54,6 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
       router.push(`/${lang}/dashboard`);
       onClose();
     } else {
-      playError();
       setError(lang === 'tr'
         ? 'Gecersiz kimlik bilgileri. Demo: demo@aico.com / demo123'
         : 'Invalid credentials. Demo: demo@aico.com / demo123'
@@ -70,7 +64,6 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
   };
 
   const handleDemoFill = () => {
-    playClick();
     setEmail(DEMO_CREDENTIALS.email);
     setPassword(DEMO_CREDENTIALS.password);
     setError('');
@@ -104,10 +97,7 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
               <div className="relative px-6 pt-6 pb-4 border-b border-white/5">
                 {/* Close button */}
                 <button
-                  onClick={() => {
-                    playClick();
-                    onClose();
-                  }}
+                  onClick={onClose}
                   className="absolute top-4 right-4 p-2 text-offwhite-700 hover:text-offwhite-400
                            hover:bg-white/5 rounded-lg transition-colors"
                 >

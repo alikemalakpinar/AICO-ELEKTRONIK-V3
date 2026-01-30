@@ -54,13 +54,13 @@ function HeatStressRoom({
   // Determine color based on sensor state
   const getColor = () => {
     if (sensor.hasFire) return new THREE.Color('#FF0000');
-    if (sensor.hasSmoke) return new THREE.Color('#FF6B00');
+    if (sensor.hasArc) return new THREE.Color('#FF6B00');
     if (sensor.temperature > 40) return new THREE.Color('#FF9500');
     return new THREE.Color(accentColor);
   };
 
-  const baseColor = useMemo(() => getColor(), [sensor.hasFire, sensor.hasSmoke, sensor.temperature, accentColor]);
-  const emissionIntensity = sensor.hasFire ? 2 : sensor.hasSmoke ? 0.8 : isSelected ? 0.4 : 0;
+  const baseColor = useMemo(() => getColor(), [sensor.hasFire, sensor.hasArc, sensor.temperature, accentColor]);
+  const emissionIntensity = sensor.hasFire ? 2 : sensor.hasArc ? 0.8 : isSelected ? 0.4 : 0;
 
   useFrame((state, delta) => {
     if (!materialRef.current) return;
@@ -72,7 +72,7 @@ function HeatStressRoom({
       const pulse = Math.sin(timeRef.current * 8) * 0.5 + 0.5;
       materialRef.current.emissiveIntensity = 1 + pulse * 2;
       materialRef.current.opacity = 0.3 + pulse * 0.3;
-    } else if (sensor.hasSmoke) {
+    } else if (sensor.hasArc) {
       const pulse = Math.sin(timeRef.current * 4) * 0.3 + 0.7;
       materialRef.current.emissiveIntensity = 0.5 + pulse * 0.3;
       materialRef.current.opacity = 0.15 + pulse * 0.1;
@@ -113,17 +113,17 @@ function HeatStressRoom({
         <Edges
           scale={1}
           threshold={15}
-          color={sensor.hasFire ? '#FF0000' : sensor.hasSmoke ? '#FF6B00' : isSelected ? '#FFFFFF' : accentColor}
+          color={sensor.hasFire ? '#FF0000' : sensor.hasArc ? '#FF6B00' : isSelected ? '#FFFFFF' : accentColor}
           lineWidth={sensor.hasFire || isSelected ? 2 : 1}
         />
       </mesh>
 
       {/* Temperature label */}
-      {(isSelected || sensor.hasFire || sensor.hasSmoke) && (
+      {(isSelected || sensor.hasFire || sensor.hasArc) && (
         <Text
           position={[position[0], position[1] + size[1] / 2 + 0.15, position[2]]}
           fontSize={0.12}
-          color={sensor.hasFire ? '#FF0000' : sensor.hasSmoke ? '#FF6B00' : '#FFFFFF'}
+          color={sensor.hasFire ? '#FF0000' : sensor.hasArc ? '#FF6B00' : '#FFFFFF'}
           anchorX="center"
           anchorY="bottom"
         >
@@ -137,7 +137,7 @@ function HeatStressRoom({
       )}
 
       {/* Smoke indicator */}
-      {sensor.hasSmoke && !sensor.hasFire && (
+      {sensor.hasArc && !sensor.hasFire && (
         <SmokeParticles position={[position[0], position[1] + size[1] / 2, position[2]]} />
       )}
     </group>
@@ -341,9 +341,9 @@ function Scene({
               >
                 <sphereGeometry args={[0.03, 8, 8]} />
                 <meshStandardMaterial
-                  color={sensor.hasFire ? '#FF0000' : sensor.hasSmoke ? '#FF6B00' : '#22C55E'}
-                  emissive={sensor.hasFire ? '#FF0000' : sensor.hasSmoke ? '#FF6B00' : '#22C55E'}
-                  emissiveIntensity={sensor.hasFire ? 2 : sensor.hasSmoke ? 1 : 0.5}
+                  color={sensor.hasFire ? '#FF0000' : sensor.hasArc ? '#FF6B00' : '#22C55E'}
+                  emissive={sensor.hasFire ? '#FF0000' : sensor.hasArc ? '#FF6B00' : '#22C55E'}
+                  emissiveIntensity={sensor.hasFire ? 2 : sensor.hasArc ? 1 : 0.5}
                 />
               </mesh>
             );

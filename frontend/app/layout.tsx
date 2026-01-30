@@ -5,7 +5,6 @@ import CustomCursor from '@/components/premium/CustomCursor';
 import CursorGlow from '@/components/premium/CursorGlow';
 import TechnicalOverlay from '@/components/premium/TechnicalOverlay';
 import BlueprintGrid from '@/components/premium/BlueprintGrid';
-import { AudioProvider } from '@/components/premium/AudioProvider';
 import { MotionProvider } from '@/components/premium/MotionProvider';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { OrganizationSchema, WebSiteSchema } from '@/components/seo';
@@ -145,9 +144,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-background text-foreground min-h-screen overflow-x-hidden transition-colors duration-300">
         {/* Theme Provider for light/dark mode + product themes */}
         <ThemeProvider>
-          {/* Audio Provider for site-wide sounds */}
-          <AudioProvider>
-            {/* Optimized Framer Motion Provider - reduces bundle by ~30KB */}
+          {/* Optimized Framer Motion Provider - reduces bundle by ~30KB */}
             <MotionProvider features="domMax">
               {/* Premium Cinematic Effects */}
               <BlueprintGrid />
@@ -159,7 +156,6 @@ export default function RootLayout({
               {/* Page Content */}
               {children}
             </MotionProvider>
-          </AudioProvider>
         </ThemeProvider>
       </body>
     </html>
