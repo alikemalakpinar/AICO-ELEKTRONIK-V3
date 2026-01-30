@@ -1,38 +1,43 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Flame,
+  Zap,
   AlertTriangle,
-  Bell,
-  ThermometerSun,
+  Activity,
   Shield,
-  Users,
-  Phone,
-  CheckCircle2,
-  XCircle,
+  ShieldAlert,
+  ShieldOff,
+  Gauge,
+  CircuitBoard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ===========================================
-// FireLink Demo - Interactive Heat Map Simulation
-// Showcases AICO's fire safety monitoring system
+// FireLink Demo — Electrical Fire Early Warning
+// Arc Detection & Cable Insulation Monitoring
+// Defense-grade HUD simulation
 // ===========================================
 
-type AlertLevel = 'normal' | 'warning' | 'danger' | 'critical';
-type ZoneStatus = 'safe' | 'monitoring' | 'warning' | 'alarm' | 'evacuating';
+// --- Types ---
 
-interface Zone {
-  id: string;
-  name: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  temperature: number;
-  status: ZoneStatus;
-  hasDetector: boolean;
+type SystemActionState = 'MONITORING' | 'VERIFY' | 'PREEMPTIVE_CUTOFF' | 'LOCKOUT';
+type AlertLevel = 'NORMAL' | 'ELEVATED' | 'CRITICAL' | 'LOCKOUT';
+
+interface CabinetMetrics {
+  cabinetId: string;
+  cableTemp: number;
+  insulationDegradation: number;
+  microArcCount: number;
+  arcSignatureConfidence: number;
+  smolderingRisk: number;
+  busCurrent: number;
+  groundLeakage: number;
+  harmonicDistortionTHD: number;
+  actionState: SystemActionState;
+  breakerTripProbability: number;
+  energyCutoffETA: number;
 }
 
 interface FireLinkDemoProps {
@@ -40,188 +45,167 @@ interface FireLinkDemoProps {
   className?: string;
 }
 
-// Temperature thresholds
-const TEMP_NORMAL = 25;
-const TEMP_WARNING = 45;
-const TEMP_DANGER = 65;
-const TEMP_CRITICAL = 85;
+// --- Constants ---
 
-// Status colors
-const statusColors: Record<ZoneStatus, string> = {
-  safe: 'rgba(34, 197, 94, 0.3)',
-  monitoring: 'rgba(59, 130, 246, 0.3)',
-  warning: 'rgba(234, 179, 8, 0.4)',
-  alarm: 'rgba(239, 68, 68, 0.5)',
-  evacuating: 'rgba(239, 68, 68, 0.7)',
+const ESCALATION_STAGES = [
+  { key: 'heating', labelTr: 'Kablo Izolasyon Isinmasi', labelEn: 'Cable Insulation Heating' },
+  { key: 'arc', labelTr: 'Mikro-Ark Aktivitesi', labelEn: 'Micro-Arc Activity' },
+  { key: 'smolder', labelTr: 'Icten Yanma Evresi', labelEn: 'Smoldering Stage' },
+  { key: 'prevent', labelTr: 'Proaktif Onleme', labelEn: 'Proactive Prevention' },
+] as const;
+
+const ACTION_STATE_META: Record<SystemActionState, { color: string; labelTr: string; labelEn: string }> = {
+  MONITORING: { color: 'text-emerald-400', labelTr: 'Izleme', labelEn: 'Monitoring' },
+  VERIFY: { color: 'text-yellow-400', labelTr: 'Dogrulama', labelEn: 'Verify' },
+  PREEMPTIVE_CUTOFF: { color: 'text-orange-400', labelTr: 'Onleyici Kesinti', labelEn: 'Preemptive Cutoff' },
+  LOCKOUT: { color: 'text-red-400', labelTr: 'Kilitleme', labelEn: 'Lockout' },
 };
 
-// Get temperature color
-function getTempColor(temp: number): string {
-  if (temp < TEMP_WARNING) return 'rgba(34, 197, 94, 0.6)';
-  if (temp < TEMP_DANGER) return 'rgba(234, 179, 8, 0.7)';
-  if (temp < TEMP_CRITICAL) return 'rgba(249, 115, 22, 0.8)';
-  return 'rgba(239, 68, 68, 0.9)';
-}
+const ALERT_LEVEL_STYLE: Record<AlertLevel, { bg: string; text: string; border: string }> = {
+  NORMAL: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+  ELEVATED: { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/20' },
+  CRITICAL: { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20' },
+  LOCKOUT: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20' },
+};
 
-// Get alert level from temperature
-function getAlertLevel(temp: number): AlertLevel {
-  if (temp < TEMP_WARNING) return 'normal';
-  if (temp < TEMP_DANGER) return 'warning';
-  if (temp < TEMP_CRITICAL) return 'danger';
-  return 'critical';
-}
+// --- Translations ---
 
-// Initial factory floor zones
-const initialZones: Zone[] = [
-  { id: 'z1', name: 'Ana Pano A', x: 5, y: 10, width: 40, height: 35, temperature: 24, status: 'safe', hasDetector: true },
-  { id: 'z2', name: 'Dağıtım Panosu B', x: 50, y: 10, width: 45, height: 35, temperature: 26, status: 'safe', hasDetector: true },
-  { id: 'z3', name: 'Kablo Kanalı C', x: 5, y: 50, width: 30, height: 40, temperature: 22, status: 'safe', hasDetector: true },
-  { id: 'z4', name: 'Bağlantı Kutusu D', x: 40, y: 50, width: 25, height: 20, temperature: 28, status: 'monitoring', hasDetector: true },
-  { id: 'z5', name: 'Alt Pano E', x: 70, y: 50, width: 25, height: 40, temperature: 23, status: 'safe', hasDetector: true },
-  { id: 'z6', name: 'Acil Pano F', x: 40, y: 75, width: 25, height: 15, temperature: 21, status: 'safe', hasDetector: false },
-];
-
-// Translations
 const translations = {
   tr: {
     title: 'FireLink Elektriksel Yangin Erken Uyari',
-    subtitle: 'Kablo ici isinma & ark tespiti',
-    zone: 'Bolge',
-    temperature: 'Sicaklik',
-    status: 'Durum',
-    normal: 'Normal',
-    warning: 'Dikkat',
-    danger: 'Tehlike',
-    critical: 'Kritik',
-    evacuate: 'Acil Müdahale',
-    reset: 'Sıfırla',
-    safe: 'Guvenli',
-    monitoring: 'Izleniyor',
-    alarm: 'Alarm',
-    evacuating: 'Tahliye',
-    clickToHeat: 'Panoyu test etmek için tıklayın',
-    systemActive: 'Sistem Aktif',
-    sensorsOnline: 'Sensörler Çevrimiçi',
-    alertsSent: 'Bildirim Gönderildi',
-    responseTime: 'Tepki Suresi',
+    subtitle: 'Ark Tespiti & Kablo Izolasyon Izleme Sistemi',
+    cableTemp: 'Kablo Sic.',
+    insulationDeg: 'Izolasyon Bozulma',
+    microArc: 'Mikro-Ark',
+    arcConfidence: 'Ark Guven',
+    smolderRisk: 'Icten Yanma',
+    busCurrent: 'Bara Akimi',
+    groundLeak: 'Toprak Kacagi',
+    thd: 'THD',
+    systemDirective: 'Sistem Direktifi',
+    breakerTrip: 'Sigorta Atma Olasiligi',
+    cutoffETA: 'Kesinti ETA',
+    escalation: 'Eskalasyon Hatti',
+    resetSim: 'Simülasyonu Sifirla',
+    advanceStage: 'Evre Ilerlet',
+    eventsPerMin: 'olay/dk',
   },
   en: {
     title: 'FireLink Electrical Fire Early Warning',
-    subtitle: 'In-cable heating & arc detection',
-    zone: 'Zone',
-    temperature: 'Temperature',
-    status: 'Status',
-    normal: 'Normal',
-    warning: 'Warning',
-    danger: 'Danger',
-    critical: 'Critical',
-    evacuate: 'Emergency Response',
-    reset: 'Reset',
-    safe: 'Safe',
-    monitoring: 'Monitoring',
-    alarm: 'Alarm',
-    evacuating: 'Evacuating',
-    clickToHeat: 'Click panel to test',
-    systemActive: 'System Active',
-    sensorsOnline: 'Sensors Online',
-    alertsSent: 'Alerts Sent',
-    responseTime: 'Response Time',
+    subtitle: 'Arc Detection & Cable Insulation Monitoring System',
+    cableTemp: 'Cable Temp',
+    insulationDeg: 'Insulation Deg.',
+    microArc: 'Micro-Arc',
+    arcConfidence: 'Arc Confidence',
+    smolderRisk: 'Smolder Risk',
+    busCurrent: 'Bus Current',
+    groundLeak: 'Ground Leakage',
+    thd: 'THD',
+    systemDirective: 'System Directive',
+    breakerTrip: 'Breaker Trip Probability',
+    cutoffETA: 'Cutoff ETA',
+    escalation: 'Escalation Pipeline',
+    resetSim: 'Reset Simulation',
+    advanceStage: 'Advance Stage',
+    eventsPerMin: 'events/min',
   },
 };
 
+// --- Deterministic Risk Model ---
+
+function computeMetrics(stage: number, tick: number): CabinetMetrics {
+  // stage 0..3 maps to the 4 escalation phases
+  const s = Math.min(stage, 3);
+  const jitter = Math.sin(tick * 0.3) * 2;
+
+  const cableTemp = [28, 52, 78, 94][s] + jitter;
+  const insulationDegradation = [2, 18, 56, 89][s] + jitter * 0.5;
+  const microArcCount = [0, 4, 23, 61][s] + Math.round(jitter);
+  const arcSignatureConfidence = [5, 42, 78, 97][s] + jitter * 0.3;
+  const smolderingRisk = [0, 12, 64, 92][s] + jitter * 0.4;
+  const busCurrent = [12.4, 18.7, 28.3, 34.1][s] + jitter * 0.1;
+  const groundLeakage = [0.8, 3.2, 12.6, 28.4][s] + jitter * 0.2;
+  const harmonicDistortionTHD = [2.1, 5.8, 14.3, 22.7][s] + jitter * 0.1;
+  const breakerTripProbability = [0, 8, 54, 96][s] + jitter * 0.3;
+  const energyCutoffETA = [0, 0, 1200, 340][s];
+
+  const actionState: SystemActionState = (['MONITORING', 'VERIFY', 'PREEMPTIVE_CUTOFF', 'LOCKOUT'] as const)[s];
+
+  return {
+    cabinetId: 'Cabinet 04',
+    cableTemp: Math.max(0, cableTemp),
+    insulationDegradation: clamp(insulationDegradation, 0, 100),
+    microArcCount: Math.max(0, Math.round(microArcCount)),
+    arcSignatureConfidence: clamp(arcSignatureConfidence, 0, 100),
+    smolderingRisk: clamp(smolderingRisk, 0, 100),
+    busCurrent: Math.max(0, busCurrent),
+    groundLeakage: Math.max(0, groundLeakage),
+    harmonicDistortionTHD: clamp(harmonicDistortionTHD, 0, 100),
+    actionState,
+    breakerTripProbability: clamp(breakerTripProbability, 0, 100),
+    energyCutoffETA: Math.max(0, energyCutoffETA),
+  };
+}
+
+function clamp(v: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, v));
+}
+
+function getAlertLevel(m: CabinetMetrics): AlertLevel {
+  if (m.actionState === 'LOCKOUT') return 'LOCKOUT';
+  if (m.actionState === 'PREEMPTIVE_CUTOFF') return 'CRITICAL';
+  if (m.actionState === 'VERIFY') return 'ELEVATED';
+  return 'NORMAL';
+}
+
+function getDirective(m: CabinetMetrics, lang: 'tr' | 'en'): string {
+  const directives: Record<SystemActionState, { tr: string; en: string }> = {
+    MONITORING: {
+      tr: `${m.cabinetId}: Risk stabilize. Yukseltilmis ornekleme altinda izleme devam ediyor.`,
+      en: `${m.cabinetId}: Risk stabilized. Monitoring resumed under elevated sampling.`,
+    },
+    VERIFY: {
+      tr: `${m.cabinetId}: Izolasyon bozulmasi hizlaniyor. Ark imza guveni %${m.arcSignatureConfidence.toFixed(0)}. Dogrulama dongusu basladi.`,
+      en: `${m.cabinetId}: Insulation degradation accelerating. Arc signature confidence ${m.arcSignatureConfidence.toFixed(0)}%. Verification cycle engaged.`,
+    },
+    PREEMPTIVE_CUTOFF: {
+      tr: `${m.cabinetId}: Kritik ark aktivitesi. Icten yanma riski %${m.smolderingRisk.toFixed(0)}. Otomatik enerji kesintisi baslatildi.`,
+      en: `${m.cabinetId}: Critical arc activity detected. Smoldering risk ${m.smolderingRisk.toFixed(0)}%. Automated energy cutoff initiated.`,
+    },
+    LOCKOUT: {
+      tr: `${m.cabinetId}: Enerji kesildi. Pano kilitlendi. Manuel muayene gerekli.`,
+      en: `${m.cabinetId}: Energy severed. Cabinet locked out. Manual inspection required.`,
+    },
+  };
+  return directives[m.actionState][lang];
+}
+
+// --- Component ---
+
 export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoProps) {
   const t = translations[lang];
-  const [zones, setZones] = useState<Zone[]>(initialZones);
-  const [alertCount, setAlertCount] = useState(0);
-  const [isEvacuating, setIsEvacuating] = useState(false);
-  const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
+  const [stage, setStage] = useState(0);
+  const [tick, setTick] = useState(0);
 
-
-  // Update zone status based on temperature
-  const updateZoneStatus = useCallback((zone: Zone): ZoneStatus => {
-    if (isEvacuating) return 'evacuating';
-    if (zone.temperature >= TEMP_CRITICAL) return 'alarm';
-    if (zone.temperature >= TEMP_DANGER) return 'warning';
-    if (zone.temperature >= TEMP_WARNING) return 'monitoring';
-    return 'safe';
-  }, [isEvacuating]);
-
-  // Handle zone click - increase temperature
-  const handleZoneClick = (zoneId: string) => {
-    setZones((prev) =>
-      prev.map((zone) => {
-        if (zone.id === zoneId) {
-          const newTemp = Math.min(zone.temperature + 15, 100);
-          const newStatus = updateZoneStatus({ ...zone, temperature: newTemp });
-
-          // Trigger alert on status change
-          if (newStatus === 'warning' && zone.status !== 'warning') {
-            triggerNotification(`${zone.name}: Ark aktivitesi algılandi!`);
-            setAlertCount((c) => c + 1);
-          } else if (newStatus === 'alarm' && zone.status !== 'alarm') {
-            triggerNotification(`${zone.name}: Aşırı ısınma ve ark tespiti! İçten yanma riski!`);
-            setAlertCount((c) => c + 1);
-          }
-
-          return { ...zone, temperature: newTemp, status: newStatus };
-        }
-        return zone;
-      })
-    );
-  };
-
-  // Trigger notification
-  const triggerNotification = (message: string) => {
-    setNotificationMessage(message);
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 3000);
-  };
-
-  // Start evacuation
-  const startEvacuation = () => {
-    setIsEvacuating(true);
-    triggerNotification('TAHLIYE PROTOKOLU BASLATILDI!');
-    setZones((prev) =>
-      prev.map((zone) => ({ ...zone, status: 'evacuating' }))
-    );
-  };
-
-  // Reset simulation
-  const resetSimulation = () => {
-    setZones(initialZones);
-    setAlertCount(0);
-    setIsEvacuating(false);
-    setSelectedZone(null);
-  };
-
-  // Auto-cool zones over time
+  // Advance tick for jitter animation
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isEvacuating) {
-        setZones((prev) =>
-          prev.map((zone) => {
-            const newTemp = Math.max(zone.temperature - 0.5, 22);
-            return {
-              ...zone,
-              temperature: newTemp,
-              status: updateZoneStatus({ ...zone, temperature: newTemp }),
-            };
-          })
-        );
-      }
-    }, 1000);
-
+    const interval = setInterval(() => setTick((p) => p + 1), 1000);
     return () => clearInterval(interval);
-  }, [isEvacuating, updateZoneStatus]);
+  }, []);
 
-  // Get overall alert level
-  const overallAlert = zones.reduce((highest, zone) => {
-    const level = getAlertLevel(zone.temperature);
-    const levels: AlertLevel[] = ['normal', 'warning', 'danger', 'critical'];
-    return levels.indexOf(level) > levels.indexOf(highest) ? level : highest;
-  }, 'normal' as AlertLevel);
+  const metrics = useMemo(() => computeMetrics(stage, tick), [stage, tick]);
+  const alertLevel = getAlertLevel(metrics);
+  const directive = getDirective(metrics, lang);
+  const levelStyle = ALERT_LEVEL_STYLE[alertLevel];
+
+  const advanceStage = useCallback(() => {
+    setStage((s) => Math.min(s + 1, 3));
+  }, []);
+
+  const resetSimulation = useCallback(() => {
+    setStage(0);
+    setTick(0);
+  }, []);
 
   return (
     <div className={cn('relative bg-onyx-900 rounded-3xl overflow-hidden', className)}>
@@ -230,281 +214,179 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center">
-              <Flame className="w-6 h-6 text-red-500" />
+              <Zap className="w-6 h-6 text-red-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-foreground">{t.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.subtitle}</p>
+              <h3 className="text-lg font-semibold text-foreground tracking-tight">{t.title}</h3>
+              <p className="text-sm text-muted-foreground font-mono">{t.subtitle}</p>
             </div>
           </div>
 
-          {/* Alert indicator */}
+          {/* Status chip */}
           <motion.div
             className={cn(
-              'px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium',
-              overallAlert === 'normal' && 'bg-emerald-500/10 text-emerald-500',
-              overallAlert === 'warning' && 'bg-yellow-500/10 text-yellow-500',
-              overallAlert === 'danger' && 'bg-orange-500/10 text-orange-500',
-              overallAlert === 'critical' && 'bg-red-500/10 text-red-500'
+              'px-4 py-2 rounded-full flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-widest border',
+              levelStyle.bg, levelStyle.text, levelStyle.border,
             )}
-            animate={overallAlert === 'critical' ? { scale: [1, 1.05, 1] } : {}}
-            transition={{ repeat: Infinity, duration: 0.5 }}
+            animate={alertLevel === 'LOCKOUT' ? { scale: [1, 1.05, 1] } : {}}
+            transition={{ repeat: Infinity, duration: 0.6 }}
           >
-            {overallAlert === 'critical' && <AlertTriangle className="w-4 h-4" />}
-            <span className="uppercase tracking-wider text-xs">
-              {t[overallAlert]}
-            </span>
+            {alertLevel === 'LOCKOUT' && <ShieldOff className="w-4 h-4" />}
+            {alertLevel === 'CRITICAL' && <ShieldAlert className="w-4 h-4" />}
+            {alertLevel === 'ELEVATED' && <AlertTriangle className="w-4 h-4" />}
+            {alertLevel === 'NORMAL' && <Shield className="w-4 h-4" />}
+            {alertLevel}
           </motion.div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="relative p-6">
-        {/* Factory floor plan */}
-        <div className="relative aspect-[16/10] bg-onyx-950 rounded-2xl border border-white/5 overflow-hidden">
-          {/* Grid overlay */}
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
-              `,
-              backgroundSize: '20px 20px',
-            }}
-          />
+      <div className="relative p-6 space-y-6">
 
-          {/* Zones */}
-          {zones.map((zone) => (
-            <motion.div
-              key={zone.id}
-              className="absolute cursor-pointer transition-all duration-300"
-              style={{
-                left: `${zone.x}%`,
-                top: `${zone.y}%`,
-                width: `${zone.width}%`,
-                height: `${zone.height}%`,
-                backgroundColor: statusColors[zone.status],
-                borderColor: getTempColor(zone.temperature),
-              }}
-              onClick={() => handleZoneClick(zone.id)}
-              onMouseEnter={() => setSelectedZone(zone)}
-              onMouseLeave={() => setSelectedZone(null)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              animate={zone.status === 'alarm' || zone.status === 'evacuating' ? {
-                opacity: [0.5, 1, 0.5],
-              } : {}}
-              transition={zone.status === 'alarm' ? { repeat: Infinity, duration: 0.5 } : {}}
-            >
-              {/* Zone border */}
+        {/* Escalation Pipeline */}
+        <div>
+          <div className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-3">{t.escalation}</div>
+          <div className="grid grid-cols-4 gap-2">
+            {ESCALATION_STAGES.map((es, i) => (
               <div
-                className="absolute inset-0 border-2 rounded-lg"
-                style={{ borderColor: getTempColor(zone.temperature) }}
-              />
-
-              {/* Heat gradient overlay */}
-              <div
-                className="absolute inset-0 rounded-lg"
-                style={{
-                  background: `radial-gradient(circle at center, ${getTempColor(zone.temperature)} 0%, transparent 70%)`,
-                  opacity: Math.min((zone.temperature - 20) / 80, 1),
-                }}
-              />
-
-              {/* Smoldering effect for alarm zones */}
-              {zone.status === 'alarm' && (
-                <motion.div
-                  className="absolute inset-0 rounded-lg"
-                  style={{
-                    background: `repeating-linear-gradient(45deg, rgba(255,69,0,0.3), rgba(0,0,0,0.4) 10px, rgba(255,140,0,0.2) 10px, rgba(0,0,0,0.3) 20px)`,
-                  }}
-                  animate={{ opacity: [0.5, 0.8, 0.5] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                />
-              )}
-
-              {/* Zone label */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
-                <span className="text-white text-xs font-medium text-center drop-shadow-lg">
-                  {zone.name}
-                </span>
-                <span className="text-white/80 text-xs font-mono mt-1 drop-shadow-lg">
-                  {zone.temperature.toFixed(0)}°C
-                </span>
-              </div>
-
-              {/* Detector icon */}
-              {zone.hasDetector && (
-                <div className="absolute top-2 right-2">
-                  <ThermometerSun
-                    className={cn(
-                      'w-4 h-4',
-                      zone.temperature >= TEMP_DANGER ? 'text-red-400' : 'text-emerald-400'
-                    )}
-                  />
-                </div>
-              )}
-            </motion.div>
-          ))}
-
-          {/* Selected zone tooltip */}
-          <AnimatePresence>
-            {selectedZone && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="absolute bottom-4 left-4 bg-onyx-800/90 backdrop-blur-sm rounded-xl p-4 border border-white/10 z-20"
+                key={es.key}
+                className={cn(
+                  'rounded-lg px-3 py-2.5 text-center text-xs font-mono border transition-all duration-300',
+                  i <= stage
+                    ? i === stage
+                      ? 'bg-red-500/15 border-red-500/40 text-red-400'
+                      : 'bg-white/5 border-white/10 text-offwhite-400'
+                    : 'bg-onyx-950 border-white/5 text-muted-foreground/40',
+                )}
               >
-                <div className="text-sm font-medium text-foreground mb-2">
-                  {selectedZone.name}
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-xs">
-                  <div>
-                    <span className="text-muted-foreground">{lang === 'tr' ? 'Kablo Sıcaklığı' : 'Cable Temp'}:</span>
-                    <span className="ml-2 font-mono text-foreground">
-                      {selectedZone.temperature.toFixed(1)}°C
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">{t.status}:</span>
-                    <span className={cn(
-                      'ml-2 capitalize',
-                      selectedZone.status === 'safe' && 'text-emerald-500',
-                      selectedZone.status === 'warning' && 'text-yellow-500',
-                      selectedZone.status === 'alarm' && 'text-red-500'
-                    )}>
-                      {t[selectedZone.status]}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">{lang === 'tr' ? 'Ark Riski' : 'Arc Risk'}:</span>
-                    <span className={cn(
-                      'ml-2',
-                      selectedZone.temperature > TEMP_DANGER ? 'text-red-500' : 'text-emerald-500'
-                    )}>
-                      {selectedZone.temperature > TEMP_DANGER ? (lang === 'tr' ? 'Yüksek' : 'High') : (lang === 'tr' ? 'Düşük' : 'Low')}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">{lang === 'tr' ? 'İçten Yanma' : 'Smoldering'}:</span>
-                    <span className={cn(
-                      'ml-2',
-                      selectedZone.temperature > TEMP_CRITICAL ? 'text-red-500' : 'text-emerald-500'
-                    )}>
-                      {selectedZone.temperature > TEMP_CRITICAL ? (lang === 'tr' ? 'Aktif' : 'Active') : (lang === 'tr' ? 'Pasif' : 'Inactive')}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Instruction overlay */}
-          <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-onyx-800/50 px-3 py-1.5 rounded-full">
-            {t.clickToHeat}
+                <div className="font-semibold mb-0.5">{String(i + 1).padStart(2, '0')}</div>
+                <div className="leading-tight">{lang === 'tr' ? es.labelTr : es.labelEn}</div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="mt-6 grid grid-cols-4 gap-4">
-          <div className="bg-onyx-800/50 rounded-xl p-4 text-center">
-            <Shield className="w-5 h-5 text-emerald-500 mx-auto mb-2" />
-            <div className="text-xs text-muted-foreground">{t.systemActive}</div>
-            <div className="text-sm font-medium text-emerald-500 mt-1">
-              <CheckCircle2 className="w-4 h-4 inline mr-1" />
-              Online
-            </div>
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-4 gap-3">
+          <MetricCard label={t.cableTemp} value={`${metrics.cableTemp.toFixed(1)}°C`} alert={metrics.cableTemp > 70} />
+          <MetricCard label={t.insulationDeg} value={`${metrics.insulationDegradation.toFixed(1)}%`} alert={metrics.insulationDegradation > 40} />
+          <MetricCard label={t.microArc} value={`${metrics.microArcCount}`} unit={t.eventsPerMin} alert={metrics.microArcCount > 10} />
+          <MetricCard label={t.arcConfidence} value={`${metrics.arcSignatureConfidence.toFixed(1)}%`} alert={metrics.arcSignatureConfidence > 60} />
+          <MetricCard label={t.smolderRisk} value={`${metrics.smolderingRisk.toFixed(1)}%`} alert={metrics.smolderingRisk > 50} />
+          <MetricCard label={t.busCurrent} value={`${metrics.busCurrent.toFixed(1)} A`} alert={metrics.busCurrent > 25} />
+          <MetricCard label={t.groundLeak} value={`${metrics.groundLeakage.toFixed(1)} mA`} alert={metrics.groundLeakage > 10} />
+          <MetricCard label={t.thd} value={`${metrics.harmonicDistortionTHD.toFixed(1)}%`} alert={metrics.harmonicDistortionTHD > 10} />
+        </div>
+
+        {/* Supplementary row */}
+        <div className="grid grid-cols-2 gap-3">
+          <MetricCard label={t.breakerTrip} value={`${metrics.breakerTripProbability.toFixed(0)}%`} alert={metrics.breakerTripProbability > 30} />
+          {metrics.energyCutoffETA > 0 && (
+            <MetricCard label={t.cutoffETA} value={`${metrics.energyCutoffETA} ms`} alert />
+          )}
+        </div>
+
+        {/* System Directive */}
+        <div className={cn('rounded-xl border p-4', levelStyle.border, levelStyle.bg)}>
+          <div className="flex items-center gap-2 mb-2">
+            <Activity className={cn('w-4 h-4', levelStyle.text)} />
+            <span className={cn('text-xs font-mono uppercase tracking-widest', levelStyle.text)}>
+              {t.systemDirective} — {ACTION_STATE_META[metrics.actionState][lang === 'tr' ? 'labelTr' : 'labelEn']}
+            </span>
           </div>
-          <div className="bg-onyx-800/50 rounded-xl p-4 text-center">
-            <ThermometerSun className="w-5 h-5 text-blue-500 mx-auto mb-2" />
-            <div className="text-xs text-muted-foreground">{t.sensorsOnline}</div>
-            <div className="text-lg font-mono font-bold text-foreground mt-1">
-              {zones.filter((z) => z.hasDetector).length}
-            </div>
+          <p className="text-sm text-foreground/80 font-mono leading-relaxed">{directive}</p>
+        </div>
+
+        {/* Cabinet ID badge */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-onyx-800/60 rounded-lg px-3 py-2 border border-white/5">
+            <CircuitBoard className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-mono text-muted-foreground">{metrics.cabinetId}</span>
           </div>
-          <div className="bg-onyx-800/50 rounded-xl p-4 text-center">
-            <Bell className="w-5 h-5 text-yellow-500 mx-auto mb-2" />
-            <div className="text-xs text-muted-foreground">{t.alertsSent}</div>
-            <div className="text-lg font-mono font-bold text-foreground mt-1">
-              {alertCount}
-            </div>
-          </div>
-          <div className="bg-onyx-800/50 rounded-xl p-4 text-center">
-            <Phone className="w-5 h-5 text-engineer-500 mx-auto mb-2" />
-            <div className="text-xs text-muted-foreground">{t.responseTime}</div>
-            <div className="text-lg font-mono font-bold text-foreground mt-1">
-              0.3s
-            </div>
+          <div className="flex items-center gap-2 bg-onyx-800/60 rounded-lg px-3 py-2 border border-white/5">
+            <Gauge className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-mono text-muted-foreground">
+              {lang === 'tr' ? 'Sensorler Cevrimici' : 'Sensors Online'}: 8/8
+            </span>
           </div>
         </div>
 
         {/* Action buttons */}
-        <div className="mt-6 flex gap-4">
+        <div className="flex gap-4">
           <button
-            onClick={startEvacuation}
-            disabled={isEvacuating}
+            onClick={advanceStage}
+            disabled={stage >= 3}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all',
-              isEvacuating
-                ? 'bg-red-500/20 text-red-500 cursor-not-allowed'
-                : 'bg-red-500 text-white hover:bg-red-600'
+              'flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-mono text-sm font-medium transition-all',
+              stage >= 3
+                ? 'bg-white/5 text-muted-foreground cursor-not-allowed'
+                : 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20',
             )}
           >
-            <Users className="w-5 h-5" />
-            {t.evacuate}
+            <Zap className="w-4 h-4" />
+            {t.advanceStage}
           </button>
           <button
             onClick={resetSimulation}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium bg-white/5 text-foreground hover:bg-white/10 transition-all"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-mono text-sm font-medium bg-white/5 text-foreground hover:bg-white/10 transition-all border border-white/5"
           >
-            <XCircle className="w-5 h-5" />
-            {t.reset}
+            {t.resetSim}
           </button>
         </div>
       </div>
 
-      {/* Notification toast */}
+      {/* Lockout overlay */}
       <AnimatePresence>
-        {showNotification && (
-          <motion.div
-            initial={{ opacity: 0, y: -50, x: '-50%' }}
-            animate={{ opacity: 1, y: 0, x: '-50%' }}
-            exit={{ opacity: 0, y: -50, x: '-50%' }}
-            className="absolute top-4 left-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3"
-          >
-            <AlertTriangle className="w-5 h-5 animate-pulse" />
-            <span className="font-medium">{notificationMessage}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Evacuation overlay */}
-      <AnimatePresence>
-        {isEvacuating && (
+        {alertLevel === 'LOCKOUT' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-red-500/10 backdrop-blur-sm z-30 flex items-center justify-center"
+            className="absolute inset-0 bg-red-500/5 backdrop-blur-[2px] z-30 flex items-center justify-center pointer-events-none"
           >
             <motion.div
               className="text-center"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ repeat: Infinity, duration: 1 }}
+              animate={{ scale: [1, 1.03, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
             >
-              <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-              <div className="text-2xl font-bold text-red-500">
-                ACİL MÜDAHALE PROTOKOLÜ AKTİF
+              <ShieldOff className="w-16 h-16 text-red-500/60 mx-auto mb-4" />
+              <div className="text-xl font-mono font-bold text-red-500 tracking-wider">
+                {lang === 'tr' ? 'PANO KILITLENDİ — ENERJİ KESİLDİ' : 'CABINET LOCKED OUT — ENERGY SEVERED'}
               </div>
-              <div className="text-muted-foreground mt-2">
-                Elektrik panosu kesintisi ve itfaiye bildirildi
+              <div className="text-sm text-muted-foreground mt-2 font-mono">
+                {lang === 'tr' ? 'Manuel muayene gerekli' : 'Manual inspection required'}
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+// --- Sub-components ---
+
+interface MetricCardProps {
+  label: string;
+  value: string;
+  unit?: string;
+  alert?: boolean;
+}
+
+function MetricCard({ label, value, unit, alert }: MetricCardProps) {
+  return (
+    <div className={cn(
+      'bg-onyx-800/50 rounded-xl p-3 border transition-colors duration-300',
+      alert ? 'border-red-500/20' : 'border-white/5',
+    )}>
+      <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mb-1">{label}</div>
+      <div className={cn(
+        'text-base font-mono font-bold',
+        alert ? 'text-red-400' : 'text-foreground',
+      )}>
+        {value}
+      </div>
+      {unit && <div className="text-[9px] font-mono text-muted-foreground mt-0.5">{unit}</div>}
     </div>
   );
 }
