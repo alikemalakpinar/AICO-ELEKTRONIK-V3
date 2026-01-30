@@ -27,6 +27,10 @@ interface Worker {
   position: { x: number; y: number };
   zone: string;
   heartRate: number;
+  oxygenLevel: number;
+  bodyTemp: number;
+  proximityToRisk: number;
+  depthLayer: number;
   status: 'normal' | 'warning' | 'emergency';
   isMoving: boolean;
 }
@@ -168,12 +172,12 @@ export default function UndergroundDigitalTwin({ lang, className = '' }: Undergr
   // Initialize workers
   useEffect(() => {
     const initialWorkers: Worker[] = [
-      { id: 'W001', name: 'Ahmet K.', position: { x: 25, y: 30 }, zone: 'Level 1 - West', heartRate: 78, status: 'normal', isMoving: true },
-      { id: 'W002', name: 'Mehmet Y.', position: { x: 70, y: 30 }, zone: 'Level 1 - East', heartRate: 82, status: 'normal', isMoving: true },
-      { id: 'W003', name: 'Ali D.', position: { x: 35, y: 55 }, zone: 'Level 2 - West', heartRate: 75, status: 'normal', isMoving: false },
-      { id: 'W004', name: 'Veli S.', position: { x: 65, y: 55 }, zone: 'Level 2 - East', heartRate: 88, status: 'warning', isMoving: true },
-      { id: 'W005', name: 'Hasan B.', position: { x: 40, y: 80 }, zone: 'Level 3 - West', heartRate: 72, status: 'normal', isMoving: true },
-      { id: 'W006', name: 'Huseyin A.', position: { x: 60, y: 80 }, zone: 'Level 3 - East', heartRate: 95, status: 'warning', isMoving: false },
+      { id: 'W001', name: 'Ahmet K.', position: { x: 25, y: 30 }, zone: 'Level 1 - West', heartRate: 78, oxygenLevel: 20.8, bodyTemp: 36.5, proximityToRisk: 85, depthLayer: 1, status: 'normal', isMoving: true },
+      { id: 'W002', name: 'Mehmet Y.', position: { x: 70, y: 30 }, zone: 'Level 1 - East', heartRate: 82, oxygenLevel: 20.5, bodyTemp: 36.7, proximityToRisk: 72, depthLayer: 1, status: 'normal', isMoving: true },
+      { id: 'W003', name: 'Ali D.', position: { x: 35, y: 55 }, zone: 'Level 2 - West', heartRate: 75, oxygenLevel: 20.1, bodyTemp: 36.4, proximityToRisk: 60, depthLayer: 2, status: 'normal', isMoving: false },
+      { id: 'W004', name: 'Veli S.', position: { x: 65, y: 55 }, zone: 'Level 2 - East', heartRate: 88, oxygenLevel: 19.5, bodyTemp: 37.1, proximityToRisk: 25, depthLayer: 2, status: 'warning', isMoving: true },
+      { id: 'W005', name: 'Hasan B.', position: { x: 40, y: 80 }, zone: 'Level 3 - West', heartRate: 72, oxygenLevel: 19.8, bodyTemp: 36.6, proximityToRisk: 40, depthLayer: 3, status: 'normal', isMoving: true },
+      { id: 'W006', name: 'Huseyin A.', position: { x: 60, y: 80 }, zone: 'Level 3 - East', heartRate: 95, oxygenLevel: 19.2, bodyTemp: 37.3, proximityToRisk: 15, depthLayer: 3, status: 'warning', isMoving: false },
     ];
     setWorkers(initialWorkers);
 
@@ -221,13 +225,20 @@ export default function UndergroundDigitalTwin({ lang, className = '' }: Undergr
           newX = Math.max(15, Math.min(85, newX));
           newY = Math.max(5, Math.min(85, newY));
 
-          // Update heart rate
+          // Update biometrics
           const hrChange = (Math.random() - 0.5) * 5;
           const newHR = Math.max(60, Math.min(120, worker.heartRate + hrChange));
+          const o2Change = (Math.random() - 0.5) * 0.3;
+          const newO2 = Math.max(18.0, Math.min(21.0, worker.oxygenLevel + o2Change));
+          const tempChange = (Math.random() - 0.5) * 0.2;
+          const newBodyTemp = Math.max(35.5, Math.min(39.0, worker.bodyTemp + tempChange));
+
+          // Determine depth layer from Y position
+          const depthLayer = newY < 40 ? 1 : newY < 65 ? 2 : 3;
 
           // Check status
           let status: Worker['status'] = 'normal';
-          if (newHR > 100 || evacuationMode) status = 'warning';
+          if (newHR > 100 || evacuationMode || newO2 < 19.0 || newBodyTemp > 38.0) status = 'warning';
 
           // Check if in hazard zone
           hazards.forEach((hazard) => {
@@ -239,10 +250,24 @@ export default function UndergroundDigitalTwin({ lang, className = '' }: Undergr
             }
           });
 
+          // Compute proximity to nearest hazard
+          let minDist = 100;
+          hazards.forEach((hazard) => {
+            const dx = newX - hazard.position.x;
+            const dy = newY - hazard.position.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < minDist) minDist = dist;
+          });
+          const proximityToRisk = Math.max(0, Math.min(100, 100 - minDist * 2));
+
           return {
             ...worker,
             position: { x: newX, y: newY },
             heartRate: Math.round(newHR),
+            oxygenLevel: Math.round(newO2 * 10) / 10,
+            bodyTemp: Math.round(newBodyTemp * 10) / 10,
+            proximityToRisk: Math.round(proximityToRisk),
+            depthLayer,
             status,
           };
         })
@@ -460,20 +485,27 @@ export default function UndergroundDigitalTwin({ lang, className = '' }: Undergr
             </span>
           </div>
 
-          {/* Level indicators */}
+          {/* Tunnel Depth Layer indicators */}
           {[
-            { level: 1, y: 30, label: '-100m' },
-            { level: 2, y: 55, label: '-200m' },
-            { level: 3, y: 80, label: '-300m' },
-          ].map((l) => (
-            <div
-              key={l.level}
-              className="absolute left-2 text-[10px] font-mono"
-              style={{ top: `${l.y}%`, color: THEME.muted }}
-            >
-              {l.label}
-            </div>
-          ))}
+            { level: 1, y: 30, label: '-100m', layerName: lang === 'tr' ? 'KATMAN 1' : 'LAYER 1' },
+            { level: 2, y: 55, label: '-200m', layerName: lang === 'tr' ? 'KATMAN 2' : 'LAYER 2' },
+            { level: 3, y: 80, label: '-300m', layerName: lang === 'tr' ? 'KATMAN 3' : 'LAYER 3' },
+          ].map((l) => {
+            const workersAtLayer = workers.filter((w) => w.depthLayer === l.level).length;
+            return (
+              <div
+                key={l.level}
+                className="absolute left-2 flex items-center gap-2"
+                style={{ top: `${l.y}%` }}
+              >
+                <div className="text-[10px] font-mono" style={{ color: THEME.primary }}>{l.layerName}</div>
+                <div className="text-[9px] font-mono" style={{ color: THEME.muted }}>{l.label}</div>
+                <div className="text-[9px] font-mono px-1.5 py-0.5 rounded" style={{ backgroundColor: `${THEME.primary}20`, color: THEME.primary }}>
+                  {workersAtLayer}
+                </div>
+              </div>
+            );
+          })}
 
           {/* Evacuation overlay */}
           <AnimatePresence>
@@ -553,7 +585,7 @@ export default function UndergroundDigitalTwin({ lang, className = '' }: Undergr
             </div>
           </div>
 
-          {/* Selected Worker Detail */}
+          {/* Bio-Metric & Environment HUD */}
           {selectedWorkerData && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -567,20 +599,52 @@ export default function UndergroundDigitalTwin({ lang, className = '' }: Undergr
                   {selectedWorkerData.id}
                 </span>
               </div>
+              <div className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: THEME.primary }}>
+                {lang === 'tr' ? 'BİYOMETRİK & ORTAM HUD' : 'BIO-METRIC & ENVIRONMENT HUD'}
+              </div>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="p-2 rounded" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
                   <div className="text-[10px]" style={{ color: THEME.muted }}>
+                    <Heart size={8} className="inline mr-1" />
                     {lang === 'tr' ? 'Nabız' : 'Heart Rate'}
                   </div>
-                  <div className="font-mono font-bold" style={{ color: THEME.primary }}>
+                  <div className="font-mono font-bold" style={{ color: selectedWorkerData.heartRate > 100 ? THEME.danger : THEME.primary }}>
                     {selectedWorkerData.heartRate} BPM
                   </div>
                 </div>
                 <div className="p-2 rounded" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
                   <div className="text-[10px]" style={{ color: THEME.muted }}>
+                    <Wind size={8} className="inline mr-1" />
+                    {lang === 'tr' ? 'O₂ Seviyesi' : 'O₂ Level'}
+                  </div>
+                  <div className="font-mono font-bold" style={{ color: selectedWorkerData.oxygenLevel < 19.5 ? THEME.danger : THEME.safe }}>
+                    {selectedWorkerData.oxygenLevel}%
+                  </div>
+                </div>
+                <div className="p-2 rounded" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
+                  <div className="text-[10px]" style={{ color: THEME.muted }}>
+                    {lang === 'tr' ? 'Vücut Sıcaklığı' : 'Body Temp'}
+                  </div>
+                  <div className="font-mono font-bold" style={{ color: selectedWorkerData.bodyTemp > 37.5 ? THEME.warning : THEME.safe }}>
+                    {selectedWorkerData.bodyTemp}°C
+                  </div>
+                </div>
+                <div className="p-2 rounded" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
+                  <div className="text-[10px]" style={{ color: THEME.muted }}>
+                    {lang === 'tr' ? 'Risk Yakınlığı' : 'Risk Proximity'}
+                  </div>
+                  <div className="font-mono font-bold" style={{ color: selectedWorkerData.proximityToRisk > 60 ? THEME.danger : selectedWorkerData.proximityToRisk > 30 ? THEME.warning : THEME.safe }}>
+                    {selectedWorkerData.proximityToRisk}%
+                  </div>
+                </div>
+                <div className="p-2 rounded col-span-2" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
+                  <div className="text-[10px]" style={{ color: THEME.muted }}>
+                    <MapPin size={8} className="inline mr-1" />
                     {lang === 'tr' ? 'Konum' : 'Location'}
                   </div>
-                  <div className="font-mono text-white">{selectedWorkerData.zone}</div>
+                  <div className="font-mono text-white">
+                    {selectedWorkerData.zone} · {lang === 'tr' ? 'Derinlik' : 'Depth'} {selectedWorkerData.depthLayer === 1 ? '-100m' : selectedWorkerData.depthLayer === 2 ? '-200m' : '-300m'}
+                  </div>
                 </div>
               </div>
             </motion.div>

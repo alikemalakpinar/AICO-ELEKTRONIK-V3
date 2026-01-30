@@ -98,8 +98,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       title: 'MineGuard',
       subtitle: lang === 'tr' ? 'Maden Guvenligi' : 'Mining Safety',
       description: lang === 'tr'
-        ? 'Dijital ikiz ile yeralti isci takibi. Gaz algilama ve acil tahliye.'
-        : 'Underground worker tracking with digital twin. Gas detection & evacuation.',
+        ? 'Dijital ikiz ile yeralti isci takibi. Gaz algilama ve biyometrik izleme.'
+        : 'Underground worker tracking with digital twin. Gas detection & bio-metric monitoring.',
       href: `/${lang}/solutions/mining-iot`,
       color: '#EAB308',
       gradient: 'from-yellow-500/20 to-transparent',
@@ -187,7 +187,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               <span className="mono-overline text-offwhite-700">AICO_UNIT_v3.2</span>
               <span className="w-px h-3 bg-white/10" />
               <span className="mono-badge text-offwhite-600">
-                {lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}
+                {lang === 'tr' ? 'SAVUNMA & ENDÜSTRİYEL' : 'DEFENSE & INDUSTRIAL'}
               </span>
             </span>
           </motion.div>
@@ -199,10 +199,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="heading-display text-5xl md:text-6xl lg:text-8xl text-offwhite-400 mb-6"
           >
-            {lang === 'tr' ? 'Endüstriyel' : 'Industrial'}
+            {lang === 'tr' ? 'Kritik Altyapi Icin' : 'Advanced Sensory Systems'}
             <br />
             <span className="text-engineer-500 glow-engineer-intense">
-              {lang === 'tr' ? 'Mükemmellik.' : 'Excellence.'}
+              {lang === 'tr' ? 'Sensor Sistemleri.' : 'for Critical Infrastructure.'}
             </span>
           </motion.h1>
 
@@ -214,8 +214,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             className="text-xl md:text-2xl text-offwhite-700 max-w-3xl mx-auto mb-12"
           >
             {lang === 'tr'
-              ? 'Kestirimci bakim, yangın güvenliği, soğuk zincir ve madencilik IoT. AAA kalitesinde endüstriyel çözümler.'
-              : 'Predictive maintenance, fire safety, cold chain and mining IoT. AAA quality industrial solutions.'}
+              ? 'Anomalileri isik hizinda tespit edin. Savunma, madencilik ve yuksek yogunluklu konut sektorleri icin hassas izleme.'
+              : 'Detecting anomalies at the speed of light. Precision monitoring for defense, mining, and high-density residential sectors.'}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -293,8 +293,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
           >
             <span className="inline-flex items-center gap-3 text-engineer-500 mb-6">
               <span className="w-12 h-px bg-engineer-500/50" />
-              <span className="mono-overline">{lang === 'tr' ? 'ENDÜSTRİYEL IOT' : 'INDUSTRIAL IOT'}</span>
-              <span className="mono-badge text-offwhite-800">SEC::CRITICAL</span>
+              <span className="mono-overline">{lang === 'tr' ? 'KRİTİK SİSTEMLER' : 'CRITICAL SYSTEMS'}</span>
+              <span className="mono-badge text-offwhite-800">SEC::CLASSIFIED</span>
               <span className="w-12 h-px bg-engineer-500/50" />
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
@@ -306,8 +306,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             </h2>
             <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
               {lang === 'tr'
-                ? 'AAA oyun kalitesinde arayüzler ile endüstriyel IoT sistemleri.'
-                : 'Industrial IoT systems with AAA game quality interfaces.'}
+                ? 'Savunma sinifi izleme, hassas algilama ve gercek zamanli anomali tespiti.'
+                : 'Defense-grade monitoring, precision sensing, and real-time anomaly detection.'}
             </p>
           </motion.div>
 

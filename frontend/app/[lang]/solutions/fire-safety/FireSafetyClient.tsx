@@ -5,19 +5,16 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import {
-  Flame,
+  Zap,
   Thermometer,
   Bell,
-  Wifi,
   Shield,
-  Zap,
   Clock,
   ArrowRight,
-  CheckCircle2,
   Cpu,
   Battery,
   Radio,
-  AlertTriangle,
+  Activity,
 } from 'lucide-react';
 import { ImmersiveHero, StickyScrollStory, BentoGrid } from '@/components/modules';
 import type { StoryStep } from '@/components/modules';
@@ -25,9 +22,9 @@ import type { BentoItem } from '@/components/modules';
 import type { Locale } from '@/types';
 import AnimatedDataFlow from '@/components/premium/AnimatedDataFlow';
 
-// Dynamic import for the Industrial Air Quality Demo (Factory Context)
-const IndustrialAirQualityDemo = dynamic(
-  () => import('@/components/products/fire/IndustrialAirQualityDemo'),
+// Dynamic import for FireLink Arc Detection Demo
+const FireLinkDemo = dynamic(
+  () => import('@/components/demos/FireLinkDemo'),
   { ssr: false, loading: () => <div className="aspect-[16/10] bg-gray-100 dark:bg-onyx-800/50 rounded-2xl animate-pulse" /> }
 );
 
@@ -36,18 +33,16 @@ interface FireSafetyClientProps {
 }
 
 export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
-  // MAGMA THEME - Deep Obsidian with Burning Amber
-  const accentColor = '#FF4500'; // Burning Amber
+  const accentColor = '#FF4500';
 
-  // Content based on language - Industrial Air Quality Context
   const content = {
     hero: {
-      badge: 'FIRELINK IAQ',
-      title: lang === 'tr' ? 'Fabrikanızın Havasını' : 'Monitor Your Factory',
-      titleHighlight: lang === 'tr' ? 'İzleyin.' : 'Air Quality.',
+      badge: 'FIRELINK ARC DETECTION',
+      title: lang === 'tr' ? 'Elektriksel Yangini' : 'Detect Electrical Fires',
+      titleHighlight: lang === 'tr' ? 'Önleyin.' : 'Before Ignition.',
       subtitle: lang === 'tr'
-        ? 'CO₂, TVOC ve PM2.5 izleme. İşçi sağlığı için gerçek zamanlı hava kalitesi.'
-        : 'CO₂, TVOC, and PM2.5 monitoring. Real-time air quality for worker safety.',
+        ? 'Kablo izolasyon bozulmasi, mikro-ark tespiti ve proaktif enerji kesintisi. Pano seviyesinde gorunmez tehlikeyi gorun.'
+        : 'Cable insulation degradation, micro-arc detection and proactive energy cutoff. See invisible danger at cabinet level.',
       cta: lang === 'tr' ? 'Demoyu İnceleyin' : 'Explore Demo',
     },
     story: {
@@ -56,41 +51,41 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           id: 'problem',
           badge: lang === 'tr' ? 'PROBLEM' : 'THE PROBLEM',
           title: lang === 'tr'
-            ? 'Kötü hava kalitesi üretkenlik kaybına sebep olur'
-            : 'Poor air quality causes productivity loss',
+            ? 'Elektrik panolarinda gorunmeyen tehlike: izolasyon bozulmasi'
+            : 'Invisible threat in electrical cabinets: insulation degradation',
           description: lang === 'tr'
-            ? 'Fabrikalarda CO₂ seviyesi 1500 ppm\'i aştığında işçi performansı %15 düşer. TVOC maruziyeti uzun vadeli sağlık sorunlarına yol açar.'
-            : 'When CO₂ levels exceed 1500 ppm in factories, worker performance drops by 15%. TVOC exposure leads to long-term health issues.',
+            ? 'Elektriksel yanginlarin %30\'u pano ici kablo isinisindan kaynaklanir. Geleneksel duman dedektorleri icten yanmayi tespit edemez.'
+            : '30% of electrical fires originate from in-cabinet cable heating. Conventional smoke detectors cannot detect smoldering.',
         },
         {
           id: 'detection',
           badge: lang === 'tr' ? 'ALGILAMA' : 'DETECTION',
           title: lang === 'tr'
-            ? 'Çok Parametreli Hava Analizi'
-            : 'Multi-Parameter Air Analysis',
+            ? 'Kablo Sicakligi & Ark Imza Analizi'
+            : 'Cable Temperature & Arc Signature Analysis',
           description: lang === 'tr'
-            ? 'CO₂, TVOC ve PM2.5 sensörleri her üretim alanını izler. Tehlikeli gazlar anında tespit edilir ve uyarı verilir.'
-            : 'CO₂, TVOC, and PM2.5 sensors monitor every production area. Dangerous gases are instantly detected and alerts are triggered.',
+            ? '8 bagimsiz sensor ile kablo sicakligi, izolasyon direnci ve mikro-ark aktivitesi gercek zamanli izlenir.'
+            : '8 independent sensors monitor cable temperature, insulation resistance, and micro-arc activity in real-time.',
         },
         {
           id: 'alert',
-          badge: lang === 'tr' ? 'UYARI' : 'ALERT',
+          badge: lang === 'tr' ? 'DOGRULAMA' : 'VERIFICATION',
           title: lang === 'tr'
-            ? 'Akıllı Havalandırma Sistemi'
-            : 'Smart Ventilation System',
+            ? 'Ark Imza Guveni & Dogrulama Dongusu'
+            : 'Arc Signature Confidence & Verification Cycle',
           description: lang === 'tr'
-            ? 'Hava kalitesi düşünce otomatik havalandırma devreye girer. TVOC yüksekliğinde toksik gaz alarm protokolü başlar.'
-            : 'Automatic ventilation kicks in when air quality drops. Toxic gas alarm protocol starts when TVOC is high.',
+            ? 'Ark imza guveni esik degerini astiginda otomatik dogrulama dongusu baslar. Yanlis alarm orani minimize edilir.'
+            : 'When arc signature confidence exceeds threshold, automatic verification cycle engages. False alarm rate minimized.',
         },
         {
           id: 'action',
-          badge: lang === 'tr' ? 'AKSIYON' : 'ACTION',
+          badge: lang === 'tr' ? 'ONLEME' : 'PREVENTION',
           title: lang === 'tr'
-            ? 'Tahliye Protokolü'
-            : 'Evacuation Protocol',
+            ? 'Proaktif Enerji Kesintisi & Pano Kilitleme'
+            : 'Proactive Energy Cutoff & Cabinet Lockout',
           description: lang === 'tr'
-            ? 'Kritik seviyelerde otomatik tahliye alarmı, kapı kontrolleri ve acil durum aydınlatması aktif olur.'
-            : 'At critical levels, automatic evacuation alarm, door controls, and emergency lighting are activated.',
+            ? 'Kritik icten yanma riskinde otomatik enerji kesintisi ve pano kilitleme. Manuel muayene gerektirmeden sistem korunur.'
+            : 'At critical smoldering risk, automated energy cutoff and cabinet lockout. System protection without manual intervention.',
         },
       ] as StoryStep[],
     },
@@ -104,8 +99,8 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           icon: Thermometer,
           title: lang === 'tr' ? 'Çoklu Sensör' : 'Multi-Sensor',
           description: lang === 'tr'
-            ? 'Tek kart üzerinde 8 bağımsız sıcaklık sensörü'
-            : '8 independent temperature sensors on a single board',
+            ? 'Tek kart üzerinde 8 bağımsız sıcaklık ve ark sensörü'
+            : '8 independent temperature and arc sensors on a single board',
           value: '8',
           unit: lang === 'tr' ? 'Sensör' : 'Sensors',
           size: 'medium' as const,
@@ -115,8 +110,8 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           icon: Cpu,
           title: lang === 'tr' ? 'Hassasiyet' : 'Accuracy',
           description: lang === 'tr'
-            ? 'Endüstriyel kalite sıcaklık ölçümü'
-            : 'Industrial-grade temperature measurement',
+            ? 'Endüstriyel kalite sıcaklık ve ark imza ölçümü'
+            : 'Industrial-grade temperature and arc signature measurement',
           value: '±0.5',
           unit: '°C',
           size: 'medium' as const,
@@ -185,7 +180,6 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
     },
   };
 
-  // Screen content for each story step
   const getStepComponent = (stepId: string) => {
     switch (stepId) {
       case 'problem':
@@ -194,19 +188,23 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <Flame size={40} className="text-red-500" />
+                  <Zap size={40} className="text-red-500" />
                 </div>
                 <div className="text-4xl font-bold text-white mb-2">30%</div>
-                <div className="text-gray-400 text-sm">
-                  {lang === 'tr' ? 'Elektrik Kaynakli Yanginlar' : 'Electrical Fires'}
+                <div className="text-gray-400 text-sm font-mono">
+                  {lang === 'tr' ? 'Elektrik Kaynakli Yanginlar' : 'Electrical Origin Fires'}
                 </div>
               </div>
             </div>
             <div className="space-y-2">
-              {['PCB Arizasi', 'Kablo Isınması', 'Kisa Devre'].map((item, i) => (
+              {[
+                lang === 'tr' ? 'Izolasyon Bozulmasi' : 'Insulation Degradation',
+                lang === 'tr' ? 'Kablo Isinmasi' : 'Cable Overheating',
+                lang === 'tr' ? 'Mikro-Ark Aktivitesi' : 'Micro-Arc Activity',
+              ].map((item, i) => (
                 <div key={i} className="flex items-center gap-2 p-2 bg-red-500/10 rounded-lg">
                   <div className="w-2 h-2 rounded-full bg-red-500" />
-                  <span className="text-gray-300 text-xs">{item}</span>
+                  <span className="text-gray-300 text-xs font-mono">{item}</span>
                 </div>
               ))}
             </div>
@@ -217,8 +215,8 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           <div className="h-full bg-gradient-to-br from-orange-900/50 to-gray-900 p-4 flex flex-col items-center justify-center">
             <div className="text-center mb-4">
               <Thermometer size={40} className="text-orange-500 mx-auto mb-2" />
-              <span className="text-orange-400 text-sm font-medium">
-                {lang === 'tr' ? 'Termal Haritalama' : 'Thermal Mapping'}
+              <span className="text-orange-400 text-sm font-mono">
+                {lang === 'tr' ? 'Kablo Termal Harita' : 'Cable Thermal Map'}
               </span>
             </div>
             <div className="grid grid-cols-4 gap-2">
@@ -241,7 +239,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
                 );
               })}
             </div>
-            <div className="mt-4 text-[10px] text-gray-400">
+            <div className="mt-4 text-[10px] text-gray-400 font-mono">
               {lang === 'tr' ? '100ms aralıkla güncelleniyor' : 'Updating every 100ms'}
             </div>
           </div>
@@ -250,17 +248,17 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         return (
           <div className="h-full bg-gradient-to-br from-gray-900 to-gray-800 p-6 flex flex-col">
             <div className="text-center mb-4">
-              <Bell size={32} className="text-red-500 mx-auto mb-2 animate-bounce" />
-              <span className="text-red-400 text-sm font-medium">
-                {lang === 'tr' ? 'UYARI AKTIF' : 'ALERT ACTIVE'}
+              <Activity size={32} className="text-yellow-500 mx-auto mb-2" />
+              <span className="text-yellow-400 text-sm font-mono">
+                {lang === 'tr' ? 'DOGRULAMA DONGUSU' : 'VERIFICATION CYCLE'}
               </span>
             </div>
             <div className="flex-1 space-y-3">
               {[
-                { icon: '📱', label: lang === 'tr' ? 'Mobil Bildirim' : 'Mobile Push', time: '< 1s' },
-                { icon: '📧', label: 'Email', time: '< 3s' },
-                { icon: '💬', label: 'SMS', time: '< 5s' },
-                { icon: '🔗', label: 'Webhook', time: '< 1s' },
+                { label: lang === 'tr' ? 'Ark Imza Analizi' : 'Arc Signature Analysis', time: '<50ms' },
+                { label: lang === 'tr' ? 'Izolasyon Direnci' : 'Insulation Resistance', time: '<100ms' },
+                { label: lang === 'tr' ? 'Harmonik Bozulma' : 'Harmonic Distortion', time: '<80ms' },
+                { label: lang === 'tr' ? 'Toprak Kacagi' : 'Ground Leakage', time: '<60ms' },
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -270,8 +268,8 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
                   className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">{item.icon}</span>
-                    <span className="text-gray-300 text-sm">{item.label}</span>
+                    <Cpu size={14} className="text-yellow-400" />
+                    <span className="text-gray-300 text-sm font-mono">{item.label}</span>
                   </div>
                   <span className="text-green-400 text-xs font-mono">{item.time}</span>
                 </motion.div>
@@ -284,27 +282,27 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           <div className="h-full bg-gradient-to-br from-green-900/30 to-gray-900 p-6 flex flex-col">
             <div className="text-center mb-4">
               <Shield size={32} className="text-green-500 mx-auto mb-2" />
-              <span className="text-green-400 text-sm font-medium">
-                {lang === 'tr' ? 'OTOMATIK KORUMA' : 'AUTO PROTECTION'}
+              <span className="text-green-400 text-sm font-mono">
+                {lang === 'tr' ? 'PROAKTIF ONLEME' : 'PROACTIVE PREVENTION'}
               </span>
             </div>
             <div className="flex-1 space-y-3">
               {[
-                { label: lang === 'tr' ? 'Güç Kesme' : 'Power Cut', status: 'ready' },
-                { label: lang === 'tr' ? 'Havalandırma' : 'Ventilation', status: 'ready' },
-                { label: lang === 'tr' ? 'Yangın Söndürücü' : 'Fire Suppression', status: 'standby' },
-                { label: lang === 'tr' ? 'Acil Durum Işığı' : 'Emergency Lights', status: 'ready' },
+                { label: lang === 'tr' ? 'Enerji Kesintisi' : 'Energy Cutoff', status: 'ready' },
+                { label: lang === 'tr' ? 'Pano Kilitleme' : 'Cabinet Lockout', status: 'ready' },
+                { label: lang === 'tr' ? 'Bara Izolasyonu' : 'Bus Isolation', status: 'standby' },
+                { label: lang === 'tr' ? 'Alarm Bildirimi' : 'Alert Notification', status: 'ready' },
               ].map((item, i) => (
                 <div
                   key={i}
                   className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
                 >
-                  <span className="text-gray-300 text-sm">{item.label}</span>
+                  <span className="text-gray-300 text-sm font-mono">{item.label}</span>
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${
                       item.status === 'ready' ? 'bg-green-500' : 'bg-yellow-500'
                     }`} />
-                    <span className="text-gray-400 text-xs capitalize">{item.status}</span>
+                    <span className="text-gray-400 text-xs font-mono uppercase">{item.status}</span>
                   </div>
                 </div>
               ))}
@@ -316,7 +314,6 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
     }
   };
 
-  // Add components to story steps
   const storySteps: StoryStep[] = content.story.steps.map(step => ({
     ...step,
     component: getStepComponent(step.id),
@@ -325,7 +322,6 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
 
   return (
     <div className="min-h-screen bg-onyx-950">
-      {/* Immersive Hero */}
       <ImmersiveHero
         badge={content.hero.badge}
         title={content.hero.title}
@@ -337,14 +333,13 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         lang={lang}
       />
 
-      {/* Sticky Scroll Story */}
       <StickyScrollStory
         steps={storySteps}
         lang={lang}
         deviceType="phone"
       />
 
-      {/* Interactive Demo Section - FireLink Pro Dashboard */}
+      {/* Interactive Demo Section - FireLink Arc Detection */}
       <section id="demo" className="py-24 md:py-32 bg-[#050505]">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div
@@ -355,16 +350,16 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
           >
             <span className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase mb-6" style={{ color: accentColor }}>
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
-              {lang === 'tr' ? 'FIRELINK PRO DASHBOARD' : 'FIRELINK PRO DASHBOARD'}
+              FIRELINK ARC DETECTION HUD
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
-              {lang === 'tr' ? '3D Termal İzleme Sistemi' : '3D Thermal Monitoring System'}
+              {lang === 'tr' ? 'Elektriksel Yangin Erken Uyari Sistemi' : 'Electrical Fire Early Warning System'}
             </h2>
-            <p className="text-offwhite-700 max-w-2xl mx-auto">
+            <p className="text-offwhite-700 max-w-2xl mx-auto font-mono">
               {lang === 'tr'
-                ? 'Gerçek zamanlı 3D görüntülem, taktik HUD sensör durumu ve akıllı alarm sistemi.'
-                : 'Real-time 3D visualization, tactical HUD sensor status and smart alarm system.'}
+                ? 'Kablo izolasyon izleme, ark tespiti ve proaktif enerji kesintisi simulasyonu.'
+                : 'Cable insulation monitoring, arc detection, and proactive energy cutoff simulation.'}
             </p>
           </motion.div>
 
@@ -373,12 +368,11 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <IndustrialAirQualityDemo lang={lang} />
+            <FireLinkDemo lang={lang} />
           </motion.div>
         </div>
       </section>
 
-      {/* Features Bento Grid */}
       <BentoGrid
         badge={content.features.badge}
         title={content.features.title}
@@ -388,7 +382,6 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         lang={lang}
       />
 
-      {/* Data Pipeline Visualization */}
       <section className="py-16 bg-onyx-950">
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
@@ -405,7 +398,6 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         </div>
       </section>
 
-      {/* Technical Specifications */}
       <section className="py-24 md:py-32 bg-onyx-900">
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
@@ -437,7 +429,6 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
         </div>
       </section>
 
-      {/* Final CTA */}
       <section className="py-24 md:py-32 bg-onyx-950 border-t border-white/5">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div
@@ -449,7 +440,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
               className="w-20 h-20 mx-auto mb-8 rounded-2xl flex items-center justify-center"
               style={{ backgroundColor: `${accentColor}15` }}
             >
-              <Flame size={40} style={{ color: accentColor }} />
+              <Zap size={40} style={{ color: accentColor }} />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
               {content.cta.title}
@@ -460,9 +451,7 @@ export default function FireSafetyClient({ lang }: FireSafetyClientProps) {
             <Link
               href={`/${lang}/contact?subject=firelink-demo`}
               className="group inline-flex items-center gap-3 px-8 py-4 text-white font-medium rounded-xl transition-all duration-300 hover:shadow-lg"
-              style={{
-                backgroundColor: accentColor,
-              }}
+              style={{ backgroundColor: accentColor }}
             >
               <span>{content.cta.button}</span>
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />

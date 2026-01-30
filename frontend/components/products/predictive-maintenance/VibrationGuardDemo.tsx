@@ -217,7 +217,7 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
             : ('normal' as const),
       },
       {
-        label: lang === 'tr' ? 'Rulman' : 'Bearing',
+        label: lang === 'tr' ? 'Rulman Yorgunluk İndeksi' : 'Bearing Fatigue Index',
         value: Math.round(motorData.bearingCondition),
         unit: '%',
         status:
@@ -235,7 +235,7 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
     <DashboardShell
       lang={lang}
       title={lang === 'tr' ? 'KESTIRIMCI BAKIM SISTEMI' : 'PREDICTIVE MAINTENANCE SYSTEM'}
-      subtitle={lang === 'tr' ? 'Titresim Analizi & Ariza Tahmini' : 'Vibration Analysis & Fault Prediction'}
+      subtitle={lang === 'tr' ? 'Spektral Analiz & Harmonik Bozulma Tespiti' : 'Spectral Analysis & Harmonic Distortion Detection'}
       brandName="VIBRATIONGUARD"
       brandVersion="2.0"
       accentColor={THEME.accent}
@@ -295,7 +295,7 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
               <div className="flex items-center gap-2">
                 <BarChart3 size={14} className="text-cyan-400" />
                 <span className="text-offwhite-600 text-xs font-mono uppercase">
-                  {lang === 'tr' ? 'FFT Spektrumu' : 'FFT Spectrum'}
+                  {lang === 'tr' ? 'FFT Spektral Analiz' : 'FFT Spectral Analysis'}
                 </span>
               </div>
               <span className="text-offwhite-800 text-[10px] font-mono">0-5kHz</span>
@@ -442,21 +442,34 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
                   </span>
                 </div>
               </div>
-              {/* Cost savings estimate */}
-              <div className="mt-3 px-3 py-2 rounded-lg bg-white/5 border border-white/10">
-                <div className="flex items-center gap-2 text-[11px]">
-                  <Wrench size={12} className={motorData.status === 'critical' ? 'text-red-400' : 'text-yellow-400'} />
-                  <span className="text-offwhite-600">
-                    {lang === 'tr'
-                      ? 'Bu arizayi simdi gidermek:'
-                      : 'Fix now:'}
+              {/* Predictive Cost Savings Dashboard */}
+              <div className="mt-3 p-3 rounded-lg bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield size={12} className="text-cyan-400" />
+                  <span className="text-offwhite-500 text-[10px] font-mono uppercase">
+                    {lang === 'tr' ? 'Kestirimci Maliyet Tasarrufu' : 'Predictive Cost Savings'}
                   </span>
-                  <span className="text-green-400 font-mono font-bold">~₺2,500</span>
-                  <span className="text-offwhite-800 mx-1">|</span>
-                  <span className="text-offwhite-600">
-                    {lang === 'tr' ? 'Ariza sonrasi:' : 'After failure:'}
-                  </span>
-                  <span className="text-red-400 font-mono font-bold">~₺45,000</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div>
+                    <div className="text-offwhite-700 text-[9px] mb-0.5">
+                      {lang === 'tr' ? 'Planlı bakım maliyeti' : 'Planned maintenance cost'}
+                    </div>
+                    <span className="text-green-400 font-mono font-bold text-sm">~₺2,500</span>
+                  </div>
+                  <div>
+                    <div className="text-offwhite-700 text-[9px] mb-0.5">
+                      {lang === 'tr' ? 'Plansız arıza maliyeti' : 'Unplanned failure cost'}
+                    </div>
+                    <span className="text-red-400 font-mono font-bold text-sm">~₺45,000</span>
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-full rounded-full bg-green-400" style={{ width: '94.4%' }} />
+                  </div>
+                  <span className="text-green-400 font-mono text-[10px] font-bold">94.4%</span>
+                  <span className="text-offwhite-700 text-[9px]">{lang === 'tr' ? 'tasarruf' : 'savings'}</span>
                 </div>
               </div>
             </div>
