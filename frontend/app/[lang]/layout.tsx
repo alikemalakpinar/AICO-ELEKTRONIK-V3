@@ -161,10 +161,10 @@ function generateJsonLd(lang: Locale) {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: isEnglish ? 'Industrial Air Quality Monitoring' : 'Endüstriyel Hava Kalitesi İzleme',
+            name: isEnglish ? 'Electrical Fire Early Warning System' : 'Elektriksel Yangin Erken Uyari Sistemi',
             description: isEnglish
-              ? 'CO2, TVOC, PM2.5 monitoring for factories'
-              : 'Fabrikalar için CO2, TVOC, PM2.5 izleme',
+              ? 'Arc detection and cable insulation monitoring for industrial cabinets'
+              : 'Endüstriyel panolar için ark tespiti ve kablo izolasyon izleme',
           },
         },
         {
