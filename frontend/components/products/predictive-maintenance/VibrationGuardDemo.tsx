@@ -14,7 +14,6 @@ import {
   Settings,
   Zap,
   Thermometer,
-  Volume2,
   TrendingUp,
   Shield,
   Clock,
