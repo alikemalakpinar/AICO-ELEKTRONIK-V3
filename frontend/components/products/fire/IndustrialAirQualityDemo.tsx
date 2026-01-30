@@ -12,8 +12,6 @@ import {
   Factory,
   Shield,
   Bell,
-  Volume2,
-  VolumeX,
   Gauge,
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
@@ -54,7 +52,6 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
   const [isSimulating, setIsSimulating] = useState(false);
   const [scenario, setScenario] = useState<'normal' | 'warning' | 'critical'>('normal');
   const [selectedSensor, setSelectedSensor] = useState<number | null>(null);
-  const [soundEnabled, setSoundEnabled] = useState(false);
   const [history, setHistory] = useState<{ time: Date; status: string; avgCo2: number }[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -124,16 +121,7 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
 
   const selectedSensorData = packet?.sensors.find(s => s.id === selectedSensor);
 
-  const headerRight = (
-    <button
-      onClick={() => setSoundEnabled(!soundEnabled)}
-      className={`p-2 rounded-lg transition-colors ${
-        soundEnabled ? 'bg-red-500/20 text-red-400' : 'bg-white/5 text-gray-500 dark:text-offwhite-600'
-      }`}
-    >
-      {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-    </button>
-  );
+  const headerRight = null;
 
   return (
     <DashboardShell

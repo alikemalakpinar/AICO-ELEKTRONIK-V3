@@ -284,7 +284,7 @@ function GlobalReachMap() {
 }
 
 // FAQ Accordion Item
-function FAQItem({ question, answer, isOpen, onToggle }: { question: string; answer: string; isOpen: boolean; onToggle: () => void }) {
+function FAQItem({ question, answer, isOpen, onToggle }: { question: string; answer: string; isOpen: boolean; onToggle: () => unknown }) {
   return (
     <div className="border border-border rounded-xl overflow-hidden">
       <button

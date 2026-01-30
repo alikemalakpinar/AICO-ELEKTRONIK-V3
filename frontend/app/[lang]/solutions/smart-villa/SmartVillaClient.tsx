@@ -16,7 +16,6 @@ import {
   Lock,
   Unlock,
   Music,
-  Volume2,
   Power,
   Wifi,
   Battery,
@@ -736,7 +735,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
-                          <Volume2 size={20} className="text-offwhite-500" />
+                          <Music size={20} className="text-offwhite-500" />
                           <input
                             type="range"
                             min="0"

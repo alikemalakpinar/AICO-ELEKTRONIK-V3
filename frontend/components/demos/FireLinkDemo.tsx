@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Flame,
@@ -12,7 +12,6 @@ import {
   Phone,
   CheckCircle2,
   XCircle,
-  Volume2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -74,19 +73,19 @@ function getAlertLevel(temp: number): AlertLevel {
 
 // Initial factory floor zones
 const initialZones: Zone[] = [
-  { id: 'z1', name: 'Üretim Alanı A', x: 5, y: 10, width: 40, height: 35, temperature: 24, status: 'safe', hasDetector: true },
-  { id: 'z2', name: 'Üretim Alanı B', x: 50, y: 10, width: 45, height: 35, temperature: 26, status: 'safe', hasDetector: true },
-  { id: 'z3', name: 'Depo', x: 5, y: 50, width: 30, height: 40, temperature: 22, status: 'safe', hasDetector: true },
-  { id: 'z4', name: 'Elektrik Odasi', x: 40, y: 50, width: 25, height: 20, temperature: 28, status: 'monitoring', hasDetector: true },
-  { id: 'z5', name: 'Ofis Alani', x: 70, y: 50, width: 25, height: 40, temperature: 23, status: 'safe', hasDetector: true },
-  { id: 'z6', name: 'Acil Cikis', x: 40, y: 75, width: 25, height: 15, temperature: 21, status: 'safe', hasDetector: false },
+  { id: 'z1', name: 'Ana Pano A', x: 5, y: 10, width: 40, height: 35, temperature: 24, status: 'safe', hasDetector: true },
+  { id: 'z2', name: 'Dağıtım Panosu B', x: 50, y: 10, width: 45, height: 35, temperature: 26, status: 'safe', hasDetector: true },
+  { id: 'z3', name: 'Kablo Kanalı C', x: 5, y: 50, width: 30, height: 40, temperature: 22, status: 'safe', hasDetector: true },
+  { id: 'z4', name: 'Bağlantı Kutusu D', x: 40, y: 50, width: 25, height: 20, temperature: 28, status: 'monitoring', hasDetector: true },
+  { id: 'z5', name: 'Alt Pano E', x: 70, y: 50, width: 25, height: 40, temperature: 23, status: 'safe', hasDetector: true },
+  { id: 'z6', name: 'Acil Pano F', x: 40, y: 75, width: 25, height: 15, temperature: 21, status: 'safe', hasDetector: false },
 ];
 
 // Translations
 const translations = {
   tr: {
-    title: 'FireLink Termal Izleme',
-    subtitle: 'Gerçek zamanlı sıcaklık takibi',
+    title: 'FireLink Elektriksel Yangin Erken Uyari',
+    subtitle: 'Kablo ici isinma & ark tespiti',
     zone: 'Bolge',
     temperature: 'Sicaklik',
     status: 'Durum',
@@ -94,21 +93,21 @@ const translations = {
     warning: 'Dikkat',
     danger: 'Tehlike',
     critical: 'Kritik',
-    evacuate: 'Tahliye Baslat',
+    evacuate: 'Acil Müdahale',
     reset: 'Sıfırla',
     safe: 'Guvenli',
     monitoring: 'Izleniyor',
     alarm: 'Alarm',
     evacuating: 'Tahliye',
-    clickToHeat: 'Isıtmak için bölgeye tıklayın',
+    clickToHeat: 'Panoyu test etmek için tıklayın',
     systemActive: 'Sistem Aktif',
     sensorsOnline: 'Sensörler Çevrimiçi',
     alertsSent: 'Bildirim Gönderildi',
     responseTime: 'Tepki Suresi',
   },
   en: {
-    title: 'FireLink Thermal Monitoring',
-    subtitle: 'Real-time temperature tracking',
+    title: 'FireLink Electrical Fire Early Warning',
+    subtitle: 'In-cable heating & arc detection',
     zone: 'Zone',
     temperature: 'Temperature',
     status: 'Status',
@@ -116,13 +115,13 @@ const translations = {
     warning: 'Warning',
     danger: 'Danger',
     critical: 'Critical',
-    evacuate: 'Start Evacuation',
+    evacuate: 'Emergency Response',
     reset: 'Reset',
     safe: 'Safe',
     monitoring: 'Monitoring',
     alarm: 'Alarm',
     evacuating: 'Evacuating',
-    clickToHeat: 'Click zones to simulate heat',
+    clickToHeat: 'Click panel to test',
     systemActive: 'System Active',
     sensorsOnline: 'Sensors Online',
     alertsSent: 'Alerts Sent',
@@ -138,7 +137,7 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+
 
   // Update zone status based on temperature
   const updateZoneStatus = useCallback((zone: Zone): ZoneStatus => {
@@ -159,10 +158,10 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
 
           // Trigger alert on status change
           if (newStatus === 'warning' && zone.status !== 'warning') {
-            triggerNotification(`${zone.name}: ${t.warning}!`);
+            triggerNotification(`${zone.name}: Ark aktivitesi algılandi!`);
             setAlertCount((c) => c + 1);
           } else if (newStatus === 'alarm' && zone.status !== 'alarm') {
-            triggerNotification(`${zone.name}: ${t.critical}!`);
+            triggerNotification(`${zone.name}: Aşırı ısınma ve ark tespiti! İçten yanma riski!`);
             setAlertCount((c) => c + 1);
           }
 
@@ -313,6 +312,18 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
                 }}
               />
 
+              {/* Smoldering effect for alarm zones */}
+              {zone.status === 'alarm' && (
+                <motion.div
+                  className="absolute inset-0 rounded-lg"
+                  style={{
+                    background: `repeating-linear-gradient(45deg, rgba(255,69,0,0.3), rgba(0,0,0,0.4) 10px, rgba(255,140,0,0.2) 10px, rgba(0,0,0,0.3) 20px)`,
+                  }}
+                  animate={{ opacity: [0.5, 0.8, 0.5] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                />
+              )}
+
               {/* Zone label */}
               <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
                 <span className="text-white text-xs font-medium text-center drop-shadow-lg">
@@ -351,7 +362,7 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
-                    <span className="text-muted-foreground">{t.temperature}:</span>
+                    <span className="text-muted-foreground">{lang === 'tr' ? 'Kablo Sıcaklığı' : 'Cable Temp'}:</span>
                     <span className="ml-2 font-mono text-foreground">
                       {selectedZone.temperature.toFixed(1)}°C
                     </span>
@@ -365,6 +376,24 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
                       selectedZone.status === 'alarm' && 'text-red-500'
                     )}>
                       {t[selectedZone.status]}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">{lang === 'tr' ? 'Ark Riski' : 'Arc Risk'}:</span>
+                    <span className={cn(
+                      'ml-2',
+                      selectedZone.temperature > TEMP_DANGER ? 'text-red-500' : 'text-emerald-500'
+                    )}>
+                      {selectedZone.temperature > TEMP_DANGER ? (lang === 'tr' ? 'Yüksek' : 'High') : (lang === 'tr' ? 'Düşük' : 'Low')}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">{lang === 'tr' ? 'İçten Yanma' : 'Smoldering'}:</span>
+                    <span className={cn(
+                      'ml-2',
+                      selectedZone.temperature > TEMP_CRITICAL ? 'text-red-500' : 'text-emerald-500'
+                    )}>
+                      {selectedZone.temperature > TEMP_CRITICAL ? (lang === 'tr' ? 'Aktif' : 'Active') : (lang === 'tr' ? 'Pasif' : 'Inactive')}
                     </span>
                   </div>
                 </div>
@@ -445,7 +474,7 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
             exit={{ opacity: 0, y: -50, x: '-50%' }}
             className="absolute top-4 left-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3"
           >
-            <Volume2 className="w-5 h-5 animate-pulse" />
+            <AlertTriangle className="w-5 h-5 animate-pulse" />
             <span className="font-medium">{notificationMessage}</span>
           </motion.div>
         )}
@@ -467,10 +496,10 @@ export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoPro
             >
               <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
               <div className="text-2xl font-bold text-red-500">
-                TAHLIYE PROTOKOLU AKTIF
+                ACİL MÜDAHALE PROTOKOLÜ AKTİF
               </div>
               <div className="text-muted-foreground mt-2">
-                Tum personel en yakin cikisa yonlendirilmektedir
+                Elektrik panosu kesintisi ve itfaiye bildirildi
               </div>
             </motion.div>
           </motion.div>

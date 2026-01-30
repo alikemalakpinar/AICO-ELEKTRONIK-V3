@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import type { FireLinkSensor } from '@/lib/utils/firelink-parser';
 
 // ===========================================
-// HeatStressHouse - 3D House with Heat Stress Shader
+// HeatStressHouse - 3D Electrical Panel X-Ray with Cable Visualization
 // Rooms pulse with emission when sensors detect fire
 // ===========================================
 
@@ -21,14 +21,14 @@ interface HeatStressHouseProps {
 
 // Room definitions matching sensor IDs
 const ROOM_CONFIG = [
-  { name: 'Living Room', position: [-0.8, 0.1, 0.3] as [number, number, number], size: [1.5, 0.9, 1.3] as [number, number, number], sensorId: 1 },
-  { name: 'Kitchen', position: [0.7, 0.1, 0.5] as [number, number, number], size: [0.9, 0.9, 0.8] as [number, number, number], sensorId: 2 },
-  { name: 'Master Bedroom', position: [-0.6, 1.1, 0.2] as [number, number, number], size: [1.2, 0.9, 1.1] as [number, number, number], sensorId: 3 },
-  { name: 'Bedroom 2', position: [0.6, 1.1, 0.2] as [number, number, number], size: [0.9, 0.9, 1.1] as [number, number, number], sensorId: 4 },
-  { name: 'Bathroom', position: [0.7, 0.1, -0.5] as [number, number, number], size: [0.9, 0.9, 0.6] as [number, number, number], sensorId: 5 },
-  { name: 'Garage', position: [-1.2, -0.3, -0.5] as [number, number, number], size: [0.7, 0.5, 0.8] as [number, number, number], sensorId: 6 },
-  { name: 'Hallway', position: [0, 0.1, -0.2] as [number, number, number], size: [0.4, 0.9, 1.8] as [number, number, number], sensorId: 7 },
-  { name: 'Utility', position: [-0.2, 1.1, -0.5] as [number, number, number], size: [0.6, 0.9, 0.5] as [number, number, number], sensorId: 8 },
+  { name: 'Main Panel A', position: [-0.8, 0.1, 0.3] as [number, number, number], size: [1.5, 0.9, 1.3] as [number, number, number], sensorId: 1 },
+  { name: 'Panel B - Floor 1', position: [0.7, 0.1, 0.5] as [number, number, number], size: [0.9, 0.9, 0.8] as [number, number, number], sensorId: 2 },
+  { name: 'Panel C - Floor 2', position: [-0.6, 1.1, 0.2] as [number, number, number], size: [1.2, 0.9, 1.1] as [number, number, number], sensorId: 3 },
+  { name: 'Panel D - Kitchen', position: [0.6, 1.1, 0.2] as [number, number, number], size: [0.9, 0.9, 1.1] as [number, number, number], sensorId: 4 },
+  { name: 'Sub-Panel E', position: [0.7, 0.1, -0.5] as [number, number, number], size: [0.9, 0.9, 0.6] as [number, number, number], sensorId: 5 },
+  { name: 'Junction Box F', position: [-1.2, -0.3, -0.5] as [number, number, number], size: [0.7, 0.5, 0.8] as [number, number, number], sensorId: 6 },
+  { name: 'Distribution G', position: [0, 0.1, -0.2] as [number, number, number], size: [0.4, 0.9, 1.8] as [number, number, number], sensorId: 7 },
+  { name: 'Emergency Panel H', position: [-0.2, 1.1, -0.5] as [number, number, number], size: [0.6, 0.9, 0.5] as [number, number, number], sensorId: 8 },
 ];
 
 // Heat stress room with pulsing emission
@@ -136,7 +136,7 @@ function HeatStressRoom({
         <FireParticles position={[position[0], position[1] + size[1] / 2, position[2]]} />
       )}
 
-      {/* Smoke indicator */}
+      {/* Arc indicator */}
       {sensor.hasArc && !sensor.hasFire && (
         <SmokeParticles position={[position[0], position[1] + size[1] / 2, position[2]]} />
       )}
@@ -235,6 +235,57 @@ function SmokeParticles({ position }: { position: [number, number, number] }) {
   );
 }
 
+// X-Ray cable visualization between panels
+function CableWiring({ sensors, accentColor }: { sensors: FireLinkSensor[]; accentColor: string }) {
+  const cableRef = useRef<THREE.Group>(null);
+
+  // Cable routes connecting panels
+  const cableRoutes = [
+    { from: [-0.8, -0.4, 0.3], to: [0.7, -0.4, 0.5], sensorIdx: 0 },  // Main Panel to Panel B
+    { from: [-0.8, -0.4, 0.3], to: [-0.6, 0.6, 0.2], sensorIdx: 2 },  // Main to Panel C (vertical)
+    { from: [0.7, -0.4, 0.5], to: [0.7, -0.4, -0.5], sensorIdx: 4 },  // Panel B to Sub-Panel E
+    { from: [0, -0.4, -0.2], to: [-1.2, -0.55, -0.5], sensorIdx: 5 },  // Distribution to Junction
+    { from: [0, -0.4, -0.2], to: [0, 0.6, -0.2], sensorIdx: 6 },      // Distribution vertical
+    { from: [-0.6, 0.6, 0.2], to: [0.6, 0.6, 0.2], sensorIdx: 3 },   // Floor 2 horizontal
+  ];
+
+  useFrame((state) => {
+    // Animate cable glow based on sensor state
+  });
+
+  return (
+    <group ref={cableRef}>
+      {cableRoutes.map((route, i) => {
+        const sensor = sensors[route.sensorIdx];
+        const isHot = sensor && (sensor.hasFire || sensor.hasArc);
+        const color = isHot ? (sensor.hasFire ? '#FF0000' : '#FF6B00') : accentColor;
+
+        // Create tube geometry between points
+        const points = [
+          new THREE.Vector3(...(route.from as [number, number, number])),
+          new THREE.Vector3(...(route.to as [number, number, number])),
+        ];
+        const curve = new THREE.LineCurve3(points[0], points[1]);
+
+        return (
+          <group key={i}>
+            <mesh>
+              <tubeGeometry args={[curve, 8, isHot ? 0.025 : 0.015, 6, false]} />
+              <meshStandardMaterial
+                color={color}
+                emissive={color}
+                emissiveIntensity={isHot ? 1.5 : 0.2}
+                transparent
+                opacity={isHot ? 0.9 : 0.4}
+              />
+            </mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
 // House structure (roof and foundation)
 function HouseStructure({ accentColor }: { accentColor: string }) {
   return (
@@ -310,6 +361,7 @@ function Scene({
 
       <Float speed={0.5} rotationIntensity={0.02} floatIntensity={0.05}>
         <group ref={groupRef}>
+          <CableWiring sensors={sensors} accentColor={accentColor} />
           <HouseStructure accentColor={accentColor} />
 
           {ROOM_CONFIG.map((room) => {

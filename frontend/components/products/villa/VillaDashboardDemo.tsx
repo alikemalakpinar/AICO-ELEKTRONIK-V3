@@ -18,7 +18,7 @@ import {
   CheckCircle,
   X,
   Lightbulb,
-  Volume2,
+  Music,
   Wifi,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -219,7 +219,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
         </div>
         <div className="flex items-center gap-2">
           <Wifi size={16} className="text-green-500" />
-          <Volume2 size={16} className={isDark ? 'text-gray-400' : 'text-gray-500'} />
+          <Wifi size={16} className={isDark ? 'text-gray-400' : 'text-gray-500'} />
         </div>
       </div>
 
@@ -605,7 +605,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                   <div className={`p-4 rounded-2xl sm:col-span-2 ${isDark ? 'bg-onyx-800/50 border border-white/5' : 'bg-gray-50 border border-gray-200'}`}>
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center">
-                        <Volume2 size={28} className="text-purple-400" />
+                        <Music size={28} className="text-purple-400" />
                       </div>
                       <div className="flex-1">
                         <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
