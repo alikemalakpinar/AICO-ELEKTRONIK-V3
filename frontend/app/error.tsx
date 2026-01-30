@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { AlertTriangle, RefreshCw, Home, ChevronRight } from 'lucide-react';
+import { getTranslations, type Locale } from '@/lib/i18n';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -12,15 +14,16 @@ interface ErrorProps {
  * Global Error Page (App Router)
  *
  * This error boundary catches errors in the app directory
- * and displays a premium-styled error page.
+ * and displays a premium-styled, locale-aware error page.
  */
 export default function GlobalError({ error, reset }: ErrorProps) {
-  useEffect(() => {
-    // Log error to console
-    console.error('Global error:', error);
+  const pathname = usePathname();
+  // Detect locale from current URL path
+  const lang: Locale = pathname?.startsWith('/en') ? 'en' : 'tr';
+  const t = getTranslations(lang);
 
-    // In production, send to error tracking service
-    // Example: Sentry.captureException(error);
+  useEffect(() => {
+    console.error('Global error:', error);
   }, [error]);
 
   return (
@@ -40,20 +43,19 @@ export default function GlobalError({ error, reset }: ErrorProps) {
 
           {/* Title */}
           <h1 className="text-2xl font-semibold text-foreground text-center mb-2">
-            Bir hata olustu
+            {t.common.error}
           </h1>
 
           {/* Description */}
           <p className="text-muted-foreground text-center mb-6">
-            Beklenmedik bir hata meydana geldi. Lutfen sayfayi yenileyin veya
-            ana sayfaya donun.
+            {t.common.errorDescription}
           </p>
 
           {/* Error digest for debugging */}
           {error.digest && (
             <div className="mb-6 p-3 bg-onyx-900/50 rounded-lg border border-white/5">
               <p className="text-xs font-mono text-muted-foreground text-center">
-                Hata Kodu: {error.digest}
+                {t.common.errorCode}: {error.digest}
               </p>
             </div>
           )}
@@ -65,24 +67,24 @@ export default function GlobalError({ error, reset }: ErrorProps) {
               className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-colors"
             >
               <RefreshCw size={18} />
-              <span>Tekrar Dene</span>
+              <span>{t.common.tryAgain}</span>
             </button>
             <a
-              href="/"
+              href={`/${lang}`}
               className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-foreground font-medium rounded-xl border border-white/10 transition-colors"
             >
               <Home size={18} />
-              <span>Ana Sayfa</span>
+              <span>{t.common.homePage}</span>
             </a>
           </div>
 
           {/* Support Link */}
           <div className="mt-6 pt-6 border-t border-white/5">
             <a
-              href="/contact"
+              href={`/${lang}/contact`}
               className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-engineer-500 transition-colors"
             >
-              <span>Sorun devam ederse bize ulasin</span>
+              <span>{t.common.supportLink}</span>
               <ChevronRight size={14} />
             </a>
           </div>

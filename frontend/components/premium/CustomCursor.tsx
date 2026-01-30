@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
+import { getTranslations, type Locale } from '@/lib/i18n';
 
 /**
  * CustomCursor - Premium Interactive Cursor
@@ -22,6 +24,10 @@ interface CursorState {
 }
 
 export default function CustomCursor() {
+  const pathname = usePathname();
+  const lang: Locale = pathname?.startsWith('/en') ? 'en' : 'tr';
+  const t = getTranslations(lang);
+
   const [cursorState, setCursorState] = useState<CursorState>({
     variant: 'default',
     text: '',
@@ -115,7 +121,7 @@ export default function CustomCursor() {
         target.closest('[data-cursor="image"]') ||
         target.closest('.cursor-image')
       ) {
-        setCursorState({ variant: 'image', text: 'INCELE' });
+        setCursorState({ variant: 'image', text: t.common.cursorView });
         return;
       }
 
@@ -154,7 +160,7 @@ export default function CustomCursor() {
 
     window.addEventListener('mouseover', handleElementDetection);
     return () => window.removeEventListener('mouseover', handleElementDetection);
-  }, [isMobile]);
+  }, [isMobile, t.common.cursorView]);
 
   // Don't render on mobile/touch devices
   if (isMobile) return null;

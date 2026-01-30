@@ -30,10 +30,8 @@ const SOLUTION_PAGES = [
   '/solutions/smart-residence',
 ];
 
-// Product pages
-const PRODUCT_PAGES = [
-  '/products/coffee',
-];
+// Product pages (only include routes that actually exist in app/[lang]/)
+const PRODUCT_PAGES: string[] = [];
 
 /**
  * Fetch with retry and exponential backoff

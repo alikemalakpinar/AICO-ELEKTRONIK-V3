@@ -17,13 +17,13 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
   const currentYear = new Date().getFullYear();
 
   const solutions = [
-    { label: lang === 'tr' ? 'Akıllı Villa' : 'Smart Villa', href: `/${lang}/solutions/smart-villa` },
-    { label: lang === 'tr' ? 'Akıllı Rezidans' : 'Smart Residence', href: `/${lang}/solutions/smart-residence` },
-    { label: lang === 'tr' ? 'Akıllı Apartman' : 'Smart Apartment', href: `/${lang}/solutions/smart-apartment` },
-    { label: 'FireLink', href: `/${lang}/solutions/firelink` },
-    { label: lang === 'tr' ? 'Soğuk Zincir' : 'Cold Chain', href: `/${lang}/solutions/cold-chain` },
-    { label: lang === 'tr' ? 'Maden IoT' : 'Mining IoT', href: `/${lang}/solutions/mining-iot` },
-    { label: lang === 'tr' ? 'Kestirimci Bakım' : 'Predictive Maintenance', href: `/${lang}/solutions/predictive-maintenance` },
+    { label: t.nav.smartVilla, href: `/${lang}/solutions/smart-villa` },
+    { label: t.nav.smartResidence, href: `/${lang}/solutions/smart-residence` },
+    { label: t.nav.smartApartment, href: `/${lang}/solutions/smart-apartment` },
+    { label: 'FireLink', href: `/${lang}/solutions/fire-safety` },
+    { label: t.nav.coldChainSubtitle, href: `/${lang}/solutions/cold-chain` },
+    { label: t.nav.miningSafetySubtitle, href: `/${lang}/solutions/mining-iot` },
+    { label: t.nav.predictiveMaintenanceSubtitle, href: `/${lang}/solutions/predictive-maintenance` },
   ];
 
   const company = [
@@ -49,8 +49,8 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
   const [email, setEmail] = useState('');
 
   const stats = [
-    { label: lang === 'tr' ? '150+ Proje' : '150+ Projects' },
-    { label: lang === 'tr' ? '7/24 Destek' : '24/7 Support' },
+    { label: t.footer.stats150 },
+    { label: t.footer.stats247 },
     { label: '99.9% Uptime' },
   ];
 
@@ -87,9 +87,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
             viewport={{ once: true }}
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 tracking-tight"
           >
-            {lang === 'tr'
-              ? 'Bir Sonraki Projenizi Birlikte İnşa Edelim'
-              : "Let's Build Your Next Project Together"}
+            {t.footer.ctaTitle}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -98,9 +96,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground mb-8 max-w-xl mx-auto"
           >
-            {lang === 'tr'
-              ? 'Endüstriyel IoT ve akıllı bina çözümlerimizle tanışın.'
-              : 'Discover our industrial IoT and smart building solutions.'}
+            {t.footer.ctaSubtitle}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -112,7 +108,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
               href={`/${lang}/contact`}
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-engineer-500/25 group"
             >
-              <span>{lang === 'tr' ? 'İletişime Geçin' : 'Get in Touch'}</span>
+              <span>{t.footer.ctaButton}</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
@@ -187,7 +183,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
             {/* Newsletter */}
             <div className="mt-8">
               <p className="text-sm text-muted-foreground mb-3">
-                {lang === 'tr' ? 'Bültenimize abone olun' : 'Subscribe to our newsletter'}
+                {t.footer.newsletter}
               </p>
               <form
                 onSubmit={(e) => {
@@ -200,14 +196,14 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={lang === 'tr' ? 'E-posta adresiniz' : 'Your email address'}
+                  placeholder={t.footer.emailPlaceholder}
                   className="flex-1 px-4 py-2.5 text-sm bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-engineer-500/50 focus:ring-1 focus:ring-engineer-500/30 transition-all"
                 />
                 <button
                   type="submit"
                   className="px-4 py-2.5 bg-engineer-500 hover:bg-engineer-600 text-white text-sm font-medium rounded-lg transition-colors flex-shrink-0"
                 >
-                  {lang === 'tr' ? 'Abone Ol' : 'Subscribe'}
+                  {t.footer.subscribe}
                 </button>
               </form>
             </div>
@@ -238,7 +234,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
               {/* Company */}
               <div>
                 <h4 className="text-foreground font-semibold text-sm tracking-wide mb-5">
-                  {lang === 'tr' ? 'Şirket' : 'Company'}
+                  {t.footer.company}
                 </h4>
                 <ul className="space-y-3">
                   {company.map((link) => (
@@ -298,7 +294,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <p>&copy; {currentYear} AICO Elektronik. {t.footer.copyright}</p>
             <span className="font-mono tracking-tight">{t.footer.tagline}</span>
-            <p>{lang === 'tr' ? "Türkiye'de tasarlandı" : 'Designed in Turkey'} 🇹🇷</p>
+            <p>{t.footer.designedIn} 🇹🇷</p>
           </div>
         </div>
       </div>
