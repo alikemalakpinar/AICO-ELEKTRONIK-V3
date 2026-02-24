@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Lock, ArrowRight, Shield, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { getTranslations } from '@/lib/i18n';
 
 /**
  * LoginModal - Premium Customer Portal Login
@@ -28,6 +29,7 @@ const DEMO_CREDENTIALS = {
 };
 
 export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
+  const t = getTranslations(lang as 'tr' | 'en');
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -92,7 +94,7 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
                        w-full max-w-md"
           >
             <div className="bg-onyx-800/95 backdrop-blur-xl border border-white/10 rounded-2xl
-                          shadow-2xl shadow-black/50 overflow-hidden">
+                          shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
               {/* Header */}
               <div className="relative px-6 pt-6 pb-4 border-b border-white/5">
                 {/* Close button */}
@@ -126,7 +128,7 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
                 {/* Email Input */}
                 <div className="space-y-2">
                   <label className="block text-xs font-medium text-offwhite-700 uppercase tracking-wide">
-                    {lang === 'tr' ? 'E-posta' : 'Email'}
+                    {t.common.email}
                   </label>
                   <div className="relative">
                     <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite-800" />
@@ -134,7 +136,7 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder={lang === 'tr' ? 'ornek@firma.com' : 'example@company.com'}
+                      placeholder={t.common.emailPlaceholder}
                       className="w-full pl-10 pr-4 py-3 bg-onyx-900/50 border border-white/10 rounded-lg
                                text-offwhite-400 placeholder-offwhite-800 text-sm
                                focus:outline-none focus:border-engineer-500/50 focus:ring-1 focus:ring-engineer-500/20
@@ -147,7 +149,7 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
                 {/* Password Input */}
                 <div className="space-y-2">
                   <label className="block text-xs font-medium text-offwhite-700 uppercase tracking-wide">
-                    {lang === 'tr' ? 'Sifre' : 'Password'}
+                    {t.common.password}
                   </label>
                   <div className="relative">
                     <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite-800" />

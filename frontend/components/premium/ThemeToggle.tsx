@@ -4,6 +4,12 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { getTranslations } from '@/lib/i18n';
+
+function useLocaleFromPath() {
+  if (typeof window === 'undefined') return 'tr';
+  return window.location.pathname.startsWith('/en') ? 'en' : 'tr';
+}
 
 interface ThemeToggleProps {
   className?: string;
@@ -12,6 +18,8 @@ interface ThemeToggleProps {
 
 export default function ThemeToggle({ className = '', size = 'md' }: ThemeToggleProps) {
   const { mode, toggleMode } = useTheme();
+  const lang = useLocaleFromPath();
+  const t = getTranslations(lang);
 
   const sizeClasses = {
     sm: 'w-8 h-8',
@@ -41,7 +49,7 @@ export default function ThemeToggle({ className = '', size = 'md' }: ThemeToggle
       `}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      aria-label={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={mode === 'dark' ? t.common.switchToLightMode : t.common.switchToDarkMode}
     >
       <AnimatePresence mode="wait" initial={false}>
         {mode === 'dark' ? (
@@ -91,6 +99,8 @@ export default function ThemeToggle({ className = '', size = 'md' }: ThemeToggle
 // Compact inline version for navbar
 export function ThemeToggleInline({ className = '' }: { className?: string }) {
   const { mode, toggleMode } = useTheme();
+  const lang = useLocaleFromPath();
+  const t = getTranslations(lang);
 
   return (
     <button
@@ -103,17 +113,17 @@ export function ThemeToggleInline({ className = '' }: { className?: string }) {
         light:text-gray-500 light:hover:text-gray-800 light:hover:bg-gray-100
         ${className}
       `}
-      aria-label={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={mode === 'dark' ? t.common.switchToLightMode : t.common.switchToDarkMode}
     >
       {mode === 'dark' ? (
         <>
           <Sun size={14} />
-          <span className="uppercase">Light</span>
+          <span className="uppercase">{t.common.lightMode}</span>
         </>
       ) : (
         <>
           <Moon size={14} />
-          <span className="uppercase">Dark</span>
+          <span className="uppercase">{t.common.darkMode}</span>
         </>
       )}
     </button>

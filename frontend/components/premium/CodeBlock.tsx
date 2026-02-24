@@ -103,7 +103,7 @@ export default function CodeBlock({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl overflow-hidden border border-white/10 bg-onyx-900/50 backdrop-blur-xl"
+      className="rounded-2xl overflow-hidden border border-white/10 bg-onyx-900/50 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

@@ -38,7 +38,7 @@ interface Scene3DErrorBoundaryState {
  */
 function Default3DFallback({ className = '', sceneName }: { className?: string; sceneName?: string }) {
   return (
-    <div className={`relative flex items-center justify-center bg-gradient-to-br from-onyx-900/80 to-onyx-800/80 ${className}`}>
+    <div className={`relative w-full flex items-center justify-center bg-gradient-to-br from-onyx-900/80 to-onyx-800/80 overflow-hidden ${className}`}>
       <div className="absolute inset-0 overflow-hidden">
         {/* Animated gradient background as fallback visual */}
         <div className="absolute inset-0 bg-gradient-radial from-engineer-500/10 via-transparent to-transparent animate-pulse" />
@@ -72,7 +72,9 @@ function Default3DFallback({ className = '', sceneName }: { className?: string; 
           </svg>
         </div>
         <div className="text-sm text-offwhite-600 font-medium">
-          3D visualization
+          {typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+            ? '3D visualization'
+            : '3D görselleştirme'}
         </div>
         {sceneName && (
           <div className="text-xs text-muted-foreground/60">
@@ -209,7 +211,7 @@ export function Safe3DWrapper({
     >
       <Suspense
         fallback={
-          <div className={`relative flex items-center justify-center bg-onyx-900/50 ${className}`}>
+          <div className={`relative w-full flex items-center justify-center bg-onyx-900/50 overflow-hidden ${className}`}>
             <div className="flex flex-col items-center gap-4">
               <div className="relative w-16 h-16">
                 <div className="absolute inset-0 border-2 border-engineer-500/30 rounded-lg motion-safe:animate-pulse" />
@@ -220,7 +222,9 @@ export function Safe3DWrapper({
                 <div className="absolute inset-4 bg-engineer-500/20 rounded-sm motion-safe:animate-pulse" />
               </div>
               <div className="text-xs text-muted-foreground font-mono motion-safe:animate-pulse">
-                Loading 3D...
+                {typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+                  ? 'Loading 3D...'
+                  : '3D Yükleniyor...'}
               </div>
             </div>
           </div>

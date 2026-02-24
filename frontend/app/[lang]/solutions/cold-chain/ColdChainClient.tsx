@@ -160,7 +160,7 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
               {lang === 'tr' ? 'GLOBAL KOMUTA MERKEZI' : 'GLOBAL COMMAND CENTER'}
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? '3D Global Filo Izleme' : '3D Global Fleet Tracking'}
             </h2>
             <p className="text-offwhite-700 max-w-2xl mx-auto">
@@ -221,7 +221,7 @@ export default function ColdChainClient({ lang }: ColdChainClientProps) {
             >
               <Thermometer size={40} style={{ color: accentColor }} />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {content.cta.title}
             </h2>
             <p className="text-lg text-offwhite-700 mb-10">

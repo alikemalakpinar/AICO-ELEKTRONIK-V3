@@ -146,7 +146,7 @@ export default function EnergyChart({ lang }: EnergyChartProps) {
 
   if (!isClient) {
     return (
-      <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 h-[400px]
+      <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 h-[400px] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]
                     flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-engineer-500/30 border-t-engineer-500 rounded-full animate-spin" />
       </div>
@@ -154,7 +154,7 @@ export default function EnergyChart({ lang }: EnergyChartProps) {
   }
 
   return (
-    <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
+    <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/[0.08] rounded-2xl overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       {/* Header */}
       <div className="px-5 py-4 border-b border-white/5">
         <div className="flex items-center justify-between">

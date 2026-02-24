@@ -23,7 +23,7 @@ function useReducedMotion(): boolean {
 // Premium loading fallback for 3D scenes - pulsing glow wireframe effect
 function Scene3DLoader({ className = '' }: { className?: string }) {
   return (
-    <div className={`relative flex items-center justify-center bg-onyx-900/50 ${className}`}>
+    <div className={`relative w-full flex items-center justify-center bg-onyx-900/50 overflow-hidden ${className}`}>
       <div className="flex flex-col items-center gap-4">
         {/* Premium wireframe glow effect */}
         <div className="relative w-20 h-20">
@@ -66,7 +66,7 @@ function Scene3DLoader({ className = '' }: { className?: string }) {
 // Static placeholder for reduced motion users
 function Scene3DPlaceholder({ className = '' }: { className?: string }) {
   return (
-    <div className={`relative flex items-center justify-center bg-gradient-to-br from-onyx-900/80 to-onyx-800/80 ${className}`}>
+    <div className={`relative w-full flex items-center justify-center bg-gradient-to-br from-onyx-900/80 to-onyx-800/80 overflow-hidden ${className}`}>
       <div className="flex flex-col items-center gap-4 text-center px-4">
         <div className="w-16 h-16 rounded-lg border-2 border-engineer-500/40 flex items-center justify-center">
           <svg className="w-8 h-8 text-engineer-500/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -200,21 +200,21 @@ export function LazyScene3D({
   // Show static placeholder for reduced motion users
   if (respectReducedMotion && reducedMotion) {
     return (
-      <div ref={containerRef} className={className}>
-        <Scene3DPlaceholder className="min-h-full" />
+      <div ref={containerRef} className={`relative ${className}`}>
+        <Scene3DPlaceholder className="absolute inset-0" />
       </div>
     );
   }
 
   return (
-    <div ref={containerRef} className={className}>
-      <Scene3DErrorBoundary sceneName="LazyScene3D" className="min-h-full">
+    <div ref={containerRef} className={`relative ${className}`}>
+      <Scene3DErrorBoundary sceneName="LazyScene3D" className="absolute inset-0">
         {isVisible ? (
-          <Suspense fallback={<Scene3DLoader className="min-h-full" />}>
+          <Suspense fallback={<Scene3DLoader className="absolute inset-0" />}>
             {children}
           </Suspense>
         ) : (
-          <Scene3DLoader className="min-h-full" />
+          <Scene3DLoader className="absolute inset-0" />
         )}
       </Scene3DErrorBoundary>
     </div>

@@ -295,7 +295,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.7 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-offwhite-400 mb-6 tracking-tight"
+              className="text-fluid-5xl font-bold text-offwhite-400 mb-6 tracking-tight"
             >
               {lang === 'tr' ? 'Evinizin İçinden' : 'From Inside Your Home'}
             </motion.h1>
@@ -305,7 +305,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-xl md:text-2xl text-offwhite-600 max-w-2xl mx-auto mb-12"
+              className="text-fluid-xl text-offwhite-600 max-w-2xl mx-auto mb-12"
             >
               {lang === 'tr'
                 ? 'Görünmez teknoloji, sezgisel kontrol. Her dokunuşta eviniz sizinle konuşur.'
@@ -366,7 +366,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               {lang === 'tr' ? 'KONTROL PANELI' : 'CONTROL PANEL'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-4xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'Tek Bir Dokunuşla' : 'With A Single Touch'}
             </h2>
             <p className="text-lg text-offwhite-600 max-w-xl mx-auto">
@@ -882,7 +882,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               {lang === 'tr' ? 'LÜKS KONTROLLER' : 'LUXURY CONTROLS'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-4xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'İnteraktif Kat Planı' : 'Interactive Floor Plan'}
             </h2>
             <p className="text-lg text-offwhite-600 max-w-2xl mx-auto">
@@ -917,7 +917,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               {lang === 'tr' ? 'GÖRÜNMEZ TEKNOLOJİ' : 'INVISIBLE TECHNOLOGY'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-4">
               {lang === 'tr' ? 'Teknoloji Katmanlarını Keşfedin' : 'Discover Technology Layers'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -945,7 +945,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               {lang === 'tr' ? 'İNTERAKTİF DEMO' : 'INTERACTIVE DEMO'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-4">
               {lang === 'tr' ? 'Tablet Kontrol Paneli' : 'Tablet Control Panel'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -980,7 +980,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
               {lang === 'tr' ? 'ÖZELLİKLER' : 'FEATURES'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            <h2 className="text-fluid-4xl font-bold text-foreground mb-4">
               {lang === 'tr' ? 'Her Detay Düşünüldü' : 'Every Detail Considered'}
             </h2>
           </motion.div>
@@ -1060,7 +1060,7 @@ export default function SmartVillaClient({ lang }: SmartVillaClientProps) {
             viewport={{ once: true }}
           >
             <Home size={48} className="text-engineer-500 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-6">
               {t.smartVilla.cta}
             </h2>
             <p className="text-lg text-muted-foreground mb-10">

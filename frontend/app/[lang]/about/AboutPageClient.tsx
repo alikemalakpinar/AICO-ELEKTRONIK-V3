@@ -323,7 +323,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
               <span className="w-8 h-px bg-engineer-500" />
               {lang === 'tr' ? 'HAKKIMIZDA' : 'ABOUT US'}
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6 tracking-tight">
+            <h1 className="text-fluid-4xl font-bold text-offwhite-400 mb-6 tracking-tight">
               {lang === 'tr' ? 'Genc, Vizyoner, Kararli' : 'Young, Visionary, Determined'}
             </h1>
             <p className="text-xl text-offwhite-600 leading-relaxed max-w-3xl">
@@ -380,7 +380,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
             viewport={{ once: true }}
             className="mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-8">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-8">
               {lang === 'tr' ? 'Hikayemiz' : 'Our Story'}
             </h2>
             <div className="space-y-6 text-lg text-offwhite-600 leading-relaxed">
@@ -433,7 +433,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
               {lang === 'tr' ? 'DEGERLERIMIZ' : 'OUR VALUES'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'Bizi Yonlendiren Ilkeler' : 'Principles That Guide Us'}
             </h2>
           </motion.div>
@@ -482,7 +482,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
               {lang === 'tr' ? 'YOLCULUGUMUZ' : 'OUR JOURNEY'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'Zaman Cizelgesi' : 'Timeline'}
             </h2>
             <p className="text-lg text-offwhite-600">
@@ -533,7 +533,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
               {lang === 'tr' ? 'EKIBIMIZ' : 'OUR TEAM'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'Arkasindaki Insanlar' : 'The People Behind'}
             </h2>
           </motion.div>
@@ -561,7 +561,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
             viewport={{ once: true }}
           >
             <Globe size={48} className="text-engineer-500 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'Vizyonumuza Ortak Olun' : 'Join Our Vision'}
             </h2>
             <p className="text-lg text-offwhite-600 mb-10">

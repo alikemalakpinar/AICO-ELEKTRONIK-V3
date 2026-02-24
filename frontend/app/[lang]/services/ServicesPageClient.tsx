@@ -242,7 +242,7 @@ export default function ServicesPageClient({ lang }: ServicesPageClientProps) {
               {text.badge}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6">
+            <h1 className="text-fluid-4xl font-bold text-offwhite-400 mb-6">
               {text.title}
             </h1>
             <p className="text-xl text-offwhite-700 max-w-2xl mx-auto">
@@ -303,7 +303,7 @@ export default function ServicesPageClient({ lang }: ServicesPageClientProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {text.process}
             </h2>
           </motion.div>
@@ -349,7 +349,7 @@ export default function ServicesPageClient({ lang }: ServicesPageClientProps) {
             viewport={{ once: true }}
           >
             <Zap size={48} className="text-engineer-500 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {text.cta}
             </h2>
             <p className="text-lg text-offwhite-700 mb-8">{text.ctaSubtitle}</p>

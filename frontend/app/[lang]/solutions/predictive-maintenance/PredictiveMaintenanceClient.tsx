@@ -352,7 +352,7 @@ export default function PredictiveMaintenanceClient({ lang }: PredictiveMaintena
               {lang === 'tr' ? 'INTERAKTIF DEMO' : 'INTERACTIVE DEMO'}
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'VibrationGuard Deneyimi' : 'VibrationGuard Experience'}
             </h2>
             <p className="text-offwhite-700 max-w-2xl mx-auto">
@@ -390,7 +390,7 @@ export default function PredictiveMaintenanceClient({ lang }: PredictiveMaintena
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400">
               {content.specs.title}
             </h2>
           </motion.div>
@@ -427,7 +427,7 @@ export default function PredictiveMaintenanceClient({ lang }: PredictiveMaintena
             >
               <Activity size={40} style={{ color: accentColor }} />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {content.cta.title}
             </h2>
             <p className="text-lg text-offwhite-700 mb-10">{content.cta.subtitle}</p>

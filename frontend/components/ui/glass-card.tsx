@@ -43,23 +43,25 @@ const variantStyles = {
     bg-white/[0.03] dark:bg-onyx-800/60
     backdrop-blur-2xl backdrop-saturate-180
     border border-white/[0.08]
-    shadow-2xl shadow-black/20
+    shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.05)]
   `,
   bordered: `
     bg-transparent
     backdrop-blur-sm backdrop-saturate-150
     border-2 border-white/[0.1]
+    shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
   `,
   gradient: `
     bg-gradient-to-br from-white/[0.05] to-transparent
     backdrop-blur-xl backdrop-saturate-150
     border border-white/[0.08]
+    shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
   `,
   glow: `
     bg-white/[0.02] dark:bg-onyx-800/40
     backdrop-blur-xl backdrop-saturate-150
-    border border-white/[0.05]
-    shadow-lg
+    border border-white/[0.08]
+    shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.05)]
   `,
   // Premium frosted glass effect (Apple-style) with luxury frost border & inset glow
   frosted: `

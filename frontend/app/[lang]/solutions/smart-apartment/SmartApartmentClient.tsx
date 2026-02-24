@@ -269,7 +269,7 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
               {lang === 'tr' ? 'İNTERAKTİF DEMO' : 'INTERACTIVE DEMO'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-4">
               {lang === 'tr' ? 'Apartmanınızı Keşfedin' : 'Explore Your Apartment'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -304,7 +304,7 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
               {lang === 'tr' ? 'TOPLULUK & GÜVENLİK' : 'COMMUNITY & SECURITY'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-4xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Güvenilir Yaşam Alanı' : 'Trusted Living Space'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -476,7 +476,7 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
               {lang === 'tr' ? 'TEMEL ÖZELLİKLER' : 'CORE FEATURES'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-4xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Apartman Yaşamı Yeniden' : 'Apartment Living Reimagined'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -602,7 +602,7 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
                 {lang === 'tr' ? 'MOBİL UYGULAMA' : 'MOBILE APP'}
                 <span className="w-8 h-px bg-engineer-500" />
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              <h2 className="text-fluid-3xl font-bold text-foreground mb-6">
                 {lang === 'tr' ? 'Apartmanınız Cebinizde' : 'Your Apartment in Your Pocket'}
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
@@ -716,7 +716,7 @@ export default function SmartApartmentClient({ lang }: SmartApartmentClientProps
             viewport={{ once: true }}
           >
             <Building size={48} className="text-engineer-500 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Apartmanınızı Dijitalleştirin' : 'Digitalize Your Apartment'}
             </h2>
             <p className="text-lg text-muted-foreground mb-10">

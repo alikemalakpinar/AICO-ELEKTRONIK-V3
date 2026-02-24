@@ -100,7 +100,7 @@ export default function ProjectsClient({ lang }: ProjectsClientProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-offwhite-400 mb-6"
+            className="text-fluid-4xl font-bold text-offwhite-400 mb-6"
           >
             {content.heroTitle}{' '}
             <span className="text-engineer-500">{content.heroHighlight}</span>
