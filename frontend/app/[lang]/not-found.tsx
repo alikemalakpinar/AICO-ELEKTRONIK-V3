@@ -268,7 +268,7 @@ export default function NotFound() {
         {/* 404 with glitch effect */}
         <GlitchText
           text="404"
-          className="font-mono text-8xl md:text-9xl font-bold mb-6 tracking-tighter"
+          className="font-mono text-fluid-hero font-bold mb-6 tracking-tighter"
         />
 
         {/* Error message */}
@@ -277,7 +277,7 @@ export default function NotFound() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+          <h1 className="text-fluid-2xl font-bold text-foreground mb-3">
             {t.common.signalLost}
           </h1>
           <p className="text-muted-foreground mb-2 font-mono text-sm">

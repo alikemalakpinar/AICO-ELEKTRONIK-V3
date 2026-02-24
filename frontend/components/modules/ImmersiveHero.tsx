@@ -153,7 +153,7 @@ export default function ImmersiveHero({
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-offwhite-400 mb-6 tracking-tight leading-tight"
+          className="text-fluid-5xl font-bold text-offwhite-400 mb-6 tracking-tight leading-tight"
         >
           {title}
           {titleHighlight && (
@@ -170,7 +170,7 @@ export default function ImmersiveHero({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-xl md:text-2xl text-offwhite-700 max-w-2xl mx-auto mb-12"
+            className="text-fluid-xl text-offwhite-700 max-w-2xl mx-auto mb-12"
           >
             {subtitle}
           </motion.p>

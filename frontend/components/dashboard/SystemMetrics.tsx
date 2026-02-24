@@ -143,7 +143,7 @@ export default function SystemMetrics({ lang }: SystemMetricsProps) {
   return (
     <div className="space-y-4">
       {/* System Health Overview */}
-      <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
+      <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/[0.08] rounded-2xl overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
         {/* Header */}
         <div className="px-5 py-4 border-b border-white/5">
           <div className="flex items-center justify-between">
@@ -220,7 +220,7 @@ export default function SystemMetrics({ lang }: SystemMetricsProps) {
       </div>
 
       {/* Recent Events */}
-      <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
+      <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/[0.08] rounded-2xl overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
         <div className="px-5 py-3 border-b border-white/5">
           <h4 className="text-sm font-medium text-offwhite-400">
             {lang === 'tr' ? 'Son Olaylar' : 'Recent Events'}

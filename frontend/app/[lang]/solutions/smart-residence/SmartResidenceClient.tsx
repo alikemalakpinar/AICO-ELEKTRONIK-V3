@@ -281,7 +281,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
               {lang === 'tr' ? 'BAĞLI EKOSİSTEM' : 'CONNECTED ECOSYSTEM'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Tüm Sistemler Tek Platformda' : 'All Systems in One Platform'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -307,7 +307,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
               {lang === 'tr' ? 'MİMARİ GENEL BAKIŞ' : 'ARCHITECTURE OVERVIEW'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Merkezi BMS Entegrasyonu' : 'Central BMS Integration'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -475,7 +475,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
               {lang === 'tr' ? 'PLATFORM MODÜLLERİ' : 'PLATFORM MODULES'}
               <span className="w-8 h-px bg-engineer-500" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-4xl font-bold text-foreground mb-6">
               {lang === 'tr' ? 'Ana Modüller' : 'Core Modules'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -578,7 +578,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
                 <span className="w-8 h-px bg-engineer-500" />
                 {lang === 'tr' ? 'MOBİL UYGULAMA' : 'MOBILE APP'}
               </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+              <h2 className="text-fluid-4xl font-bold text-foreground mb-6">
                 {lang === 'tr' ? 'Dijital Kapıcı' : 'Digital Concierge'}
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
@@ -700,7 +700,7 @@ export default function SmartResidenceClient({ lang }: SmartResidenceClientProps
             viewport={{ once: true }}
           >
             <Zap size={48} className="text-engineer-500 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-fluid-3xl font-bold text-foreground mb-6">
               {t.smartResidence.cta}
             </h2>
             <p className="text-lg text-muted-foreground mb-10">

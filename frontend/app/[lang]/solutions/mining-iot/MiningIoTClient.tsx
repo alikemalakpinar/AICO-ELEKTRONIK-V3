@@ -379,7 +379,7 @@ export default function MiningIoTClient({ lang }: MiningIoTClientProps) {
               {lang === 'tr' ? 'DIJITAL IKIZ' : 'DIGITAL TWIN'}
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'Yeralti Kesit Gorunumu' : 'Underground Cross-Section View'}
             </h2>
             <p className="text-offwhite-700 max-w-2xl mx-auto">
@@ -414,7 +414,7 @@ export default function MiningIoTClient({ lang }: MiningIoTClientProps) {
               {lang === 'tr' ? 'CANLI RADAR' : 'LIVE RADAR'}
               <span className="w-8 h-px" style={{ backgroundColor: accentColor }} />
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {lang === 'tr' ? 'Isci Takip Sistemi' : 'Worker Tracking System'}
             </h2>
             <p className="text-offwhite-700 max-w-2xl mx-auto">
@@ -452,7 +452,7 @@ export default function MiningIoTClient({ lang }: MiningIoTClientProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400">
               {content.specs.title}
             </h2>
           </motion.div>
@@ -489,7 +489,7 @@ export default function MiningIoTClient({ lang }: MiningIoTClientProps) {
             >
               <HardHat size={40} style={{ color: accentColor }} />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-4">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-4">
               {content.cta.title}
             </h2>
             <p className="text-lg text-offwhite-700 mb-10">

@@ -77,7 +77,7 @@ class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen bg-background flex items-center justify-center p-6">
           <div className="max-w-lg w-full">
             {/* Error Card */}
-            <div className="relative bg-onyx-800/50 backdrop-blur-xl rounded-3xl border border-white/10 p-8 shadow-2xl">
+            <div className="relative bg-onyx-800/50 backdrop-blur-xl rounded-3xl border border-white/10 p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.06)]">
               {/* Accent glow */}
               <div className="absolute -top-px left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
 

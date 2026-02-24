@@ -92,7 +92,7 @@ export default function LoginModal({ isOpen, onClose, lang }: LoginModalProps) {
                        w-full max-w-md"
           >
             <div className="bg-onyx-800/95 backdrop-blur-xl border border-white/10 rounded-2xl
-                          shadow-2xl shadow-black/50 overflow-hidden">
+                          shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
               {/* Header */}
               <div className="relative px-6 pt-6 pb-4 border-b border-white/5">
                 {/* Close button */}

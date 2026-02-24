@@ -75,7 +75,7 @@ function ScrollyScene({
             initial={{ opacity: 0, y: 40 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight"
+            className="text-fluid-4xl font-bold text-foreground mb-6 tracking-tight"
             style={{
               textShadow: 'var(--text-shadow-strong, 0 2px 10px rgba(0,0,0,0.3))',
             }}

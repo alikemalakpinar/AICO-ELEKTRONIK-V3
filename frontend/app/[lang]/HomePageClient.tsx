@@ -182,7 +182,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-display text-5xl md:text-6xl lg:text-8xl text-offwhite-400 mb-6"
+            className="heading-display text-fluid-hero text-offwhite-400 mb-6"
           >
             {t.home.heroMainTitle}
             <br />
@@ -196,7 +196,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-xl md:text-2xl text-offwhite-700 max-w-3xl mx-auto mb-12"
+            className="text-fluid-xl text-offwhite-700 max-w-3xl mx-auto mb-12"
           >
             {t.home.heroMainSubtitle}
           </motion.p>
@@ -239,7 +239,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="mono-badge text-offwhite-800 mb-1">{stat.spec}</div>
-                <div className="text-2xl md:text-3xl font-bold text-engineer-500 mono-data glow-engineer">{stat.value}</div>
+                <div className="text-fluid-2xl font-bold text-engineer-500 mono-data glow-engineer">{stat.value}</div>
                 <div className="text-offwhite-700 text-xs mt-1.5">{stat.label}</div>
               </div>
             ))}
@@ -280,7 +280,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               <span className="mono-badge text-offwhite-800">SEC::CRITICAL</span>
               <span className="w-12 h-px bg-engineer-500/50" />
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-fluid-4xl font-bold text-offwhite-400 mb-6">
               {t.home.highTech}
               {' '}
               <span className="text-engineer-500">
@@ -435,7 +435,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
               <span className="mono-badge text-offwhite-800">RES::PREMIUM</span>
               <span className="w-12 h-px bg-purple-400/50" />
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-fluid-4xl font-bold text-offwhite-400 mb-6">
               {t.home.smartLivingTitle}
               {' '}
               <span className="text-purple-400">
@@ -495,7 +495,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-engineer-500/10 flex items-center justify-center">
               <Globe size={40} className="text-engineer-500" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-6">
               {t.home.ctaTitle}
             </h2>
             <p className="text-lg text-offwhite-700 mb-10">

@@ -439,7 +439,7 @@ export default function ContactPageClient({ lang }: ContactPageClientProps) {
             <span className="w-8 h-px bg-engineer-500" />
             {lang === 'tr' ? 'İLETİŞİM' : 'CONTACT'}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
+          <h1 className="text-fluid-4xl font-bold text-foreground mb-6 tracking-tight">
             {lang === 'tr' ? 'Konuşalım' : "Let's Talk"}
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">

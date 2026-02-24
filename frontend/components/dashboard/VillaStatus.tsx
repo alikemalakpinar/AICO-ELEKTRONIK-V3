@@ -99,7 +99,7 @@ export default function VillaStatus({ lang }: VillaStatusProps) {
   ];
 
   return (
-    <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
+    <div className="bg-onyx-800/50 backdrop-blur-xl border border-white/[0.08] rounded-2xl overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       {/* Header */}
       <div className="px-5 py-4 border-b border-white/5">
         <div className="flex items-center justify-between">
