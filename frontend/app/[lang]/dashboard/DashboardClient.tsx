@@ -7,6 +7,7 @@ import { LogOut, Settings, Bell, User, LayoutDashboard } from 'lucide-react';
 import VillaStatus from '@/components/dashboard/VillaStatus';
 import EnergyChart from '@/components/dashboard/EnergyChart';
 import SystemMetrics from '@/components/dashboard/SystemMetrics';
+import { getTranslations } from '@/lib/i18n';
 
 /**
  * DashboardClient - Engineering Control Dashboard
@@ -30,6 +31,7 @@ interface UserSession {
 }
 
 export default function DashboardClient({ lang }: DashboardClientProps) {
+  const t = getTranslations(lang as 'tr' | 'en');
   const router = useRouter();
   const [session, setSession] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -115,7 +117,7 @@ export default function DashboardClient({ lang }: DashboardClientProps) {
                   onClick={handleLogout}
                   className="p-2 text-offwhite-700 hover:text-red-400
                            hover:bg-red-500/10 rounded-lg transition-colors"
-                  title={lang === 'tr' ? 'Cikis Yap' : 'Logout'}
+                  title={t.common.logout}
                 >
                   <LogOut size={18} />
                 </button>

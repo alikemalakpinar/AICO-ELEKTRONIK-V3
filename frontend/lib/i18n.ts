@@ -207,6 +207,14 @@ export const translations = {
       disconnected: 'BAĞLANTI YOK',
       systemActive: 'Sistem Aktif',
       scroll: 'Kaydırın',
+      switchToLightMode: 'Açık moda geç',
+      switchToDarkMode: 'Koyu moda geç',
+      lightMode: 'Açık',
+      darkMode: 'Koyu',
+      logout: 'Çıkış Yap',
+      emailPlaceholder: 'ornek@firma.com',
+      email: 'E-posta',
+      password: 'Şifre',
     },
     // Meta
     meta: {
@@ -430,6 +438,14 @@ export const translations = {
       disconnected: 'DISCONNECTED',
       systemActive: 'System Active',
       scroll: 'Scroll',
+      switchToLightMode: 'Switch to light mode',
+      switchToDarkMode: 'Switch to dark mode',
+      lightMode: 'Light',
+      darkMode: 'Dark',
+      logout: 'Logout',
+      emailPlaceholder: 'example@company.com',
+      email: 'Email',
+      password: 'Password',
     },
     // Meta
     meta: {
