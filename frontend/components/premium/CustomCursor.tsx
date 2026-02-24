@@ -52,14 +52,15 @@ export default function CustomCursor() {
   // Magnetic effect ref
   const magneticRef = useRef<{ x: number; y: number } | null>(null);
 
-  // Check for mobile/touch device
+  // Check for mobile/touch device - disable custom cursor on small screens too
   useEffect(() => {
     const checkMobile = () => {
       const hasTouchScreen =
         'ontouchstart' in window ||
         navigator.maxTouchPoints > 0 ||
         window.matchMedia('(pointer: coarse)').matches;
-      setIsMobile(hasTouchScreen);
+      const isSmallScreen = window.innerWidth < 768;
+      setIsMobile(hasTouchScreen || isSmallScreen);
     };
 
     checkMobile();

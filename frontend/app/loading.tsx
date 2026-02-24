@@ -182,8 +182,11 @@ export default function Loading() {
           <motion.span
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity }}
+            suppressHydrationWarning
           >
-            Sistem Yukleniyor
+            {typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+              ? 'System Loading'
+              : 'Sistem Yükleniyor'}
           </motion.span>
           <motion.div className="flex gap-1">
             {[0, 1, 2].map((i) => (

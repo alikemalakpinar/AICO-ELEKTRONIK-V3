@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { getTranslations, type Locale } from '@/lib/i18n';
+import { ProductSchema } from '@/components/seo';
 import PredictiveMaintenanceClient from './PredictiveMaintenanceClient';
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://aicoelektronik.com';
 
 export async function generateMetadata({
   params,
@@ -32,5 +35,21 @@ export default function PredictiveMaintenancePage({
 }: {
   params: { lang: Locale };
 }) {
-  return <PredictiveMaintenanceClient lang={params.lang} />;
+  const isEn = params.lang === 'en';
+  return (
+    <>
+      <ProductSchema
+        name={isEn ? 'VibrationGuard - Predictive Maintenance' : 'VibrationGuard - Kestirimci Bakım'}
+        description={isEn
+          ? 'FFT vibration analysis and ML-based failure prediction with 2-week advance warning.'
+          : 'FFT titreşim analizi ve ML tabanlı arıza tahmini, 2 hafta önceden uyarı.'}
+        category="Industrial IoT"
+        url={`${BASE_URL}/${params.lang}/solutions/predictive-maintenance`}
+        features={isEn
+          ? ['FFT Analysis', 'ML Prediction', '2-Week Advance Warning', 'Real-Time Dashboard']
+          : ['FFT Analiz', 'ML Tahmin', '2 Hafta Önceden Uyarı', 'Gerçek Zamanlı Dashboard']}
+      />
+      <PredictiveMaintenanceClient lang={params.lang} />
+    </>
+  );
 }

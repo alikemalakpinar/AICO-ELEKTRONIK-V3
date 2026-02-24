@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import SmartVillaClient from './SmartVillaClient';
+import { ProductSchema } from '@/components/seo';
 import type { Locale } from '@/types';
 
 interface PageProps {
@@ -75,5 +76,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SmartVillaPage({ params }: PageProps) {
   const { lang } = await params;
-  return <SmartVillaClient lang={lang} />;
+  return (
+    <>
+      <ProductSchema
+        name={lang === 'tr' ? 'Akıllı Villa Otomasyonu' : 'Smart Villa Automation'}
+        description={lang === 'tr'
+          ? 'Kişisel lüks, görünmez teknoloji. Her detay size özel tasarlandı.'
+          : 'Personal luxury, invisible technology. Every detail designed for you.'}
+        category="Smart Living"
+        url={`${BASE_URL}/${lang}/solutions/smart-villa`}
+        features={lang === 'tr'
+          ? ['Senaryo Yönetimi', 'Enerji Optimizasyonu', 'Güvenlik Entegrasyonu', 'Klima Kontrolü']
+          : ['Scenario Management', 'Energy Optimization', 'Security Integration', 'Climate Control']}
+      />
+      <SmartVillaClient lang={lang} />
+    </>
+  );
 }

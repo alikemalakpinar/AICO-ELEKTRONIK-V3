@@ -191,6 +191,22 @@ export const translations = {
       none: 'Hiçbiri',
       yes: 'Evet',
       no: 'Hayır',
+      sectionError: 'Bu bölüm yüklenirken bir hata oluştu.',
+      rebootSystem: 'Sistemi Yeniden Başlat',
+      signalLost: 'Sinyal Kayboldu',
+      pageNotFoundDesc: 'Aradığınız sayfa mevcut değil veya devre dışı bırakıldı.',
+      systemDiagnostics: 'Sistem Tanılama',
+      notFound: 'Bulunamadı',
+      operational: 'Çalışıyor',
+      returnToHome: 'Ana Sayfaya Dön',
+      loading3DScene: '3D Sahne Yükleniyor...',
+      visualization3D: '3D görselleştirme mevcut',
+      reducedMotion: '(Azaltılmış hareket etkin)',
+      stackTrace: 'Yığın İzleme',
+      connected: 'BAĞLI',
+      disconnected: 'BAĞLANTI YOK',
+      systemActive: 'Sistem Aktif',
+      scroll: 'Kaydırın',
     },
     // Meta
     meta: {
@@ -398,6 +414,22 @@ export const translations = {
       none: 'None',
       yes: 'Yes',
       no: 'No',
+      sectionError: 'An error occurred while loading this section.',
+      rebootSystem: 'Reboot System',
+      signalLost: 'Signal Lost',
+      pageNotFoundDesc: 'The page you are looking for does not exist or has been disabled.',
+      systemDiagnostics: 'System Diagnostics',
+      notFound: 'Not Found',
+      operational: 'Operational',
+      returnToHome: 'Return to Home',
+      loading3DScene: 'Loading 3D Scene...',
+      visualization3D: '3D visualization available',
+      reducedMotion: '(Reduced motion enabled)',
+      stackTrace: 'Stack trace',
+      connected: 'CONNECTED',
+      disconnected: 'DISCONNECTED',
+      systemActive: 'System Active',
+      scroll: 'Scroll',
     },
     // Meta
     meta: {
@@ -430,3 +462,63 @@ export function getTranslations(locale: Locale) {
 
 // Type for translation keys
 export type TranslationKey = keyof typeof translations.tr;
+
+// ===========================================
+// Intl Formatting Utilities
+// Locale-aware number, currency, and date formatting
+// ===========================================
+
+const localeMap: Record<Locale, string> = {
+  tr: 'tr-TR',
+  en: 'en-US',
+};
+
+/** Format a number according to locale (e.g. 1.234,56 vs 1,234.56) */
+export function formatNumber(value: number, locale: Locale, options?: Intl.NumberFormatOptions): string {
+  return new Intl.NumberFormat(localeMap[locale], options).format(value);
+}
+
+/** Format currency (TRY for tr, USD for en by default) */
+export function formatCurrency(value: number, locale: Locale, currency?: string): string {
+  const cur = currency || (locale === 'tr' ? 'TRY' : 'USD');
+  return new Intl.NumberFormat(localeMap[locale], {
+    style: 'currency',
+    currency: cur,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+/** Format a date according to locale */
+export function formatDate(date: Date | string | number, locale: Locale, options?: Intl.DateTimeFormatOptions): string {
+  const d = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date;
+  return new Intl.DateTimeFormat(localeMap[locale], options || {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(d);
+}
+
+/** Format time according to locale */
+export function formatTime(date: Date | string | number, locale: Locale): string {
+  const d = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date;
+  return new Intl.DateTimeFormat(localeMap[locale], {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(d);
+}
+
+/** Format percentage */
+export function formatPercent(value: number, locale: Locale): string {
+  return new Intl.NumberFormat(localeMap[locale], {
+    style: 'percent',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(value / 100);
+}
+
+/** Get BCP 47 locale string */
+export function getBcp47Locale(locale: Locale): string {
+  return localeMap[locale];
+}

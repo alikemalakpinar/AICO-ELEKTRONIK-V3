@@ -4,6 +4,7 @@ import React, { useRef, useMemo, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Text, Line, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
 // GlobalFleetGlobe - 3D Globe with Fleet Tracking
@@ -375,12 +376,14 @@ export default function GlobalFleetGlobe({
   accentColor,
   className = '',
 }: GlobalFleetGlobeProps) {
+  const eco = useEcoCanvas();
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
         camera={{ position: [0, 0.5, 3.5], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={eco.dpr}
+        frameloop={eco.frameloop as 'always' | 'never'}
+        gl={{ antialias: !eco.shouldShowStatic, alpha: true, powerPreference: eco.gl.powerPreference }}
       >
         <Scene
           trucks={trucks}

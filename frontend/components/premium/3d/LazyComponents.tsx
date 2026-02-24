@@ -20,25 +20,43 @@ function useReducedMotion(): boolean {
   return reducedMotion;
 }
 
-// Loading fallback component for 3D scenes
-// Respects reduced-motion preference by using static styles when appropriate
+// Premium loading fallback for 3D scenes - pulsing glow wireframe effect
 function Scene3DLoader({ className = '' }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center bg-onyx-900/50 ${className}`}>
-      {/* Animated loading indicator - uses motion-safe variants */}
       <div className="flex flex-col items-center gap-4">
-        {/* Pulsing cube animation */}
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 border-2 border-engineer-500/30 rounded-lg motion-safe:animate-pulse" />
+        {/* Premium wireframe glow effect */}
+        <div className="relative w-20 h-20">
+          {/* Outer glow ring */}
           <div
-            className="absolute inset-2 border border-engineer-500/50 rounded-md motion-safe:animate-ping"
-            style={{ animationDuration: '1.5s' }}
+            className="absolute inset-0 rounded-xl border border-engineer-500/20 motion-safe:animate-pulse"
+            style={{ boxShadow: '0 0 20px rgba(249, 115, 22, 0.1), inset 0 0 20px rgba(249, 115, 22, 0.05)' }}
           />
-          <div className="absolute inset-4 bg-engineer-500/20 rounded-sm motion-safe:animate-pulse" />
+          {/* Inner wireframe cube */}
+          <div
+            className="absolute inset-2 border border-engineer-500/40 rounded-lg motion-safe:animate-ping"
+            style={{ animationDuration: '2s' }}
+          />
+          {/* Core glow */}
+          <div
+            className="absolute inset-4 rounded-md motion-safe:animate-pulse"
+            style={{
+              background: 'radial-gradient(circle, rgba(249, 115, 22, 0.3) 0%, transparent 70%)',
+            }}
+          />
+          {/* Wireframe 3D cube SVG */}
+          <svg className="absolute inset-0 w-full h-full p-5 text-engineer-500/50 motion-safe:animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+            <path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+          </svg>
         </div>
-        {/* Loading text */}
-        <div className="text-xs text-muted-foreground font-mono motion-safe:animate-pulse">
-          Loading 3D Scene...
+        {/* Loading text with glow */}
+        <div
+          className="text-xs text-engineer-500/70 font-mono motion-safe:animate-pulse tracking-wider"
+          style={{ textShadow: '0 0 10px rgba(249, 115, 22, 0.3)' }}
+        >
+          {typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+            ? 'Loading 3D Scene...'
+            : '3D Sahne Yükleniyor...'}
         </div>
       </div>
     </div>
@@ -56,10 +74,14 @@ function Scene3DPlaceholder({ className = '' }: { className?: string }) {
           </svg>
         </div>
         <div className="text-xs text-muted-foreground font-mono">
-          3D visualization available
+          {typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+            ? '3D visualization available'
+            : '3D görselleştirme mevcut'}
         </div>
         <div className="text-[10px] text-muted-foreground/60">
-          (Reduced motion enabled)
+          {typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+            ? '(Reduced motion enabled)'
+            : '(Azaltılmış hareket etkin)'}
         </div>
       </div>
     </div>

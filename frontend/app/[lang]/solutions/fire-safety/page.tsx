@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import FireSafetyClient from './FireSafetyClient';
+import { ProductSchema } from '@/components/seo';
 import type { Locale } from '@/types';
 
 interface PageProps {
@@ -75,5 +76,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function FireSafetyPage({ params }: PageProps) {
   const { lang } = await params;
-  return <FireSafetyClient lang={lang} />;
+  return (
+    <>
+      <ProductSchema
+        name={lang === 'tr' ? 'FireLink - Yangın Güvenlik Kartı' : 'FireLink - Fire Safety Card'}
+        description={lang === 'tr'
+          ? 'Termal izleme ve erken uyarı sistemi. PCB seviyesinde sıcaklık takibi.'
+          : 'Thermal monitoring and early warning system. PCB-level temperature tracking.'}
+        category="Industrial IoT"
+        url={`${BASE_URL}/${lang}/solutions/fire-safety`}
+        features={lang === 'tr'
+          ? ['±0.5°C Hassasiyet', 'Gerçek Zamanlı İzleme', 'Ark Tespiti', 'Kablo İzolasyon İzleme']
+          : ['±0.5°C Accuracy', 'Real-Time Monitoring', 'Arc Detection', 'Cable Insulation Monitoring']}
+      />
+      <FireSafetyClient lang={lang} />
+    </>
+  );
 }

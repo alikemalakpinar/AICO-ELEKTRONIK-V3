@@ -114,9 +114,12 @@ export default function RootLayout({
   return (
     <html lang={lang} className={`${fontVariables} dark`} suppressHydrationWarning>
       <head>
-        {/* Structured Data for SEO */}
-        <OrganizationSchema lang="tr" />
-        <WebSiteSchema lang="tr" />
+        {/* Structured Data for SEO - locale-aware */}
+        <OrganizationSchema lang={lang as 'tr' | 'en'} />
+        <WebSiteSchema lang={lang as 'tr' | 'en'} />
+
+        {/* Preload HDRI environment map for 3D scenes */}
+        <link rel="preload" href="/hdri/dikhololo_night_1k.hdr" as="fetch" crossOrigin="anonymous" />
 
         {/* Preconnect to Fontshare CDN (Satoshi + General Sans fonts) */}
         <link rel="preconnect" href="https://api.fontshare.com" />

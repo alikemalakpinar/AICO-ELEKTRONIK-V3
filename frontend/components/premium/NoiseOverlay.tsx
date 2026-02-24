@@ -43,6 +43,8 @@ export default function NoiseOverlay() {
           zIndex: 9999,
           opacity: 0.03,
           mixBlendMode: 'overlay',
+          transform: 'translateZ(0)',
+          willChange: 'transform',
         }}
       >
         <div

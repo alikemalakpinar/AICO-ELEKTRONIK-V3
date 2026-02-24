@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { Locale } from '@/lib/i18n';
+import { LocalBusinessSchema } from '@/components/seo';
 import ContactPageClient from './ContactPageClient';
 
 interface ContactPageProps {
@@ -19,5 +20,10 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
 }
 
 export default function ContactPage({ params }: ContactPageProps) {
-  return <ContactPageClient lang={params.lang} />;
+  return (
+    <>
+      <LocalBusinessSchema lang={params.lang} />
+      <ContactPageClient lang={params.lang} />
+    </>
+  );
 }

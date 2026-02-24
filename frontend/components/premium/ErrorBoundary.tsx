@@ -2,11 +2,13 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home, ChevronRight } from 'lucide-react';
+import { getTranslations, type Locale } from '@/lib/i18n';
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  lang?: Locale;
 }
 
 interface State {
@@ -56,10 +58,14 @@ class ErrorBoundary extends Component<Props, State> {
   };
 
   private handleGoHome = () => {
-    window.location.href = '/';
+    const lang = this.props.lang || 'tr';
+    window.location.href = `/${lang}`;
   };
 
   public render() {
+    const lang = this.props.lang || 'tr';
+    const t = getTranslations(lang);
+
     if (this.state.hasError) {
       // Custom fallback if provided
       if (this.props.fallback) {
@@ -84,13 +90,12 @@ class ErrorBoundary extends Component<Props, State> {
 
               {/* Title */}
               <h1 className="text-2xl font-semibold text-foreground text-center mb-2">
-                Bir hata olustu
+                {t.common.error}
               </h1>
 
               {/* Description */}
               <p className="text-muted-foreground text-center mb-6">
-                Beklenmedik bir hata meydana geldi. Lutfen sayfayi yenileyin veya
-                ana sayfaya donun.
+                {t.common.errorDescription}
               </p>
 
               {/* Error details (development only) */}
@@ -102,7 +107,7 @@ class ErrorBoundary extends Component<Props, State> {
                   {this.state.errorInfo && (
                     <details className="mt-2">
                       <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
-                        Stack trace
+                        {t.common.stackTrace}
                       </summary>
                       <pre className="mt-2 text-xs text-muted-foreground overflow-auto max-h-32 p-2 bg-black/20 rounded">
                         {this.state.errorInfo.componentStack}
@@ -119,14 +124,14 @@ class ErrorBoundary extends Component<Props, State> {
                   className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-colors"
                 >
                   <RefreshCw size={18} />
-                  <span>Tekrar Dene</span>
+                  <span>{t.common.tryAgain}</span>
                 </button>
                 <button
                   onClick={this.handleGoHome}
                   className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-foreground font-medium rounded-xl border border-white/10 transition-colors"
                 >
                   <Home size={18} />
-                  <span>Ana Sayfa</span>
+                  <span>{t.common.homePage}</span>
                 </button>
               </div>
 
@@ -136,7 +141,7 @@ class ErrorBoundary extends Component<Props, State> {
                   href="/contact"
                   className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-engineer-500 transition-colors"
                 >
-                  <span>Sorun devam ederse bize ulasin</span>
+                  <span>{t.common.supportLink}</span>
                   <ChevronRight size={14} />
                 </a>
               </div>
@@ -158,6 +163,7 @@ class ErrorBoundary extends Component<Props, State> {
 interface SectionErrorBoundaryProps {
   children: ReactNode;
   sectionName?: string;
+  lang?: Locale;
 }
 
 interface SectionErrorState {
@@ -176,20 +182,23 @@ export class SectionErrorBoundary extends Component<SectionErrorBoundaryProps, S
   }
 
   public render() {
+    const lang = this.props.lang || 'tr';
+    const t = getTranslations(lang);
+
     if (this.state.hasError) {
       return (
         <div className="p-8 bg-onyx-800/30 rounded-2xl border border-white/5">
           <div className="flex items-center gap-3 text-muted-foreground">
             <AlertTriangle size={20} className="text-yellow-500" />
             <span className="text-sm">
-              Bu bolum yuklenirken bir hata olustu.
+              {t.common.sectionError}
               {this.props.sectionName && ` (${this.props.sectionName})`}
             </span>
             <button
               onClick={() => this.setState({ hasError: false })}
               className="ml-auto text-xs text-engineer-500 hover:underline"
             >
-              Tekrar dene
+              {t.common.tryAgain}
             </button>
           </div>
         </div>

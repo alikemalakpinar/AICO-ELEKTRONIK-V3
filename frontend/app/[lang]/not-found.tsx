@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Home, Zap, WifiOff } from 'lucide-react';
+import { getTranslations, type Locale } from '@/lib/i18n';
 
 // Glitch text effect component
 function GlitchText({ text, className = '' }: { text: string; className?: string }) {
@@ -204,6 +206,9 @@ function MagneticButton({ children, href, className = '' }: { children: React.Re
 }
 
 export default function NotFound() {
+  const pathname = usePathname();
+  const lang: Locale = pathname?.startsWith('/en') ? 'en' : 'tr';
+  const t = getTranslations(lang);
   const [scanlinePos, setScanlinePos] = useState(0);
 
   // Scanline animation
@@ -273,13 +278,13 @@ export default function NotFound() {
           transition={{ delay: 0.3 }}
         >
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            Sinyal Kayboldu
+            {t.common.signalLost}
           </h1>
           <p className="text-muted-foreground mb-2 font-mono text-sm">
             [ERROR] Connection_Failed: Page_Not_Found
           </p>
           <p className="text-muted-foreground mb-8 text-lg">
-            Aradığınız sayfa mevcut değil veya devre dışı bırakıldı.
+            {t.common.pageNotFoundDesc}
           </p>
         </motion.div>
 
@@ -292,20 +297,20 @@ export default function NotFound() {
         >
           <div className="flex items-center gap-2 mb-2 text-muted-foreground">
             <Zap size={12} className="text-engineer-500" />
-            <span>System Diagnostics</span>
+            <span>{t.common.systemDiagnostics}</span>
           </div>
           <div className="space-y-1 text-muted-foreground">
             <motion.div
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <span className="text-red-500">●</span> Route: <span className="text-foreground">Not Found</span>
+              <span className="text-red-500">●</span> Route: <span className="text-foreground">{t.common.notFound}</span>
             </motion.div>
             <div>
-              <span className="text-green-500">●</span> System: <span className="text-foreground">Operational</span>
+              <span className="text-green-500">●</span> System: <span className="text-foreground">{t.common.operational}</span>
             </div>
             <div>
-              <span className="text-yellow-500">●</span> Suggestion: <span className="text-foreground">Return to Home</span>
+              <span className="text-yellow-500">●</span> Suggestion: <span className="text-foreground">{t.common.returnToHome}</span>
             </div>
           </div>
         </motion.div>
@@ -319,20 +324,20 @@ export default function NotFound() {
         >
           {/* Primary: Reboot System (Go Home) */}
           <MagneticButton
-            href="/tr"
+            href={`/${lang}`}
             className="group inline-flex items-center gap-3 px-8 py-4 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-engineer-500/25"
           >
             <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
-            <span>Sistemi Yeniden Başlat</span>
+            <span>{t.common.rebootSystem}</span>
           </MagneticButton>
 
           {/* Secondary: Go to Home */}
           <MagneticButton
-            href="/tr"
+            href={`/${lang}`}
             className="group inline-flex items-center gap-2 px-6 py-4 dark:bg-white/5 dark:hover:bg-white/10 light:bg-slate-100 light:hover:bg-slate-200 border dark:border-white/10 dark:hover:border-white/20 light:border-slate-200 light:hover:border-slate-300 text-foreground font-medium rounded-xl transition-all"
           >
             <Home size={18} />
-            <span>Ana Sayfa</span>
+            <span>{t.common.homePage}</span>
           </MagneticButton>
         </motion.div>
       </motion.div>
