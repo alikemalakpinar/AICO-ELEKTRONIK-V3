@@ -6,6 +6,7 @@ import { MeshDistortMaterial, MeshTransmissionMaterial, Sphere, Float } from '@r
 import SafeEnvironment from './3d/SafeEnvironment';
 import Scene3DErrorBoundary from './3d/Scene3DErrorBoundary';
 import * as THREE from 'three';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
 // NeuralCore v3.2 — X-Ray Engineering Core
@@ -306,17 +307,19 @@ interface NeuralCoreProps {
 }
 
 export default function NeuralCore({ className = '' }: NeuralCoreProps) {
+  const eco = useEcoCanvas();
   return (
     <Scene3DErrorBoundary sceneName="NeuralCore" className={className}>
       <div className={`relative ${className}`}>
         <Suspense fallback={<LoadingFallback />}>
           <Canvas
             camera={{ position: [0, 0, 6], fov: 45 }}
-            dpr={[1, 2]}
+            dpr={eco.dpr}
+            frameloop={eco.frameloop as 'always' | 'never'}
             gl={{
-              antialias: true,
+              antialias: !eco.shouldShowStatic,
               alpha: true,
-              powerPreference: 'high-performance',
+              powerPreference: eco.gl.powerPreference,
             }}
             style={{ background: 'transparent' }}
           >

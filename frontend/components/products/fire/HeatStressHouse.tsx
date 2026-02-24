@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Edges, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import type { FireLinkSensor } from '@/lib/utils/firelink-parser';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
 // HeatStressHouse - 3D Electrical Panel X-Ray with Cable Visualization
@@ -417,12 +418,15 @@ export default function HeatStressHouse({
   accentColor,
   className = '',
 }: HeatStressHouseProps) {
+  const eco = useEcoCanvas();
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
         camera={{ position: [4, 3, 4], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={eco.dpr}
+        frameloop={eco.frameloop as 'always' | 'never'}
+        gl={{ antialias: !eco.shouldShowStatic, alpha: true, powerPreference: eco.gl.powerPreference }}
+        shadows={eco.shadows}
       >
         <Scene
           sensors={sensors}

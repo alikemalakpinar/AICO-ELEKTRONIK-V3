@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ColdChainClient from './ColdChainClient';
+import { ProductSchema } from '@/components/seo';
 import type { Locale } from '@/types';
 
 interface PageProps {
@@ -75,5 +76,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ColdChainPage({ params }: PageProps) {
   const { lang } = await params;
-  return <ColdChainClient lang={lang} />;
+  return (
+    <>
+      <ProductSchema
+        name={lang === 'tr' ? 'ColdTrack - Soğuk Zincir İzleme' : 'ColdTrack - Cold Chain Monitoring'}
+        description={lang === 'tr'
+          ? '3D dünya haritasında filo takibi. Kesintisiz sıcaklık kontrolü.'
+          : '3D globe fleet tracking. Uninterrupted temperature control.'}
+        category="Industrial IoT"
+        url={`${BASE_URL}/${lang}/solutions/cold-chain`}
+        features={lang === 'tr'
+          ? ['GPS Filo Takibi', 'Gerçek Zamanlı Sıcaklık', '-40°C/+85°C Aralık', 'Anlık Uyarılar']
+          : ['GPS Fleet Tracking', 'Real-Time Temperature', '-40°C/+85°C Range', 'Instant Alerts']}
+      />
+      <ColdChainClient lang={lang} />
+    </>
+  );
 }

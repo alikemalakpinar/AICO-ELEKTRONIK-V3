@@ -276,6 +276,53 @@
   }
 }
 
+@layer utilities {
+  /* ===========================================
+     FLUID TYPOGRAPHY - Responsive clamp() system
+     Smooth scaling from mobile (320px) to desktop (1920px)
+     No breakpoint jumps - pure mathematical scaling
+  =========================================== */
+  .text-fluid-xs {
+    font-size: clamp(0.7rem, 0.65rem + 0.25vw, 0.85rem);
+  }
+  .text-fluid-sm {
+    font-size: clamp(0.8rem, 0.74rem + 0.3vw, 1rem);
+  }
+  .text-fluid-base {
+    font-size: clamp(0.9rem, 0.84rem + 0.35vw, 1.15rem);
+  }
+  .text-fluid-lg {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.35rem);
+  }
+  .text-fluid-xl {
+    font-size: clamp(1.15rem, 1rem + 0.75vw, 1.65rem);
+  }
+  .text-fluid-2xl {
+    font-size: clamp(1.35rem, 1.1rem + 1.25vw, 2.25rem);
+    line-height: 1.2;
+  }
+  .text-fluid-3xl {
+    font-size: clamp(1.6rem, 1.2rem + 2vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .text-fluid-4xl {
+    font-size: clamp(1.9rem, 1.3rem + 3vw, 4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .text-fluid-5xl {
+    font-size: clamp(2.2rem, 1.4rem + 4vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .text-fluid-hero {
+    font-size: clamp(2.5rem, 1.5rem + 5vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+}
+
 @layer components {
   /* Premium Button Styles - Theme Adaptive */
   .btn-premium {

@@ -4,6 +4,7 @@ import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Edges, Text, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
+import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
 // IndustrialMotor3D - Stylized Industrial Motor
@@ -418,13 +419,15 @@ export default function IndustrialMotor3D({
   accentColor,
   className = '',
 }: IndustrialMotor3DProps) {
+  const eco = useEcoCanvas();
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
         camera={{ position: [3, 2, 3], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
-        shadows
+        dpr={eco.dpr}
+        frameloop={eco.frameloop as 'always' | 'never'}
+        gl={{ antialias: !eco.shouldShowStatic, alpha: true, powerPreference: eco.gl.powerPreference }}
+        shadows={eco.shadows}
       >
         <Scene
           rpm={rpm}
