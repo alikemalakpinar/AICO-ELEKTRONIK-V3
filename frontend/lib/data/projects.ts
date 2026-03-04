@@ -6,23 +6,23 @@
 import type { Project, LocalizedContent, CategoryFilter } from '@/types';
 
 // ===========================================
-// GERCEK MUHENDISLIK PROJELERI
+// GERÇEK MÜHENDİSLİK PROJELERİ
 // ===========================================
 
 export const PROJECTS: LocalizedContent<Project[]> = {
   tr: [
     // ============================================
-    // 1. ENDUSTRIYEL IOT YANGIN ANALIZ MODULU
+    // 1. ENDÜSTRİYEL IOT YANGIN ANALİZ MODÜLÜ
     // ============================================
     {
       id: 'fire-analysis-module',
       slug: 'endustriyel-iot-yangin-analiz-modulu',
       title: 'Endüstriyel IoT Yangın Analiz Modülü',
-      subtitle: '50ms tepki suresiyle endustriyel guvenligin noral bekcisi.',
+      subtitle: '50ms tepki süresiyle endüstriyel güvenliğin nöral bekçisi.',
       category: 'embedded',
       year: '2023',
       description:
-        '50ms tepki suresiyle endustriyel guvenligin noral bekcisi. Yapay sinir aglari ile duman ve isi verilerini anlik isleyen, yanlis alarm oranini %0.01e dusuren edge AI cozumu.',
+        '50ms tepki süresiyle endüstriyel güvenliğin nöral bekçisi. Yapay sinir ağları ile duman ve ısı verilerini anlık işleyen, yanlış alarm oranını %0.01\'e düşüren edge AI çözümü.',
       seoDescription:
         'Edge AI tabanli endustriyel yangin dedektoru. STM32H7, TensorFlow Lite, LoRaWAN ile 50ms tepki suresi ve %0.01 yanlis alarm orani. ATEX Zone 1 sertifikali.',
       fullDetailText: `
@@ -66,7 +66,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       ],
       featured: true,
       cta: {
-        text: 'Benzer bir IoT guvenlik projesi mi dusunuyorsunuz?',
+        text: 'Benzer bir IoT güvenlik projesi mi düşünüyorsunuz?',
         link: '/tr/contact?subject=consultation',
       },
     },
@@ -77,12 +77,12 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     {
       id: 'mining-safety-network',
       slug: 'yeralti-personel-konumlandirma-agi',
-      title: 'Yeralti Personel Konumlandirma Agi',
-      subtitle: "GPS'in ulasamadigi derinliklerde hayat kurtaran RF Mesh agi.",
+      title: 'Yeraltı Personel Konumlandırma Ağı',
+      subtitle: "GPS'in ulaşamadığı derinliklerde hayat kurtaran RF Mesh ağı.",
       category: 'industrial',
       year: '2022',
       description:
-        "GPS'in ulasamadigi derinliklerde hayat kurtaran RF Mesh agi. Maden tunellerinde personel takibi ve Man-Down algilama sistemi.",
+        "GPS'in ulaşamadığı derinliklerde hayat kurtaran RF Mesh ağı. Maden tünellerinde personel takibi ve Man-Down algılama sistemi.",
       seoDescription:
         'Maden guvenligi icin RF Mesh tabanli personel takip sistemi. ±3m hassasiyet, Man-Down algilama, ATEX Zone 1 sertifikali. GPS olmadan yeralti konumlandirma.',
       fullDetailText: `
@@ -138,7 +138,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       id: 'high-efficiency-pmu',
       slug: 'yuksek-verimli-guc-yonetim-unitesi',
       title: 'Yüksek Verimli Güç Yönetim Ünitesi (PMU)',
-      subtitle: '%96 verimlilikle enerjiyi yoneten kompakt guc canavari.',
+      subtitle: '%96 verimlilikle enerjiyi yöneten kompakt güç canavarı.',
       category: 'embedded',
       year: '2022',
       description:
@@ -185,7 +185,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       ],
       featured: false,
       cta: {
-        text: 'Guc elektronigi projesi icin gorusun',
+        text: 'Güç elektroniği projesi için görüşün',
         link: '/tr/contact?subject=consultation',
       },
     },
@@ -196,8 +196,8 @@ export const PROJECTS: LocalizedContent<Project[]> = {
     {
       id: 'cold-chain-iot',
       slug: 'kritik-soguk-zincir-izleme-sistemi',
-      title: 'Kritik Soguk Zincir Izleme Sistemi',
-      subtitle: "-40°C'de bile veri kaybina tahammulu olmayanlar icin.",
+      title: 'Kritik Soğuk Zincir İzleme Sistemi',
+      subtitle: "-40°C'de bile veri kaybına tahammülü olmayanlar için.",
       category: 'iot',
       year: '2023',
       description:
@@ -244,7 +244,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       ],
       featured: false,
       cta: {
-        text: 'Lojistik IoT cozumu mu ariyorsunuz?',
+        text: 'Lojistik IoT çözümü mü arıyorsunuz?',
         link: '/tr/contact?subject=new-project',
       },
     },
@@ -256,7 +256,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       id: 'vibration-guard',
       slug: 'vibrationguard-kestirimci-bakim',
       title: 'VibrationGuard Kestirimci Bakım Sistemi',
-      subtitle: 'Makinelerin sesini dinleyerek arizayi 2 hafta önceden duyan yapay kulak.',
+      subtitle: 'Makinelerin sesini dinleyerek arızayı 2 hafta önceden duyan yapay kulak.',
       category: 'industrial',
       year: '2024',
       description:
@@ -306,7 +306,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       ],
       featured: true,
       cta: {
-        text: 'VibrationGuard demo talebi olusturun',
+        text: 'VibrationGuard demo talebi oluşturun',
         link: '/tr/contact?subject=vibrationguard-demo',
       },
     },
@@ -365,7 +365,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       ],
       featured: false,
       cta: {
-        text: 'Uretim verimliligi projesi icin iletisime gec',
+        text: 'Üretim verimliliği projesi için iletişime geç',
         link: '/tr/contact?subject=new-project',
       },
     },
@@ -377,7 +377,7 @@ export const PROJECTS: LocalizedContent<Project[]> = {
       id: 'nuvia-platform',
       slug: 'nuvia-saas-platformu',
       title: 'Nuvia SaaS Platformu',
-      subtitle: 'Global olcekte etkinlik yonetiminin dijital omurgasi.',
+      subtitle: 'Global ölçekte etkinlik yönetiminin dijital omurgası.',
       category: 'saas',
       year: '2024',
       description:

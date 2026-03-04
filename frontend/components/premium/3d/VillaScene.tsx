@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useMemo, useEffect, useCallback, Suspense } from 'react';
+import React, { useRef, useMemo, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import * as THREE from 'three';
@@ -15,7 +15,9 @@ import {
   useOptimizedParticleCount,
   useOptimizedCanvasProps,
 } from '@/lib/hooks/useMobileOptimization';
+import { useAdaptive3DFallback } from '@/hooks/useAdaptive3DFallback';
 import Scene3DErrorBoundary from './Scene3DErrorBoundary';
+import PremiumSceneFallback from './PremiumSceneFallback';
 
 // ===========================================
 // VillaScene - Apple-Style Scroll-Reactive 3D Scene
@@ -156,7 +158,6 @@ function SmartHouse({ activeScene }: { activeScene: VillaSceneType }) {
               size={room.size}
               isActive={isActive}
               sceneColor={sceneColor}
-              activeScene={activeScene}
             />
           );
         })}
@@ -210,13 +211,11 @@ function RoomBox({
   size,
   isActive,
   sceneColor,
-  activeScene,
 }: {
   position: [number, number, number];
   size: [number, number, number];
   isActive: boolean;
   sceneColor: THREE.Color;
-  activeScene: VillaSceneType;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const edgesRef = useRef<THREE.LineSegments>(null);
@@ -421,8 +420,9 @@ function AmbientParticles({ color, count }: { color: string; count: number }) {
 
   // Cleanup geometry on unmount
   useEffect(() => {
+    const geometryNode = geometryRef.current;
     return () => {
-      geometryRef.current?.dispose();
+      geometryNode?.dispose();
     };
   }, []);
 
@@ -498,6 +498,7 @@ export default function VillaScene({ className = '' }: VillaSceneProps) {
   const canvasProps = useOptimizedCanvasProps();
   const particleCount = useOptimizedParticleCount(100);
   const { reducedMotion } = useMobileOptimization();
+  const adaptiveFallback = useAdaptive3DFallback({ lowBatteryThreshold: 10 });
 
   // Skip rendering entirely if reduced motion and very low-end
   if (reducedMotion && particleCount === 0) {
@@ -512,12 +513,29 @@ export default function VillaScene({ className = '' }: VillaSceneProps) {
     );
   }
 
+  if (adaptiveFallback.shouldFallback) {
+    return (
+      <Scene3DErrorBoundary sceneName="VillaScene" className={`absolute inset-0 ${className}`}>
+        <PremiumSceneFallback
+          className={`absolute inset-0 ${className}`}
+          reason={adaptiveFallback.reason}
+          title="Adaptive Villa Scene Preview"
+          description="Interactive villa twin is paused while the device is in eco recovery mode."
+          imageSrc="/assets/logos/coffee-machine.jpg"
+        />
+      </Scene3DErrorBoundary>
+    );
+  }
+
   return (
     <Scene3DErrorBoundary sceneName="VillaScene" className={`absolute inset-0 ${className}`}>
       <div className={`absolute inset-0 ${className}`}>
         <Canvas
           camera={{ position: [5, 4, 5], fov: 45 }}
           {...canvasProps}
+          onCreated={({ gl }) => {
+            adaptiveFallback.attachToCanvas(gl.domElement);
+          }}
         >
           {/* Suspense inside Canvas catches async 3D asset loading */}
           <Suspense fallback={<CanvasLoadingFallback />}>

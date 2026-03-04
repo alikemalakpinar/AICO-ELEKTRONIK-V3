@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Shield, Zap, Flame, Wind, Monitor, Thermometer, Droplets, Cpu, BatteryCharging } from 'lucide-react'
+import { useTelemetryStream } from '@/hooks/useTelemetryStream'
 
 type Lang = 'tr' | 'en'
 
@@ -21,6 +22,22 @@ const hotspots = [
   { id: 'bedroom', label: { tr: 'Yatak Odası', en: 'Bedroom' }, x: 25, y: 25, metrics: { temp: 21, humidity: 50, devices: 3, energy: 0.8 } },
   { id: 'bathroom', label: { tr: 'Banyo', en: 'Bathroom' }, x: 78, y: 25, metrics: { temp: 24, humidity: 65, devices: 2, energy: 0.5 } },
 ]
+
+interface LiveMetrics {
+  temp: number
+  humidity: number
+  devices: number
+  energy: number
+}
+
+function deriveLiveMetrics(spot: typeof hotspots[0], jitter: number, waveform: number): LiveMetrics {
+  return {
+    temp: Math.round((spot.metrics.temp + jitter * 0.6) * 10) / 10,
+    humidity: Math.max(25, Math.min(85, Math.round(spot.metrics.humidity + waveform * 3))),
+    devices: Math.max(1, Math.round(spot.metrics.devices + (waveform > 0.55 ? 1 : 0))),
+    energy: Math.max(0.1, Math.round((spot.metrics.energy + jitter * 0.18) * 10) / 10),
+  }
+}
 
 function Scene({ scene, index, lang }: { scene: typeof scenes[0]; index: number; lang: Lang }) {
   const ref = useRef(null)
@@ -74,12 +91,22 @@ function PulsingDot({ x, y, active, onClick, label }: { x: number; y: number; ac
   )
 }
 
-function DetailPanel({ spot, lang, onClose }: { spot: typeof hotspots[0]; lang: Lang; onClose: () => void }) {
+function DetailPanel({
+  spot,
+  liveMetrics,
+  lang,
+  onClose,
+}: {
+  spot: typeof hotspots[0]
+  liveMetrics: LiveMetrics
+  lang: Lang
+  onClose: () => void
+}) {
   const metrics = [
-    { icon: Thermometer, label: { tr: 'Sıcaklık', en: 'Temperature' }, value: `${spot.metrics.temp}°C` },
-    { icon: Droplets, label: { tr: 'Nem', en: 'Humidity' }, value: `${spot.metrics.humidity}%` },
-    { icon: Cpu, label: { tr: 'Aktif Cihaz', en: 'Active Devices' }, value: spot.metrics.devices },
-    { icon: BatteryCharging, label: { tr: 'Enerji', en: 'Energy' }, value: `${spot.metrics.energy} kW` },
+    { icon: Thermometer, label: { tr: 'Sıcaklık', en: 'Temperature' }, value: `${liveMetrics.temp.toFixed(1)}°C` },
+    { icon: Droplets, label: { tr: 'Nem', en: 'Humidity' }, value: `${liveMetrics.humidity}%` },
+    { icon: Cpu, label: { tr: 'Aktif Cihaz', en: 'Active Devices' }, value: liveMetrics.devices },
+    { icon: BatteryCharging, label: { tr: 'Enerji', en: 'Energy' }, value: `${liveMetrics.energy.toFixed(1)} kW` },
   ]
   return (
     <motion.div
@@ -105,10 +132,32 @@ function DetailPanel({ spot, lang, onClose }: { spot: typeof hotspots[0]; lang: 
 
 export default function SmartApartmentInteractiveDemo({ lang }: { lang: Lang }) {
   const [activeSpot, setActiveSpot] = useState<string | null>(null)
+  const { tick, jitter, waveform } = useTelemetryStream({ intervalMs: 1000, seed: 143 })
   const selected = hotspots.find(h => h.id === activeSpot)
+  const selectedLiveMetrics = useMemo(
+    () => (selected ? deriveLiveMetrics(selected, jitter, waveform) : null),
+    [jitter, selected, waveform]
+  )
+  const telemetryNarration = useMemo(() => {
+    if (!selected || !selectedLiveMetrics) {
+      return lang === 'tr'
+        ? `Akıllı apartman canlı telemetri aktif. Süre ${tick} saniye. Bir oda seçerek anlık sensör verilerini dinleyebilirsiniz.`
+        : `Smart apartment live telemetry is active. Time ${tick} seconds. Select a room to hear real-time sensor values.`
+    }
+
+    if (lang === 'tr') {
+      return `Akıllı apartman canlı telemetri. Süre ${tick} saniye. Seçili oda ${selected.label.tr}. Sıcaklık ${selectedLiveMetrics.temp.toFixed(1)} derece. Nem yüzde ${selectedLiveMetrics.humidity}. Aktif cihaz ${selectedLiveMetrics.devices}. Enerji ${selectedLiveMetrics.energy.toFixed(1)} kilovat.`
+    }
+
+    return `Smart apartment live telemetry. Time ${tick} seconds. Selected room ${selected.label.en}. Temperature ${selectedLiveMetrics.temp.toFixed(1)} degrees. Humidity ${selectedLiveMetrics.humidity} percent. Active devices ${selectedLiveMetrics.devices}. Energy ${selectedLiveMetrics.energy.toFixed(1)} kilowatts.`
+  }, [lang, selected, selectedLiveMetrics, tick])
 
   return (
     <section className="space-y-24">
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       {/* Part 1: Scroll Storytelling */}
       <div className="space-y-0">
         {scenes.map((s, i) => <Scene key={i} scene={s} index={i} lang={lang} />)}
@@ -116,9 +165,14 @@ export default function SmartApartmentInteractiveDemo({ lang }: { lang: Lang }) 
 
       {/* Part 2: Interactive Apartment Map */}
       <div className="space-y-6">
-        <h3 className="text-2xl md:text-3xl font-bold text-foreground text-center">
-          {lang === 'tr' ? 'İnteraktif Daire Haritası' : 'Interactive Apartment Map'}
-        </h3>
+        <div className="space-y-1">
+          <h3 className="text-2xl md:text-3xl font-bold text-foreground text-center">
+            {lang === 'tr' ? 'İnteraktif Daire Haritası' : 'Interactive Apartment Map'}
+          </h3>
+          <p className="text-center text-xs font-mono tracking-wider text-[#F97316]">
+            {`LIVE T+${tick}s`}
+          </p>
+        </div>
 
         {/* Desktop: SVG Map + Detail */}
         <div className="hidden md:grid md:grid-cols-5 gap-6 items-start">
@@ -139,7 +193,15 @@ export default function SmartApartmentInteractiveDemo({ lang }: { lang: Lang }) 
           </div>
           <div className="col-span-2">
             <AnimatePresence mode="wait">
-              {selected && <DetailPanel key={selected.id} spot={selected} lang={lang} onClose={() => setActiveSpot(null)} />}
+              {selected && selectedLiveMetrics && (
+                <DetailPanel
+                  key={selected.id}
+                  spot={selected}
+                  liveMetrics={selectedLiveMetrics}
+                  lang={lang}
+                  onClose={() => setActiveSpot(null)}
+                />
+              )}
             </AnimatePresence>
             {!selected && (
               <p className="text-muted-foreground text-sm text-center pt-8">
@@ -164,7 +226,12 @@ export default function SmartApartmentInteractiveDemo({ lang }: { lang: Lang }) 
                 {activeSpot === h.id && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                     <div className="pt-2">
-                      <DetailPanel spot={h} lang={lang} onClose={() => setActiveSpot(null)} />
+                      <DetailPanel
+                        spot={h}
+                        liveMetrics={deriveLiveMetrics(h, jitter, waveform)}
+                        lang={lang}
+                        onClose={() => setActiveSpot(null)}
+                      />
                     </div>
                   </motion.div>
                 )}

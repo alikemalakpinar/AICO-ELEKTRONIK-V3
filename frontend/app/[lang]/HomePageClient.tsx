@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Flame,
@@ -17,7 +17,10 @@ import {
   Zap,
   Globe,
 } from 'lucide-react';
+import SectionHeader from '@/components/premium/SectionHeader';
+import { DESIGN_SYSTEM, PRODUCT_ACCENTS } from '@/lib/design-system';
 import { getTranslations, type Locale } from '@/lib/i18n';
+import { enterUp, getStaggerDelay, marqueeLoop, revealUp } from '@/lib/motion';
 
 // ===========================================
 // HomePageClient - Grandeur Edition
@@ -43,6 +46,7 @@ interface HomePageClientProps {
 
 export default function HomePageClient({ lang }: HomePageClientProps) {
   const t = getTranslations(lang);
+  const { layout, motion: motionTokens } = DESIGN_SYSTEM;
 
   // Industrial IoT Solutions
   const products = [
@@ -53,8 +57,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       subtitle: t.nav.fireSafetySubtitle,
       description: t.home.fireSafetyProductDesc,
       href: `/${lang}/solutions/fire-safety`,
-      color: '#FF4500',
-      gradient: 'from-orange-500/20 to-transparent',
+      color: PRODUCT_ACCENTS.fireSafety.color,
+      gradient: PRODUCT_ACCENTS.fireSafety.gradient,
       stats: { value: '<50ms', label: t.home.fireSafetyResponse },
     },
     {
@@ -64,8 +68,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       subtitle: t.nav.predictiveMaintenanceSubtitle,
       description: t.home.predictiveMaintenanceProductDesc,
       href: `/${lang}/solutions/predictive-maintenance`,
-      color: '#00D4FF',
-      gradient: 'from-cyan-500/20 to-transparent',
+      color: PRODUCT_ACCENTS.predictiveMaintenance.color,
+      gradient: PRODUCT_ACCENTS.predictiveMaintenance.gradient,
       stats: { value: '14', label: t.home.daysAhead },
     },
     {
@@ -75,8 +79,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       subtitle: t.nav.coldChainSubtitle,
       description: t.home.coldChainProductDesc,
       href: `/${lang}/solutions/cold-chain`,
-      color: '#06B6D4',
-      gradient: 'from-teal-500/20 to-transparent',
+      color: PRODUCT_ACCENTS.coldChain.color,
+      gradient: PRODUCT_ACCENTS.coldChain.gradient,
       stats: { value: '-40°C', label: t.home.range },
     },
     {
@@ -86,8 +90,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       subtitle: t.nav.miningSafetySubtitle,
       description: t.home.miningProductDesc,
       href: `/${lang}/solutions/mining-iot`,
-      color: '#EAB308',
-      gradient: 'from-yellow-500/20 to-transparent',
+      color: PRODUCT_ACCENTS.miningIot.color,
+      gradient: PRODUCT_ACCENTS.miningIot.gradient,
       stats: { value: '1000+', label: t.home.workers },
     },
   ];
@@ -162,9 +166,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-20">
           {/* Badge — JetBrains Mono overline */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            {...enterUp(0)}
             className="mb-8"
           >
             <span className="inline-flex items-center gap-3 px-5 py-2.5 bg-onyx-900/80 backdrop-blur-sm rounded-full border border-white/10">
@@ -179,10 +181,8 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
           {/* Title — Satoshi 900, tracking-tighter */}
           <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-display text-fluid-hero text-offwhite-400 mb-6"
+            {...enterUp(0.1, 40)}
+            className="heading-display text-fluid-hero text-offwhite-400 mb-6 heading-flex"
           >
             {t.home.heroMainTitle}
             <br />
@@ -193,19 +193,15 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-fluid-xl text-offwhite-700 max-w-3xl mx-auto mb-12"
+            {...enterUp(0.2, 30)}
+            className="text-fluid-xl text-offwhite-700 max-w-[62ch] mx-auto mb-12 copy-flex"
           >
             {t.home.heroMainSubtitle}
           </motion.p>
 
           {/* CTA Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            {...enterUp(0.3, 24)}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
@@ -226,9 +222,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
           {/* Quick Stats */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            {...enterUp(0.5, 24)}
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
           >
             {[
@@ -265,42 +259,22 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       </section>
 
       {/* Solutions Bento Grid - with Live Previews */}
-      <section id="solutions" className="py-24 md:py-32 bg-onyx-900">
-        <div className="max-w-7xl mx-auto px-6">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="inline-flex items-center gap-3 text-engineer-500 mb-6">
-              <span className="w-12 h-px bg-engineer-500/50" />
-              <span className="mono-overline">{t.home.industrialIot}</span>
-              <span className="mono-badge text-offwhite-800">SEC::CRITICAL</span>
-              <span className="w-12 h-px bg-engineer-500/50" />
-            </span>
-            <h2 className="text-fluid-4xl font-bold text-offwhite-400 mb-6">
-              {t.home.highTech}
-              {' '}
-              <span className="text-engineer-500">
-                {t.home.solutionsWord}
-              </span>
-            </h2>
-            <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
-              {t.home.solutionsSectionDesc}
-            </p>
-          </motion.div>
+      <section id="solutions" className={`${layout.section} bg-onyx-900`}>
+        <div className={layout.shell}>
+          <SectionHeader
+            eyebrow={t.home.industrialIot}
+            code="SEC::CRITICAL"
+            title={t.home.highTech}
+            highlight={t.home.solutionsWord}
+            description={t.home.solutionsSectionDesc}
+          />
 
           {/* Bento Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
               <motion.div
                 key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                {...revealUp(getStaggerDelay(index, motionTokens.cardStagger))}
                 className={index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}
               >
                 <Link
@@ -343,11 +317,11 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
 
                     {/* Title & Description */}
                     <div className="flex-1">
-                      <h3 className={`${index === 0 ? 'text-2xl md:text-3xl' : 'text-xl'} font-bold text-offwhite-400 group-hover:text-white transition-colors`}>
+                      <h3 className={`${index === 0 ? 'text-2xl md:text-3xl' : 'text-xl'} font-bold text-offwhite-400 group-hover:text-white transition-colors heading-flex`}>
                         {product.title}
                       </h3>
                       <p className="text-offwhite-700 text-sm mt-1">{product.subtitle}</p>
-                      <p className={`text-offwhite-600 ${index === 0 ? 'mt-4' : 'mt-2'} ${index === 0 ? 'text-base' : 'text-sm'}`}>
+                      <p className={`text-offwhite-600 ${index === 0 ? 'mt-4' : 'mt-2'} ${index === 0 ? 'text-base' : 'text-sm'} copy-flex`}>
                         {product.description}
                       </p>
                     </div>
@@ -381,14 +355,9 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       </section>
 
       {/* Trusted By Marquee */}
-      <section className="py-16 bg-onyx-950 border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-8"
-          >
+      <section className={`${layout.sectionCompact} bg-onyx-950 border-y border-white/5`}>
+        <div className={layout.shell}>
+          <motion.div {...revealUp(0, 16)} className="text-center mb-8">
             <span className="text-offwhite-700 text-sm uppercase tracking-widest">
               {t.home.trustedBy}
             </span>
@@ -404,7 +373,7 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
             <motion.div
               className="flex gap-16 items-center"
               animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              transition={marqueeLoop(30)}
             >
               {[...trustedBy, ...trustedBy].map((company, i) => (
                 <div
@@ -420,42 +389,23 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       </section>
 
       {/* Smart Living Section */}
-      <section className="py-24 md:py-32 bg-onyx-950">
-        <div className="max-w-7xl mx-auto px-6">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="inline-flex items-center gap-3 text-purple-400 mb-6">
-              <span className="w-12 h-px bg-purple-400/50" />
-              <span className="mono-overline">SMART LIVING</span>
-              <span className="mono-badge text-offwhite-800">RES::PREMIUM</span>
-              <span className="w-12 h-px bg-purple-400/50" />
-            </span>
-            <h2 className="text-fluid-4xl font-bold text-offwhite-400 mb-6">
-              {t.home.smartLivingTitle}
-              {' '}
-              <span className="text-purple-400">
-                {t.home.smartLivingHighlight}
-              </span>
-            </h2>
-            <p className="text-lg text-offwhite-700 max-w-2xl mx-auto">
-              {t.home.smartLivingDesc}
-            </p>
-          </motion.div>
+      <section className={`${layout.section} bg-onyx-950`}>
+        <div className={layout.shell}>
+          <SectionHeader
+            eyebrow="SMART LIVING"
+            code="RES::PREMIUM"
+            title={t.home.smartLivingTitle}
+            highlight={t.home.smartLivingHighlight}
+            description={t.home.smartLivingDesc}
+            accent="violet"
+          />
 
           {/* Smart Living Grid */}
           <div className="grid md:grid-cols-3 gap-6">
             {smartLiving.map((item, index) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                {...revealUp(getStaggerDelay(index, motionTokens.cardStagger))}
               >
                 <Link
                   href={item.href}
@@ -467,10 +417,10 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-bold text-offwhite-400 mb-2 group-hover:text-purple-400 transition-colors">
+                  <h3 className="text-xl font-bold text-offwhite-400 mb-2 group-hover:text-purple-400 transition-colors heading-flex">
                     {item.title}
                   </h3>
-                  <p className="text-offwhite-700 text-sm mb-4">{item.description}</p>
+                  <p className="text-offwhite-700 text-sm mb-4 copy-flex">{item.description}</p>
 
                   {/* CTA */}
                   <div className="flex items-center gap-2 text-purple-400 text-sm font-medium">
@@ -485,20 +435,16 @@ export default function HomePageClient({ lang }: HomePageClientProps) {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-24 md:py-32 bg-onyx-900 border-t border-white/5">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+      <section className={`${layout.section} bg-onyx-900 border-t border-white/5`}>
+        <div className={`${layout.shellNarrow} text-center`}>
+          <motion.div {...revealUp(0, 40)}>
             <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-engineer-500/10 flex items-center justify-center">
               <Globe size={40} className="text-engineer-500" />
             </div>
-            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-6">
+            <h2 className="text-fluid-3xl font-bold text-offwhite-400 mb-6 heading-flex">
               {t.home.ctaTitle}
             </h2>
-            <p className="text-lg text-offwhite-700 mb-10">
+            <p className="text-lg text-offwhite-700 mb-10 copy-flex">
               {t.home.ctaDesc}
             </p>
 

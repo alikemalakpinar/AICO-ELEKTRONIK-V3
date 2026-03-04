@@ -74,7 +74,7 @@ export async function generateMetadata({
       description: t.meta.siteDescription,
       images: [
         {
-          url: `${baseUrl}/images/og-image.jpg`,
+          url: `${baseUrl}/assets/og-image.jpg`,
           width: 1200,
           height: 630,
           alt: 'AICO Elektronik - Industrial IoT & Engineering Solutions',
@@ -85,7 +85,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: t.meta.siteTitle,
       description: t.meta.siteDescription,
-      images: [`${baseUrl}/images/og-image.jpg`],
+      images: [`${baseUrl}/assets/og-image.jpg`],
     },
     verification: {
       google: 'google-site-verification-code',

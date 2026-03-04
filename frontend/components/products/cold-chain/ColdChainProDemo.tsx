@@ -6,13 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Thermometer,
   Truck,
-  MapPin,
   Battery,
-  Wifi,
-  AlertTriangle,
-  CheckCircle2,
   Navigation,
-  Clock,
   Power,
   Snowflake,
   Zap,
@@ -22,6 +17,7 @@ import {
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
 import type { Locale } from '@/types';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 
 // Dynamic import for the 3D globe
 const GlobalFleetGlobe = dynamic(() => import('./GlobalFleetGlobe'), {
@@ -158,6 +154,9 @@ const getLocalizedString = (value: string | { tr: string; en: string }, lang: Lo
   return value[lang] || value.en;
 };
 
+const clampTelemetry = (value: number, min: number, max: number): number =>
+  Math.min(max, Math.max(min, value));
+
 export default function ColdChainProDemo({ lang, className = '' }: ColdChainProDemoProps) {
   const [trucks, setTrucks] = useState<TruckData[]>(INITIAL_TRUCKS);
   const [fateMoments, setFateMoments] = useState<FateMoment[]>([]);
@@ -184,8 +183,27 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
     [trucks, lang]
   );
   const [selectedTruck, setSelectedTruck] = useState<string | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(true);
+  const { tick, jitter, waveform, status, latencyMs, packetLossPct } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 43,
+    paused: !isSimulating,
+  });
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const linkStatus: 'normal' | 'warning' | 'critical' =
+    status === 'connected' ? 'normal' : status === 'degraded' ? 'warning' : 'critical';
+  const linkStatusLabel =
+    status === 'connected'
+      ? lang === 'tr'
+        ? 'Bagli'
+        : 'Connected'
+      : status === 'degraded'
+      ? lang === 'tr'
+        ? 'Gecikmeli'
+        : 'Degraded'
+      : lang === 'tr'
+      ? 'Yeniden Baglaniyor'
+      : 'Reconnecting';
 
   // Simulation loop
   useEffect(() => {
@@ -283,15 +301,6 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
         })
       );
 
-      // Update temperature history
-      setTempHistory((prev) => {
-        const next = { ...prev };
-        INITIAL_TRUCKS.forEach((t) => {
-          // We read from the trucks state via closure — use setTrucks callback instead
-        });
-        return next;
-      });
-
       // We need trucks for temp history, so use a separate approach
       setTrucks((current) => {
         setTempHistory((prev) => {
@@ -327,6 +336,43 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
     return Math.max(0, Math.round(100 - penalties));
   }, [fateMoments]);
 
+  const alertsCount = useMemo(() => trucks.filter((t) => t.status !== 'normal').length, [trucks]);
+  const averageTemperature = useMemo(
+    () => trucks.reduce((sum, truck) => sum + truck.temperature, 0) / Math.max(1, trucks.length),
+    [trucks]
+  );
+  const liveAverageTemperature = useMemo(
+    () => Math.round((averageTemperature + jitter * 0.25) * 10) / 10,
+    [averageTemperature, jitter]
+  );
+  const liveChainIntegrity = useMemo(
+    () => clampTelemetry(Math.round(chainIntegrity + waveform * 2), 0, 100),
+    [chainIntegrity, waveform]
+  );
+  const telemetryNarration = useMemo(() => {
+    if (lang === 'tr') {
+      const selectedTruckLine = selectedTruckData
+        ? `${getLocalizedString(selectedTruckData.name, lang)} sıcaklık ${selectedTruckData.temperature.toFixed(1)} derece.`
+        : 'Araç seçimi yok.';
+      return `Soguk zincir canlı telemetri. Simulasyon suresi ${tick} saniye. Baglanti ${linkStatusLabel}. Gecikme ${latencyMs} milisaniye. Paket kaybi yuzde ${packetLossPct}. Kritik ve uyarı durumundaki arac sayisi ${alertsCount}. Zincir butunlugu yuzde ${liveChainIntegrity}. Ortalama sicaklik ${liveAverageTemperature.toFixed(1)} derece. ${selectedTruckLine}`;
+    }
+
+    const selectedTruckLine = selectedTruckData
+      ? `${getLocalizedString(selectedTruckData.name, lang)} temperature ${selectedTruckData.temperature.toFixed(1)} degrees.`
+      : 'No vehicle selected.';
+    return `Cold-chain live telemetry. Simulation time ${tick} seconds. Link ${linkStatusLabel}. Latency ${latencyMs} milliseconds. Packet loss ${packetLossPct} percent. Vehicles in alert states ${alertsCount}. Chain integrity ${liveChainIntegrity} percent. Average temperature ${liveAverageTemperature.toFixed(1)} degrees. ${selectedTruckLine}`;
+  }, [
+    alertsCount,
+    lang,
+    latencyMs,
+    linkStatusLabel,
+    liveAverageTemperature,
+    liveChainIntegrity,
+    packetLossPct,
+    selectedTruckData,
+    tick,
+  ]);
+
   const systemStatuses = useMemo(
     () => [
       {
@@ -337,7 +383,7 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
       },
       {
         label: lang === 'tr' ? 'Uyarilar' : 'Alerts',
-        value: trucks.filter((t) => t.status !== 'normal').length,
+        value: alertsCount,
         status:
           trucks.some((t) => t.status === 'critical')
             ? ('critical' as const)
@@ -346,24 +392,45 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
             : ('normal' as const),
       },
       {
+        label: lang === 'tr' ? 'Baglanti' : 'Link',
+        value: linkStatusLabel,
+        status: linkStatus,
+      },
+      {
+        label: 'RTT',
+        value: latencyMs,
+        unit: 'ms',
+        status: linkStatus,
+      },
+      {
         label: lang === 'tr' ? 'Ortalama Sicaklik' : 'Avg. Temp',
-        value: (trucks.reduce((sum, t) => sum + t.temperature, 0) / trucks.length).toFixed(1),
+        value: liveAverageTemperature.toFixed(1),
         unit: '°C',
         status: 'normal' as const,
       },
       {
         label: lang === 'tr' ? 'Zincir Bütünlüğü' : 'Chain Integrity',
-        value: `${chainIntegrity}`,
+        value: `${liveChainIntegrity}`,
         unit: '%',
         status:
-          chainIntegrity < 50
+          liveChainIntegrity < 50
             ? ('critical' as const)
-            : chainIntegrity < 80
+            : liveChainIntegrity < 80
             ? ('warning' as const)
             : ('normal' as const),
       },
     ],
-    [trucks, lang, chainIntegrity]
+    [alertsCount, lang, latencyMs, linkStatus, linkStatusLabel, liveAverageTemperature, liveChainIntegrity, trucks]
+  );
+
+  const headerRight = (
+    <StatusChip
+      label={lang === 'tr' ? 'Hat' : 'Link'}
+      value={`${latencyMs}ms`}
+      status={linkStatus}
+      pulsing={status !== 'connected'}
+      className="hidden sm:block"
+    />
   );
 
   return (
@@ -375,9 +442,14 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
       brandVersion="3.0"
       accentColor={THEME.accent}
       systemStatuses={systemStatuses}
-      isConnected={isSimulating}
+      isConnected={isSimulating && status !== 'reconnecting'}
+      headerRight={headerRight}
       className={className}
     >
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       <div className="grid lg:grid-cols-3 gap-4 p-4">
         {/* Left: 3D Globe */}
         <div className="lg:col-span-2 relative aspect-square lg:aspect-auto lg:h-[500px] rounded-xl overflow-hidden border border-white/5 bg-[#0A0A0A]">
@@ -421,7 +493,14 @@ export default function ColdChainProDemo({ lang, className = '' }: ColdChainProD
               <span className="text-offwhite-600 text-xs font-mono uppercase">
                 {lang === 'tr' ? 'Aktif Araçlar' : 'Active Vehicles'}
               </span>
-              <Truck size={12} className="text-offwhite-700" />
+              <div className="flex items-center gap-2">
+                {isSimulating && (
+                  <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-mono text-cyan-300">
+                    LIVE T+{tick}s | {latencyMs}ms
+                  </span>
+                )}
+                <Truck size={12} className="text-offwhite-700" />
+              </div>
             </div>
 
             {trucks.map((truck) => (

@@ -83,7 +83,10 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
@@ -118,8 +121,7 @@ export default function RootLayout({
         <OrganizationSchema lang={lang as 'tr' | 'en'} />
         <WebSiteSchema lang={lang as 'tr' | 'en'} />
 
-        {/* Preload HDRI environment map for 3D scenes */}
-        <link rel="preload" href="/hdri/dikhololo_night_1k.hdr" as="fetch" crossOrigin="anonymous" />
+        {/* Preconnect for 3D asset CDNs (HDRI fallback sources) */}
 
         {/* Preconnect to Fontshare CDN (Satoshi + General Sans fonts) */}
         <link rel="preconnect" href="https://api.fontshare.com" />

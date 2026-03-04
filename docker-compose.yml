@@ -66,7 +66,7 @@ services:
       - REDIS_URL=redis://redis:6379
       # CORS: Allow nginx proxy (port 80) and direct frontend access
       # In production, set to your actual domain only
-      - CORS_ORIGINS=http://localhost:80,http://localhost:3000,http://nginx
+      - CORS_ORIGINS=http://localhost:80,http://localhost:3090,http://nginx
       - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
       - ENVIRONMENT=development
       - LOG_LEVEL=INFO

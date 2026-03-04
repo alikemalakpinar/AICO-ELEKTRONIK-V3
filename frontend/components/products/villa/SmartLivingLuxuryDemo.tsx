@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { motion, PanInfo } from 'framer-motion';
 import {
   Sun,
   Moon,
@@ -11,15 +11,14 @@ import {
   Heart,
   Lightbulb,
   Thermometer,
-  Wind,
   Blinds,
-  Music,
   Shield,
   Wifi,
   Battery,
   Power,
   Home,
 } from 'lucide-react';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import type { Locale } from '@/types';
 
 interface SmartLivingLuxuryDemoProps {
@@ -57,9 +56,26 @@ export default function SmartLivingLuxuryDemo({ lang }: SmartLivingLuxuryDemoPro
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<string>('living');
-  const [globalLight, setGlobalLight] = useState(70);
   const [ambientColor, setAmbientColor] = useState('#F97316');
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { tick, jitter, waveform, status, latencyMs, packetLossPct } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 167,
+  });
+  const linkStatusLabel =
+    status === 'connected'
+      ? lang === 'tr'
+        ? 'Bagli'
+        : 'Connected'
+      : status === 'degraded'
+      ? lang === 'tr'
+        ? 'Gecikmeli'
+        : 'Degraded'
+      : lang === 'tr'
+      ? 'Yeniden Baglaniyor'
+      : 'Reconnecting';
+  const linkStatusTone =
+    status === 'connected' ? 'text-success-500' : status === 'degraded' ? 'text-amber-400' : 'text-red-400';
 
   // Room states
   const [rooms, setRooms] = useState<RoomConfig[]>([
@@ -188,7 +204,6 @@ export default function SmartLivingLuxuryDemo({ lang }: SmartLivingLuxuryDemoPro
   // Apply scenario
   const applyScenario = (scenario: Scenario) => {
     setActiveScenario(scenario.id);
-    setGlobalLight(scenario.settings.globalLight);
     setAmbientColor(scenario.settings.ambientColor);
 
     // Apply to all rooms
@@ -212,6 +227,36 @@ export default function SmartLivingLuxuryDemo({ lang }: SmartLivingLuxuryDemoPro
   }, []);
 
   const currentRoom = rooms.find(r => r.id === selectedRoom);
+  const occupiedRoomCount = rooms.filter(room => room.occupied).length;
+  const averageTemperature = rooms.reduce((total, room) => total + room.temperature, 0) / rooms.length;
+  const liveAverageTemperature = Math.round((averageTemperature + jitter * 0.5) * 10) / 10;
+  const livePowerUsage = Math.max(
+    0.4,
+    Math.round(
+      ((rooms.reduce((total, room) => total + room.lightIntensity, 0) / 140) + waveform * 0.2) * 10
+    ) / 10
+  );
+  const liveHubLevel = Math.max(12, Math.min(100, Math.round(84 + jitter * 6)));
+  const telemetryNarration = useMemo(() => {
+    const selectedRoomName = currentRoom ? currentRoom.name[lang] : (lang === 'tr' ? 'seçili oda yok' : 'no room selected');
+
+    if (lang === 'tr') {
+      return `Lüks yaşam canlı telemetri. Süre ${tick} saniye. Baglanti ${linkStatusLabel}. Gecikme ${latencyMs} milisaniye. Paket kaybi yuzde ${packetLossPct}. Aktif oda ${selectedRoomName}. Ortalama sıcaklık ${liveAverageTemperature.toFixed(1)} derece. Toplam güç tüketimi ${livePowerUsage.toFixed(1)} kilovat. Dolu oda sayısı ${occupiedRoomCount}. Hub sağlığı yüzde ${liveHubLevel}.`;
+    }
+
+    return `Luxury living live telemetry. Time ${tick} seconds. Link ${linkStatusLabel}. Latency ${latencyMs} milliseconds. Packet loss ${packetLossPct} percent. Active room ${selectedRoomName}. Average temperature ${liveAverageTemperature.toFixed(1)} degrees. Total power usage ${livePowerUsage.toFixed(1)} kilowatts. Occupied rooms ${occupiedRoomCount}. Hub health ${liveHubLevel} percent.`;
+  }, [
+    currentRoom,
+    lang,
+    latencyMs,
+    linkStatusLabel,
+    liveAverageTemperature,
+    liveHubLevel,
+    livePowerUsage,
+    occupiedRoomCount,
+    packetLossPct,
+    tick,
+  ]);
 
   return (
     <div
@@ -221,6 +266,10 @@ export default function SmartLivingLuxuryDemo({ lang }: SmartLivingLuxuryDemoPro
         boxShadow: `0 0 120px ${ambientColor}10, 0 0 60px ${ambientColor}05`,
       }}
     >
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       {/* Ambient glow effect */}
       <div
         className="absolute inset-0 pointer-events-none transition-all duration-1000"
@@ -238,10 +287,12 @@ export default function SmartLivingLuxuryDemo({ lang }: SmartLivingLuxuryDemoPro
           <div>
             <div className="text-sm font-semibold text-offwhite-400">AICO Luxury Living</div>
             <div className="flex items-center gap-2 text-xs text-offwhite-700">
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-success-500 animate-pulse" />
-                Online
+              <span className={`flex items-center gap-1 ${linkStatusTone}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${status === 'connected' ? 'bg-success-500 animate-pulse' : status === 'degraded' ? 'bg-amber-400 animate-pulse' : 'bg-red-500 animate-pulse'}`} />
+                {linkStatusLabel}
               </span>
+              <span className="text-offwhite-800">|</span>
+              <span className="font-mono text-engineer-500">{`LIVE T+${tick}s | ${latencyMs}ms`}</span>
               <span className="text-offwhite-800">|</span>
               <span className="font-mono">
                 {currentTime.toLocaleTimeString(lang === 'tr' ? 'tr-TR' : 'en-US', {
@@ -255,12 +306,12 @@ export default function SmartLivingLuxuryDemo({ lang }: SmartLivingLuxuryDemoPro
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/5">
-            <Wifi size={12} className="text-success-500" />
-            <span className="text-xs text-offwhite-600">Connected</span>
+            <Wifi size={12} className={status === 'connected' ? 'text-success-500' : status === 'degraded' ? 'text-amber-400' : 'text-red-400'} />
+            <span className="text-xs text-offwhite-600">{`${linkStatusLabel} ${latencyMs}ms`}</span>
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/5">
             <Battery size={12} className="text-success-500" />
-            <span className="text-xs text-offwhite-600">Hub OK</span>
+            <span className="text-xs text-offwhite-600">{`Hub ${liveHubLevel}% | PL ${packetLossPct}%`}</span>
           </div>
         </div>
       </div>
@@ -601,7 +652,7 @@ export default function SmartLivingLuxuryDemo({ lang }: SmartLivingLuxuryDemoPro
           <div className="grid grid-cols-2 gap-2">
             <div className="p-3 rounded-xl bg-onyx-900/50 border border-white/5">
               <Power size={14} className="text-success-500 mb-1" />
-              <div className="text-sm font-mono text-offwhite-400">2.1 kW</div>
+              <div className="text-sm font-mono text-offwhite-400">{`${livePowerUsage.toFixed(1)} kW`}</div>
               <div className="text-[10px] text-offwhite-700">
                 {lang === 'tr' ? 'Anlik Tuketim' : 'Current Usage'}
               </div>

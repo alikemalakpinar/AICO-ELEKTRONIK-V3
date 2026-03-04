@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
   return {
     title: isTR ? 'İletişim | AICO Elektronik' : 'Contact | AICO Elektronik',
     description: isTR
-      ? 'AICO Elektronik ile iletisime gecin. Proje danismanligi, demo talebi ve teknik destek.'
+      ? 'AICO Elektronik ile iletişime geçin. Proje danışmanlığı, demo talebi ve teknik destek.'
       : 'Get in touch with AICO Elektronik. Project consultation, demo requests, and technical support.',
   };
 }

@@ -10,7 +10,6 @@ import {
   CircuitBoard,
   Code,
   Wrench,
-  FileCheck,
   Users,
   CheckCircle,
   Zap,
@@ -35,79 +34,79 @@ interface ServicesPageClientProps {
 export default function ServicesPageClient({ lang }: ServicesPageClientProps) {
   const t = {
     tr: {
-      badge: 'HIZMETLER',
-      title: 'Muhendislik Hizmetlerimiz',
+      badge: 'HİZMETLER',
+      title: 'Mühendislik Hizmetlerimiz',
       subtitle:
         'Konseptten üretime, tüm elektronik geliştirme sürecinde yanınızdayız.',
       schematic: {
         title: 'Sematik Tasarım',
         description:
-          'Altium Designer ile profesyonel sematik tasarim. Komponent secimi, guc hesaplamalari ve devre optimizasyonu.',
+          'Altium Designer ile profesyonel sematik tasarım. Komponent seçimi, güç hesaplamaları ve devre optimizasyonu.',
         features: [
           'Altium Designer / KiCAD',
-          'Komponent secimi ve tedarik',
-          'Guc ve termal analiz',
-          'DFM uyumluluk kontrolu',
+          'Komponent seçimi ve tedarik',
+          'Güç ve termal analiz',
+          'DFM uyumluluk kontrolü',
         ],
       },
       pcb: {
         title: 'PCB Layout',
         description:
-          'Cok katmanli, yuksek hizli PCB tasarimi. EMC uyumluluk, sinyal butunlugu ve termal yonetim.',
+          'Çok katmanlı, yüksek hızlı PCB tasarımı. EMC uyumluluk, sinyal bütünlüğü ve termal yönetim.',
         features: [
-          'Cok katmanli tasarim (12+ katman)',
-          'Yuksek hiz / RF tasarim',
-          'Impedans kontrollu routing',
+          'Çok katmanlı tasarım (12+ katman)',
+          'Yüksek hız / RF tasarım',
+          'İmpedans kontrollü routing',
           'EMC & SI analizi',
         ],
       },
       firmware: {
-        title: 'Gomulu Yazilim',
+        title: 'Gömülü Yazılım',
         description:
-          'STM32, ESP32, nRF platformlarinda profesyonel firmware gelistirme. RTOS, BLE, WiFi entegrasyonu.',
+          'STM32, ESP32, nRF platformlarında profesyonel firmware geliştirme. RTOS, BLE, WiFi entegrasyonu.',
         features: [
           'STM32 / ESP32 / nRF',
           'FreeRTOS / Zephyr',
           'BLE / WiFi / LoRa',
-          'OTA guncelleme altyapisi',
+          'OTA güncelleme altyapısı',
         ],
       },
       prototype: {
         title: 'Prototipleme',
         description:
-          'Hizli prototip uretimi ve test. Fonksiyonel dogrulama, performans olcumleri ve iteratif gelistirme.',
+          'Hızlı prototip üretimi ve test. Fonksiyonel doğrulama, performans ölçümleri ve iteratif geliştirme.',
         features: [
-          'Hizli PCB uretimi',
+          'Hızlı PCB üretimi',
           'SMT montaj',
-          'Test fiksturu tasarimi',
+          'Test fikstürü tasarımı',
           'Fonksiyonel test raporu',
         ],
       },
       consulting: {
         title: 'Teknik Danışmanlık',
         description:
-          'Mevcut projelerin teknik incelemesi, optimizasyon onerileri ve muhendislik destek hizmetleri.',
+          'Mevcut projelerin teknik incelemesi, optimizasyon önerileri ve mühendislik destek hizmetleri.',
         features: [
-          'Tasarim inceleme (DFM/DFT)',
+          'Tasarım inceleme (DFM/DFT)',
           'Maliyet optimizasyonu',
-          'Sertifikasyon danismanligi',
-          'Tedarik zinciri yonetimi',
+          'Sertifikasyon danışmanlığı',
+          'Tedarik zinciri yönetimi',
         ],
       },
-      process: 'Calisma Surecimiz',
+      process: 'Çalışma Sürecimiz',
       processSteps: [
         {
-          title: 'Kesfet',
-          description: 'Ihtiyac analizi ve teknik gereksinimler.',
+          title: 'Keşfet',
+          description: 'İhtiyaç analizi ve teknik gereksinimler.',
         },
-        { title: 'Tasarla', description: 'Sematik, PCB ve firmware gelistirme.' },
-        { title: 'Dogrula', description: 'Prototip uretimi ve test.' },
-        { title: 'Uret', description: 'Seri uretim ve kalite kontrol.' },
+        { title: 'Tasarla', description: 'Sematik, PCB ve firmware geliştirme.' },
+        { title: 'Doğrula', description: 'Prototip üretimi ve test.' },
+        { title: 'Üret', description: 'Seri üretim ve kalite kontrol.' },
       ],
-      cta: 'Projenizi Konusalim',
+      cta: 'Projenizi Konuşalım',
       ctaSubtitle:
-        'Muhendislik ekibimiz, ihtiyaclariniza ozel cozumler tasarlamak icin hazir.',
-      ctaButton: 'Ucretsiz Gorusme Planla',
+        'Mühendislik ekibimiz, ihtiyaçlarınıza özel çözümler tasarlamak için hazır.',
+      ctaButton: 'Ücretsiz Görüşme Planla',
     },
     en: {
       badge: 'SERVICES',

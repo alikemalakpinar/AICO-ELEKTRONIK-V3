@@ -1,9 +1,12 @@
 'use client';
 
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Text, Line, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
+import PremiumSceneFallback from '@/components/premium/3d/PremiumSceneFallback';
+import Scene3DErrorBoundary from '@/components/premium/3d/Scene3DErrorBoundary';
+import { useAdaptive3DFallback } from '@/hooks/useAdaptive3DFallback';
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
@@ -377,21 +380,42 @@ export default function GlobalFleetGlobe({
   className = '',
 }: GlobalFleetGlobeProps) {
   const eco = useEcoCanvas();
-  return (
-    <div className={`w-full h-full ${className}`}>
-      <Canvas
-        camera={{ position: [0, 0.5, 3.5], fov: 45 }}
-        dpr={eco.dpr}
-        frameloop={eco.frameloop as 'always' | 'never'}
-        gl={{ antialias: !eco.shouldShowStatic, alpha: true, powerPreference: eco.gl.powerPreference }}
-      >
-        <Scene
-          trucks={trucks}
-          selectedTruck={selectedTruck}
-          onSelectTruck={onSelectTruck}
-          accentColor={accentColor}
+  const adaptiveFallback = useAdaptive3DFallback({ lowBatteryThreshold: 10 });
+
+  if (adaptiveFallback.shouldFallback || eco.shouldShowStatic) {
+    return (
+      <Scene3DErrorBoundary sceneName="GlobalFleetGlobe" className={`w-full h-full ${className}`}>
+        <PremiumSceneFallback
+          className={`w-full h-full ${className}`}
+          reason={adaptiveFallback.reason ?? 'eco-mode'}
+          title="Adaptive Fleet Globe Preview"
+          description="3D logistics globe is paused to keep the experience stable."
+          imageSrc="/assets/logos/cold-chain.jpg"
         />
-      </Canvas>
-    </div>
+      </Scene3DErrorBoundary>
+    );
+  }
+
+  return (
+    <Scene3DErrorBoundary sceneName="GlobalFleetGlobe" className={`w-full h-full ${className}`}>
+      <div className={`w-full h-full ${className}`}>
+        <Canvas
+          camera={{ position: [0, 0.5, 3.5], fov: 45 }}
+          dpr={eco.dpr}
+          frameloop={eco.frameloop as 'always' | 'never'}
+          gl={{ antialias: !eco.shouldShowStatic, alpha: true, powerPreference: eco.gl.powerPreference }}
+          onCreated={({ gl }) => {
+            adaptiveFallback.attachToCanvas(gl.domElement);
+          }}
+        >
+          <Scene
+            trucks={trucks}
+            selectedTruck={selectedTruck}
+            onSelectTruck={onSelectTruck}
+            accentColor={accentColor}
+          />
+        </Canvas>
+      </div>
+    </Scene3DErrorBoundary>
   );
 }

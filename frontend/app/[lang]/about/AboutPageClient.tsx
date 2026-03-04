@@ -10,7 +10,6 @@ import {
   Target,
   Lightbulb,
   Users,
-  Zap,
   Code,
   Cpu,
   Shield,
@@ -183,37 +182,37 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
   const values = [
     {
       icon: Rocket,
-      title: lang === 'tr' ? 'Vizyon Odakli' : 'Vision-Driven',
+      title: lang === 'tr' ? 'Vizyon Odaklı' : 'Vision-Driven',
       description:
         lang === 'tr'
-          ? 'Gelecegin teknolojilerini bugun insa ediyoruz. Her projede sinirlari zorluyoruz.'
+          ? 'Geleceğin teknolojilerini bugün inşa ediyoruz. Her projede sınırları zorluyoruz.'
           : "We build tomorrow's technologies today. We push boundaries in every project.",
       color: '#3B82F6',
     },
     {
       icon: Target,
-      title: lang === 'tr' ? 'Sonuc Odakli' : 'Results-Focused',
+      title: lang === 'tr' ? 'Sonuç Odaklı' : 'Results-Focused',
       description:
         lang === 'tr'
-          ? 'Olculebilir basari kriterleri. Challenge-Approach-Impact metodolojisi.'
+          ? 'Ölçülebilir başarı kriterleri. Challenge-Approach-Impact metodolojisi.'
           : 'Measurable success criteria. Challenge-Approach-Impact methodology.',
       color: '#10B981',
     },
     {
       icon: Lightbulb,
-      title: lang === 'tr' ? 'Inovasyon' : 'Innovation',
+      title: lang === 'tr' ? 'İnovasyon' : 'Innovation',
       description:
         lang === 'tr'
-          ? 'En son teknolojiler, yaratici cozumler. Standartlari biz belirliyoruz.'
+          ? 'En son teknolojiler, yaratıcı çözümler. Standartları biz belirliyoruz.'
           : 'Cutting-edge technologies, creative solutions. We set the standards.',
       color: '#F59E0B',
     },
     {
       icon: Users,
-      title: lang === 'tr' ? 'Isbirligi' : 'Collaboration',
+      title: lang === 'tr' ? 'İşbirliği' : 'Collaboration',
       description:
         lang === 'tr'
-          ? 'Musterilerimizle birlikte buyuyoruz. Her proje bir ortaklik.'
+          ? 'Müşterilerimizle birlikte büyüyoruz. Her proje bir ortaklık.'
           : 'We grow with our clients. Every project is a partnership.',
       color: '#8B5CF6',
     },
@@ -225,25 +224,25 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
       title: lang === 'tr' ? 'Kuruluş' : 'Foundation',
       description:
         lang === 'tr'
-          ? 'AICO Elektronik, deneyimli muhendisler tarafindan Istanbul\'da kuruldu. Ilk ofis, ilk vizyon.'
+          ? 'AICO Elektronik, deneyimli mühendisler tarafından İstanbul\'da kuruldu. İlk ofis, ilk vizyon.'
           : 'AICO Elektronik founded by experienced engineers in Istanbul. First office, first vision.',
       color: '#F97316',
     },
     {
       year: '2023 Q2',
-      title: lang === 'tr' ? 'Ilk Smart Villa Projesi' : 'First Smart Villa Project',
+      title: lang === 'tr' ? 'İlk Smart Villa Projesi' : 'First Smart Villa Project',
       description:
         lang === 'tr'
-          ? '47 sensorlu entegre ev otomasyonu sistemi tamamlandi. Teknoloji ve luks birlesimi.'
+          ? '47 sensörlü entegre ev otomasyonu sistemi tamamlandı. Teknoloji ve lüks birleşimi.'
           : 'Completed integrated home automation with 47 sensors. Technology meets luxury.',
       color: '#10B981',
     },
     {
       year: '2023 Q4',
-      title: lang === 'tr' ? 'Endustriyel IoT Lansmanı' : 'Industrial IoT Launch',
+      title: lang === 'tr' ? 'Endüstriyel IoT Lansmanı' : 'Industrial IoT Launch',
       description:
         lang === 'tr'
-          ? 'FireLink ve MineGuard urunleri piyasaya suruldu. Guvenlik sektorunde devrim.'
+          ? 'FireLink ve MineGuard ürünleri piyasaya sürüldü. Güvenlik sektöründe devrim.'
           : 'FireLink and MineGuard products launched. Revolution in safety sector.',
       color: '#EF4444',
     },
@@ -252,7 +251,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
       title: lang === 'tr' ? 'Rezidans Platformu' : 'Residence Platform',
       description:
         lang === 'tr'
-          ? '500+ dairelik akilli site yonetim sistemi devreye alindi. Olceklenebilir mimari.'
+          ? '500+ dairelik akıllı site yönetim sistemi devreye alındı. Ölçeklenebilir mimari.'
           : 'Smart site management for 500+ units deployed. Scalable architecture.',
       color: '#3B82F6',
     },
@@ -261,7 +260,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
       title: lang === 'tr' ? 'ColdTrack & AICO Coffee' : 'ColdTrack & AICO Coffee',
       description:
         lang === 'tr'
-          ? 'Soguk zincir izleme ve akilli kahve makinesi urunleri eklendi. Portfoy genisledi.'
+          ? 'Soğuk zincir izleme ve akıllı kahve makinesi ürünleri eklendi. Portföy genişledi.'
           : 'Cold chain monitoring and smart coffee machine products added. Portfolio expanded.',
       color: '#06B6D4',
     },
@@ -270,7 +269,7 @@ export default function AboutPageClient({ lang }: AboutPageClientProps) {
       title: lang === 'tr' ? 'Vizyon' : 'Vision',
       description:
         lang === 'tr'
-          ? 'Turkiye\'nin lider akilli yasam teknolojileri sirketi olmak. Uluslararasi acilim.'
+          ? 'Türkiye\'nin lider akıllı yaşam teknolojileri şirketi olmak. Uluslararası açılım.'
           : "Becoming Turkey's leading smart living tech company. International expansion.",
       color: '#8B5CF6',
     },

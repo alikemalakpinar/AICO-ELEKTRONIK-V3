@@ -2,7 +2,7 @@
 
 import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Text } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import {
   useSceneStore,
@@ -10,6 +10,9 @@ import {
   RESIDENCE_SCENE_COLORS,
   type ResidenceSceneType,
 } from '@/stores/sceneStore';
+import Scene3DErrorBoundary from './Scene3DErrorBoundary';
+import PremiumSceneFallback from './PremiumSceneFallback';
+import { useAdaptive3DFallback } from '@/hooks/useAdaptive3DFallback';
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
@@ -229,7 +232,7 @@ function PlatformLayers() {
 
   return (
     <group ref={layersRef}>
-      {layers.map((layer, i) => (
+      {layers.map((layer) => (
         <group key={layer.name} position={[0, layer.y, 0]}>
           <mesh rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[layer.radius, 0.02, 8, 64]} />
@@ -487,25 +490,37 @@ interface ResidenceSceneProps {
 
 export default function ResidenceScene({ className = '' }: ResidenceSceneProps) {
   const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+  const adaptiveFallback = useAdaptive3DFallback({ lowBatteryThreshold: 10 });
 
-  if (shouldShowStatic) {
+  if (shouldShowStatic || adaptiveFallback.shouldFallback) {
     return (
-      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
-        <div className="text-xs text-muted-foreground font-mono">Smart Residence</div>
-      </div>
+      <Scene3DErrorBoundary sceneName="ResidenceScene" className={`absolute inset-0 ${className}`}>
+        <PremiumSceneFallback
+          className={`absolute inset-0 ${className}`}
+          reason={adaptiveFallback.reason ?? 'eco-mode'}
+          title="Adaptive Residence Preview"
+          description="Smart residence twin is paused to preserve smooth performance."
+          imageSrc="/assets/logos/factory-oee.jpg"
+        />
+      </Scene3DErrorBoundary>
     );
   }
 
   return (
-    <div className={`absolute inset-0 ${className}`}>
-      <Canvas
-        camera={{ position: [0, 0, 12], fov: 45 }}
-        dpr={dpr}
-        frameloop={frameloop as 'always' | 'never' | 'demand'}
-        gl={{ ...gl, alpha: true }}
-      >
-        <Scene />
-      </Canvas>
-    </div>
+    <Scene3DErrorBoundary sceneName="ResidenceScene" className={`absolute inset-0 ${className}`}>
+      <div className={`absolute inset-0 ${className}`}>
+        <Canvas
+          camera={{ position: [0, 0, 12], fov: 45 }}
+          dpr={dpr}
+          frameloop={frameloop as 'always' | 'never' | 'demand'}
+          gl={{ ...gl, alpha: true }}
+          onCreated={({ gl: renderer }) => {
+            adaptiveFallback.attachToCanvas(renderer.domElement);
+          }}
+        >
+          <Scene />
+        </Canvas>
+      </div>
+    </Scene3DErrorBoundary>
   );
 }

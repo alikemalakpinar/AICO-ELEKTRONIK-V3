@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home,
@@ -20,6 +20,7 @@ import {
   BrainCircuit,
   Sparkles,
 } from 'lucide-react';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import { cn } from '@/lib/utils';
 
 // ===========================================
@@ -181,11 +182,16 @@ const deviceIcons: Record<string, React.ReactNode> = {
   camera: <Camera className="w-4 h-4" />,
 };
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
 export default function SmartVillaDemo({ lang = 'tr', className }: SmartVillaDemoProps) {
   const t = translations[lang];
   const [activeMode, setActiveMode] = useState<VillaMode>('home');
   const [rooms, setRooms] = useState<Room[]>(initialRooms);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const { tick, jitter } = useTelemetryStream({ intervalMs: 1500, seed: 29, paused: isTransitioning });
 
   const config = modeConfigs[activeMode];
 
@@ -225,8 +231,79 @@ export default function SmartVillaDemo({ lang = 'tr', className }: SmartVillaDem
     morning: 10,
   }[activeMode];
 
+  useEffect(() => {
+    setRooms((previousRooms) => {
+      let hasChanges = false;
+      const nextRooms = previousRooms.map((room) => {
+        if (room.id === 'garden') return room;
+
+        const roomBias = room.lights ? 0.35 : -0.2;
+        const nextTemperature = Math.round((config.temperature + roomBias + jitter * 0.8) * 10) / 10;
+        if (Math.abs(nextTemperature - room.temperature) < 0.1) return room;
+
+        hasChanges = true;
+        return { ...room, temperature: nextTemperature };
+      });
+
+      return hasChanges ? nextRooms : previousRooms;
+    });
+  }, [config.temperature, jitter, tick]);
+
+  const liveIndoorTemp = useMemo(() => {
+    return Math.round((config.temperature + jitter * 0.8) * 10) / 10;
+  }, [config.temperature, jitter]);
+
+  const livePowerDrawKw = useMemo(() => {
+    const powerByMode: Record<VillaMode, number> = {
+      home: 5.2,
+      away: 2.1,
+      party: 9.1,
+      focus: 3.4,
+      night: 2.7,
+      morning: 4.8,
+    };
+    const power = powerByMode[activeMode] + jitter * 0.7 + Math.sin(tick * 0.35) * 0.4;
+    return Math.max(0.8, Math.round(power * 10) / 10);
+  }, [activeMode, jitter, tick]);
+
+  const liveAirQuality = useMemo(() => {
+    const airByMode: Record<VillaMode, number> = {
+      home: 92,
+      away: 97,
+      party: 86,
+      focus: 95,
+      night: 94,
+      morning: 90,
+    };
+    return clamp(Math.round(airByMode[activeMode] + jitter * 5), 70, 100);
+  }, [activeMode, jitter]);
+
+  const liveAutomationEvents = useMemo(() => {
+    const eventsByMode: Record<VillaMode, number> = {
+      home: 14,
+      away: 9,
+      party: 26,
+      focus: 11,
+      night: 8,
+      morning: 18,
+    };
+    return Math.max(1, Math.round(eventsByMode[activeMode] + jitter * 3 + (tick % 5)));
+  }, [activeMode, jitter, tick]);
+
+  const telemetryNarration = useMemo(() => {
+    if (lang === 'tr') {
+      return `Akilli Villa canli telemetri. ${config.label} aktif. Ic sicaklik ${liveIndoorTemp.toFixed(1)} derece. Guc tuketimi ${livePowerDrawKw.toFixed(1)} kilovat. Hava kalitesi yuzde ${liveAirQuality}.`;
+    }
+
+    return `Smart Villa live telemetry. ${config.label} active. Indoor temperature ${liveIndoorTemp.toFixed(1)} degrees. Power draw ${livePowerDrawKw.toFixed(1)} kilowatts. Air quality ${liveAirQuality} percent.`;
+  }, [config.label, lang, liveAirQuality, liveIndoorTemp, livePowerDrawKw]);
+
   return (
     <div className={cn('relative bg-onyx-900 rounded-3xl overflow-hidden', className)}>
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       {/* Header */}
       <div className="relative z-10 p-6 border-b border-white/5">
         <div className="flex items-center justify-between">
@@ -404,7 +481,7 @@ export default function SmartVillaDemo({ lang = 'tr', className }: SmartVillaDem
                   {room.id !== 'garden' && (
                     <div className="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center">
                       <span className="text-[10px] font-mono text-white/50">
-                        {room.temperature}°
+                        {room.temperature.toFixed(1)}°
                       </span>
                     </div>
                   )}
@@ -434,7 +511,7 @@ export default function SmartVillaDemo({ lang = 'tr', className }: SmartVillaDem
             <Thermometer className="w-5 h-5 mx-auto mb-2" style={{ color: config.color }} />
             <div className="text-xs text-muted-foreground">{t.temperature}</div>
             <div className="text-lg font-mono font-bold text-foreground mt-1">
-              {config.temperature}°C
+              {liveIndoorTemp.toFixed(1)}°C
             </div>
           </div>
           <div className="bg-onyx-800/50 rounded-xl p-4 text-center">
@@ -460,6 +537,32 @@ export default function SmartVillaDemo({ lang = 'tr', className }: SmartVillaDem
             <div className="text-sm font-medium text-foreground mt-1 truncate">
               {config.ambiance}
             </div>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-white/10 bg-onyx-900/60 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-muted-foreground">
+            <span className="inline-flex items-center gap-2">
+              <motion.span
+                className="w-2 h-2 rounded-full bg-emerald-400"
+                animate={{ opacity: [0.4, 1, 0.4] }}
+                transition={{ repeat: Infinity, duration: 1.2 }}
+              />
+              {lang === 'tr' ? 'Canli Veri' : 'Live Data'}
+            </span>
+            <span>
+              {lang === 'tr' ? 'Anlik Guc' : 'Live Power'}:{' '}
+              <strong className="text-foreground">{livePowerDrawKw.toFixed(1)} kW</strong>
+            </span>
+            <span>
+              {lang === 'tr' ? 'Hava Kalitesi' : 'Air Quality'}:{' '}
+              <strong className="text-foreground">{liveAirQuality}%</strong>
+            </span>
+            <span>
+              {lang === 'tr' ? 'Otomasyon Olayi' : 'Automation Events'}:{' '}
+              <strong className="text-foreground">{liveAutomationEvents}</strong>{' '}
+              {lang === 'tr' ? 'olay/dk' : 'events/min'}
+            </span>
           </div>
         </div>
       </div>

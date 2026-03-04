@@ -2,8 +2,11 @@
 
 import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Edges, Text, RoundedBox } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
+import PremiumSceneFallback from '@/components/premium/3d/PremiumSceneFallback';
+import Scene3DErrorBoundary from '@/components/premium/3d/Scene3DErrorBoundary';
+import { useAdaptive3DFallback } from '@/hooks/useAdaptive3DFallback';
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
@@ -218,9 +221,10 @@ function SensorIndicators({ vibrationLevel, status }: { vibrationLevel: number; 
   const sensor2Ref = useRef<THREE.Mesh>(null);
 
   const sensorColor = status === 'critical' ? '#EF4444' : status === 'warning' ? '#F59E0B' : '#00D4FF';
+  const vibrationFactor = THREE.MathUtils.clamp(vibrationLevel / 10, 0.6, 1.8);
 
   useFrame((state) => {
-    const pulse = Math.sin(state.clock.elapsedTime * 4) * 0.3 + 0.7;
+    const pulse = Math.sin(state.clock.elapsedTime * 4 * vibrationFactor) * 0.3 + 0.7;
     if (sensor1Ref.current) {
       (sensor1Ref.current.material as THREE.MeshStandardMaterial).emissiveIntensity = pulse;
     }
@@ -420,22 +424,43 @@ export default function IndustrialMotor3D({
   className = '',
 }: IndustrialMotor3DProps) {
   const eco = useEcoCanvas();
-  return (
-    <div className={`w-full h-full ${className}`}>
-      <Canvas
-        camera={{ position: [3, 2, 3], fov: 45 }}
-        dpr={eco.dpr}
-        frameloop={eco.frameloop as 'always' | 'never'}
-        gl={{ antialias: !eco.shouldShowStatic, alpha: true, powerPreference: eco.gl.powerPreference }}
-        shadows={eco.shadows}
-      >
-        <Scene
-          rpm={rpm}
-          vibrationLevel={vibrationLevel}
-          status={status}
-          accentColor={accentColor}
+  const adaptiveFallback = useAdaptive3DFallback({ lowBatteryThreshold: 10 });
+
+  if (adaptiveFallback.shouldFallback || eco.shouldShowStatic) {
+    return (
+      <Scene3DErrorBoundary sceneName="IndustrialMotor3D" className={`w-full h-full ${className}`}>
+        <PremiumSceneFallback
+          className={`w-full h-full ${className}`}
+          reason={adaptiveFallback.reason ?? 'eco-mode'}
+          title="Adaptive Motor Twin Preview"
+          description="3D industrial motor is paused to maintain stable rendering quality."
+          imageSrc="/assets/logos/vibration-analyzer.jpg"
         />
-      </Canvas>
-    </div>
+      </Scene3DErrorBoundary>
+    );
+  }
+
+  return (
+    <Scene3DErrorBoundary sceneName="IndustrialMotor3D" className={`w-full h-full ${className}`}>
+      <div className={`w-full h-full ${className}`}>
+        <Canvas
+          camera={{ position: [3, 2, 3], fov: 45 }}
+          dpr={eco.dpr}
+          frameloop={eco.frameloop as 'always' | 'never'}
+          gl={{ antialias: !eco.shouldShowStatic, alpha: true, powerPreference: eco.gl.powerPreference }}
+          shadows={eco.shadows}
+          onCreated={({ gl }) => {
+            adaptiveFallback.attachToCanvas(gl.domElement);
+          }}
+        >
+          <Scene
+            rpm={rpm}
+            vibrationLevel={vibrationLevel}
+            status={status}
+            accentColor={accentColor}
+          />
+        </Canvas>
+      </div>
+    </Scene3DErrorBoundary>
   );
 }

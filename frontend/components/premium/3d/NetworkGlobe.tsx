@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import Scene3DErrorBoundary from './Scene3DErrorBoundary';
+import PremiumSceneFallback from './PremiumSceneFallback';
+import { useAdaptive3DFallback } from '@/hooks/useAdaptive3DFallback';
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // Globe made of points
 function Globe() {
   const pointsRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
-  const [activeConnections, setActiveConnections] = useState<number[]>([]);
 
   // Generate points on sphere surface
   const { positions, colors } = useMemo(() => {
@@ -283,25 +285,37 @@ interface NetworkGlobeProps {
 
 export default function NetworkGlobe({ className = '' }: NetworkGlobeProps) {
   const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+  const adaptiveFallback = useAdaptive3DFallback({ lowBatteryThreshold: 10 });
 
-  if (shouldShowStatic) {
+  if (shouldShowStatic || adaptiveFallback.shouldFallback) {
     return (
-      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
-        <div className="text-xs text-muted-foreground font-mono">Network Globe</div>
-      </div>
+      <Scene3DErrorBoundary sceneName="NetworkGlobe" className={`absolute inset-0 ${className}`}>
+        <PremiumSceneFallback
+          className={`absolute inset-0 ${className}`}
+          reason={adaptiveFallback.reason ?? 'eco-mode'}
+          title="Adaptive Network Globe"
+          description="Global network visualization is paused to preserve smooth interaction."
+          imageSrc="/assets/logos/nuvia-platform.jpg"
+        />
+      </Scene3DErrorBoundary>
     );
   }
 
   return (
-    <div className={`absolute inset-0 ${className}`}>
-      <Canvas
-        camera={{ position: [0, 0, 7], fov: 45 }}
-        dpr={dpr}
-        frameloop={frameloop as 'always' | 'never' | 'demand'}
-        gl={{ ...gl, alpha: true }}
-      >
-        <Scene />
-      </Canvas>
-    </div>
+    <Scene3DErrorBoundary sceneName="NetworkGlobe" className={`absolute inset-0 ${className}`}>
+      <div className={`absolute inset-0 ${className}`}>
+        <Canvas
+          camera={{ position: [0, 0, 7], fov: 45 }}
+          dpr={dpr}
+          frameloop={frameloop as 'always' | 'never' | 'demand'}
+          gl={{ ...gl, alpha: true }}
+          onCreated={({ gl: renderer }) => {
+            adaptiveFallback.attachToCanvas(renderer.domElement);
+          }}
+        >
+          <Scene />
+        </Canvas>
+      </div>
+    </Scene3DErrorBoundary>
   );
 }

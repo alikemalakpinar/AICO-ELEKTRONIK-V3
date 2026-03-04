@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import {
   Sofa,
@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import type { Locale } from '@/types';
 
 interface VillaDashboardDemoProps {
@@ -48,7 +49,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Mobile optimization - disable heavy effects on mobile/low-end devices
-  const { shouldUseLiteMode, isMobile, prefersReducedMotion } = useMobileOptimization();
+  const { shouldUseLiteMode, prefersReducedMotion } = useMobileOptimization();
 
   // Parallax tilt effect - DISABLED on mobile for performance
   const mouseX = useMotionValue(0);
@@ -84,9 +85,25 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
   const [selectedRoom, setSelectedRoom] = useState<RoomType>('living');
   const [gasValveOpen, setGasValveOpen] = useState(true);
   const [waterLeakAlert, setWaterLeakAlert] = useState(false);
-  const [fridgeTemp, setFridgeTemp] = useState(4);
+  const [fridgeTemp] = useState(4);
   const [fridgeDoorOpen, setFridgeDoorOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { tick, jitter, waveform, status, latencyMs, packetLossPct } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 101,
+  });
+  const linkStatusLabel =
+    status === 'connected'
+      ? lang === 'tr'
+        ? 'Bagli'
+        : 'Connected'
+      : status === 'degraded'
+      ? lang === 'tr'
+        ? 'Gecikmeli'
+        : 'Degraded'
+      : lang === 'tr'
+      ? 'Yeniden Baglaniyor'
+      : 'Reconnecting';
 
   // Room-specific states
   const [roomStates, setRoomStates] = useState<Record<RoomType, RoomState>>({
@@ -97,6 +114,42 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
   });
 
   const currentRoomState = roomStates[selectedRoom];
+  const liveRoomTemperature = Math.max(
+    16,
+    Math.min(30, Math.round((currentRoomState.temperature + jitter * 0.6) * 10) / 10)
+  );
+  const liveRoomBrightness = Math.max(
+    0,
+    Math.min(100, Math.round(currentRoomState.lightBrightness + waveform * 6))
+  );
+  const telemetryNarration = useMemo(() => {
+    const roomLabel = selectedRoom === 'living'
+      ? (lang === 'tr' ? 'Oturma Odası' : 'Living Room')
+      : selectedRoom === 'kitchen'
+        ? (lang === 'tr' ? 'Mutfak' : 'Kitchen')
+        : selectedRoom === 'bedroom'
+          ? (lang === 'tr' ? 'Yatak Odası' : 'Bedroom')
+          : (lang === 'tr' ? 'Bahçe' : 'Garden');
+    const alertCount = Number(waterLeakAlert) + Number(!gasValveOpen) + Number(fridgeDoorOpen);
+
+    if (lang === 'tr') {
+      return `Akıllı villa canlı telemetri. Simülasyon süresi ${tick} saniye. Baglanti ${linkStatusLabel}. Gecikme ${latencyMs} milisaniye. Paket kaybi yuzde ${packetLossPct}. Aktif oda ${roomLabel}. Oda sıcaklığı ${liveRoomTemperature.toFixed(1)} derece. Aydınlatma seviyesi yüzde ${liveRoomBrightness}. Kritik uyarı sayısı ${alertCount}.`;
+    }
+
+    return `Smart villa live telemetry. Simulation time ${tick} seconds. Link ${linkStatusLabel}. Latency ${latencyMs} milliseconds. Packet loss ${packetLossPct} percent. Active room ${roomLabel}. Room temperature ${liveRoomTemperature.toFixed(1)} degrees. Lighting level ${liveRoomBrightness} percent. Critical alerts ${alertCount}.`;
+  }, [
+    fridgeDoorOpen,
+    gasValveOpen,
+    lang,
+    latencyMs,
+    linkStatusLabel,
+    liveRoomBrightness,
+    liveRoomTemperature,
+    packetLossPct,
+    selectedRoom,
+    tick,
+    waterLeakAlert,
+  ]);
 
   // Update time
   useEffect(() => {
@@ -134,7 +187,7 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
     return '#EF4444'; // Red
   };
 
-  const tempColor = getTempColor(currentRoomState.temperature);
+  const tempColor = getTempColor(liveRoomTemperature);
 
   return (
     <motion.div
@@ -150,6 +203,10 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
       whileHover={shouldUseLiteMode ? {} : { scale: 1.01 }}
       transition={shouldUseLiteMode ? { duration: 0 } : { type: 'spring', stiffness: 300, damping: 20 }}
     >
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       {/* Premium shadow layer - simplified on mobile */}
       <div
         className="absolute inset-0 rounded-3xl pointer-events-none"
@@ -207,9 +264,12 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
           <div>
             <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>AICO Smart Villa</span>
             <div className="flex items-center gap-2 text-xs">
-              <span className="flex items-center gap-1 text-green-500">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                Online
+              <span className={`flex items-center gap-1 ${status === 'connected' ? 'text-green-500' : status === 'degraded' ? 'text-amber-500' : 'text-red-500'}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${status === 'connected' ? 'bg-green-500 animate-pulse' : status === 'degraded' ? 'bg-amber-500 animate-pulse' : 'bg-red-500 animate-pulse'}`} />
+                {linkStatusLabel}
+              </span>
+              <span className={isDark ? 'text-cyan-400' : 'text-cyan-600'}>
+                {`LIVE T+${tick}s | ${latencyMs}ms`}
               </span>
               <span className={isDark ? 'text-gray-400' : 'text-gray-500'}>
                 {currentTime.toLocaleTimeString(lang === 'tr' ? 'tr-TR' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
@@ -218,7 +278,10 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Wifi size={16} className="text-green-500" />
+          <Wifi size={16} className={status === 'connected' ? 'text-green-500' : status === 'degraded' ? 'text-amber-500' : 'text-red-500'} />
+          <span className={`text-[10px] font-mono ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            {`PL ${packetLossPct}%`}
+          </span>
           <Wifi size={16} className={isDark ? 'text-gray-400' : 'text-gray-500'} />
         </div>
       </div>
@@ -402,15 +465,15 @@ export default function VillaDashboardDemo({ lang }: VillaDashboardDemoProps) {
                         stroke={tempColor}
                         strokeWidth="8"
                         strokeLinecap="round"
-                        strokeDasharray={`${((currentRoomState.temperature - 16) / 14) * 251.2} 251.2`}
+                        strokeDasharray={`${((liveRoomTemperature - 16) / 14) * 251.2} 251.2`}
                         initial={false}
-                        animate={{ strokeDasharray: `${((currentRoomState.temperature - 16) / 14) * 251.2} 251.2` }}
+                        animate={{ strokeDasharray: `${((liveRoomTemperature - 16) / 14) * 251.2} 251.2` }}
                         transition={{ duration: 0.3 }}
                       />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <span className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        {currentRoomState.temperature}°
+                        {liveRoomTemperature.toFixed(1)}°
                       </span>
                       <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Celsius</span>
                     </div>

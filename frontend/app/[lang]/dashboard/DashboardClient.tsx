@@ -84,7 +84,7 @@ export default function DashboardClient({ lang }: DashboardClientProps) {
               </div>
               <div className="hidden md:block h-6 w-px bg-white/10" />
               <span className="hidden md:block text-xs text-offwhite-800">
-                {lang === 'tr' ? 'AICO Muhendislik Sistemleri' : 'AICO Engineering Systems'}
+                {lang === 'tr' ? 'AICO Mühendislik Sistemleri' : 'AICO Engineering Systems'}
               </span>
             </div>
 

@@ -12,18 +12,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { lang } = await params;
 
   const title = lang === 'tr'
-    ? 'MineGuard - Maden Guvenligi | AICO Elektronik'
+    ? 'MineGuard - Maden Güvenliği | AICO Elektronik'
     : 'MineGuard - Mining Safety | AICO Elektronik';
 
   const description = lang === 'tr'
-    ? 'Isci takip, gaz algilama ve acil durum yonetimi. Maden guvenligi icin uctan uca IoT cozumu.'
+    ? 'İşçi takip, gaz algılama ve acil durum yönetimi. Maden güvenliği için uçtan uca IoT çözümü.'
     : 'Worker tracking, gas detection, and emergency management. End-to-end IoT solution for mining safety.';
 
   return {
     title,
     description,
     keywords: lang === 'tr'
-      ? ['maden guvenligi', 'isci takip', 'gaz algilama', 'IoT', 'acil durum yonetimi', 'yeraltı izleme']
+      ? ['maden güvenliği', 'işçi takip', 'gaz algılama', 'IoT', 'acil durum yönetimi', 'yeraltı izleme']
       : ['mining safety', 'worker tracking', 'gas detection', 'IoT', 'emergency management', 'underground monitoring'],
     authors: [{ name: 'AICO Elektronik' }],
     creator: 'AICO Elektronik',

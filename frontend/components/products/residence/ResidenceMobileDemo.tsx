@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, PanInfo } from 'framer-motion';
 import {
   Lock,
@@ -13,7 +13,6 @@ import {
   Clock,
   ChevronRight,
   Bell,
-  Shield,
   Wifi,
   Battery,
   Signal,
@@ -23,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import type { Locale } from '@/types';
 
 interface ResidenceMobileDemoProps {
@@ -98,6 +98,51 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
   const [qrCountdown, setQrCountdown] = useState(0);
   const [hasIncomingCall, setHasIncomingCall] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { tick, jitter, waveform, status, latencyMs, packetLossPct } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 131,
+  });
+  const linkStatusLabel =
+    status === 'connected'
+      ? lang === 'tr'
+        ? 'Bagli'
+        : 'Connected'
+      : status === 'degraded'
+      ? lang === 'tr'
+        ? 'Gecikmeli'
+        : 'Degraded'
+      : lang === 'tr'
+      ? 'Yeniden Baglaniyor'
+      : 'Reconnecting';
+  const liveBatteryLevel = Math.max(12, Math.min(100, Math.round(78 + jitter * 8)));
+  const liveSignalLevel = Math.max(1, Math.min(5, Math.round(4 + waveform)));
+  const telemetryNarration = useMemo(() => {
+    const screenLabel = currentScreen === 'home'
+      ? (lang === 'tr' ? 'ana ekran' : 'home screen')
+      : currentScreen === 'unlock'
+        ? (lang === 'tr' ? 'kapı açma ekranı' : 'unlock screen')
+        : currentScreen === 'qr'
+          ? (lang === 'tr' ? 'misafir QR ekranı' : 'guest QR screen')
+          : (lang === 'tr' ? 'interkom ekranı' : 'intercom screen');
+
+    if (lang === 'tr') {
+      return `Residence mobil canlı telemetri. Süre ${tick} saniye. Baglanti ${linkStatusLabel}. Gecikme ${latencyMs} milisaniye. Paket kaybi yuzde ${packetLossPct}. Aktif ekran ${screenLabel}. Sinyal seviyesi ${liveSignalLevel}/5. Pil seviyesi yüzde ${liveBatteryLevel}. ${hasIncomingCall ? 'Gelen çağrı aktif.' : 'Aktif çağrı yok.'} ${qrCode ? `QR kod kalan süre ${qrCountdown} saniye.` : 'Aktif QR kod yok.'}`;
+    }
+
+    return `Residence mobile live telemetry. Time ${tick} seconds. Link ${linkStatusLabel}. Latency ${latencyMs} milliseconds. Packet loss ${packetLossPct} percent. Active screen ${screenLabel}. Signal level ${liveSignalLevel} out of 5. Battery level ${liveBatteryLevel} percent. ${hasIncomingCall ? 'Incoming call is active.' : 'No active call.'} ${qrCode ? `QR code expires in ${qrCountdown} seconds.` : 'No active QR code.'}`;
+  }, [
+    currentScreen,
+    hasIncomingCall,
+    lang,
+    latencyMs,
+    linkStatusLabel,
+    liveBatteryLevel,
+    liveSignalLevel,
+    packetLossPct,
+    qrCode,
+    qrCountdown,
+    tick,
+  ]);
 
   // Slide to unlock motion values with rubber-band physics
   // Use lighter spring config on mobile to reduce CPU usage
@@ -162,6 +207,10 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
 
   return (
     <div className="flex items-center justify-center p-8">
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       {/* iPhone Mockup */}
       <div className="relative">
         {/* Phone Frame */}
@@ -208,13 +257,23 @@ export default function ResidenceMobileDemo({ lang }: ResidenceMobileDemoProps) 
 
             {/* Status Bar */}
             <div className={`absolute top-0 left-0 right-0 h-12 flex items-end justify-between px-6 pb-1 z-10 ${isDark ? 'text-white' : 'text-black'}`}>
-              <span className="text-xs font-semibold">
-                {currentTime.toLocaleTimeString(lang === 'tr' ? 'tr-TR' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
-              </span>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-mono text-engineer-500">
+                  {`LIVE T+${tick}s | ${latencyMs}ms`}
+                </span>
+                <span className="text-xs font-semibold">
+                  {currentTime.toLocaleTimeString(lang === 'tr' ? 'tr-TR' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
               <div className="flex items-center gap-1">
                 <Signal size={12} />
+                <span className="text-[10px] font-mono">{liveSignalLevel}/5</span>
                 <Wifi size={12} />
                 <Battery size={14} />
+                <span className="text-[10px] font-mono">{liveBatteryLevel}%</span>
+                <span className={`text-[9px] font-mono ${status === 'connected' ? 'text-emerald-400' : status === 'degraded' ? 'text-amber-400' : 'text-red-400'}`}>
+                  {linkStatusLabel}
+                </span>
               </div>
             </div>
 

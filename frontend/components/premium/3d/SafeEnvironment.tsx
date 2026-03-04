@@ -1,9 +1,7 @@
 'use client';
 
-import { Environment, useEnvironment } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
-import { useThree } from '@react-three/fiber';
-import * as THREE from 'three';
 
 // ===========================================
 // SafeEnvironment - Crash-Proof HDR Environment
@@ -15,9 +13,10 @@ import * as THREE from 'three';
 // 4. FallbackLights always rendered - ensures scene is never dark
 // ===========================================
 
-// Local HDR file path (must be in public folder)
-// IMPORTANT: Leading slash ensures it's served from root, not relative
-const LOCAL_HDR_PATH = '/hdri/dikhololo_night_1k.hdr';
+// Use drei's built-in environment preset instead of a local HDR file.
+// This avoids 404 errors and large file downloads while still providing
+// proper IBL (image-based lighting) for 3D scenes.
+const ENVIRONMENT_PRESET = 'night' as const;
 
 // Timeout for HDR loading (ms) - if it takes longer, use fallback
 const LOAD_TIMEOUT_MS = 5000;
@@ -103,14 +102,14 @@ class EnvironmentLoaderBoundary extends React.Component<
  */
 function HDREnvironmentLoader({
   background,
-  onLoadSuccess,
+  onLoadSuccess: _onLoadSuccess,
   onLoadError,
 }: {
   background: boolean;
   onLoadSuccess?: () => void;
   onLoadError?: (error: Error) => void;
 }) {
-  const [loadFailed, setLoadFailed] = useState(false);
+  const [loadFailed, _setLoadFailed] = useState(false);
   const [isTimedOut, setIsTimedOut] = useState(false);
 
   // Set up timeout for loading
@@ -124,13 +123,6 @@ function HDREnvironmentLoader({
     return () => clearTimeout(timeoutId);
   }, [onLoadError]);
 
-  // Handle load errors from Environment component
-  const handleError = useCallback((error: Error) => {
-    console.warn('[SafeEnvironment] Environment component error:', error.message);
-    setLoadFailed(true);
-    onLoadError?.(error);
-  }, [onLoadError]);
-
   // Don't render if timed out or failed
   if (isTimedOut || loadFailed) {
     return null;
@@ -138,10 +130,10 @@ function HDREnvironmentLoader({
 
   return (
     <Environment
-      files={LOCAL_HDR_PATH}
+      preset={ENVIRONMENT_PRESET}
       background={background}
-      // Error callback - drei's Environment supports onError in some versions
-      // We also wrap in error boundary as backup
+      // Uses drei's built-in presets (downloaded from CDN with caching)
+      // Error boundary wraps this as backup protection
     />
   );
 }
@@ -178,11 +170,9 @@ export function SafeEnvironment({
   onLoadComplete?: () => void;
   onLoadError?: (error: Error) => void;
 }) {
-  const [hdrLoaded, setHdrLoaded] = useState(false);
   const [hdrFailed, setHdrFailed] = useState(false);
 
   const handleLoadSuccess = useCallback(() => {
-    setHdrLoaded(true);
     onLoadComplete?.();
   }, [onLoadComplete]);
 
@@ -229,8 +219,8 @@ export function SafeEnvironmentWithPreload({
   background?: boolean;
   fallbackOnly?: boolean;
 }) {
-  const [preloadComplete, setPreloadComplete] = useState(false);
-  const [preloadFailed, setPreloadFailed] = useState(false);
+  const [_preloadComplete, setPreloadComplete] = useState(false);
+  const [preloadFailed] = useState(false);
 
   useEffect(() => {
     if (fallbackOnly) {
@@ -238,28 +228,11 @@ export function SafeEnvironmentWithPreload({
       return;
     }
 
-    // Attempt to preload the HDR file
-    const loader = new THREE.FileLoader();
-    loader.setResponseType('arraybuffer');
-
+    // With built-in presets, preloading is handled by drei internally
+    // Just mark as complete after a short delay to allow rendering to settle
     const timeoutId = setTimeout(() => {
-      setPreloadFailed(true);
-      console.warn('[SafeEnvironment] Preload timed out');
-    }, LOAD_TIMEOUT_MS);
-
-    loader.load(
-      LOCAL_HDR_PATH,
-      () => {
-        clearTimeout(timeoutId);
-        setPreloadComplete(true);
-      },
-      undefined,
-      (error) => {
-        clearTimeout(timeoutId);
-        console.warn('[SafeEnvironment] Preload failed:', error);
-        setPreloadFailed(true);
-      }
-    );
+      setPreloadComplete(true);
+    }, 100);
 
     return () => clearTimeout(timeoutId);
   }, [fallbackOnly]);

@@ -12,9 +12,9 @@ export async function generateMetadata({
 
   const meta = {
     tr: {
-      title: 'Muhendislik Hizmetleri | PCB Tasarim & Gomulu Yazilim',
+      title: 'Mühendislik Hizmetleri | PCB Tasarım & Gömülü Yazılım',
       description:
-        'Profesyonel PCB tasarimi, gomulu yazilim gelistirme, prototipleme ve danismanlik hizmetleri. Altium Designer, STM32, ESP32 uzmanlik alanlari.',
+        'Profesyonel PCB tasarımı, gömülü yazılım geliştirme, prototipleme ve danışmanlık hizmetleri. Altium Designer, STM32, ESP32 uzmanlık alanları.',
     },
     en: {
       title: 'Engineering Services | PCB Design & Embedded Software',

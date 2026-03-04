@@ -98,14 +98,18 @@ function Scene3DPlaceholder({ className = '' }: { className?: string }) {
  * - Error boundary for graceful degradation
  */
 function createSafeLazy3D<P extends object>(
-  importFn: () => Promise<{ default: ComponentType<P> }>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  importFn: () => Promise<{ default: ComponentType<any> }>,
   sceneName: string,
   loaderClassName: string
 ) {
-  const LazyComponent = dynamic(importFn, {
+  const LazyComponent = dynamic(async () => {
+    const mod = await importFn();
+    return mod.default as ComponentType<P>;
+  }, {
     ssr: false,
     loading: () => <Scene3DLoader className={loaderClassName} />,
-  });
+  }) as ComponentType<P>;
 
   // Return a wrapper that includes error boundary
   return function SafeLazy3DComponent(props: P) {

@@ -33,12 +33,26 @@ export default function ImageWithFallback({
   if (hasError && showPlaceholder) {
     return (
       <div
-        className={`flex items-center justify-center bg-muted ${fallbackClassName || className}`}
-        style={{ width: props.width, height: props.height }}
+        className={`relative flex items-center justify-center overflow-hidden ${fallbackClassName || className}`}
+        style={{
+          width: props.width,
+          height: props.height,
+          background:
+            'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 100%)',
+        }}
       >
-        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-          <ImageOff size={24} className="opacity-50" />
-          <span className="text-xs opacity-50">{alt || 'Image'}</span>
+        {/* Grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(249,115,22,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.3) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
+        />
+        <div className="relative flex flex-col items-center gap-2 text-muted-foreground">
+          <ImageOff size={24} className="opacity-40" />
+          <span className="text-xs opacity-40 font-mono">{alt || 'Image'}</span>
         </div>
       </div>
     );

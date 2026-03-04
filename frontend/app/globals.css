@@ -324,6 +324,43 @@
 }
 
 @layer components {
+  /* Shared section rhythm - keeps page pacing consistent across locales */
+  .section-shell {
+    @apply py-24 md:py-32;
+  }
+
+  .section-shell-compact {
+    @apply py-16 md:py-20;
+  }
+
+  .content-shell {
+    @apply max-w-7xl mx-auto px-6;
+  }
+
+  .content-shell-narrow {
+    @apply max-w-3xl mx-auto px-6;
+  }
+
+  /* Readability guard for longer i18n content blocks */
+  .section-copy {
+    @apply text-lg text-offwhite-700 max-w-[62ch] mx-auto;
+    text-wrap: pretty;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .heading-flex {
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .copy-flex {
+    text-wrap: pretty;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
   /* Premium Button Styles - Theme Adaptive */
   .btn-premium {
     @apply relative px-6 py-3 bg-transparent border border-engineer-500/30

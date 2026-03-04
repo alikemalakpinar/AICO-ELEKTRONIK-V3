@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
-import { AlertTriangle, Heart, Wind, MapPin, User, Activity, Radio, Compass, Waves, Shield, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AlertTriangle, Heart, Wind, User, Activity, Radio, Compass, Waves, Shield, Zap } from 'lucide-react';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import type { Locale } from '@/types';
 
 interface WorkerTrackerDemoProps {
@@ -49,7 +50,7 @@ const tunnelSegments: TunnelSegment[] = [
   { path: 'M 85,50 L 85,25 L 60,25', depth: -180, width: 7 },
 ];
 
-const radarScanLines = Array.from({ length: 8 }).map((_, i) => i * 45);
+const _radarScanLines = Array.from({ length: 8 }).map((_, _i) => _i * 45);
 
 export default function WorkerTrackerDemo({ lang = 'tr', className = '', compact = false }: WorkerTrackerDemoProps) {
   const [workers, setWorkers] = useState<Worker[]>(initialWorkers);
@@ -60,6 +61,11 @@ export default function WorkerTrackerDemo({ lang = 'tr', className = '', compact
   const [showDepthView, setShowDepthView] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const radarRef = useRef<NodeJS.Timeout | null>(null);
+  const { tick, jitter } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 91,
+    paused: !isSimulating,
+  });
 
   // Radar rotation
   useEffect(() => {
@@ -80,21 +86,21 @@ export default function WorkerTrackerDemo({ lang = 'tr', className = '', compact
         // Random movement
         const dx = (Math.random() - 0.5) * 2;
         const dy = (Math.random() - 0.5) * 2;
-        let newX = Math.max(10, Math.min(90, worker.x + dx));
-        let newY = Math.max(20, Math.min(85, worker.y + dy));
+        const newX = Math.max(10, Math.min(90, worker.x + dx));
+        const newY = Math.max(20, Math.min(85, worker.y + dy));
 
         // Random vital changes
         const hrChange = (Math.random() - 0.5) * 8;
-        let newHR = Math.max(55, Math.min(140, worker.heartRate + hrChange));
+        const newHR = Math.max(55, Math.min(140, worker.heartRate + hrChange));
 
         const gasChange = (Math.random() - 0.4) * 0.15;
-        let newGas = Math.max(0, Math.min(2.5, worker.gasLevel + gasChange));
+        const newGas = Math.max(0, Math.min(2.5, worker.gasLevel + gasChange));
 
         const o2Change = (Math.random() - 0.5) * 0.3;
-        let newO2 = Math.max(17, Math.min(21, worker.o2Level + o2Change));
+        const newO2 = Math.max(17, Math.min(21, worker.o2Level + o2Change));
 
         const tempChange = (Math.random() - 0.5) * 1;
-        let newTemp = Math.max(18, Math.min(35, worker.temperature + tempChange));
+        const newTemp = Math.max(18, Math.min(35, worker.temperature + tempChange));
 
         // Determine status based on multiple factors
         let status: Worker['status'] = 'normal';
@@ -141,6 +147,27 @@ export default function WorkerTrackerDemo({ lang = 'tr', className = '', compact
 
   const emergencyWorkers = workers.filter(w => w.status === 'emergency');
   const warningWorkers = workers.filter(w => w.status === 'warning');
+  const averageHeartRate = useMemo(
+    () => Math.round(workers.reduce((sum, worker) => sum + worker.heartRate, 0) / Math.max(1, workers.length)),
+    [workers]
+  );
+  const liveGasAverage = useMemo(
+    () =>
+      Math.max(
+        0,
+        Math.round(
+          workers.reduce((sum, worker) => sum + worker.gasLevel, 0) / Math.max(1, workers.length) + jitter * 0.15
+        )
+      ),
+    [jitter, workers]
+  );
+  const telemetryNarration = useMemo(() => {
+    if (lang === 'tr') {
+      return `MineGuard canlı telemetri. Simülasyon süresi ${tick} saniye. Normal ${workers.filter(w => w.status === 'normal').length}, uyarı ${warningWorkers.length}, acil ${emergencyWorkers.length} personel. Ortalama nabız ${averageHeartRate}. Ortalama gaz seviyesi ${liveGasAverage} ppm.`;
+    }
+
+    return `MineGuard live telemetry. Simulation time ${tick} seconds. Normal ${workers.filter(w => w.status === 'normal').length}, warning ${warningWorkers.length}, emergency ${emergencyWorkers.length} workers. Average heart rate ${averageHeartRate}. Average gas level ${liveGasAverage} ppm.`;
+  }, [averageHeartRate, emergencyWorkers.length, lang, liveGasAverage, tick, warningWorkers.length, workers]);
 
   // Calculate radar ping effect for each worker
   const getWorkerRadarIntensity = (worker: Worker) => {
@@ -151,6 +178,10 @@ export default function WorkerTrackerDemo({ lang = 'tr', className = '', compact
 
   return (
     <div className={`relative bg-onyx-900 rounded-2xl overflow-hidden ${className}`}>
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between p-3 sm:p-4 border-b border-white/10 bg-onyx-800/50">
         <div className="flex items-center gap-2 sm:gap-3">
@@ -167,6 +198,11 @@ export default function WorkerTrackerDemo({ lang = 'tr', className = '', compact
             <Zap size={10} className="text-yellow-500" />
             <span className="text-yellow-500 text-[10px] font-mono">{workers.length} ACTIVE</span>
           </div>
+          {isSimulating && (
+            <div className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">
+              <span className="text-cyan-300 text-[10px] font-mono">LIVE T+{tick}s</span>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -248,7 +284,7 @@ export default function WorkerTrackerDemo({ lang = 'tr', className = '', compact
             </defs>
 
             {/* Concentric radar circles */}
-            {[15, 30, 45].map((r, i) => (
+            {[15, 30, 45].map((r, _i) => (
               <circle
                 key={r}
                 cx="50"

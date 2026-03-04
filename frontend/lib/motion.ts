@@ -1,3 +1,5 @@
+import type { Transition, Variants } from 'framer-motion';
+
 /**
  * Shared Motion Configuration
  * Apple-inspired animation constants for consistent UI feel
@@ -80,6 +82,7 @@ export const durations = {
   normal: 0.25,
   slow: 0.4,
   slower: 0.6,
+  cinematic: 0.8,
 };
 
 // ===========================================
@@ -160,6 +163,63 @@ export const tapScale = {
 export const hoverLift = {
   y: -2,
   transition: appleSpring,
+};
+
+// ===========================================
+// Page/Section Presets
+// ===========================================
+
+export const viewportOnce = {
+  once: true,
+  amount: 0.25,
+} as const;
+
+export function getStaggerDelay(index: number, step: number = 0.1, offset: number = 0): number {
+  return offset + index * step;
+}
+
+export function marqueeLoop(duration: number): Transition {
+  return {
+    duration,
+    repeat: Infinity,
+    ease: 'linear',
+  };
+}
+
+export function enterUp(delay: number = 0, distance: number = 24) {
+  return {
+    initial: { opacity: 0, y: distance },
+    animate: { opacity: 1, y: 0 },
+    transition: {
+      duration: durations.slower,
+      delay,
+      ease: 'easeOut' as const,
+    },
+  };
+}
+
+export function revealUp(delay: number = 0, distance: number = 24) {
+  return {
+    initial: { opacity: 0, y: distance },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: viewportOnce,
+    transition: {
+      duration: durations.slower,
+      delay,
+      ease: 'easeOut' as const,
+    },
+  };
+}
+
+export const staggerRevealVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.05,
+    },
+  },
 };
 
 // ===========================================

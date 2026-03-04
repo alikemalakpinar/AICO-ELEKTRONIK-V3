@@ -12,11 +12,11 @@ import {
   Wind,
   Gauge,
   Zap,
-  Cable,
   ShieldCheck,
   BarChart3,
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import {
   parseFireLinkPacket,
   generateSimulatedPacket,
@@ -54,11 +54,30 @@ const MAGMA = {
 
 export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDemoProps) {
   const [packet, setPacket] = useState<FireLinkPacket | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(true);
   const [scenario, setScenario] = useState<'normal' | 'warning' | 'critical'>('normal');
   const [selectedSensor, setSelectedSensor] = useState<number | null>(null);
   const [history, setHistory] = useState<{ time: Date; level: string }[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { tick, jitter, waveform, status, latencyMs, packetLossPct } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 57,
+    paused: !isSimulating,
+  });
+  const linkStatus: 'normal' | 'warning' | 'critical' =
+    status === 'connected' ? 'normal' : status === 'degraded' ? 'warning' : 'critical';
+  const linkStatusLabel =
+    status === 'connected'
+      ? lang === 'tr'
+        ? 'Bagli'
+        : 'Connected'
+      : status === 'degraded'
+      ? lang === 'tr'
+        ? 'Gecikmeli'
+        : 'Degraded'
+      : lang === 'tr'
+      ? 'Yeniden Baglaniyor'
+      : 'Reconnecting';
 
   // Parse initial packet
   useEffect(() => {
@@ -90,6 +109,37 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
   }, [isSimulating, scenario, lang]);
 
   const warningLevel = packet ? getWarningLevel(packet) : 'offline';
+  const activeSensorCount = packet?.sensors.length ?? 0;
+  const liveAmbientTemperature = packet
+    ? Math.round((packet.ambientTemperature + jitter * 0.4) * 10) / 10
+    : 0;
+  const liveHumidity = packet ? Math.max(0, Math.min(100, Math.round(packet.humidity + waveform * 2))) : 0;
+  const criticalSensorCount = packet?.criticalSensors.length ?? 0;
+  const telemetryNarration = useMemo(() => {
+    if (!packet) {
+      return lang === 'tr'
+        ? 'FireLink canlı telemetri başlatılıyor.'
+        : 'FireLink live telemetry is initializing.';
+    }
+
+    if (lang === 'tr') {
+      return `FireLink canlı telemetri. Simülasyon süresi ${tick} saniye. Baglanti ${linkStatusLabel}. Gecikme ${latencyMs} milisaniye. Paket kaybi yuzde ${packetLossPct}. Durum ${warningLevel}. Aktif sensör ${activeSensorCount}. Kritik sensör ${criticalSensorCount}. Ortam sıcaklığı ${liveAmbientTemperature.toFixed(1)} derece. Nem yüzde ${liveHumidity}.`;
+    }
+
+    return `FireLink live telemetry. Simulation time ${tick} seconds. Link ${linkStatusLabel}. Latency ${latencyMs} milliseconds. Packet loss ${packetLossPct} percent. Status ${warningLevel}. Active sensors ${activeSensorCount}. Critical sensors ${criticalSensorCount}. Ambient temperature ${liveAmbientTemperature.toFixed(1)} degrees. Humidity ${liveHumidity} percent.`;
+  }, [
+    activeSensorCount,
+    criticalSensorCount,
+    lang,
+    latencyMs,
+    linkStatusLabel,
+    liveAmbientTemperature,
+    liveHumidity,
+    packetLossPct,
+    packet,
+    tick,
+    warningLevel,
+  ]);
 
   // Enrich packet with electrical demo data
   const richPacket = useMemo(
@@ -109,20 +159,31 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
       },
       {
         label: lang === 'tr' ? 'Aktif Sensör' : 'Active Sensors',
-        value: `${packet.sensors.length}/8`,
+        value: `${activeSensorCount}/8`,
         status: 'normal' as const,
       },
       {
         label: lang === 'tr' ? 'Ortam' : 'Ambient',
-        value: `${packet.ambientTemperature.toFixed(1)}`,
+        value: `${liveAmbientTemperature.toFixed(1)}`,
         unit: '°C',
         status: 'normal' as const,
       },
       {
         label: lang === 'tr' ? 'Nem' : 'Humidity',
-        value: `${packet.humidity.toFixed(0)}`,
+        value: `${liveHumidity}`,
         unit: '%',
         status: 'normal' as const,
+      },
+      {
+        label: lang === 'tr' ? 'Baglanti' : 'Link',
+        value: linkStatusLabel,
+        status: linkStatus,
+      },
+      {
+        label: 'RTT',
+        value: latencyMs,
+        unit: 'ms',
+        status: linkStatus,
       },
       {
         label: lang === 'tr' ? 'Pil' : 'Battery',
@@ -131,7 +192,17 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
         status: packet.batteryVoltage > 3500 ? 'normal' as const : 'warning' as const,
       },
     ];
-  }, [packet, warningLevel, lang]);
+  }, [activeSensorCount, lang, latencyMs, linkStatus, linkStatusLabel, liveAmbientTemperature, liveHumidity, packet, warningLevel]);
+
+  const headerRight = (
+    <StatusChip
+      label={lang === 'tr' ? 'Hat' : 'Link'}
+      value={`${latencyMs}ms`}
+      status={linkStatus}
+      pulsing={status !== 'connected'}
+      className="hidden sm:block"
+    />
+  );
 
   // Build metrics array from enriched packet
   const metrics = useMemo(() => {
@@ -172,9 +243,14 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
       brandVersion="3.0"
       accentColor={MAGMA.accent}
       systemStatuses={systemStatuses}
-      isConnected={isSimulating}
+      isConnected={isSimulating && status !== 'reconnecting'}
+      headerRight={headerRight}
       className={className}
     >
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       <div className="grid lg:grid-cols-2 gap-4 p-4 overflow-x-hidden">
         {/* Left: 3D Visualization */}
         <div className="relative aspect-square lg:aspect-auto min-h-[300px] lg:h-[500px] rounded-xl overflow-hidden border border-border bg-card">
@@ -217,7 +293,6 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
               <SensorCard
                 key={sensor.id}
                 sensor={sensor}
-                lang={lang}
                 isSelected={selectedSensor === sensor.id}
                 onClick={() => setSelectedSensor(
                   selectedSensor === sensor.id ? null : sensor.id
@@ -267,12 +342,19 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
               <h2 className="text-muted-foreground text-xs font-mono uppercase">
                 {lang === 'tr' ? 'Simülasyon Kontrolü' : 'Simulation Control'}
               </h2>
-              <div
-                className={`w-2 h-2 rounded-full ${
-                  isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-600'
-                }`}
-                aria-hidden
-              />
+              <div className="flex items-center gap-2">
+                {isSimulating && (
+                  <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono text-red-300">
+                    LIVE T+{tick}s | {latencyMs}ms
+                  </span>
+                )}
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-600'
+                  }`}
+                  aria-hidden
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2 mb-4">
@@ -400,12 +482,11 @@ export default function FireLinkProDemo({ lang, className = '' }: FireLinkProDem
 
 interface SensorCardProps {
   sensor: FireLinkSensor;
-  lang: Locale;
   isSelected: boolean;
   onClick: () => void;
 }
 
-function SensorCard({ sensor, lang, isSelected, onClick }: SensorCardProps) {
+function SensorCard({ sensor, isSelected, onClick }: SensorCardProps) {
   const color = getSensorColor(sensor);
   const isCritical = sensor.hasFire;
   const isWarning = sensor.hasArc && !sensor.hasFire;

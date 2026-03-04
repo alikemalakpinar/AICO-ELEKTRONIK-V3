@@ -12,7 +12,6 @@ import {
   ChevronDown,
   Flame,
   HardHat,
-  Thermometer,
   Activity,
   Home,
   Building,
@@ -21,6 +20,8 @@ import {
   Snowflake,
 } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
+import { DESIGN_SYSTEM, PRODUCT_ACCENTS } from '@/lib/design-system';
+import { appleSpring, durations } from '@/lib/motion';
 import ThemeToggle from './ThemeToggle';
 import ThemeLogo from './ThemeLogo';
 
@@ -28,12 +29,21 @@ interface PremiumNavbarProps {
   lang: Locale;
 }
 
+const DESKTOP_NAV_ITEM_CLASS =
+  'px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background';
+const DESKTOP_NAV_TRIGGER_CLASS = `flex items-center gap-1.5 ${DESKTOP_NAV_ITEM_CLASS}`;
+const DROPDOWN_TRANSITION = { duration: durations.normal, ease: 'easeOut' as const };
+const MENU_ICON_TRANSITION = { duration: durations.fast };
+const OVERLAY_FADE_TRANSITION = { duration: durations.normal };
+
 // Get accent color based on current page
 function getPageAccentColor(pathname: string): string {
-  if (pathname.includes('fire-safety') || pathname.includes('firelink')) return '#EF4444';
-  if (pathname.includes('mining-iot') || pathname.includes('mineguard')) return '#EAB308';
-  if (pathname.includes('cold-chain') || pathname.includes('coldtrack')) return '#06B6D4';
-  if (pathname.includes('predictive-maintenance') || pathname.includes('vibration')) return '#00D4FF';
+  if (pathname.includes('fire-safety') || pathname.includes('firelink')) return PRODUCT_ACCENTS.fireSafety.color;
+  if (pathname.includes('mining-iot') || pathname.includes('mineguard')) return PRODUCT_ACCENTS.miningIot.color;
+  if (pathname.includes('cold-chain') || pathname.includes('coldtrack')) return PRODUCT_ACCENTS.coldChain.color;
+  if (pathname.includes('predictive-maintenance') || pathname.includes('vibration')) {
+    return PRODUCT_ACCENTS.predictiveMaintenance.color;
+  }
   return '#F97316'; // Default engineer orange
 }
 
@@ -142,8 +152,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       subtitle: t.nav.fireSafetySubtitle,
       description: t.nav.fireSafetyDesc,
       href: `/${lang}/solutions/fire-safety`,
-      color: '#EF4444',
-      gradient: 'from-red-500/20 to-orange-500/10',
+      color: PRODUCT_ACCENTS.fireSafety.color,
+      gradient: PRODUCT_ACCENTS.fireSafety.gradient,
     },
     {
       id: 'mining-iot',
@@ -152,8 +162,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       subtitle: t.nav.miningSafetySubtitle,
       description: t.nav.miningSafetyDesc,
       href: `/${lang}/solutions/mining-iot`,
-      color: '#EAB308',
-      gradient: 'from-yellow-500/20 to-amber-500/10',
+      color: PRODUCT_ACCENTS.miningIot.color,
+      gradient: PRODUCT_ACCENTS.miningIot.gradient,
     },
     {
       id: 'cold-chain',
@@ -162,8 +172,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       subtitle: t.nav.coldChainSubtitle,
       description: t.nav.coldChainDesc,
       href: `/${lang}/solutions/cold-chain`,
-      color: '#06B6D4',
-      gradient: 'from-cyan-500/20 to-blue-500/10',
+      color: PRODUCT_ACCENTS.coldChain.color,
+      gradient: PRODUCT_ACCENTS.coldChain.gradient,
     },
     {
       id: 'predictive-maintenance',
@@ -172,8 +182,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
       subtitle: t.nav.predictiveMaintenanceSubtitle,
       description: t.nav.predictiveMaintenanceDesc,
       href: `/${lang}/solutions/predictive-maintenance`,
-      color: '#00D4FF',
-      gradient: 'from-cyan-500/20 to-blue-500/10',
+      color: PRODUCT_ACCENTS.predictiveMaintenance.color,
+      gradient: PRODUCT_ACCENTS.predictiveMaintenance.gradient,
     },
   ];
 
@@ -255,7 +265,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                 width: scrollState === 'compact' ? '50%' : '0%',
                 x: '-50%',
               }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
+              transition={{ duration: durations.slow, ease: 'easeOut' }}
               style={{
                 background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
                 opacity: 0.6,
@@ -263,7 +273,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
             />
 
             {/* Navbar content */}
-            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className={`w-full ${DESIGN_SYSTEM.layout.shell}`}>
               <div className="flex items-center justify-between h-14">
                 {/* Logo - Theme adaptive with native variants */}
                 <Link href={`/${lang}`} className="flex items-center gap-2 group flex-shrink-0">
@@ -290,7 +300,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseEnter={handleSolutionsEnter}
                     onMouseLeave={handleSolutionsLeave}
                   >
-                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+                    <button className={DESKTOP_NAV_TRIGGER_CLASS}>
                       {t.nav.solutions}
                       <ChevronDown
                         size={14}
@@ -305,8 +315,8 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                           initial={{ opacity: 0, y: 8, scale: 0.96 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                          transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-                          className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[560px] origin-top"
+                          transition={DROPDOWN_TRANSITION}
+                          className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[min(560px,calc(100vw-2rem))] origin-top"
                           onMouseEnter={handleSolutionsEnter}
                           onMouseLeave={handleSolutionsLeave}
                         >
@@ -397,7 +407,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                     onMouseEnter={handleSmartLivingEnter}
                     onMouseLeave={handleSmartLivingLeave}
                   >
-                    <button className="flex items-center gap-1.5 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+                    <button className={DESKTOP_NAV_TRIGGER_CLASS}>
                       {t.nav.smartLiving}
                       <ChevronDown
                         size={14}
@@ -411,7 +421,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                           initial={{ opacity: 0, y: 8, scale: 0.96 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                          transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                          transition={DROPDOWN_TRANSITION}
                           className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-80 origin-top"
                           onMouseEnter={handleSmartLivingEnter}
                           onMouseLeave={handleSmartLivingLeave}
@@ -449,7 +459,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* Projects */}
                   <Link
                     href={`/${lang}/projects`}
-                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className={DESKTOP_NAV_ITEM_CLASS}
                   >
                     {t.nav.projects}
                   </Link>
@@ -457,7 +467,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                   {/* About */}
                   <Link
                     href={`/${lang}/about`}
-                    className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium rounded-lg dark:hover:bg-white/5 light:hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-engineer-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className={DESKTOP_NAV_ITEM_CLASS}
                   >
                     {t.nav.about}
                   </Link>
@@ -500,7 +510,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                         initial={{ opacity: 0, rotate: -90 }}
                         animate={{ opacity: 1, rotate: 0 }}
                         exit={{ opacity: 0, rotate: 90 }}
-                        transition={{ duration: 0.15 }}
+                        transition={MENU_ICON_TRANSITION}
                       >
                         <X size={22} />
                       </motion.div>
@@ -510,7 +520,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                         initial={{ opacity: 0, rotate: 90 }}
                         animate={{ opacity: 1, rotate: 0 }}
                         exit={{ opacity: 0, rotate: -90 }}
-                        transition={{ duration: 0.15 }}
+                        transition={MENU_ICON_TRANSITION}
                       >
                         <Menu size={22} />
                       </motion.div>
@@ -532,7 +542,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={OVERLAY_FADE_TRANSITION}
               className="fixed inset-0 z-40 lg:hidden"
               style={{
                 backgroundColor: 'var(--overlay-heavy)',
@@ -547,7 +557,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
               initial={{ opacity: 0, x: '100%' }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              transition={appleSpring}
               className="fixed top-0 right-0 bottom-0 w-full max-w-sm z-50 lg:hidden overflow-y-auto dark:bg-onyx-900 light:bg-white border-l dark:border-white/5 light:border-gray-200"
             >
               {/* Close button */}
@@ -595,7 +605,7 @@ export default function PremiumNavbar({ lang }: PremiumNavbarProps) {
                 {/* Smart Living Section */}
                 <div className="space-y-4">
                   <div className="text-muted-foreground text-xs font-mono uppercase tracking-widest px-2">
-                    Smart Living
+                    {t.nav.smartLiving}
                   </div>
                   {smartLiving.map((item) => (
                     <Link

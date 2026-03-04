@@ -3,24 +3,20 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Wind,
   AlertTriangle,
   Activity,
   Thermometer,
   Droplets,
   Power,
   Factory,
-  Shield,
-  Bell,
-  Gauge,
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import {
   generateIndustrialPacket,
   getAirQualityColor,
   getStatusColor,
   getStatusLabel,
-  type IndustrialSensor,
   type IndustrialAirQualityPacket,
 } from '@/lib/utils/industrial-airquality-parser';
 import type { Locale } from '@/types';
@@ -49,11 +45,30 @@ const THEME = {
 
 export default function IndustrialAirQualityDemo({ lang, className = '' }: IndustrialAirQualityDemoProps) {
   const [packet, setPacket] = useState<IndustrialAirQualityPacket | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(true);
   const [scenario, setScenario] = useState<'normal' | 'warning' | 'critical'>('normal');
   const [selectedSensor, setSelectedSensor] = useState<number | null>(null);
   const [history, setHistory] = useState<{ time: Date; status: string; avgCo2: number }[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { tick, jitter, waveform, status, latencyMs, packetLossPct } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 79,
+    paused: !isSimulating,
+  });
+  const linkStatus: 'normal' | 'warning' | 'critical' =
+    status === 'connected' ? 'normal' : status === 'degraded' ? 'warning' : 'critical';
+  const linkStatusLabel =
+    status === 'connected'
+      ? lang === 'tr'
+        ? 'Bagli'
+        : 'Connected'
+      : status === 'degraded'
+      ? lang === 'tr'
+        ? 'Gecikmeli'
+        : 'Degraded'
+      : lang === 'tr'
+      ? 'Yeniden Baglaniyor'
+      : 'Reconnecting';
 
   // Initialize packet
   useEffect(() => {
@@ -83,6 +98,39 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
     };
   }, [isSimulating, scenario, lang]);
 
+  const liveAmbientTemperature = packet
+    ? Math.round((packet.ambientTemperature + jitter * 0.5) * 10) / 10
+    : 0;
+  const liveAmbientHumidity = packet
+    ? Math.max(0, Math.min(100, Math.round(packet.ambientHumidity + waveform * 3)))
+    : 0;
+  const activeVentilationZones = packet?.sensors.filter(sensor => sensor.status === 'ventilation').length ?? 0;
+  const evacuationZones = packet?.sensors.filter(sensor => sensor.status === 'evacuate').length ?? 0;
+  const telemetryNarration = useMemo(() => {
+    if (!packet) {
+      return lang === 'tr'
+        ? 'Endüstriyel hava kalitesi telemetrisi başlatılıyor.'
+        : 'Industrial air quality telemetry is initializing.';
+    }
+
+    if (lang === 'tr') {
+      return `Canlı IAQ telemetri. Simülasyon süresi ${tick} saniye. Baglanti ${linkStatusLabel}. Gecikme ${latencyMs} milisaniye. Paket kaybi yuzde ${packetLossPct}. Durum ${getStatusLabel(packet.overallStatus, lang)}. Havalandırma gereken bölge ${activeVentilationZones}. Tahliye gereken bölge ${evacuationZones}. Ortam sıcaklığı ${liveAmbientTemperature.toFixed(1)} derece. Nem yüzde ${liveAmbientHumidity}.`;
+    }
+
+    return `Live IAQ telemetry. Simulation time ${tick} seconds. Link ${linkStatusLabel}. Latency ${latencyMs} milliseconds. Packet loss ${packetLossPct} percent. Status ${getStatusLabel(packet.overallStatus, lang)}. Ventilation zones ${activeVentilationZones}. Evacuation zones ${evacuationZones}. Ambient temperature ${liveAmbientTemperature.toFixed(1)} degrees. Humidity ${liveAmbientHumidity} percent.`;
+  }, [
+    activeVentilationZones,
+    evacuationZones,
+    lang,
+    latencyMs,
+    linkStatusLabel,
+    liveAmbientHumidity,
+    liveAmbientTemperature,
+    packetLossPct,
+    packet,
+    tick,
+  ]);
+
   const systemStatuses = useMemo(() => {
     if (!packet) return [];
     const statusColor = packet.overallStatus === 'evacuate' ? 'critical' :
@@ -98,6 +146,22 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
         value: `${packet.avgCo2}`,
         unit: 'ppm',
         status: (packet.avgCo2 > 1500 ? 'critical' : packet.avgCo2 > 1000 ? 'warning' : 'normal') as 'normal' | 'warning' | 'critical',
+      },
+      {
+        label: 'LIVE',
+        value: `T+${tick}s`,
+        status: (isSimulating ? 'normal' : 'offline') as 'normal' | 'warning' | 'critical' | 'offline',
+      },
+      {
+        label: lang === 'tr' ? 'Baglanti' : 'Link',
+        value: linkStatusLabel,
+        status: linkStatus,
+      },
+      {
+        label: 'RTT',
+        value: `${latencyMs}`,
+        unit: 'ms',
+        status: linkStatus,
       },
       {
         label: 'TVOC',
@@ -117,11 +181,19 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
         status: (packet.alertCount > 3 ? 'critical' : packet.alertCount > 0 ? 'warning' : 'normal') as 'normal' | 'warning' | 'critical',
       },
     ];
-  }, [packet, lang]);
+  }, [isSimulating, lang, latencyMs, linkStatus, linkStatusLabel, packet, tick]);
 
   const selectedSensorData = packet?.sensors.find(s => s.id === selectedSensor);
 
-  const headerRight = null;
+  const headerRight = (
+    <StatusChip
+      label={lang === 'tr' ? 'Hat' : 'Link'}
+      value={`${latencyMs}ms`}
+      status={linkStatus}
+      pulsing={status !== 'connected'}
+      className="hidden sm:block"
+    />
+  );
 
   return (
     <DashboardShell
@@ -132,10 +204,14 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
       brandVersion="IAQ"
       accentColor={THEME.accent}
       systemStatuses={systemStatuses}
-      isConnected={isSimulating}
+      isConnected={isSimulating && status !== 'reconnecting'}
       headerRight={headerRight}
       className={className}
     >
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       <div className="grid lg:grid-cols-3 gap-4 p-4">
         {/* Left: Factory Visualization */}
         <div className="lg:col-span-2 relative aspect-video lg:aspect-auto lg:h-[450px] rounded-xl overflow-hidden border border-white/5 bg-[#0A0A0A]">
@@ -370,7 +446,7 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
                 <span className="text-gray-500 dark:text-offwhite-700 text-xs">{lang === 'tr' ? 'Ortam' : 'Ambient'}</span>
               </div>
               <span className="text-gray-400 dark:text-offwhite-400 font-mono text-lg">
-                {packet?.ambientTemperature.toFixed(1)}°C
+                {liveAmbientTemperature.toFixed(1)}°C
               </span>
             </div>
             <div className="p-3 rounded-xl bg-[#0A0A0A] border border-white/5">
@@ -379,7 +455,7 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
                 <span className="text-gray-500 dark:text-offwhite-700 text-xs">{lang === 'tr' ? 'Nem' : 'Humidity'}</span>
               </div>
               <span className="text-gray-400 dark:text-offwhite-400 font-mono text-lg">
-                {packet?.ambientHumidity.toFixed(0)}%
+                {liveAmbientHumidity}%
               </span>
             </div>
           </div>
@@ -425,7 +501,12 @@ export default function IndustrialAirQualityDemo({ lang, className = '' }: Indus
               <span className="text-gray-500 dark:text-offwhite-600 text-xs font-mono uppercase">
                 {lang === 'tr' ? 'Simulasyon' : 'Simulation'}
               </span>
-              <div className={`w-2 h-2 rounded-full ${isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-600'}`} />
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-cyan-400 font-mono uppercase">
+                  {`T+${tick}s | ${latencyMs}ms`}
+                </span>
+                <div className={`w-2 h-2 rounded-full ${isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-600'}`} />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2 mb-3">

@@ -1,19 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Activity,
   AlertTriangle,
-  CheckCircle2,
   Gauge,
   Waves,
   BarChart3,
   Power,
-  Settings,
-  Zap,
-  Thermometer,
   TrendingUp,
   Shield,
   Clock,
@@ -21,6 +16,7 @@ import {
 } from 'lucide-react';
 import DashboardShell, { StatusChip, TacticalButton } from '@/components/premium/DashboardShell';
 import type { Locale } from '@/types';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 
 // Dynamically import the 3D motor component
 const IndustrialMotor3D = dynamic(
@@ -77,12 +73,30 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
     status: 'normal',
   });
 
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(true);
   const [scenario, setScenario] = useState<'normal' | 'warning' | 'critical'>('normal');
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [vibrationHistory, setVibrationHistory] = useState<number[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeRef = useRef(0);
+  const { tick, jitter, status, latencyMs, packetLossPct } = useTelemetryStream({
+    intervalMs: 1000,
+    seed: 71,
+    paused: !isSimulating,
+  });
+  const linkStatus: 'normal' | 'warning' | 'critical' =
+    status === 'connected' ? 'normal' : status === 'degraded' ? 'warning' : 'critical';
+  const linkStatusLabel =
+    status === 'connected'
+      ? lang === 'tr'
+        ? 'Bagli'
+        : 'Connected'
+      : status === 'degraded'
+      ? lang === 'tr'
+        ? 'Gecikmeli'
+        : 'Degraded'
+      : lang === 'tr'
+      ? 'Yeniden Baglaniyor'
+      : 'Reconnecting';
 
   // Simulation loop
   useEffect(() => {
@@ -94,7 +108,7 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
     intervalRef.current = setInterval(() => {
       timeRef.current += 0.05;
 
-      setMotorData((prev) => {
+      setMotorData(() => {
         // Base values based on scenario
         const baseVibration = scenario === 'critical' ? 8 : scenario === 'warning' ? 4.5 : 2.5;
         const baseRPM = scenario === 'critical' ? 1200 + Math.random() * 200 : 1450;
@@ -102,7 +116,7 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
         const baseBearing = scenario === 'critical' ? 45 : scenario === 'warning' ? 70 : 92;
 
         // Generate FFT data with characteristic fault frequencies
-        const fftData = FFT_FREQUENCIES.map((freq, i) => {
+        const fftData = FFT_FREQUENCIES.map((freq) => {
           let base = Math.random() * 0.3;
 
           // Normal harmonics
@@ -171,6 +185,33 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
     };
   }, [isSimulating, scenario]);
 
+  const anomalyScore = useMemo(() => {
+    const baseScore =
+      motorData.vibrationLevel * 8 +
+      (100 - motorData.bearingCondition) * 0.6 +
+      Math.max(0, motorData.temperature - 40) * 0.8;
+    return Math.min(100, Math.max(0, Math.round(baseScore + jitter * 6)));
+  }, [jitter, motorData.bearingCondition, motorData.temperature, motorData.vibrationLevel]);
+
+  const telemetryNarration = useMemo(() => {
+    if (lang === 'tr') {
+      return `VibrationGuard canlı telemetri. Simulasyon suresi ${tick} saniye. Baglanti ${linkStatusLabel}. Gecikme ${latencyMs} milisaniye. Paket kaybi yuzde ${packetLossPct}. Motor devri ${Math.round(motorData.rpm)} RPM. Titresim ${motorData.vibrationLevel.toFixed(1)} milimetre saniye. Sicaklik ${Math.round(motorData.temperature)} derece. Rulman sagligi yuzde ${Math.round(motorData.bearingCondition)}. Anomali skoru ${anomalyScore}.`;
+    }
+
+    return `VibrationGuard live telemetry. Simulation time ${tick} seconds. Link ${linkStatusLabel}. Latency ${latencyMs} milliseconds. Packet loss ${packetLossPct} percent. Motor speed ${Math.round(motorData.rpm)} RPM. Vibration ${motorData.vibrationLevel.toFixed(1)} millimeters per second. Temperature ${Math.round(motorData.temperature)} degrees. Bearing health ${Math.round(motorData.bearingCondition)} percent. Anomaly score ${anomalyScore}.`;
+  }, [
+    anomalyScore,
+    lang,
+    latencyMs,
+    linkStatusLabel,
+    motorData.bearingCondition,
+    motorData.rpm,
+    motorData.temperature,
+    motorData.vibrationLevel,
+    packetLossPct,
+    tick,
+  ]);
+
   const systemStatuses = useMemo(
     () => [
       {
@@ -227,8 +268,40 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
             ? ('warning' as const)
             : ('normal' as const),
       },
+      {
+        label: lang === 'tr' ? 'Anomali' : 'Anomaly',
+        value: anomalyScore,
+        unit: '/100',
+        status:
+          anomalyScore >= 85
+            ? ('critical' as const)
+            : anomalyScore >= 60
+            ? ('warning' as const)
+            : ('normal' as const),
+      },
+      {
+        label: lang === 'tr' ? 'Baglanti' : 'Link',
+        value: linkStatusLabel,
+        status: linkStatus,
+      },
+      {
+        label: 'RTT',
+        value: latencyMs,
+        unit: 'ms',
+        status: linkStatus,
+      },
     ],
-    [motorData, lang]
+    [anomalyScore, lang, latencyMs, linkStatus, linkStatusLabel, motorData]
+  );
+
+  const headerRight = (
+    <StatusChip
+      label={lang === 'tr' ? 'Hat' : 'Link'}
+      value={`${latencyMs}ms`}
+      status={linkStatus}
+      pulsing={status !== 'connected'}
+      className="hidden sm:block"
+    />
   );
 
   return (
@@ -240,9 +313,14 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
       brandVersion="2.0"
       accentColor={THEME.accent}
       systemStatuses={systemStatuses}
-      isConnected={isSimulating}
+      isConnected={isSimulating && status !== 'reconnecting'}
+      headerRight={headerRight}
       className={className}
     >
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       <div className="grid lg:grid-cols-2 gap-4 p-4">
         {/* Left: 3D Motor Visualization */}
         <div className="relative aspect-square lg:aspect-auto lg:h-[500px] rounded-xl overflow-hidden border border-white/5 bg-[#0A0A0A]">
@@ -327,11 +405,18 @@ export default function VibrationGuardDemo({ lang, className = '' }: VibrationGu
               <span className="text-offwhite-600 text-xs font-mono uppercase">
                 {lang === 'tr' ? 'Simulasyon Kontrolu' : 'Simulation Control'}
               </span>
-              <div
-                className={`w-2 h-2 rounded-full ${
-                  isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-600'
-                }`}
-              />
+              <div className="flex items-center gap-2">
+                {isSimulating && (
+                  <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-mono text-cyan-300">
+                    LIVE T+{tick}s | {latencyMs}ms
+                  </span>
+                )}
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-600'
+                  }`}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2 mb-4">

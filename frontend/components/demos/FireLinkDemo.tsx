@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Zap,
@@ -12,6 +12,7 @@ import {
   Gauge,
   CircuitBoard,
 } from 'lucide-react';
+import { useTelemetryStream } from '@/hooks/useTelemetryStream';
 import { cn } from '@/lib/utils';
 
 // ===========================================
@@ -185,30 +186,48 @@ function getDirective(m: CabinetMetrics, lang: 'tr' | 'en'): string {
 export default function FireLinkDemo({ lang = 'tr', className }: FireLinkDemoProps) {
   const t = translations[lang];
   const [stage, setStage] = useState(0);
-  const [tick, setTick] = useState(0);
-
-  // Advance tick for jitter animation
-  useEffect(() => {
-    const interval = setInterval(() => setTick((p) => p + 1), 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const lastAutoAdvanceTickRef = useRef(0);
+  const { tick } = useTelemetryStream({ intervalMs: 1000, seed: 11 });
 
   const metrics = useMemo(() => computeMetrics(stage, tick), [stage, tick]);
   const alertLevel = getAlertLevel(metrics);
   const directive = getDirective(metrics, lang);
   const levelStyle = ALERT_LEVEL_STYLE[alertLevel];
 
+  useEffect(() => {
+    if (stage >= 3) return;
+    if (tick === 0 || tick % 8 !== 0) return;
+    if (lastAutoAdvanceTickRef.current === tick) return;
+
+    lastAutoAdvanceTickRef.current = tick;
+    setStage((currentStage) => Math.min(currentStage + 1, 3));
+  }, [stage, tick]);
+
   const advanceStage = useCallback(() => {
     setStage((s) => Math.min(s + 1, 3));
   }, []);
 
   const resetSimulation = useCallback(() => {
+    lastAutoAdvanceTickRef.current = 0;
     setStage(0);
-    setTick(0);
   }, []);
+
+  const activeStageLabel =
+    lang === 'tr' ? ESCALATION_STAGES[stage].labelTr : ESCALATION_STAGES[stage].labelEn;
+  const telemetryNarration = useMemo(() => {
+    if (lang === 'tr') {
+      return `FireLink canlı telemetri. ${metrics.cabinetId} ${activeStageLabel}. Risk ${alertLevel}. Mikro ark ${metrics.microArcCount} olay/dk. Simülasyon süresi ${tick} saniye.`;
+    }
+
+    return `FireLink live telemetry. ${metrics.cabinetId} ${activeStageLabel}. Alert ${alertLevel}. Micro-arc ${metrics.microArcCount} events per minute. Simulation time ${tick} seconds.`;
+  }, [activeStageLabel, alertLevel, lang, metrics.cabinetId, metrics.microArcCount, tick]);
 
   return (
     <div className={cn('relative bg-onyx-900 rounded-3xl overflow-hidden', className)}>
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {telemetryNarration}
+      </div>
+
       {/* Header */}
       <div className="relative z-10 p-6 border-b border-white/5">
         <div className="flex items-center justify-between">

@@ -2,8 +2,11 @@
 
 import React, { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { MeshTransmissionMaterial, Float } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
+import Scene3DErrorBoundary from './Scene3DErrorBoundary';
+import PremiumSceneFallback from './PremiumSceneFallback';
+import { useAdaptive3DFallback } from '@/hooks/useAdaptive3DFallback';
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
@@ -19,14 +22,12 @@ function Room({
   color,
   highlightColor,
   isHighlighted,
-  name,
 }: {
   position: [number, number, number];
   size: [number, number, number];
   color: string;
   highlightColor: string;
   isHighlighted: boolean;
-  name: string;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const edgeRef = useRef<THREE.LineSegments>(null);
@@ -128,7 +129,6 @@ function WireframeHouse({ scale = 0.7 }: { scale?: number }) {
             color="#F97316"
             highlightColor="#F97316"
             isHighlighted={index === highlightedRoom}
-            name={room.name}
           />
         ))}
 
@@ -297,25 +297,37 @@ interface InteractiveWireframeHouseProps {
 
 export default function InteractiveWireframeHouse({ className = '' }: InteractiveWireframeHouseProps) {
   const { dpr, frameloop, gl, shouldShowStatic } = useEcoCanvas();
+  const adaptiveFallback = useAdaptive3DFallback({ lowBatteryThreshold: 10 });
 
-  if (shouldShowStatic) {
+  if (shouldShowStatic || adaptiveFallback.shouldFallback) {
     return (
-      <div className={`absolute inset-0 flex items-center justify-center bg-onyx-900/50 ${className}`}>
-        <div className="text-xs text-muted-foreground font-mono">Smart Home Wireframe</div>
-      </div>
+      <Scene3DErrorBoundary sceneName="InteractiveWireframeHouse" className={`absolute inset-0 ${className}`}>
+        <PremiumSceneFallback
+          className={`absolute inset-0 ${className}`}
+          reason={adaptiveFallback.reason ?? 'eco-mode'}
+          title="Adaptive Wireframe Preview"
+          description="Interactive wireframe model is paused to keep the session responsive."
+          imageSrc="/assets/logos/coffee-machine.jpg"
+        />
+      </Scene3DErrorBoundary>
     );
   }
 
   return (
-    <div className={`absolute inset-0 ${className}`}>
-      <Canvas
-        camera={{ position: [3.5, 2.5, 3.5], fov: 50 }}
-        dpr={dpr}
-        frameloop={frameloop as 'always' | 'never' | 'demand'}
-        gl={{ ...gl, alpha: true }}
-      >
-        <Scene />
-      </Canvas>
-    </div>
+    <Scene3DErrorBoundary sceneName="InteractiveWireframeHouse" className={`absolute inset-0 ${className}`}>
+      <div className={`absolute inset-0 ${className}`}>
+        <Canvas
+          camera={{ position: [3.5, 2.5, 3.5], fov: 50 }}
+          dpr={dpr}
+          frameloop={frameloop as 'always' | 'never' | 'demand'}
+          gl={{ ...gl, alpha: true }}
+          onCreated={({ gl: renderer }) => {
+            adaptiveFallback.attachToCanvas(renderer.domElement);
+          }}
+        >
+          <Scene />
+        </Canvas>
+      </div>
+    </Scene3DErrorBoundary>
   );
 }

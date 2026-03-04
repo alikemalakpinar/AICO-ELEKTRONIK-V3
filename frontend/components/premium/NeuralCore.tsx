@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame, extend } from '@react-three/fiber';
-import { MeshDistortMaterial, MeshTransmissionMaterial, Sphere, Float } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { MeshTransmissionMaterial, Sphere, Float } from '@react-three/drei';
 import SafeEnvironment from './3d/SafeEnvironment';
 import Scene3DErrorBoundary from './3d/Scene3DErrorBoundary';
+import PremiumSceneFallback from './3d/PremiumSceneFallback';
 import * as THREE from 'three';
+import { useAdaptive3DFallback } from '@/hooks/useAdaptive3DFallback';
 import { useEcoCanvas } from '@/hooks/useEcoMode';
 
 // ===========================================
@@ -124,9 +126,7 @@ function DataStreamRing({
   speed: number;
   baseOpacity?: number;
 }) {
-  const lineRef = useRef<THREE.Line>(null);
-  const materialRef = useRef<any>(null);
-  const dashOffsetRef = useRef(0);
+  const materialRef = useRef<THREE.LineDashedMaterial | null>(null);
 
   // Create a circle of points for the ring
   const geometry = useMemo(() => {
@@ -162,33 +162,27 @@ function DataStreamRing({
 
   useFrame((state) => {
     if (materialRef.current) {
-      // Linear dash offset — data flowing along the ring
-      dashOffsetRef.current -= speed;
-      (materialRef.current as any).dashOffset = dashOffsetRef.current;
-
       // Pulsing opacity — breathing effect per stream
-      const pulse = Math.sin(state.clock.elapsedTime * 1.2 + radius * 3) * 0.15;
+      const pulse = Math.sin(state.clock.elapsedTime * (1.2 + speed) + radius * 3) * 0.15;
       materialRef.current.opacity = baseOpacity + pulse;
-    }
-    if (lineRef.current) {
-      lineRef.current.rotation.x = tiltX;
-      lineRef.current.rotation.z = tiltZ;
     }
   });
 
   return (
-    <line ref={lineRef as any}>
-      <primitive object={geometry} attach="geometry" />
-      <lineDashedMaterial
-        ref={materialRef}
-        color="#F97316"
-        transparent
-        opacity={baseOpacity}
-        dashSize={0.2 * dashScale}
-        gapSize={0.12 * dashScale}
-        linewidth={1}
-      />
-    </line>
+    <group rotation={[tiltX, 0, tiltZ]}>
+      <line>
+        <primitive object={geometry} attach="geometry" />
+        <lineDashedMaterial
+          ref={materialRef}
+          color="#F97316"
+          transparent
+          opacity={baseOpacity}
+          dashSize={0.2 * dashScale}
+          gapSize={0.12 * dashScale}
+          linewidth={1}
+        />
+      </line>
+    </group>
   );
 }
 
@@ -308,6 +302,22 @@ interface NeuralCoreProps {
 
 export default function NeuralCore({ className = '' }: NeuralCoreProps) {
   const eco = useEcoCanvas();
+  const adaptiveFallback = useAdaptive3DFallback({ lowBatteryThreshold: 10 });
+
+  if (adaptiveFallback.shouldFallback || eco.shouldShowStatic) {
+    return (
+      <Scene3DErrorBoundary sceneName="NeuralCore" className={className}>
+        <PremiumSceneFallback
+          className={className}
+          reason={adaptiveFallback.reason ?? 'eco-mode'}
+          title="Adaptive Neural Core Preview"
+          description="3D core is paused to protect battery and keep interaction smooth."
+          imageSrc="/assets/logos/factory-oee.jpg"
+        />
+      </Scene3DErrorBoundary>
+    );
+  }
+
   return (
     <Scene3DErrorBoundary sceneName="NeuralCore" className={className}>
       <div className={`relative ${className}`}>
@@ -320,6 +330,9 @@ export default function NeuralCore({ className = '' }: NeuralCoreProps) {
               antialias: !eco.shouldShowStatic,
               alpha: true,
               powerPreference: eco.gl.powerPreference,
+            }}
+            onCreated={({ gl }) => {
+              adaptiveFallback.attachToCanvas(gl.domElement);
             }}
             style={{ background: 'transparent' }}
           >

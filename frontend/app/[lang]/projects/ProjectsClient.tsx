@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Filter, Cpu, Factory, Cloud, Smartphone, Radio } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
-import { PROJECTS, PROJECT_CATEGORIES, getFeaturedProjects, getProjectsByCategory } from '@/lib/data/projects';
-import type { Project, ProjectCategory } from '@/types';
+import { PROJECT_CATEGORIES, getFeaturedProjects, getProjectsByCategory } from '@/lib/data/projects';
 
 interface ProjectsClientProps {
   lang: Locale;
@@ -25,25 +24,24 @@ export default function ProjectsClient({ lang }: ProjectsClientProps) {
   const t = getTranslations(lang);
   const [activeCategory, setActiveCategory] = useState('all');
 
-  const projects = PROJECTS[lang];
   const categories = PROJECT_CATEGORIES[lang];
   const featuredProjects = getFeaturedProjects(lang);
   const filteredProjects = getProjectsByCategory(activeCategory, lang);
 
   const text = {
     tr: {
-      badge: 'MUHENDISLIK PORTFOLYOSU',
+      badge: 'MÜHENDİSLİK PORTFÖYÜ',
       heroTitle: 'Gerçek Projeler,',
-      heroHighlight: 'Olculebilir Sonuclar',
+      heroHighlight: 'Ölçülebilir Sonuçlar',
       heroSubtitle: 'Gömülü sistemlerden endüstriyel IoT çözümlerine kadar tamamladığımız mühendislik projelerini inceleyin.',
-      featured: 'One Cikan Projeler',
-      allProjects: 'Tum Projeler',
+      featured: 'Öne Çıkan Projeler',
+      allProjects: 'Tüm Projeler',
       viewProject: 'Detayları İncele',
       challenge: 'Problem',
       solution: 'Çözüm',
       impact: 'Etki',
-      ctaTitle: 'Projenizi birlikte tasarlayalim',
-      ctaSubtitle: 'Muhendislik ekibimiz, ihtiyaclariniza ozel bir cozum tasarlamak icin hazir.',
+      ctaTitle: 'Projenizi birlikte tasarlayalım',
+      ctaSubtitle: 'Mühendislik ekibimiz, ihtiyaçlarınıza özel bir çözüm tasarlamak için hazır.',
     },
     en: {
       badge: 'ENGINEERING PORTFOLIO',

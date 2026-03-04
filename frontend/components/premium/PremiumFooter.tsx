@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Github, ArrowRight } from 'lucide-react';
 import { getTranslations, type Locale } from '@/lib/i18n';
+import { DESIGN_SYSTEM } from '@/lib/design-system';
+import { getStaggerDelay, marqueeLoop, revealUp } from '@/lib/motion';
 import MagneticButton from './MagneticButton';
 
 interface PremiumFooterProps {
@@ -70,7 +72,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
       {/* CTA Banner */}
       <div className="relative overflow-hidden bg-gradient-to-b from-engineer-500/10 to-transparent">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 text-center">
+        <div className={`${DESIGN_SYSTEM.layout.shell} py-16 lg:py-20 text-center`}>
           {/* Animated border beam */}
           <motion.div
             className="absolute inset-x-0 bottom-0 h-px"
@@ -79,31 +81,21 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
               backgroundSize: '200% 100%',
             }}
             animate={{ backgroundPosition: ['200% 0%', '-200% 0%'] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+            transition={marqueeLoop(4)}
           />
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...revealUp(0, 20)}
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 tracking-tight"
           >
             {t.footer.ctaTitle}
           </motion.h2>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
+            {...revealUp(0.1, 20)}
             className="text-muted-foreground mb-8 max-w-xl mx-auto"
           >
             {t.footer.ctaSubtitle}
           </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
+          <motion.div {...revealUp(0.2, 20)}>
             <Link
               href={`/${lang}/contact`}
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-engineer-500 hover:bg-engineer-600 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-engineer-500/25 group"
@@ -127,7 +119,7 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
       </div>
 
       {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
+      <div className={`${DESIGN_SYSTEM.layout.shell} py-16 lg:py-20`}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
           {/* Brand column */}
           <div className="md:col-span-2 lg:col-span-5">
@@ -275,16 +267,13 @@ export default function PremiumFooter({ lang }: PremiumFooterProps) {
 
       {/* Bottom bar */}
       <div className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <div className={`${DESIGN_SYSTEM.layout.shell} py-6`}>
           {/* Animated stats */}
           <div className="flex items-center justify-center gap-6 mb-4">
             {stats.map((stat, i) => (
               <motion.span
                 key={stat.label}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                {...revealUp(getStaggerDelay(i, 0.1), 10)}
                 className="text-xs font-mono text-muted-foreground/70 tracking-tight"
               >
                 {stat.label}

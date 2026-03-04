@@ -33,7 +33,7 @@ export async function generateMetadata({
       alternateLocale: params.lang === 'tr' ? 'en_US' : 'tr_TR',
       images: [
         {
-          url: `${BASE_URL}/images/og-image.jpg`,
+          url: `${BASE_URL}/assets/og-image.jpg`,
           width: 1200,
           height: 630,
           alt: 'AICO Elektronik - Industrial IoT & Engineering Solutions',
@@ -44,7 +44,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: t.meta.siteTitle,
       description: t.meta.siteDescription,
-      images: [`${BASE_URL}/images/og-image.jpg`],
+      images: [`${BASE_URL}/assets/og-image.jpg`],
     },
   };
 }
